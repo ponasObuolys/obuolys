@@ -281,12 +281,12 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         className="min-h-[300px] p-4 focus:outline-none"
         onInput={handleEditorChange}
         dangerouslySetInnerHTML={{ __html: value }}
-        placeholder={placeholder}
+        data-placeholder={placeholder}
       />
       
-      <style jsx>{`
+      <style>{`
         [contenteditable=true]:empty:before {
-          content: attr(placeholder);
+          content: attr(data-placeholder);
           color: #9ca3af;
           display: block;
         }
