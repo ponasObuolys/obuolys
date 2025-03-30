@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -10,8 +9,26 @@ interface UserManagerProps {
   onUpdate: () => void;
 }
 
+// Define proper types for the Supabase query results
+interface Profile {
+  id: string;
+  username: string | null;
+  is_admin: boolean;
+  created_at: string;
+  updated_at: string;
+  avatar_url: string;
+}
+
+interface User {
+  id: string;
+  username: string | null;
+  email: string;
+  created_at_auth: string;
+  is_admin: boolean;
+}
+
 const UserManager = ({ onUpdate }: UserManagerProps) => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -22,18 +39,19 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      // Fetch profiles along with auth metadata
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*, auth_user:id(email, created_at)');
-        
-      if (error) throw error;
       
-      // Transform the data to include email from auth
-      const transformedData = data?.map(profile => ({
+      // Get profiles data
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*');
+        
+      if (profilesError) throw profilesError;
+      
+      // Transform the data - we won't try to get emails from auth
+      const transformedData = profilesData?.map((profile: Profile) => ({
         ...profile,
-        email: profile.auth_user?.email || 'N/A',
-        created_at_auth: profile.auth_user?.created_at || profile.created_at,
+        email: 'N/A', // We can't access auth.users directly
+        created_at_auth: profile.created_at,
       })) || [];
       
       setUsers(transformedData);
