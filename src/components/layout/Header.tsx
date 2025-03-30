@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
+import { UserDropdown } from '@/components/ui/user-dropdown';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
   
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -35,8 +38,14 @@ const Header = () => {
             <Link to="/kontaktai" className="nav-link">Kontaktai</Link>
           </nav>
           
-          <div className="hidden md:block">
-            <Button className="button-primary">Prisijungti</Button>
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <UserDropdown />
+            ) : (
+              <Link to="/auth">
+                <Button className="button-primary">Prisijungti</Button>
+              </Link>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -118,7 +127,27 @@ const Header = () => {
               Kontaktai
             </Link>
             <div className="px-4 py-2">
-              <Button className="w-full button-primary">Prisijungti</Button>
+              {user ? (
+                <Link 
+                  to="/auth" 
+                  className="block w-full"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <Button variant="outline" className="w-full justify-start">
+                    Mano paskyra
+                  </Button>
+                </Link>
+              ) : (
+                <Link 
+                  to="/auth" 
+                  className="block w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Button className="w-full button-primary">Prisijungti</Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
