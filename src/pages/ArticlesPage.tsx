@@ -1,83 +1,57 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Facebook, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Mock data
-const articles = [
-  {
-    id: 1,
-    title: "Kaip ChatGPT gali padėti jūsų verslui",
-    description: "Išsamiai apie ChatGPT panaudojimo galimybes versle: nuo marketingo iki klientų aptarnavimo.",
-    readTime: "7 min.",
-    date: "2023-06-15",
-    category: "Verslas",
-    slug: "chatgpt-versle"
-  },
-  {
-    id: 2,
-    title: "Midjourney v6: Kas naujo ir kaip naudoti",
-    description: "Išsamus gidas apie naujausią Midjourney versiją ir kaip išgauti geriausius rezultatus.",
-    readTime: "8 min.",
-    date: "2023-07-02",
-    category: "Dizainas",
-    slug: "midjourney-v6-gidas"
-  },
-  {
-    id: 3,
-    title: "AI įrankiai, kurie padės sutaupyti laiko",
-    description: "Top 10 dirbtinio intelekto įrankių, kurie padės optimizuoti jūsų darbo procesus.",
-    readTime: "5 min.",
-    date: "2023-07-20",
-    category: "Produktyvumas",
-    slug: "ai-irankiai-efektyvumui"
-  },
-  {
-    id: 4,
-    title: "Dirbtinio intelekto etika: Ką turime žinoti",
-    description: "Svarbiausios etinės problemos, susijusios su dirbtinio intelekto naudojimu ir plėtra.",
-    readTime: "10 min.",
-    date: "2023-08-05",
-    category: "Etika",
-    slug: "ai-etika"
-  },
-  {
-    id: 5,
-    title: "Kaip kurti efektyvius prašymus (prompts) ChatGPT",
-    description: "Praktiški patarimai, kaip formuluoti efektyvius prašymus AI modeliams ir gauti geresnius rezultatus.",
-    readTime: "6 min.",
-    date: "2023-08-12",
-    category: "Praktika",
-    slug: "efektyvus-prompts"
-  },
-  {
-    id: 6,
-    title: "AI ir švietimas: Kaip keičiasi mokymosi procesai",
-    description: "Dirbtinio intelekto įtaka švietimui ir kaip mokytojai bei mokiniai gali išnaudoti naujas galimybes.",
-    readTime: "9 min.",
-    date: "2023-08-20",
-    category: "Švietimas",
-    slug: "ai-svietimas"
-  }
-];
-
-const categories = [
-  "Visos kategorijos",
-  "Verslas",
-  "Dizainas",
-  "Produktyvumas",
-  "Etika",
-  "Praktika",
-  "Švietimas"
-];
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ArticlesPage = () => {
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
+  const { toast } = useToast();
+  
+  // Get unique categories from articles
+  const categories = ['Visos kategorijos', 
+    ...Array.from(new Set(articles.map(article => article.category)))
+  ];
+  
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('published', true)
+          .order('date', { ascending: false });
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setArticles(data);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko gauti straipsnių. Bandykite vėliau.",
+          variant: "destructive"
+        });
+        console.error("Error fetching articles:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchArticles();
+  }, [toast]);
   
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -133,13 +107,19 @@ const ArticlesPage = () => {
             </div>
           </div>
           
-          {filteredArticles.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-500">Kraunami straipsniai...</p>
+            </div>
+          ) : filteredArticles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredArticles.map((article) => (
                 <Card key={article.id} className="article-card">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <div className="text-sm text-gray-500">{article.date} · {article.readTime} skaitymo</div>
+                      <div className="text-sm text-gray-500">
+                        {new Date(article.date).toLocaleDateString('lt-LT')} · {article.read_time} skaitymo
+                      </div>
                       <div className="text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary">
                         {article.category}
                       </div>

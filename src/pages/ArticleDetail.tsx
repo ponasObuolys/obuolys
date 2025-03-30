@@ -1,80 +1,65 @@
 
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
-import { useEffect } from 'react';
-
-// Mock article data
-const articles = {
-  "chatgpt-versle": {
-    title: "Kaip ChatGPT gali padėti jūsų verslui",
-    date: "2023-06-15",
-    readTime: "7 min.",
-    author: "ponas Obuolys",
-    category: "Verslas",
-    content: `
-      <p class="mb-4">ChatGPT yra vienas iš galingiausių dirbtinio intelekto įrankių, kurį galima pritaikyti įvairioms verslo sritims. Šiame straipsnyje aptarsime, kaip efektyviai išnaudoti ChatGPT savo versle.</p>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Klientų aptarnavimas</h2>
-      <p class="mb-4">Viena iš pagrindinių ChatGPT pritaikymo sričių versle yra klientų aptarnavimas. Šis AI įrankis gali:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Atsakyti į dažniausiai užduodamus klausimus 24/7</li>
-        <li class="mb-2">Padėti klientams rasti produktus ar paslaugas</li>
-        <li class="mb-2">Spręsti paprastas problemas be žmogaus įsikišimo</li>
-        <li class="mb-2">Rinkti pradinę informaciją prieš perduodant sudėtingesnius atvejus darbuotojams</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Marketingas ir turinys</h2>
-      <p class="mb-4">ChatGPT gali būti nepakeičiamas pagalbininkas kuriant marketingo medžiagą:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Generuoti idėjas socialinių tinklų įrašams</li>
-        <li class="mb-2">Rašyti el. pašto naujienlaiškius</li>
-        <li class="mb-2">Kurti prekės aprašymus</li>
-        <li class="mb-2">Rašyti tinklaraščio straipsnius ir pagalbinį turinį</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Rinkos tyrimai</h2>
-      <p class="mb-4">AI gali padėti analizuoti rinką ir konkurentus:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Apibendrinti didelius kiekius informacijos</li>
-        <li class="mb-2">Identifikuoti tendencijas ir galimybes</li>
-        <li class="mb-2">Analizuoti konkurentų strategijas</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Procesų optimizavimas</h2>
-      <p class="mb-4">ChatGPT gali automatizuoti daug rutininių užduočių:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Rašyti standartines sutartis ir dokumentus</li>
-        <li class="mb-2">Automatizuoti el. laiškų atsakymus</li>
-        <li class="mb-2">Kurti procedūrų vadovus ir instrukcijas</li>
-        <li class="mb-2">Padėti planuoti projektus ir susitikimus</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Kaip pradėti naudoti ChatGPT savo versle?</h2>
-      <p class="mb-4">Štai keli patarimai, kaip pradėti:</p>
-      <ol class="list-decimal pl-6 mb-4">
-        <li class="mb-2">Identifikuokite sritis, kurias galima automatizuoti</li>
-        <li class="mb-2">Pradėkite nuo mažų eksperimentų</li>
-        <li class="mb-2">Visada patikrinkite AI sugeneruotą turinį</li>
-        <li class="mb-2">Mokykite savo komandą efektyviai naudoti AI įrankius</li>
-        <li class="mb-2">Nuolat matuokite rezultatus ir tobulinkite procesus</li>
-      </ol>
-      
-      <p class="mb-4">Dirbtinis intelektas keičia verslo pasaulį, ir ChatGPT yra vienas iš prieinamiausių būdų pradėti naudoti šias technologijas savo įmonėje. Tinkamai pritaikytas, jis gali padėti taupyti laiką, mažinti išlaidas ir gerinti klientų patirtį.</p>
-    `
-  },
-  // Additional article content would be defined here similarly
-};
+import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const article = slug ? articles[slug as keyof typeof articles] : null;
+  const [article, setArticle] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
   useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+        
+        if (!slug) return;
+        
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('slug', slug)
+          .eq('published', true)
+          .single();
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setArticle(data);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko gauti straipsnio informacijos. Bandykite vėliau.",
+          variant: "destructive"
+        });
+        console.error("Error fetching article:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchArticle();
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
-  }, []);
+  }, [slug, toast]);
+  
+  if (loading) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-16 text-center">
+          <p>Kraunama...</p>
+        </div>
+      </Layout>
+    );
+  }
   
   if (!article) {
     return (
@@ -116,11 +101,11 @@ const ArticleDetail = () => {
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-600">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
-                <span>{article.date}</span>
+                <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="mr-1 h-4 w-4" />
-                <span>{article.readTime} skaitymo</span>
+                <span>{article.read_time} skaitymo</span>
               </div>
               <div>
                 Autorius: <span className="font-medium">{article.author}</span>
