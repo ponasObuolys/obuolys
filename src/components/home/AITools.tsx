@@ -1,45 +1,43 @@
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
-
-const tools = [
-  {
-    id: 1,
-    name: "ChatGPT",
-    description: "Galingas kalbos modelis, padedantis rašyti, kurti turinį ir atsakyti į klausimus.",
-    category: "Tekstas",
-    url: "https://chat.openai.com",
-    affiliate: true
-  },
-  {
-    id: 2,
-    name: "Midjourney",
-    description: "Pažangus vaizdų generavimo įrankis, leidžiantis kurti aukštos kokybės iliustracijas.",
-    category: "Vaizdas",
-    url: "https://www.midjourney.com",
-    affiliate: true
-  },
-  {
-    id: 3,
-    name: "Synthesia",
-    description: "Vaizdo įrašų kūrimo platforma su dirbtinio intelekto avataramis.",
-    category: "Vaizdo įrašai",
-    url: "https://www.synthesia.io",
-    affiliate: false
-  },
-  {
-    id: 4,
-    name: "Claude",
-    description: "Anthropic kalbos modelis, specializuojasi ilguose pokalbių kontekstuose.",
-    category: "Tekstas",
-    url: "https://claude.ai",
-    affiliate: true
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const AITools = () => {
+  const [tools, setTools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTools = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('tools')
+          .select('*')
+          .eq('published', true)
+          .eq('featured', true)
+          .limit(4);
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setTools(data);
+        }
+      } catch (error) {
+        console.error("Error fetching tools:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchTools();
+  }, []);
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -50,29 +48,37 @@ const AITools = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tools.map((tool) => (
-            <Card key={tool.id} className="custom-card h-full flex flex-col">
-              <CardHeader className="pb-2">
-                <div className="mb-2 text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary inline-block">
-                  {tool.category}
-                </div>
-                <CardTitle className="text-lg">{tool.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="py-2 flex-grow">
-                <CardDescription>{tool.description}</CardDescription>
-              </CardContent>
-              <CardFooter className="pt-2">
-                <a href={tool.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                  <Button className="w-full button-secondary flex items-center justify-center">
-                    <span>Išbandyti</span>
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </a>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center">Kraunami įrankiai...</div>
+        ) : tools.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {tools.map((tool) => (
+              <Card key={tool.id} className="custom-card h-full flex flex-col">
+                <CardHeader className="pb-2">
+                  <div className="mb-2 text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary inline-block">
+                    {tool.category}
+                  </div>
+                  <CardTitle className="text-lg">{tool.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="py-2 flex-grow">
+                  <CardDescription>{tool.description}</CardDescription>
+                </CardContent>
+                <CardFooter className="pt-2">
+                  <a href={tool.url} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button className="w-full button-secondary flex items-center justify-center">
+                      <span>Išbandyti</span>
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Button>
+                  </a>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center">
+            <p>Šiuo metu nėra rekomenduojamų įrankių</p>
+          </div>
+        )}
         
         <div className="text-center mt-10">
           <Link to="/irankiai">

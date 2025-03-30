@@ -1,98 +1,61 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Mock data
-const tools = [
-  {
-    id: 1,
-    name: "ChatGPT",
-    description: "Galingas kalbos modelis, padedantis rašyti, kurti turinį ir atsakyti į klausimus.",
-    category: "Tekstas",
-    tags: ["Turinys", "Pokalbis", "Pagalba"],
-    url: "https://chat.openai.com",
-    affiliate: true
-  },
-  {
-    id: 2,
-    name: "Midjourney",
-    description: "Pažangus vaizdų generavimo įrankis, leidžiantis kurti aukštos kokybės iliustracijas.",
-    category: "Vaizdas",
-    tags: ["Dizainas", "Menas", "Iliustracijos"],
-    url: "https://www.midjourney.com",
-    affiliate: true
-  },
-  {
-    id: 3,
-    name: "Synthesia",
-    description: "Vaizdo įrašų kūrimo platforma su dirbtinio intelekto avataramis.",
-    category: "Vaizdo įrašai",
-    tags: ["Video", "Prezentacijos", "Mokymai"],
-    url: "https://www.synthesia.io",
-    affiliate: false
-  },
-  {
-    id: 4,
-    name: "Claude",
-    description: "Anthropic kalbos modelis, specializuojasi ilguose pokalbių kontekstuose.",
-    category: "Tekstas",
-    tags: ["Turinys", "Pokalbis", "Pagalba"],
-    url: "https://claude.ai",
-    affiliate: true
-  },
-  {
-    id: 5,
-    name: "Dall-E",
-    description: "OpenAI vaizdų kūrimo įrankis, generuojantis vaizdus pagal tekstą.",
-    category: "Vaizdas",
-    tags: ["Dizainas", "Menas", "Iliustracijos"],
-    url: "https://openai.com/dall-e-3",
-    affiliate: false
-  },
-  {
-    id: 6,
-    name: "Murf",
-    description: "AI įgarsintojo įrankis, leidžiantis generuoti realistišką balsą įvairiomis kalbomis.",
-    category: "Garsas",
-    tags: ["Balso įrašai", "Podkastai", "Įgarsinimas"],
-    url: "https://murf.ai",
-    affiliate: true
-  },
-  {
-    id: 7,
-    name: "Copy.ai",
-    description: "Rinkodaros teksto generavimo įrankis įvairiems kanalams ir formatams.",
-    category: "Tekstas",
-    tags: ["Rinkodara", "Turinys", "Kopirašymas"],
-    url: "https://www.copy.ai",
-    affiliate: true
-  },
-  {
-    id: 8,
-    name: "Runway",
-    description: "Vaizdo redagavimo ir generavimo platforma su pažangiomis AI galimybėmis.",
-    category: "Vaizdo įrašai",
-    tags: ["Video", "Redagavimas", "Efektai"],
-    url: "https://runway.ml",
-    affiliate: false
-  }
-];
-
-const categories = ["Visos kategorijos", "Tekstas", "Vaizdas", "Vaizdo įrašai", "Garsas"];
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ToolsPage = () => {
+  const [tools, setTools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    const fetchTools = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('tools')
+          .select('*')
+          .eq('published', true)
+          .order('name', { ascending: true });
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setTools(data);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko gauti įrankių. Bandykite vėliau.",
+          variant: "destructive"
+        });
+        console.error("Error fetching tools:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchTools();
+  }, [toast]);
+  
+  // Get unique categories from tools
+  const categories = ['Visos kategorijos', 
+    ...Array.from(new Set(tools.map(tool => tool.category)))
+  ];
   
   const filteredTools = tools.filter(tool => {
     const matchesSearch = 
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      tool.description.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCategory = selectedCategory === "Visos kategorijos" || tool.category === selectedCategory;
     
@@ -121,7 +84,7 @@ const ToolsPage = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="inline-flex items-center flex-wrap gap-2">
+              <div className="inline-flex flex-wrap gap-2">
                 <Filter className="h-5 w-5 text-gray-500" />
                 {categories.map((category) => (
                   <Button
@@ -141,7 +104,11 @@ const ToolsPage = () => {
             </div>
           </div>
           
-          {filteredTools.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-500">Kraunami įrankiai...</p>
+            </div>
+          ) : filteredTools.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredTools.map((tool) => (
                 <Card key={tool.id} className="custom-card h-full flex flex-col">
@@ -153,16 +120,6 @@ const ToolsPage = () => {
                   </CardHeader>
                   <CardContent className="py-2 flex-grow">
                     <CardDescription className="mb-4">{tool.description}</CardDescription>
-                    <div className="flex flex-wrap gap-2">
-                      {tool.tags.map((tag, index) => (
-                        <span 
-                          key={index} 
-                          className="text-xs py-1 px-2 bg-gray-100 text-gray-600 rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </CardContent>
                   <CardFooter className="pt-2">
                     <a href={tool.url} target="_blank" rel="noopener noreferrer" className="w-full">
@@ -177,16 +134,22 @@ const ToolsPage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Pagal jūsų paiešką įrankių nerasta</p>
-              <Button 
-                className="mt-4 button-outline"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("Visos kategorijos");
-                }}
-              >
-                Išvalyti paiešką
-              </Button>
+              <p className="text-xl text-gray-500">
+                {searchQuery || selectedCategory !== "Visos kategorijos" ? 
+                  "Pagal jūsų paiešką įrankių nerasta" : 
+                  "Šiuo metu įrankių nėra"}
+              </p>
+              {(searchQuery || selectedCategory !== "Visos kategorijos") && (
+                <Button 
+                  className="mt-4 button-outline"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("Visos kategorijos");
+                  }}
+                >
+                  Išvalyti paiešką
+                </Button>
+              )}
             </div>
           )}
           

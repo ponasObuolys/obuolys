@@ -1,66 +1,65 @@
 
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { useEffect } from 'react';
-
-// Mock news data
-const newsData = {
-  "openai-gpt5": {
-    title: "OpenAI pristato GPT-5",
-    date: "2023-08-15",
-    author: "ponas Obuolys",
-    content: `
-      <p class="mb-4">OpenAI šiandien pristatė ilgai lauktą GPT-5 modelį, kuris žymi reikšmingą žingsnį dirbtinio intelekto technologijų srityje. Naujasis modelis gerokai viršija savo pirmtakų galimybes ir siūlo įspūdingus patobulinimus keliose srityse.</p>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Pagrindiniai patobulinimai</h2>
-      <p class="mb-4">GPT-5 pasižymi keliais svarbiais patobulinimais:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Ženkliai pagerintas konteksto langas, leidžiantis modeliui išlaikyti ilgesnius pokalbius</li>
-        <li class="mb-2">Pagerinta gebėjimas spręsti sudėtingas matematines problemas</li>
-        <li class="mb-2">Tobulesnis įvairių kalbų supratimas ir vertimas</li>
-        <li class="mb-2">Geresnis nurodymų laikymasis ir nuoseklumas</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Naujos galimybės</h2>
-      <p class="mb-4">GPT-5 siūlo keletą naujų funkcijų:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Integruota vaizdo atpažinimo technologija</li>
-        <li class="mb-2">Geresnė kodo generavimo ir analizės sistema</li>
-        <li class="mb-2">Pagerinta gebėjimas kurti ir analizuoti sudėtingus dokumentus</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Saugumo aspektai</h2>
-      <p class="mb-4">OpenAI teigia, kad saugumas buvo vienas iš pagrindinių prioritetų kuriant GPT-5. Modelis buvo kruopščiai testuojamas siekiant užtikrinti, kad jis:</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li class="mb-2">Mažiau linkęs generuoti žalingą ar neteisingą informaciją</li>
-        <li class="mb-2">Geriau atpažįsta ir atmeta netinkamus prašymus</li>
-        <li class="mb-2">Veikia pagal griežtesnius saugumo parametrus</li>
-      </ul>
-      
-      <h2 class="text-2xl font-bold mt-8 mb-4">Kada bus prieinama?</h2>
-      <p class="mb-4">OpenAI pranešė, kad GPT-5 bus prieinamas etapais:</p>
-      <ol class="list-decimal pl-6 mb-4">
-        <li class="mb-2">Pirmiausia - tyrimų partneriams ir išrinktiems kūrėjams</li>
-        <li class="mb-2">Vėliau - ChatGPT Plus prenumeratoriams</li>
-        <li class="mb-2">Galiausiai - plačiajai visuomenei per API ir kitas platformas</li>
-      </ol>
-      
-      <p class="mb-4">Šis naujas modelis neabejotinai turės didelį poveikį daugeliui pramonės šakų ir asmeninio AI naudojimo scenarijų. Mes ir toliau stebėsime jo vystymąsi ir informuosime apie svarbiausius pokyčius.</p>
-    `
-  },
-  // Additional news content would be defined here similarly
-};
+import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const NewsDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const news = slug ? newsData[slug as keyof typeof newsData] : null;
+  const [news, setNews] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
   useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        
+        if (!slug) return;
+        
+        const { data, error } = await supabase
+          .from('news')
+          .select('*')
+          .eq('slug', slug)
+          .eq('published', true)
+          .single();
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setNews(data);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko gauti naujienos informacijos. Bandykite vėliau.",
+          variant: "destructive"
+        });
+        console.error("Error fetching news:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchNews();
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
-  }, []);
+  }, [slug, toast]);
+  
+  if (loading) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-16 text-center">
+          <p>Kraunama...</p>
+        </div>
+      </Layout>
+    );
+  }
   
   if (!news) {
     return (
@@ -91,7 +90,7 @@ const NewsDetail = () => {
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-600">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
-                <span>{news.date}</span>
+                <span>{new Date(news.date).toLocaleDateString('lt-LT')}</span>
               </div>
               <div>
                 Autorius: <span className="font-medium">{news.author}</span>

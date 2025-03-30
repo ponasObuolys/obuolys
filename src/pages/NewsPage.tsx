@@ -1,74 +1,51 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Clock, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Mock data
-const news = [
-  {
-    id: 1,
-    title: "OpenAI pristato GPT-5",
-    description: "Naujos kartos kalbos modelis nustebino savo galimybėmis atlikti sudėtingas užduotis.",
-    date: "2023-08-15",
-    slug: "openai-gpt5"
-  },
-  {
-    id: 2,
-    title: "Google AI naujovės",
-    description: "Google pristato savo naujus dirbtinio intelekto įrankius, skirtus verslui ir kūrėjams.",
-    date: "2023-08-10",
-    slug: "google-ai-naujienos"
-  },
-  {
-    id: 3,
-    title: "Microsoft investuoja į AI startuolius",
-    description: "Microsoft planuoja investuoti 500 milijonų dolerių į AI startuolius visame pasaulyje.",
-    date: "2023-08-05",
-    slug: "microsoft-investicijos"
-  },
-  {
-    id: 4,
-    title: "AI reglamentavimo pokyčiai ES",
-    description: "Europos Sąjunga keičia dirbtinio intelekto reglamentavimo taisykles.",
-    date: "2023-07-28",
-    slug: "ai-reglamentavimas-es"
-  },
-  {
-    id: 5,
-    title: "Meta pristato naują AI modelį",
-    description: "Meta (buvęs Facebook) pristato naują didelio masto kalbos modelį, kuris konkuruos su GPT ir Claude.",
-    date: "2023-07-25",
-    slug: "meta-naujas-ai"
-  },
-  {
-    id: 6,
-    title: "AI olimpiada 2023",
-    description: "Pirmoji pasaulinė AI olimpiada suburs geriausius dirbtinio intelekto specialistus iš viso pasaulio.",
-    date: "2023-07-20",
-    slug: "ai-olimpiada"
-  },
-  {
-    id: 7,
-    title: "Saugesnė AI: naujos gairės",
-    description: "Tarptautinės organizacijos skelbia naujas gaires, skirtas užtikrinti saugesnį dirbtinio intelekto kūrimą.",
-    date: "2023-07-18",
-    slug: "saugesne-ai"
-  },
-  {
-    id: 8,
-    title: "AI ir klimato kaita",
-    description: "Naujas tyrimas atskleidžia, kaip dirbtinis intelektas gali padėti kovoti su klimato kaita.",
-    date: "2023-07-15",
-    slug: "ai-klimato-kaita"
-  }
-];
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const NewsPage = () => {
+  const [news, setNews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('news')
+          .select('*')
+          .eq('published', true)
+          .order('date', { ascending: false });
+          
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setNews(data);
+        }
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko gauti naujienų. Bandykite vėliau.",
+          variant: "destructive"
+        });
+        console.error("Error fetching news:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchNews();
+  }, [toast]);
   
   const filteredNews = news.filter(item => 
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -100,7 +77,11 @@ const NewsPage = () => {
             </div>
           </div>
           
-          {filteredNews.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-500">Kraunamos naujienos...</p>
+            </div>
+          ) : filteredNews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredNews.map((item) => (
                 <Card key={item.id} className="custom-card h-full flex flex-col">
@@ -113,7 +94,7 @@ const NewsPage = () => {
                   <CardFooter className="pt-2 flex justify-between items-center">
                     <div className="flex items-center text-sm text-gray-500">
                       <Clock className="mr-1 h-4 w-4" />
-                      <span>{item.date}</span>
+                      <span>{new Date(item.date).toLocaleDateString('lt-LT')}</span>
                     </div>
                     <Link to={`/naujienos/${item.slug}`}>
                       <Button className="button-accent text-sm px-3 py-1 h-auto">Daugiau</Button>
@@ -124,13 +105,17 @@ const NewsPage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Pagal jūsų paiešką naujienų nerasta</p>
-              <Button 
-                className="mt-4 button-outline"
-                onClick={() => setSearchQuery("")}
-              >
-                Išvalyti paiešką
-              </Button>
+              <p className="text-xl text-gray-500">
+                {searchQuery ? "Pagal jūsų paiešką naujienų nerasta" : "Šiuo metu naujienų nėra"}
+              </p>
+              {searchQuery && (
+                <Button 
+                  className="mt-4 button-outline"
+                  onClick={() => setSearchQuery("")}
+                >
+                  Išvalyti paiešką
+                </Button>
+              )}
             </div>
           )}
         </div>
