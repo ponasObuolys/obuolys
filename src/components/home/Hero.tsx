@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -30,15 +29,11 @@ const Hero = () => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-50"></div>
               <div className="relative bg-white rounded-xl p-6 shadow-lg">
                 <div className="aspect-video rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-                  <span className="text-xl text-gray-400">ponas Obuolys</span>
-                </div>
-                <div className="mt-4">
-                  <h3 className="text-xl font-bold">Dirbtinio intelekto revoliucija</h3>
-                  <p className="mt-2 text-gray-600">Kaip AI keičia mūsų kasdienybę ir darbą</p>
-                  <div className="mt-4 flex justify-between items-center">
-                    <span className="text-sm text-gray-500">5 min. skaitymo</span>
-                    <Button className="button-accent px-3 py-1 h-auto text-sm">Skaityti</Button>
-                  </div>
+                  <img 
+                    src="/obuolys-logo.png" 
+                    alt="Ponas Obuolys" 
+                    className="w-3/4 h-3/4 object-contain transition-transform hover:scale-110 duration-300"
+                  />
                 </div>
               </div>
             </div>
