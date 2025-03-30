@@ -1,17 +1,24 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
+import useLazyImages from '@/hooks/useLazyImages';
+import { extractImagesFromHTML, preloadImagesWhenIdle } from '@/utils/imagePreloader';
+import LazyImage from '@/components/ui/lazy-image';
 
 const NewsDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [news, setNews] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Apply lazy loading to images in the news content
+  useLazyImages(contentRef);
   
   useEffect(() => {
     const fetchNews = async () => {
@@ -33,6 +40,12 @@ const NewsDetail = () => {
         
         if (data) {
           setNews(data);
+          
+          // Preload images from news content when browser is idle
+          if (data.content) {
+            const imageUrls = extractImagesFromHTML(data.content);
+            preloadImagesWhenIdle(imageUrls);
+          }
         }
       } catch (error: any) {
         toast({
@@ -97,11 +110,25 @@ const NewsDetail = () => {
               </div>
             </div>
             
-            <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
-              Naujienos nuotrauka
-            </div>
+            {news.image_url ? (
+              <div className="mb-8 rounded-md overflow-hidden">
+                <LazyImage 
+                  src={news.image_url} 
+                  alt={news.title} 
+                  className="w-full h-auto"
+                />
+              </div>
+            ) : (
+              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
+                Naujienos nuotrauka
+              </div>
+            )}
             
-            <div className="prose max-w-none mb-8" dangerouslySetInnerHTML={{ __html: news.content }} />
+            <div 
+              ref={contentRef}
+              className="prose max-w-none mb-8" 
+              dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(news.content) }} 
+            />
           </div>
         </div>
       </article>

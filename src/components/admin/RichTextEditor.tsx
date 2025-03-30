@@ -6,7 +6,7 @@ import {
   Bold,
   Italic,
   Underline,
-  Link,
+  Link as LinkIcon,
   Image,
   List,
   ListOrdered,
@@ -96,10 +96,11 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
     setLinkDialogOpen(false);
   };
 
-  const insertImage = () => {
+  const handleInsertImage = () => {
     if (!imageUrl.trim()) return;
     
-    const imgHtml = `<img src="${imageUrl}" alt="${imageAlt}" class="my-4 rounded max-w-full h-auto" />`;
+    const imgHtml = `<img src="${imageUrl}" alt="${imageAlt}" class="my-4 rounded max-w-full h-auto" loading="lazy" />`;
+    
     execCommand('insertHTML', imgHtml);
     
     setImageUrl('');
@@ -132,33 +133,33 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
   return (
     <div className="border rounded-md overflow-hidden">
       <div className="bg-muted p-2 border-b flex flex-wrap gap-1">
-        <Button type="button" variant="ghost" size="sm" onClick={() => formatText('bold')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('bold')}>
           <Bold className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => formatText('italic')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('italic')}>
           <Italic className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => formatText('underline')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('underline')}>
           <Underline className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button type="button" variant="ghost" size="sm" onClick={() => insertHeading(1)}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => insertHeading(1)}>
           <Heading1 className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => insertHeading(2)}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => insertHeading(2)}>
           <Heading2 className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button type="button" variant="ghost" size="sm" onClick={() => execCommand('insertUnorderedList')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('insertUnorderedList')}>
           <List className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => execCommand('insertOrderedList')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('insertOrderedList')}>
           <ListOrdered className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => execCommand('formatBlock', '<blockquote>')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('formatBlock', '<blockquote>')}>
           <Quote className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => execCommand('formatBlock', '<pre>')}>
+        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('formatBlock', '<pre>')}>
           <Code className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
@@ -166,8 +167,8 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Link Dialog */}
         <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="ghost" size="sm">
-              <Link className="h-4 w-4" />
+            <Button type="button" variant="secondary" size="sm">
+              <LinkIcon className="h-4 w-4" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -206,7 +207,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Image Dialog */}
         <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="ghost" size="sm">
+            <Button type="button" variant="secondary" size="sm">
               <Image className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -238,7 +239,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
               <DialogClose asChild>
                 <Button type="button" variant="outline">Atšaukti</Button>
               </DialogClose>
-              <Button type="button" onClick={insertImage}>Įterpti paveikslėlį</Button>
+              <Button type="button" onClick={handleInsertImage}>Įterpti paveikslėlį</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -246,7 +247,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Video Dialog */}
         <Dialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="ghost" size="sm">
+            <Button type="button" variant="secondary" size="sm">
               <Youtube className="h-4 w-4" />
             </Button>
           </DialogTrigger>

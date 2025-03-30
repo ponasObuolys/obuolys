@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import LazyImage from '@/components/ui/lazy-image';
 
 const Hero = () => {
   return (
@@ -29,7 +30,7 @@ const Hero = () => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-50"></div>
               <div className="relative bg-white rounded-xl p-6 shadow-lg">
                 <div className="aspect-video rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-                  <img 
+                  <LazyImage 
                     src="/obuolys-logo.png" 
                     alt="Ponas Obuolys" 
                     className="w-3/4 h-3/4 object-contain transition-transform hover:scale-110 duration-300"

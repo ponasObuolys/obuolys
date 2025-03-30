@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/ui/lazy-image";
 
 const AINews = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -54,6 +54,19 @@ const AINews = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {news.map((item) => (
               <Card key={item.id} className="custom-card h-full flex flex-col">
+                <div className="aspect-video w-full overflow-hidden">
+                  {item.image_url ? (
+                    <LazyImage
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                      Nėra nuotraukos
+                    </div>
+                  )}
+                </div>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">{item.title}</CardTitle>
                 </CardHeader>

@@ -1,17 +1,24 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
+import useLazyImages from '@/hooks/useLazyImages';
+import { extractImagesFromHTML, preloadImagesWhenIdle } from '@/utils/imagePreloader';
+import LazyImage from '@/components/ui/lazy-image';
 
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Apply lazy loading to images in the article content
+  useLazyImages(contentRef);
   
   useEffect(() => {
     const fetchArticle = async () => {
@@ -33,6 +40,12 @@ const ArticleDetail = () => {
         
         if (data) {
           setArticle(data);
+          
+          // Preload images from article content when browser is idle
+          if (data.content) {
+            const imageUrls = extractImagesFromHTML(data.content);
+            preloadImagesWhenIdle(imageUrls);
+          }
         }
       } catch (error: any) {
         toast({
@@ -112,11 +125,25 @@ const ArticleDetail = () => {
               </div>
             </div>
             
-            <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
-              Straipsnio nuotrauka
-            </div>
+            {article.image_url ? (
+              <div className="mb-8 rounded-md overflow-hidden">
+                <LazyImage 
+                  src={article.image_url} 
+                  alt={article.title} 
+                  className="w-full h-auto"
+                />
+              </div>
+            ) : (
+              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
+                Straipsnio nuotrauka
+              </div>
+            )}
             
-            <div className="prose max-w-none mb-8" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div 
+              ref={contentRef}
+              className="prose max-w-none mb-8" 
+              dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(article.content) }} 
+            />
             
             <div className="border-t border-gray-200 pt-6 mt-8">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
