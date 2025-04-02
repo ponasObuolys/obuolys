@@ -237,23 +237,50 @@ const RssSettingsPanel = () => {
       <CardFooter className="text-sm text-muted-foreground flex flex-col items-start gap-2">
         <p>Pastaba: Naujienų atnaujinimas gali užtrukti priklausomai nuo jų kiekio. Vertimui naudojamas DeepL API, kuris pateikia aukštos kokybės vertimus.</p>
         <p className="font-semibold text-amber-600">Svarbu: Sistema importuos tik po vieną naują naujieną per dieną. Daugiau naujienų galima pridėti tik rankiniu būdu.</p>
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-blue-700">
-          <h4 className="font-semibold mb-1">Dėmesio: CORS apribojimai</h4>
-          <p>DeepL API ir daugelis RSS šaltinių turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės. Sprendimui:</p>
-          <ul className="list-disc pl-5 mt-1">
-            <li>Panaudokite Supabase Edge funkcijas kaip proxy serverius:</li>
-            <ul className="list-circle pl-5">
-              <li><strong>Vertimui:</strong> <code>/supabase/functions/translate</code></li>
-              <li><strong>RSS šaltiniui:</strong> <code>/supabase/functions/rssfeed</code></li>
+        
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-300 rounded-md text-amber-700">
+          <h4 className="font-semibold mb-1">ℹ️ Naujienų importavimo konfigūracija</h4>
+          <p>RSS naujienų importavimui sukurti proxy serveriai, kurie jau paruošti naudojimui:</p>
+          
+          <div className="mt-2">
+            <strong>Vercel serverless funkcijos:</strong>
+            <ul className="list-disc pl-5 mt-1">
+              <li><code>/api/rssfeed</code> - RSS šaltinio duomenų nuskaitymui</li>
+              <li><code>/api/translate</code> - DeepL API vertimui</li>
             </ul>
-            <li>Dėl diegimo detalių kreipkitės į sistemų administratorių</li>
-            <li>Po proxy serverių diegimo, sistemoje automatiškai bus naudojamas saugus ryšys</li>
-          </ul>
-          <p className="mt-1">Edge funkcijų URL pavyzdžiai:</p>
-          <ul className="list-disc pl-5">
-            <li>Vertimui: <code>https://[jūsų-projektas].supabase.co/functions/v1/translate</code></li>
-            <li>RSS šaltiniui: <code>https://[jūsų-projektas].supabase.co/functions/v1/rssfeed</code></li>
-          </ul>
+          </div>
+          
+          <div className="mt-2">
+            <strong>Aplinkos kintamieji:</strong>
+            <div className="bg-gray-100 p-2 mt-1 mb-2 rounded font-mono text-xs">
+              REACT_APP_RSS_PROXY_URL=/api/rssfeed<br/>
+              REACT_APP_TRANSLATION_PROXY_URL=/api/translate
+            </div>
+          </div>
+          
+          <p className="mt-2">
+            <strong>Diegimo statusas:</strong> Serverio pusės proxy jau sukonfigūruoti ir paruošti naudojimui. 
+            Jei pastebisite problemas su CORS, patikrinkite ar aplinkos kintamieji teisingai nustatyti.
+          </p>
+        </div>
+        
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-blue-700">
+          <h4 className="font-semibold mb-1">⚡ Alternatyvus sprendimas: Supabase Edge funkcijos</h4>
+          <p>Jei Vercel sprendimas neveikia arba pageidaujate naudoti Supabase infrastruktūrą, galite įjungti Edge funkcijas:</p>
+          
+          <div className="bg-blue-100 p-2 mt-2 rounded">
+            <strong>Kaip aktyvuoti Supabase sprendimą:</strong>
+            <ol className="list-decimal pl-5 mt-1">
+              <li>Įdiekite Supabase Edge funkcijas iš <code>/supabase/functions/</code> katalogo</li>
+              <li>Nustatykite aplinkos kintamuosius:</li>
+              <div className="bg-gray-100 p-2 mt-1 mb-2 rounded font-mono text-xs">
+                REACT_APP_RSS_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/rssfeed<br/>
+                REACT_APP_TRANSLATION_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/translate
+              </div>
+            </ol>
+          </div>
+          
+          <p className="mt-2 text-xs">Išsamiau: <a href="/RSS_INFO.md" className="underline">RSS_INFO.md</a> ir <a href="/SUPABASE_FUNCTIONS.md" className="underline">SUPABASE_FUNCTIONS.md</a></p>
         </div>
       </CardFooter>
     </Card>

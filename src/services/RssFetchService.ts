@@ -30,70 +30,103 @@ export class RssFeedService {
     try {
       // Tikriname, ar yra sukonfigūruotas RSS proxy URL
       const rssProxyUrl = process.env.REACT_APP_RSS_PROXY_URL;
-      let url = this.rssUrl;
       
-      // Jei yra proxy URL, jį naudojame
       if (rssProxyUrl) {
-        console.log('Naudojamas proxy serveris RSS šaltiniui');
-        url = `${rssProxyUrl}?url=${encodeURIComponent(this.rssUrl)}`;
+        console.log(`Naudojamas RSS proxy serveris: ${rssProxyUrl}`);
+        const url = `${rssProxyUrl}?url=${encodeURIComponent(this.rssUrl)}`;
+        
+        // Siunčiame užklausą per proxy
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'Nepavyko nuskaityti klaidos teksto');
+          console.error(`RSS proxy serverio klaida: ${response.status}`, errorText);
+          throw new Error(`Klaida gaunant RSS per proxy: ${response.status} ${response.statusText}`);
+        }
+        
+        const xmlText = await response.text();
+        console.log(`Gauta RSS duomenų: ${Math.round(xmlText.length / 1024)} KB`);
+        return this.parseRssXml(xmlText);
       } else {
-        console.log('Tiesioginis kreipimasis į RSS šaltinį');
-      }
-      
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error(`Klaida gaunant RSS: ${response.status} ${response.statusText}`);
-      }
-      
-      const xmlText = await response.text();
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-      
-      const items = Array.from(xmlDoc.querySelectorAll("item"));
-      
-      return items.map(item => {
-        // Ištraukiame paveikslėlio URL iš turinio
-        let imageUrl: string | undefined;
-        const contentEncoded = item.querySelector("content\\:encoded")?.textContent || 
-                              item.querySelector("encoded")?.textContent || 
-                              "";
+        console.log('Nėra sukonfigūruoto RSS proxy serverio. Tiesioginis kreipimasis gali būti blokuojamas dėl CORS');
         
-        if (contentEncoded) {
-          const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/);
-          if (imgMatch && imgMatch[1]) {
-            imageUrl = imgMatch[1];
+        try {
+          // Bandome tiesioginę užklausą su papildomomis antraštėmis
+          const response = await fetch(this.rssUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15',
+              'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Tiesioginio kreipimosi klaida: ${response.status} ${response.statusText}`);
           }
+          
+          const xmlText = await response.text();
+          return this.parseRssXml(xmlText);
+        } catch (error) {
+          console.error('Tiesioginis RSS gavimas nepavyko:', error);
+          throw new Error(
+            'RSS gavimas nepavyko dėl CORS apribojimų. ' +
+            'Sukonfigūruokite proxy serverį aplinkos kintamajame REACT_APP_RSS_PROXY_URL. ' +
+            'Daugiau informacijos rasite README.md ir RSS_INFO.md dokumentuose.'
+          );
         }
-
-        // Ištraukiame nuorodą į paveikslėlį iš media:content arba enclosure tag
-        if (!imageUrl) {
-          const mediaContent = item.querySelector("media\\:content");
-          if (mediaContent && mediaContent.getAttribute("url")) {
-            imageUrl = mediaContent.getAttribute("url") || undefined;
-          }
-        }
-
-        if (!imageUrl) {
-          const enclosure = item.querySelector("enclosure");
-          if (enclosure && enclosure.getAttribute("url")) {
-            imageUrl = enclosure.getAttribute("url") || undefined;
-          }
-        }
-        
-        return {
-          title: item.querySelector("title")?.textContent || "",
-          description: item.querySelector("description")?.textContent || "",
-          link: item.querySelector("link")?.textContent || "",
-          pubDate: item.querySelector("pubDate")?.textContent || "",
-          content: contentEncoded,
-          imageUrl
-        };
-      });
+      }
     } catch (error) {
       console.error("Klaida gaunant RSS naujienas:", error);
       return [];
     }
+  }
+  
+  /**
+   * Analizuoja RSS XML tekstą ir paverčia į RssItem masyvą
+   */
+  private parseRssXml(xmlText: string): RssItem[] {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    
+    const items = Array.from(xmlDoc.querySelectorAll("item"));
+    
+    return items.map(item => {
+      // Ištraukiame paveikslėlio URL iš turinio
+      let imageUrl: string | undefined;
+      const contentEncoded = item.querySelector("content\\:encoded")?.textContent || 
+                            item.querySelector("encoded")?.textContent || 
+                            "";
+      
+      if (contentEncoded) {
+        const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch && imgMatch[1]) {
+          imageUrl = imgMatch[1];
+        }
+      }
+
+      // Ištraukiame nuorodą į paveikslėlį iš media:content arba enclosure tag
+      if (!imageUrl) {
+        const mediaContent = item.querySelector("media\\:content");
+        if (mediaContent && mediaContent.getAttribute("url")) {
+          imageUrl = mediaContent.getAttribute("url") || undefined;
+        }
+      }
+
+      if (!imageUrl) {
+        const enclosure = item.querySelector("enclosure");
+        if (enclosure && enclosure.getAttribute("url")) {
+          imageUrl = enclosure.getAttribute("url") || undefined;
+        }
+      }
+      
+      return {
+        title: item.querySelector("title")?.textContent || "",
+        description: item.querySelector("description")?.textContent || "",
+        link: item.querySelector("link")?.textContent || "",
+        pubDate: item.querySelector("pubDate")?.textContent || "",
+        content: contentEncoded,
+        imageUrl
+      };
+    });
   }
 
   /**
@@ -108,74 +141,78 @@ export class RssFeedService {
       }
 
       // Bandome naudoti tarpinį serverį (proxy), jeigu jis sukonfigūruotas
-      // Šis URL turėtų būti pakeistas į realų jūsų serverio proxy endpoint
-      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL || '';
+      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL;
       
       if (proxyUrl) {
-        console.log('Naudojamas proxy serveris vertimui');
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: text,
-            apiKey: this.translationApiKey,
-            sourceLang: 'EN',
-            targetLang: 'LT',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Proxy serverio klaida: ${response.status}`);
+        console.log(`Naudojamas vertimo proxy serveris: ${proxyUrl}`);
+        
+        // Didelius tekstus suskirstome į mažesnes dalis, kad išvengtume užklausos dydžio apribojimų
+        const textLength = text.length;
+        
+        if (textLength > 100000) {
+          console.log(`Tekstas per didelis (${textLength} simbolių), suskirstome į dalis`);
+          // Vertimui suskirstome tekstą į mažesnes dalis logikos lygmenyje
+          const textParts = [];
+          for (let i = 0; i < text.length; i += 95000) {
+            textParts.push(text.substring(i, i + 95000));
+          }
+          
+          // Verčiame kiekvieną dalį atskirai
+          const translatedParts = await Promise.all(
+            textParts.map(async (part) => {
+              return this.translateTextPart(part, proxyUrl);
+            })
+          );
+          
+          // Sujungiame išverstas dalis
+          return translatedParts.join('');
+        } else {
+          return await this.translateTextPart(text, proxyUrl);
         }
-
-        const data = await response.json();
-        return data.translatedText || text;
+      } else {
+        console.warn('Nėra sukonfigūruoto vertimo proxy serverio. Vertimas nebus atliktas.');
+        return text + ' [Vertimas negalimas - nėra sukonfigūruoto proxy serverio]';
       }
-      
-      // Jei proxy nėra, bandome tiesioginį API iškvietimą su no-cors režimu
-      // Pastaba: no-cors režimas neleidžia perskaityti atsakymo, todėl šis metodas veiks tik
-      // jei DeepL API palaiko JSONP ar kitus cross-origin sprendimus
-      console.log('Bandoma tiesiogiai kreiptis į DeepL API');
-      const response = await fetch("https://api-free.deepl.com/v2/translate", {
+    } catch (error) {
+      console.error('Klaida verčiant tekstą:', error);
+      // Grąžiname originalų tekstą klaidos atveju
+      return text;
+    }
+  }
+
+  /**
+   * Pagalbinė funkcija vienos teksto dalies vertimui
+   */
+  private async translateTextPart(text: string, proxyUrl: string): Promise<string> {
+    try {
+      const response = await fetch(proxyUrl, {
         method: 'POST',
-        mode: 'no-cors', // Pridedame no-cors režimą
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `DeepL-Auth-Key ${this.translationApiKey}`
         },
         body: JSON.stringify({
-          text: [text],
+          text: text,
+          apiKey: this.translationApiKey,
           source_lang: 'EN',
           target_lang: 'LT',
-          tag_handling: 'html',
-          preserve_formatting: true
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(`Vertimo serverio klaida (${response.status}): ${errorData?.error || response.statusText}`);
+      }
+
+      const data = await response.json();
       
-      // SVARBU: naudojant 'no-cors' režimą, mes negalėsime perskaityti atsakymo duomenų
-      // Šis kodas gali neveikti kaip tikimasi - čia reikia serverio pusės sprendimo
-      
-      // Apsauginis mechanizmas - jei DeepL API nepasiekiamas, grąžiname neišverstą tekstą
-      if (!response.ok && response.status !== 0) { // status 0 yra įprasta no-cors režimu
-        throw new Error(`DeepL API klaida: ${response.status}`);
+      if (!data.translatedText) {
+        console.warn('Vertimo atsakymas neturi translatedText lauko:', data);
+        return text;
       }
       
-      try {
-        const data = await response.json();
-        return data?.translations?.[0]?.text || text;
-      } catch (e) {
-        console.warn('Nepavyko apdoroti atsakymo dėl CORS apribojimų - reikalingas proxy serveris');
-        
-        // Grąžiname originalų tekstą su perspėjimu
-        return text + ' [Vertimas nepavyko dėl CORS apribojimų]';
-      }
-      
+      return data.translatedText;
     } catch (error) {
-      console.error('Klaida verčiant tekstą su DeepL:', error);
-      
-      // Grąžiname originalų tekstą klaidos atveju
+      console.error('Klaida verčiant teksto dalį:', error);
       return text;
     }
   }
@@ -308,6 +345,9 @@ export class RssFeedService {
    */
   public async processRssFeeds(): Promise<void> {
     try {
+      console.log('Pradedamas RSS naujienų apdorojimas...');
+      console.log(`RSS šaltinis: ${this.rssUrl}`);
+      
       // Patikriname, kiek naujienų jau buvo importuota šiandien
       const todayNewsCount = await this.getNewsCountForToday();
       
@@ -321,7 +361,15 @@ export class RssFeedService {
       const remainingNewsToday = this.maxNewsPerDay - todayNewsCount;
       console.log(`Galima importuoti dar ${remainingNewsToday} naujieną(-as) šiandien.`);
       
+      // Gauname RSS elementus
+      console.log('Gaunami RSS elementai...');
       const items = await this.fetchRssItems();
+      console.log(`Gauta ${items.length} RSS elementų`);
+      
+      if (items.length === 0) {
+        console.log('Nerasta naujienų RSS šaltinyje arba nepavyko gauti duomenų.');
+        return;
+      }
       
       // Rūšiuojame naujienas pagal publikavimo datą, pradedant nuo naujausių
       const sortedItems = items.sort((a, b) => {
@@ -332,37 +380,56 @@ export class RssFeedService {
       
       // Ribojame apdorojamų naujienų kiekį pagal likusį dienos limitą
       const itemsToProcess = sortedItems.slice(0, remainingNewsToday);
+      console.log(`Apdorojama ${itemsToProcess.length} naujausia(-os) naujiena(-os) iš ${items.length} rastų`);
       
       let importedCount = 0;
       
       for (const item of itemsToProcess) {
+        console.log(`Apdorojama naujiena: "${item.title.substring(0, 50)}..."`);
+        
         // Patikrinti, ar naujiena jau egzistuoja
         const exists = await this.newsExists(item.link);
         if (exists) {
-          console.log(`Naujiena "${item.title}" jau egzistuoja. Praleista.`);
+          console.log(`Naujiena "${item.title.substring(0, 50)}..." jau egzistuoja. Praleista.`);
           continue;
         }
         
         // Verčiame turinį
+        console.log('Verčiamas turinys...');
         const translatedTitle = await this.translateText(item.title);
         const translatedDescription = await this.translateText(item.description);
+        
+        // Vertimui suskirstome ilgą turinį į dalis
         const translatedContent = await this.translateText(item.content);
+        
+        console.log('Vertimas baigtas.');
         
         // Įkeliame paveikslėlį, jei jis yra
         let imageUrl: string | null = null;
         if (item.imageUrl) {
+          console.log(`Bandoma įkelti paveikslėlį iš: ${item.imageUrl}`);
           imageUrl = await this.uploadImage(item.imageUrl, item.title);
+          if (imageUrl) {
+            console.log(`Paveikslėlis įkeltas: ${imageUrl}`);
+          } else {
+            console.log('Nepavyko įkelti paveikslėlio');
+          }
+        } else {
+          console.log('Paveikslėlis nenurodytas RSS elemente');
         }
         
         // Įkelti originalią nuorodą į turinį
         const contentWithSource = `${translatedContent}<p><br><em>Šaltinis: <a href="${item.link}" target="_blank">${item.link}</a></em></p>`;
         
         // Kuriame naujienos įrašą
+        console.log('Kuriamas naujienos įrašas...');
         const created = await this.createNewsItem(item, translatedTitle, translatedDescription, contentWithSource, imageUrl);
         
         if (created) {
-          console.log(`Naujiena "${translatedTitle}" sėkmingai pridėta.`);
+          console.log(`Naujiena "${translatedTitle.substring(0, 50)}..." sėkmingai pridėta.`);
           importedCount++;
+        } else {
+          console.log(`Nepavyko sukurti naujienos įrašo: "${translatedTitle.substring(0, 50)}..."`);
         }
         
         // Jei pasiekėme dienos limitą, nutraukiame ciklą
@@ -372,7 +439,7 @@ export class RssFeedService {
         }
       }
       
-      console.log(`Importuota ${importedCount} nauja(-os) naujiena(-os). Viso šiandien: ${todayNewsCount + importedCount}/${this.maxNewsPerDay}.`);
+      console.log(`RSS apdorojimas baigtas. Importuota ${importedCount} nauja(-os) naujiena(-os). Viso šiandien: ${todayNewsCount + importedCount}/${this.maxNewsPerDay}.`);
       
     } catch (error) {
       console.error("Klaida apdorojant RSS srautus:", error);

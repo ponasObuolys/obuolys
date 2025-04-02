@@ -61,13 +61,16 @@ Sistemą sudaro šios pagrindinės dalys:
 1. **RssFeedService** - atsakingas už RSS naujienų parsisiuntimą, vertimą ir saugojimą
 2. **RssSchedulerService** - atsakingas už periodinį atnaujinimą
 3. **RssSettingsPanel** - administratoriaus sąsaja nustatymų valdymui
+4. **Proxy serveriai** - peržengti CORS apribojimus:
+   - **Vercel Serverless funkcijos** (`/api/rssfeed.js` ir `/api/translate.js`)
+   - **Supabase Edge funkcijos** (alternatyvus sprendimas)
 
 ### Duomenų srautai
 
-1. Naujienos gaunamos iš RSS šaltinio
+1. Naujienos gaunamos iš RSS šaltinio per proxy serverį (Vercel arba Supabase)
 2. Ištraukiama reikalinga informacija (pavadinimas, aprašymas, turinys, nuorodos, paveikslėliai)
 3. Patikrinama, ar jau pasiektas dienos limitas (1 naujiena per dieną)
-4. Turinys verčiamas į lietuvių kalbą naudojant DeepL API
+4. Turinys verčiamas į lietuvių kalbą naudojant DeepL API per proxy serverį
 5. Paveikslėliai parsiunčiami ir įkeliami į Supabase saugyklą
 6. Sukuriamas naujas įrašas 'news' lentelėje
 
@@ -85,54 +88,76 @@ Sistemą sudaro šios pagrindinės dalys:
 - Nemokama versija leidžia versti iki 500,000 simbolių per mėnesį
 - API palaiko HTML turinio vertimą, išsaugant visus formatavimo žymėjimus
 
-## Saugumo pastabos
-
-- **SVARBU**: API raktų niekada nereikėtų saugoti viešai prieinamuose failuose ar kode
-- Sistemoje API raktai saugomi localStorage, produkciniame variante rekomenduojama naudoti saugesnį sprendimą
-- Rekomenduojama apriboti prieigą prie administravimo skydelio tik autorizuotiems vartotojams
-
 ## CORS problemų sprendimas
 
 ### Problema
 
-Tiek DeepL API, tiek išoriniai RSS šaltiniai turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas ir RSS gavimas gali neveikti svetainėje, ir jūs galite matyti klaidas:
+Tiek DeepL API, tiek išoriniai RSS šaltiniai turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas ir RSS gavimas gali neveikti svetainėje.
 
-```
-Access to fetch at 'https://api-free.deepl.com/v2/translate' has been blocked by CORS policy
-Access to fetch at 'https://knowtechie.com/category/ai/feed/' has been blocked by CORS policy
-```
+### Sprendimas: Jau įdiegti proxy serveriai
 
-### Sprendimas: Proxy serveriai
+Sistemoje jau yra **įdiegti ir sukonfigūruoti** du sprendimai, kaip apeiti CORS apribojimus:
 
-Sistemoje jau yra įdiegti du sprendimai, kaip apeiti CORS apribojimus:
+1. **Vercel Serverless funkcijos (pagrindinis sprendimas)**
+   - Jau integruotos į projektą (`/api/translate.js` ir `/api/rssfeed.js`)
+   - Patobulinti: 
+     - Išsamesnis klaidų apdorojimas ir logavimas
+     - Geresnis HTTP antraščių valdymas
+     - Didelių tekstų skaidymas vertimui
+     - RSS šaltinio duomenų optimizuotas gavimas
 
-1. **Supabase Edge funkcijos**
+2. **Supabase Edge funkcijos (alternatyvus sprendimas)**
    - DeepL API: funkcijos kodas direktorijoje `/supabase/functions/translate/`
    - RSS šaltiniui: funkcijos kodas direktorijoje `/supabase/functions/rssfeed/`
-   - Sekite instrukcijas šių direktorijų README.md failuose
 
-2. **Vercel Serverless funkcijos (rekomenduojama)**
-   - Paprastesnis diegimas ir priežiūra
-   - Funkcijos jau integruotos į projektą (`/api/translate.js` ir `/api/rssfeed.js`)
-   - Išsamesnė informacija: [VERCEL_CORS_SOLUTION.md](VERCEL_CORS_SOLUTION.md)
+### Aplinkos kintamieji
 
-### Konfigūracija
+Sistemoje jau nustatyti šie aplinkos kintamieji:
 
-1. **Konfigūruoti aplinkos kintamuosius**
-   - Sukurkite `.env` failą pagal `.env.example` šabloną
-   - Jei naudojate Vercel: nustatykite `/api/translate` ir `/api/rssfeed` kaip proxy URL
-   - Jei naudojate Supabase: nustatykite jūsų Supabase Edge funkcijų URL
+```
+REACT_APP_RSS_PROXY_URL=/api/rssfeed
+REACT_APP_TRANSLATION_PROXY_URL=/api/translate
+```
 
-2. **Perkraukite sistemą**
-   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverius užklausoms
+Šie kintamieji nurodo sistemai naudoti Vercel serverless funkcijas kaip proxy serverius. Jie jau sukonfigūruoti ir turėtų veikti be papildomų nustatymų.
 
-### Daugiau informacijos
+### Ką daryti, jei vis tiek yra CORS klaidų?
 
-Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama failuose:
-- `RSS_INFO.md` - bendra CORS informacija
-- `VERCEL_CORS_SOLUTION.md` - Vercel serverless sprendimas (rekomenduojama)
-- `/supabase/functions/translate/README.md` - Supabase vertimų proxy serveris
-- `/supabase/functions/rssfeed/README.md` - Supabase RSS proxy serveris
+Jei vis tiek pastebite CORS klaidas:
+
+1. **Patikrinkite, ar Vercel aplinka turi teisingus aplinkos kintamuosius**:
+   ```
+   REACT_APP_RSS_PROXY_URL=/api/rssfeed
+   REACT_APP_TRANSLATION_PROXY_URL=/api/translate
+   ```
+
+2. **Patikrinkite Vercel serverless funkcijų veikimą**:
+   - Bandykite atidaryti `/api/rssfeed?url=https://knowtechie.com/category/ai/feed/` naršyklėje
+   - Turėtumėte matyti RSS turinį XML formatu
+
+3. **Įjunkite Supabase Edge funkcijas kaip alternatyvą**:
+   - Jei Vercel sprendimas neveikia, sekite instrukcijas `RssSettingsPanel` skyriuje
+   - Nustatykite aplinkos kintamuosius į Supabase Edge funkcijų URL
+
+### Patobulinimai naujoje versijoje
+
+1. **Išplėstinis klaidų apdorojimas**:
+   - Detalesni klaidų pranešimai ir logavimas
+   - Klaidų kategorijos pagal DeepL API dokumentaciją
+
+2. **Teksto skaidymas**:
+   - Didelių tekstų automatinis skaidymas į mažesnes dalis
+   - Optimizuotas HTML turinio apdorojimas
+
+3. **Geresnė vartotojo informacija**:
+   - Aiškesni pranešimai apie proxy serverių statusą
+   - Instrukcijos konfigūracijai
+
+## Saugumo pastabos
+
+- API raktai perduodami tik per serverio proxy
+- RSS duomenys apdorojami per saugius proxy serverius
+- Rekomenduojama apriboti prieigą prie administravimo skydelio tik autorizuotiems vartotojams
 
 ## Tobulinimo galimybės
 

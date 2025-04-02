@@ -160,44 +160,83 @@ Keli pagrindiniai atvejai, kai susiduriame su CORS apribojimais:
    has been blocked by CORS policy
    ```
 
-#### Sprendimas: Proxy serveriai su Supabase Edge Functions
+#### Sprendimas: Proxy serveriai
 
-Mūsų sistemoje naudojami du Supabase Edge Functions proxy serveriai:
+Sistemoje implementuoti du proxy serverių sprendimai:
 
-1. **Vertimo proxy serveris (`/supabase/functions/translate/`)**
+##### Pagrindinis sprendimas: Vercel Serverless funkcijos
+
+1. **Vertimo proxy serveris (`/api/translate.js`)**
    - Veikia kaip tarpininkas tarp kliento ir DeepL API
    - Perduoda vertimo užklausas ir gauna rezultatus
+   - Obsluguoja didelių tekstų skaidymą į segmentus
+   - Išsamiai apdoroja DeepL API klaidas ir pateikia aiškius pranešimus
+   - Palaiko HTML turinio vertimą išsaugant formatavimą
 
-2. **RSS proxy serveris (`/supabase/functions/rssfeed/`)**
+2. **RSS proxy serveris (`/api/rssfeed.js`)**
    - Veikia kaip tarpininkas tarp kliento ir RSS šaltinių
    - Leidžia gauti RSS turinį iš bet kurio šaltinio be CORS apribojimų
+   - Prideda reikalingas HTTP antraštes, kad pagerintų suderinamumą su įvairiais RSS šaltiniais
+   - Išsamiai logina vykdymo procesą
+
+##### Alternatyvus sprendimas: Supabase Edge funkcijos
+
+1. **Vertimo proxy serveris (`/supabase/functions/translate/`)**
+   - Paprastas proxy tarp kliento ir DeepL API
+   - Tinka, jei jau naudojate Supabase
+
+2. **RSS proxy serveris (`/supabase/functions/rssfeed/`)**
+   - Alternatyvus sprendimas RSS turiniui gauti
+   - Gali būti naudojamas, jei Vercel funktionalumas neveikia
 
 #### Kaip veikia proxy sprendimas
 
-1. **Kliento kodas siunčia užklausą į Supabase Edge funkciją**
-2. **Edge funkcija perduoda užklausą į tikslą (DeepL API arba RSS šaltinį)**
+1. **Kliento kodas siunčia užklausą į proxy endpoint**
+2. **Proxy perduoda užklausą į tikslą (DeepL API arba RSS šaltinį)**
 3. **Gauna atsakymą ir grąžina jį klientui**
 4. **Prideda tinkamas CORS antraštes, kad leistų kreiptis iš bet kurio domeno**
 
-#### Diegimo instrukcijos
+#### Konfigūracija ir naudojimas
 
-1. **Įdiegite abi Edge funkcijas**:
+**Vercel Serverless funkcijos** (rekomenduojama):
+
+1. **Aplinkos kintamieji:**
+   ```
+   REACT_APP_TRANSLATION_PROXY_URL=/api/translate
+   REACT_APP_RSS_PROXY_URL=/api/rssfeed
+   ```
+
+2. **Privalumai:**
+   - Paprastesnis diegimas ir priežiūra
+   - Integruoti su Vercel platformos valdymu
+   - Išplėstinis klaidų apdorojimas
+   - Patobulinta didelių tekstų apdorojimo logika
+
+**Supabase Edge funkcijos** (alternatyva):
+
+1. **Įdiekite abi Edge funkcijas:**
    ```
    supabase functions deploy translate
    supabase functions deploy rssfeed
    ```
 
-2. **Nustatykite aplinkos kintamuosius**:
+2. **Aplinkos kintamieji:**
    ```
    REACT_APP_TRANSLATION_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/translate
    REACT_APP_RSS_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/rssfeed
    ```
 
-#### Proxy serverių naudojimas
+#### Proxy serverių funkcionalumo palyginimas
 
-- **RssFeedService** automatiškai aptinka, ar aplinkos kintamasis `REACT_APP_RSS_PROXY_URL` yra nustatytas
-- Jei taip, RSS šaltiniui naudoja proxy serverį
-- Panašiai veikia ir vertimo funkcija su `REACT_APP_TRANSLATION_PROXY_URL` kintamuoju
+| Funkcionalumas | Vercel Serverless | Supabase Edge |
+|----------------|-------------------|---------------|
+| HTML turinio vertimas | ✅ | ✅ |
+| Didelių tekstų skaidymas | ✅ | ❌ |
+| Išsamus klaidų apdorojimas | ✅ | ⚠️ (bazinis) |
+| Automatinis atstatymas po klaidų | ✅ | ❌ |
+| Optimizuotos HTTP antraštės | ✅ | ⚠️ (bazinės) |
+| Tekstų optimizavimas | ✅ | ❌ |
+| Serverio pusės logavimas | ✅ | ✅ |
 
 ## Paveikslėlių apdorojimas
 
@@ -224,13 +263,21 @@ interface RssSettings {
 
 ## Saugumo pastabos
 
-1. API raktai saugomi tik kliento pusėje (localStorage)
-2. **SVARBU**: API raktų niekada nereikėtų publikuoti viešai prieinamuose dokumentuose ar kode
-3. Produkcijos aplinkoje rekomenduojama:
-   - Perkelti vertimo logiką į serverio pusę
-   - Naudoti saugesnį API raktų saugojimą (Supabase Auth, aplinkos kintamieji)
-   - Pridėti papildomą autentifikaciją vertimo API užklausoms
-   - Naudoti raktų rotacijos mechanizmą
+1. **API raktų apsauga:**
+   - API raktai niekada nesaugomi kodo repozitorijoje
+   - Vertimo API raktai visada perduodami tik per serverio proxy
+   - Klientui API raktai rodomi užmaskuoti (*****)
+
+2. **Proxy serverių saugumas:**
+   - Visi proxy serveriai implementuoja CORS antraštes
+   - Vercel Serverless funkcijos apriboja išeinančias užklausas tik į patikimus endpointus
+   - Implementuotas duomenų validavimas įvesties taškuose
+
+3. **Produkcinėje aplinkoje rekomenduojama:**
+   - Įjungti autentifikacijos mechanizmą administratorių skydeliui
+   - Pridėti rate limiting API užklausoms
+   - Reguliariai keisti API raktus
+   - Stebėti API naudojimą ir išlaidas
 
 ## DeepL API apribojimai
 
@@ -275,4 +322,6 @@ interface RssSettings {
 
 1. [DeepL API dokumentacija](https://www.deepl.com/docs-api)
 2. [DeepL API kainodara](https://www.deepl.com/pro#developer)
-3. [RSS specifikacija](https://validator.w3.org/feed/docs/rss2.html) 
+3. [RSS specifikacija](https://validator.w3.org/feed/docs/rss2.html)
+4. [Vercel Serverless funkcijų dokumentacija](https://vercel.com/docs/functions)
+5. [Supabase Edge Functions dokumentacija](https://supabase.com/docs/guides/functions) 
