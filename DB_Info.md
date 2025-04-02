@@ -1,4 +1,3 @@
-
 # Supabase Database Structure
 
 This document outlines the database structure for the Ponas Obuolys website.
@@ -27,6 +26,7 @@ Stores articles for the /straipsniai section.
 - `date` (DATE): Publication date
 - `featured` (BOOLEAN): Featured article status
 - `published` (BOOLEAN): Publication status
+- `image_url` (TEXT, nullable): Article cover image URL
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
@@ -40,6 +40,7 @@ Stores news items for the /naujienos section.
 - `author` (TEXT): Author name
 - `date` (DATE): Publication date
 - `published` (BOOLEAN): Publication status
+- `image_url` (TEXT, nullable): News cover image URL
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
@@ -69,6 +70,7 @@ Stores courses for the /kursai section.
 - `level` (TEXT): Course difficulty level
 - `highlights` (TEXT[]): Course highlights/features as array
 - `published` (BOOLEAN): Publication status
+- `image_url` (TEXT, nullable): Course cover image URL
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
@@ -117,6 +119,24 @@ All tables have Row Level Security enabled with the following policies:
    - Admins (users with is_admin=true) can perform all operations on all tables
    - Admin status is checked via the `is_admin(auth.uid())` function
 
+## Storage Buckets
+
+Supabase Storage is used to store media files:
+
+1. **site-images**:
+   - Purpose: Stores all website images
+   - Structure:
+     - `articles/covers/`: Article cover images
+     - `articles/content/`: Images used within article content
+     - `news/covers/`: News cover images
+     - `news/content/`: Images used within news content
+     - `tools/`: Tool images
+     - `courses/covers/`: Course cover images
+     - `courses/content/`: Images used within course content
+   - Permissions:
+     - READ: Public
+     - INSERT/UPDATE/DELETE: Only admin users
+
 ## Functions
 
 1. **update_modified_column()**: Automatically updates the `updated_at` timestamp on record modification
@@ -130,3 +150,4 @@ All tables have Row Level Security enabled with the following policies:
 4. Ensure proper validation for all user inputs
 5. Implement proper error handling in the application
 6. For content management, leverage the admin dashboard
+7. When uploading images, use the FileUpload component which handles storage and URL generation

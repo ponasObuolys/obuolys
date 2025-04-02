@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { FileUpload } from '@/components/ui/file-upload';
+import LazyImage from '@/components/ui/lazy-image';
 
 interface ToolEditorProps {
   id: string | null;
@@ -20,6 +21,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   
   const form = useForm({
     defaultValues: {
@@ -58,6 +60,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
             featured: data.featured,
             published: data.published,
           });
+          setImageUrl(data.image_url || null);
         }
       } catch (error) {
         console.error('Error fetching tool:', error);
@@ -128,6 +131,11 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageUpload = (url: string) => {
+    setImageUrl(url);
+    form.setValue('image_url', url);
   };
 
   if (initialLoading) {
@@ -229,12 +237,41 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                 name="image_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Paveikslėlio URL</FormLabel>
+                    <FormLabel>Įrankio nuotrauka</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://..." {...field} />
+                      <div className="space-y-4">
+                        <FileUpload
+                          bucket="site-images"
+                          folder="tools"
+                          acceptedFileTypes="image/jpeg,image/png,image/webp"
+                          maxSizeMB={2}
+                          onUploadComplete={handleImageUpload}
+                        />
+                        {imageUrl && (
+                          <div className="mt-2 space-y-2">
+                            <div className="border rounded-md overflow-hidden aspect-video w-full max-w-md">
+                              <LazyImage
+                                src={imageUrl}
+                                alt="Įrankio nuotrauka"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => {
+                                setImageUrl(null);
+                                form.setValue('image_url', '');
+                              }}
+                            >
+                              Pašalinti nuotrauką
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormDescription>
-                      Nuoroda į įrankio paveikslėlį (neprivaloma)
+                      Įrankio nuotrauka (rekomenduojama)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

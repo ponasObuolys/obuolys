@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +10,8 @@ import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '@/integrations/supabase/client';
 import { X, Plus } from 'lucide-react';
+import { FileUpload } from '@/components/ui/file-upload';
+import LazyImage from '@/components/ui/lazy-image';
 
 interface CourseEditorProps {
   id: string | null;
@@ -25,6 +26,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
   const [content, setContent] = useState('');
   const [highlights, setHighlights] = useState<string[]>([]);
   const [newHighlight, setNewHighlight] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   
   const form = useForm({
     defaultValues: {
@@ -35,6 +37,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
       duration: '',
       level: '',
       published: false,
+      image_url: '',
     }
   });
 
@@ -60,9 +63,11 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
             duration: data.duration,
             level: data.level,
             published: data.published,
+            image_url: data.image_url || '',
           });
           setContent(data.content);
           setHighlights(data.highlights || []);
+          setImageUrl(data.image_url || null);
         }
       } catch (error) {
         console.error('Error fetching course:', error);
@@ -107,6 +112,11 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
     setHighlights(highlights.filter((_, i) => i !== index));
   };
 
+  const handleImageUpload = (url: string) => {
+    setImageUrl(url);
+    form.setValue('image_url', url);
+  };
+
   const onSubmit = async (values: any) => {
     if (!content.trim()) {
       toast({
@@ -124,6 +134,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
         ...values,
         content,
         highlights,
+        image_url: imageUrl,
       };
       
       let response;
@@ -323,6 +334,55 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                 onChange={setContent} 
                 placeholder="Įveskite kurso turinį..." 
               />
+            </div>
+
+            <div className="border rounded-md p-4">
+              <h3 className="text-lg font-medium mb-4">Kurso viršelio nuotrauka</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormLabel>Įkelti naują nuotrauką</FormLabel>
+                  <FileUpload
+                    bucket="site-images"
+                    folder="courses/covers"
+                    acceptedFileTypes="image/jpeg,image/png,image/webp"
+                    maxSizeMB={2}
+                    onUploadComplete={handleImageUpload}
+                  />
+                  <FormDescription>
+                    Rekomenduojamas dydis: 1200 x 800 pikselių. Maksimalus dydis: 2MB
+                  </FormDescription>
+                </div>
+                <div>
+                  {imageUrl ? (
+                    <div className="space-y-2">
+                      <FormLabel>Esama nuotrauka</FormLabel>
+                      <div className="border rounded-md overflow-hidden aspect-video">
+                        <LazyImage
+                          src={imageUrl}
+                          alt="Kurso nuotrauka"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          setImageUrl(null);
+                          form.setValue('image_url', '');
+                        }}
+                      >
+                        Pašalinti nuotrauką
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border rounded-md p-4 h-full flex items-center justify-center bg-muted">
+                      <p className="text-muted-foreground text-center">
+                        Nuotrauka nepasirinkta
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <FormField

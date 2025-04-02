@@ -24,6 +24,7 @@ export type Database = {
           slug: string
           title: string
           updated_at: string
+          image_url: string | null
         }
         Insert: {
           author: string
@@ -39,6 +40,7 @@ export type Database = {
           slug: string
           title: string
           updated_at?: string
+          image_url?: string | null
         }
         Update: {
           author?: string
@@ -54,6 +56,7 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string
+          image_url?: string | null
         }
         Relationships: []
       }
@@ -101,6 +104,7 @@ export type Database = {
           slug: string
           title: string
           updated_at: string
+          image_url: string | null
         }
         Insert: {
           content: string
@@ -115,6 +119,7 @@ export type Database = {
           slug: string
           title: string
           updated_at?: string
+          image_url?: string | null
         }
         Update: {
           content?: string
@@ -129,6 +134,7 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string
+          image_url?: string | null
         }
         Relationships: []
       }
@@ -213,6 +219,7 @@ export type Database = {
           slug: string
           title: string
           updated_at: string
+          image_url: string | null
         }
         Insert: {
           author: string
@@ -225,6 +232,7 @@ export type Database = {
           slug: string
           title: string
           updated_at?: string
+          image_url?: string | null
         }
         Update: {
           author?: string
@@ -237,6 +245,7 @@ export type Database = {
           slug?: string
           title?: string
           updated_at?: string
+          image_url?: string | null
         }
         Relationships: []
       }

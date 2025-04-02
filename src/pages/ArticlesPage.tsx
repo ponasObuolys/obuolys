@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Facebook, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/ui/lazy-image";
 
 const ArticlesPage = () => {
   const [articles, setArticles] = useState<any[]>([]);
@@ -128,9 +128,19 @@ const ArticlesPage = () => {
                     <CardDescription>{article.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                      Straipsnio nuotrauka
-                    </div>
+                    {article.image_url ? (
+                      <div className="h-40 overflow-hidden rounded-md">
+                        <LazyImage 
+                          src={article.image_url} 
+                          alt={article.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                        Straipsnio nuotrauka
+                      </div>
+                    )}
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <Link to={`/straipsniai/${article.slug}`}>

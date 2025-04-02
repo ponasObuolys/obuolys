@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '@/integrations/supabase/client';
+import { FileUpload } from '@/components/ui/file-upload';
+import LazyImage from '@/components/ui/lazy-image';
 
 interface NewsEditorProps {
   id: string | null;
@@ -21,6 +22,7 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
   const [content, setContent] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   
   const form = useForm({
     defaultValues: {
@@ -30,6 +32,7 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
       author: '',
       date: new Date().toISOString().split('T')[0],
       published: false,
+      image_url: '',
     }
   });
 
@@ -54,8 +57,10 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
             author: data.author,
             date: new Date(data.date).toISOString().split('T')[0],
             published: data.published,
+            image_url: data.image_url || '',
           });
           setContent(data.content);
+          setImageUrl(data.image_url || null);
         }
       } catch (error) {
         console.error('Error fetching news:', error);
@@ -89,6 +94,11 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
     }
   };
 
+  const handleImageUpload = (url: string) => {
+    setImageUrl(url);
+    form.setValue('image_url', url);
+  };
+
   const onSubmit = async (values: any) => {
     if (!content.trim()) {
       toast({
@@ -105,6 +115,7 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
       const newsData = {
         ...values,
         content,
+        image_url: imageUrl,
       };
       
       let response;
@@ -242,6 +253,55 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="border rounded-md p-4">
+              <h3 className="text-lg font-medium mb-4">Naujienos viršelio nuotrauka</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <FormLabel>Įkelti naują nuotrauką</FormLabel>
+                  <FileUpload
+                    bucket="site-images"
+                    folder="news/covers"
+                    acceptedFileTypes="image/jpeg,image/png,image/webp"
+                    maxSizeMB={2}
+                    onUploadComplete={handleImageUpload}
+                  />
+                  <FormDescription>
+                    Rekomenduojamas dydis: 1200 x 800 pikselių. Maksimalus dydis: 2MB
+                  </FormDescription>
+                </div>
+                <div>
+                  {imageUrl ? (
+                    <div className="space-y-2">
+                      <FormLabel>Esama nuotrauka</FormLabel>
+                      <div className="border rounded-md overflow-hidden aspect-video">
+                        <LazyImage
+                          src={imageUrl}
+                          alt="Naujienos nuotrauka"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          setImageUrl(null);
+                          form.setValue('image_url', '');
+                        }}
+                      >
+                        Pašalinti nuotrauką
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border rounded-md p-4 h-full flex items-center justify-center bg-muted">
+                      <p className="text-muted-foreground text-center">
+                        Nuotrauka nepasirinkta
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="border rounded-md p-4">

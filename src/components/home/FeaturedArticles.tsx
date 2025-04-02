@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Facebook } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/ui/lazy-image";
 
 const FeaturedArticles = () => {
   const [articles, setArticles] = useState<any[]>([]);
@@ -68,9 +68,19 @@ const FeaturedArticles = () => {
                   <CardDescription>{article.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                    Straipsnio nuotrauka
-                  </div>
+                  {article.image_url ? (
+                    <div className="h-40 overflow-hidden rounded-md">
+                      <LazyImage 
+                        src={article.image_url} 
+                        alt={article.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                      Straipsnio nuotrauka
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Link to={`/straipsniai/${article.slug}`}>
