@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Clock, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/ui/lazy-image";
 
 const NewsPage = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -85,6 +85,19 @@ const NewsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredNews.map((item) => (
                 <Card key={item.id} className="custom-card h-full flex flex-col">
+                  <div className="aspect-video w-full overflow-hidden">
+                    {item.image_url ? (
+                      <LazyImage
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                        Nėra nuotraukos
+                      </div>
+                    )}
+                  </div>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">{item.title}</CardTitle>
                   </CardHeader>

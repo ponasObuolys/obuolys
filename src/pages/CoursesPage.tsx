@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Clock, BookOpen, Users } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/ui/lazy-image";
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
@@ -65,6 +65,15 @@ const CoursesPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {courses.map((course) => (
                 <Card key={course.id} className="custom-card h-full flex flex-col">
+                  {course.image_url && (
+                    <div className="aspect-video w-full overflow-hidden">
+                      <LazyImage
+                        src={course.image_url}
+                        alt={course.title}
+                        className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                      />
+                    </div>
+                  )}
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
                       <div className="text-sm font-medium py-1 px-3 rounded-full bg-accent/10 text-accent inline-block">

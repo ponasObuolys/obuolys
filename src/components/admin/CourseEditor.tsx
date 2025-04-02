@@ -113,8 +113,18 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
   };
 
   const handleImageUpload = (url: string) => {
+    console.log("CourseEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
-    form.setValue('image_url', url);
+    
+    // Eksplicitiškai nustatyti form.setValue su gautu URL
+    if (url) {
+      form.setValue('image_url', url, { 
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
+    }
   };
 
   const onSubmit = async (values: any) => {
@@ -136,6 +146,8 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
         highlights,
         image_url: imageUrl,
       };
+      
+      console.log("Siunčiami kurso duomenys:", courseData);
       
       let response;
       

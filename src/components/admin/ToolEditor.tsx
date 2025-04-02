@@ -98,19 +98,27 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
     try {
       setLoading(true);
       
+      // Užtikrinti, kad image_url būtų įtrauktas
+      const toolData = {
+        ...values,
+        image_url: imageUrl, // Eksplicitiškai nurodome image_url reikšmę
+      };
+      
+      console.log("Siunčiami įrankio duomenys:", toolData); // Pridėta diagnostinė informacija
+      
       let response;
       
       if (id && id !== 'new') {
         // Update existing tool
         response = await supabase
           .from('tools')
-          .update(values)
+          .update(toolData)
           .eq('id', id);
       } else {
         // Create new tool
         response = await supabase
           .from('tools')
-          .insert([values]);
+          .insert([toolData]);
       }
       
       if (response.error) throw response.error;
@@ -121,7 +129,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
       });
       
       onSave();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving tool:', error);
       toast({
         title: "Klaida",
@@ -134,8 +142,18 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   };
 
   const handleImageUpload = (url: string) => {
+    console.log("ToolEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
-    form.setValue('image_url', url);
+    
+    // Eksplicitiškai nustatyti form.setValue su gautu URL
+    if (url) {
+      form.setValue('image_url', url, { 
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
+    }
   };
 
   if (initialLoading) {

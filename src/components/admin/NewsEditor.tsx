@@ -95,8 +95,18 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
   };
 
   const handleImageUpload = (url: string) => {
+    console.log("NewsEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
-    form.setValue('image_url', url);
+    
+    // Eksplicitiškai nustatyti form.setValue su gautu URL
+    if (url) {
+      form.setValue('image_url', url, { 
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
+    }
   };
 
   const onSubmit = async (values: any) => {
@@ -117,6 +127,8 @@ const NewsEditor = ({ id, onCancel, onSave }: NewsEditorProps) => {
         content,
         image_url: imageUrl,
       };
+      
+      console.log("Siunčiami naujienos duomenys:", newsData);
       
       let response;
       

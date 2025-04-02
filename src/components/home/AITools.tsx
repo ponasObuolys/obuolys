@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from '@/components/ui/lazy-image';
 
 const AITools = () => {
   const [tools, setTools] = useState<any[]>([]);
@@ -39,48 +39,59 @@ const AITools = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-white">
+    <section id="tools" className="py-16 bg-slate-50 dark:bg-slate-950">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="mb-4">Rekomenduojami <span className="gradient-text">AI įrankiai</span></h2>
-          <p className="max-w-2xl mx-auto">
-            Išbandykite šiuos dirbtinio intelekto įrankius ir padidinkite savo produktyvumą
+          <h2 className="gradient-text">Rekomenduojami įrankiai</h2>
+          <p className="max-w-2xl mx-auto mt-4">
+            Šie dirbtinio intelekto įrankiai padės jums efektyviau dirbti ir kurti
           </p>
         </div>
         
         {loading ? (
-          <div className="text-center">Kraunami įrankiai...</div>
+          <div className="text-center py-8">
+            <p className="text-xl text-gray-500">Kraunami įrankiai...</p>
+          </div>
         ) : tools.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {tools.map((tool) => (
-              <Card key={tool.id} className="custom-card h-full flex flex-col">
-                <CardHeader className="pb-2">
-                  <div className="mb-2 text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary inline-block">
-                    {tool.category}
+              <Card key={tool.id} className="flex flex-col h-full custom-card">
+                {tool.image_url && (
+                  <div className="aspect-video w-full overflow-hidden">
+                    <LazyImage
+                      src={tool.image_url}
+                      alt={tool.name}
+                      className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                    />
                   </div>
-                  <CardTitle className="text-lg">{tool.name}</CardTitle>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-xl">{tool.name}</CardTitle>
+                  <CardDescription>{tool.short_description}</CardDescription>
                 </CardHeader>
-                <CardContent className="py-2 flex-grow">
-                  <CardDescription>{tool.description}</CardDescription>
+                <CardContent className="flex-grow">
+                  <div className="text-sm">{tool.category}</div>
                 </CardContent>
-                <CardFooter className="pt-2">
-                  <a href={tool.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button className="w-full button-secondary flex items-center justify-center">
-                      <span>Išbandyti</span>
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Button>
+                <CardFooter>
+                  <a 
+                    href={tool.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-full"
+                  >
+                    <Button className="w-full">Išbandyti</Button>
                   </a>
                 </CardFooter>
               </Card>
             ))}
           </div>
         ) : (
-          <div className="text-center">
-            <p>Šiuo metu nėra rekomenduojamų įrankių</p>
+          <div className="text-center py-8">
+            <p className="text-xl text-gray-500">Šiuo metu rekomenduojamų įrankių nėra</p>
           </div>
         )}
         
-        <div className="text-center mt-10">
+        <div className="text-center mt-12">
           <Link to="/irankiai">
             <Button className="button-outline">Daugiau įrankių</Button>
           </Link>
