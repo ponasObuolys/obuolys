@@ -1,63 +1,100 @@
-# ponas Obuolys - Dirbtinio intelekto žinios
+# Ponas Obuolys - RSS Naujienų Importavimo Sistema
 
-## Projekto informacija
+## Apie sistemą
 
-**URL**: https://ponasobuolys.lt
+Ši sistema leidžia automatiškai importuoti naujienas iš išorinių RSS šaltinių, išversti jas į lietuvių kalbą ir išsaugoti svetainės naujienų skiltyje.
 
-## Kaip redaguoti kodą?
+## Pagrindinės funkcijos
 
-Yra keli būdai redaguoti šią aplikaciją.
+1. **Automatinis RSS naujienų importavimas**
+   - Periodinis naujienų atnaujinimas (viena naujiena per dieną)
+   - Pasirinktas atnaujinimo intervalas
+   - Rankinis atnaujinimo inicijavimas
 
-**Naudojant lokalią aplinką**
+2. **Naujienų vertimas**
+   - Automatinis vertimas iš anglų į lietuvių kalbą
+   - Naudojamas DeepL API (aukštos kokybės vertimai)
 
-Jei norite dirbti lokaliai naudojant savo pasirinktą IDE, galite klonuoti šią repozitoriją ir įkelti pakeitimus.
+3. **Paveikslėlių išsaugojimas**
+   - Automatinis paveikslėlių parsisiuntimas iš originalių šaltinių
+   - Paveikslėlių įkėlimas į Supabase saugyklą
 
-Vienintelis reikalavimas - turėti įdiegtą Node.js ir npm - [įdiegti su nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Sistemos naudojimas
 
-Sekite šiuos žingsnius:
+### Administratoriaus valdymo skydelyje
 
-```sh
-# 1 žingsnis: Klonuokite repozitoriją naudojant projekto Git URL.
-git clone <YOUR_GIT_URL>
+1. Eikite į **Administratoriaus valdymo skydelį**
+2. Pasirinkite **RSS** skirtuką
+3. Įveskite reikalingą informaciją:
+   - RSS šaltinio URL (pvz., https://rss.app/feeds/2TLki4gRlr57man8.xml)
+   - DeepL API raktas (API raktas jau sukonfigūruotas formoje)
+   - Atnaujinimo intervalą (valandomis)
+4. Įjunkite **Automatinis atnaujinimas** funkciją, jei norite, kad naujienos būtų atnaujinamos periodiškai
+5. Paspauskite **Išsaugoti nustatymus**
 
-# 2 žingsnis: Pereikite į projekto direktoriją.
-cd <YOUR_PROJECT_NAME>
+### Rankinis atnaujinimas
 
-# 3 žingsnis: Įdiekite reikalingas priklausomybes.
-npm i
+Jei norite atnaujinti naujienas rankiniu būdu:
 
-# 4 žingsnis: Paleiskite vystymo serverį su automatiniu perkrovimu ir momentine peržiūra.
-npm run dev
-```
+1. Administratoriaus valdymo skydelyje eikite į **RSS** skirtuką
+2. Paspauskite **Atnaujinti dabar** mygtuką
 
-**Redaguoti failą tiesiogiai GitHub platformoje**
+### Naujienų limitai
 
-- Naviguokite į norimą(-us) failą(-us).
-- Paspauskite "Edit" mygtuką (pieštuko ikoną) failo peržiūros viršutiniame dešiniajame kampe.
-- Atlikite pakeitimus ir patvirtinkite juos.
+Sistema automatiškai importuoja **tik vieną naujieną per dieną**. Tai yra apsauga nuo svetainės perkrovimo turiniu. Jei norite pridėti daugiau naujienų, galite:
 
-**Naudoti GitHub Codespaces**
+1. Rankinio būdu pridėti naujienas naudodami **Naujienos** skirtuką administravimo skydelyje
+2. Palaukti kitos dienos, kai sistema vėl automatiškai importuos dar vieną naujieną
 
-- Naviguokite į pagrindinį repozitorijos puslapį.
-- Paspauskite "Code" mygtuką (žalias mygtukas) viršutinėje dešinėje pusėje.
-- Pasirinkite "Codespaces" skirtuką.
-- Paspauskite "New codespace", kad paleistumėte naują Codespace aplinką.
-- Redaguokite failus tiesiogiai Codespace aplinkoje ir patvirtinkite bei įkelkite pakeitimus, kai baigsite.
+## Techninė informacija
 
-## Kokios technologijos naudojamos šiame projekte?
+### Reikalavimai
 
-Šis projektas sukurtas naudojant:
+- Supabase projektas su sukonfigūruota `news` lentele
+- DeepL API raktas (nemokama versija pakankama)
+- Veikianti interneto prieiga
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Sistemos architektūra
 
-## Kaip diegti šį projektą?
+Sistemą sudaro šios pagrindinės dalys:
 
-Projektas yra diegiamas naudojant Vercel platformą, ir automatiškai atnaujinamas po kiekvieno pakeitimo.
+1. **RssFeedService** - atsakingas už RSS naujienų parsisiuntimą, vertimą ir saugojimą
+2. **RssSchedulerService** - atsakingas už periodinį atnaujinimą
+3. **RssSettingsPanel** - administratoriaus sąsaja nustatymų valdymui
 
-## Naudojamas domenas
+### Duomenų srautai
 
-Projektas naudoja custom domeną ponasobuolys.lt
+1. Naujienos gaunamos iš RSS šaltinio
+2. Ištraukiama reikalinga informacija (pavadinimas, aprašymas, turinys, nuorodos, paveikslėliai)
+3. Patikrinama, ar jau pasiektas dienos limitas (1 naujiena per dieną)
+4. Turinys verčiamas į lietuvių kalbą naudojant DeepL API
+5. Paveikslėliai parsiunčiami ir įkeliami į Supabase saugyklą
+6. Sukuriamas naujas įrašas 'news' lentelėje
+
+## Pastabos
+
+- Sistema prieš įkeliant naują naujiena patikrina, ar ji jau neegzistuoja (pagal originalią nuorodą)
+- Paveikslėliai išsaugomi su unikaliais pavadinimais, kad būtų išvengta konfliktų
+- DeepL API nemokama versija leidžia versti iki 500,000 simbolių per mėnesį
+- Dėl sistemos limitų, naujienos importuojamos tik po vieną per dieną
+
+## DeepL API informacija
+
+- DeepL API dokumentacija: [https://www.deepl.com/docs-api](https://www.deepl.com/docs-api)
+- DeepL API raktą galite gauti užsiregistravę: [https://www.deepl.com/pro#developer](https://www.deepl.com/pro#developer)
+- Nemokama versija leidžia versti iki 500,000 simbolių per mėnesį
+- API palaiko HTML turinio vertimą, išsaugant visus formatavimo žymėjimus
+
+## Saugumo pastabos
+
+- **SVARBU**: API raktų niekada nereikėtų saugoti viešai prieinamuose failuose ar kode
+- Sistemoje API raktai saugomi localStorage, produkciniame variante rekomenduojama naudoti saugesnį sprendimą
+- Rekomenduojama apriboti prieigą prie administravimo skydelio tik autorizuotiems vartotojams
+
+## Tobulinimo galimybės
+
+- Vertimo šaltinio pasirinkimas (Google, Microsoft, DeepL ir kt.)
+- Vertimo kalbos pasirinkimas
+- Daugiau RSS šaltinių valdymas
+- Naujienų kategorijų automatinis nustatymas
+- Konfigūruojamas naujienų limitų nustatymas per administravimo sąsają
