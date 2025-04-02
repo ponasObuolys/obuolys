@@ -239,13 +239,21 @@ const RssSettingsPanel = () => {
         <p className="font-semibold text-amber-600">Svarbu: Sistema importuos tik po vieną naują naujieną per dieną. Daugiau naujienų galima pridėti tik rankiniu būdu.</p>
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-blue-700">
           <h4 className="font-semibold mb-1">Dėmesio: CORS apribojimai</h4>
-          <p>DeepL API turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į jį iš naršyklės. Sprendimui:</p>
+          <p>DeepL API ir daugelis RSS šaltinių turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės. Sprendimui:</p>
           <ul className="list-disc pl-5 mt-1">
-            <li>Panaudokite Supabase Edge funkciją kaip proxy serverį</li>
+            <li>Panaudokite Supabase Edge funkcijas kaip proxy serverius:</li>
+            <ul className="list-circle pl-5">
+              <li><strong>Vertimui:</strong> <code>/supabase/functions/translate</code></li>
+              <li><strong>RSS šaltiniui:</strong> <code>/supabase/functions/rssfeed</code></li>
+            </ul>
             <li>Dėl diegimo detalių kreipkitės į sistemų administratorių</li>
-            <li>Po proxy serverio diegimo, sistemoje automatiškai bus naudojamas saugus ryšys</li>
+            <li>Po proxy serverių diegimo, sistemoje automatiškai bus naudojamas saugus ryšys</li>
           </ul>
-          <p className="mt-1">Edge funkcijos URL pavyzdys: <code>https://[jūsų-projektas].supabase.co/functions/v1/translate</code></p>
+          <p className="mt-1">Edge funkcijų URL pavyzdžiai:</p>
+          <ul className="list-disc pl-5">
+            <li>Vertimui: <code>https://[jūsų-projektas].supabase.co/functions/v1/translate</code></li>
+            <li>RSS šaltiniui: <code>https://[jūsų-projektas].supabase.co/functions/v1/rssfeed</code></li>
+          </ul>
         </div>
       </CardFooter>
     </Card>

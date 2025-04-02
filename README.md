@@ -95,30 +95,44 @@ Sistemą sudaro šios pagrindinės dalys:
 
 ### Problema
 
-DeepL API turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į jį iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas gali neveikti svetainėje, ir jūs galite matyti klaidas:
+Tiek DeepL API, tiek išoriniai RSS šaltiniai turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas ir RSS gavimas gali neveikti svetainėje, ir jūs galite matyti klaidas:
 
 ```
 Access to fetch at 'https://api-free.deepl.com/v2/translate' has been blocked by CORS policy
+Access to fetch at 'https://knowtechie.com/category/ai/feed/' has been blocked by CORS policy
 ```
 
-### Sprendimas: Proxy serveris
+### Sprendimas: Proxy serveriai
 
-Sistemoje jau yra įdiegtas sprendimas, naudojantis Supabase Edge funkcijas kaip proxy serverį. Kad tai veiktų, reikia:
+Sistemoje jau yra įdiegti du sprendimai, kaip apeiti CORS apribojimus:
 
-1. **Įdiegti Supabase Edge funkciją**
-   - Funkcijos kodas yra direktorijoje `/supabase/functions/translate/`
-   - Sekite instrukcijas šios direktorijos README.md faile
+1. **Supabase Edge funkcijos**
+   - DeepL API: funkcijos kodas direktorijoje `/supabase/functions/translate/`
+   - RSS šaltiniui: funkcijos kodas direktorijoje `/supabase/functions/rssfeed/`
+   - Sekite instrukcijas šių direktorijų README.md failuose
 
-2. **Konfigūruoti aplinkos kintamuosius**
+2. **Vercel Serverless funkcijos (rekomenduojama)**
+   - Paprastesnis diegimas ir priežiūra
+   - Funkcijos jau integruotos į projektą (`/api/translate.js` ir `/api/rssfeed.js`)
+   - Išsamesnė informacija: [VERCEL_CORS_SOLUTION.md](VERCEL_CORS_SOLUTION.md)
+
+### Konfigūracija
+
+1. **Konfigūruoti aplinkos kintamuosius**
    - Sukurkite `.env` failą pagal `.env.example` šabloną
-   - Nustatykite `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį į jūsų įdiegtos funkcijos URL
+   - Jei naudojate Vercel: nustatykite `/api/translate` ir `/api/rssfeed` kaip proxy URL
+   - Jei naudojate Supabase: nustatykite jūsų Supabase Edge funkcijų URL
 
-3. **Perkraukite sistemą**
-   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverį užklausoms į DeepL API
+2. **Perkraukite sistemą**
+   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverius užklausoms
 
 ### Daugiau informacijos
 
-Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama faile `RSS_INFO.md`.
+Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama failuose:
+- `RSS_INFO.md` - bendra CORS informacija
+- `VERCEL_CORS_SOLUTION.md` - Vercel serverless sprendimas (rekomenduojama)
+- `/supabase/functions/translate/README.md` - Supabase vertimų proxy serveris
+- `/supabase/functions/rssfeed/README.md` - Supabase RSS proxy serveris
 
 ## Tobulinimo galimybės
 

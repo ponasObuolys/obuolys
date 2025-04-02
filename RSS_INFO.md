@@ -144,39 +144,60 @@ const translatedText = data.translations[0].text;
 
 DeepL API, kaip ir daugelis kitų trečiųjų šalių API, turi CORS (Cross-Origin Resource Sharing) apribojimus, kurie neleidžia tiesiogiai kreiptis į API iš naršyklės, jei užklausa siunčiama iš kito domeno. Tai saugumo mechanizmas, kuris apsaugo API nuo piktnaudžiavimo.
 
-#### Problemos aprašymas
+#### CORS problemos
 
-Kai bandote tiesiogiai kreiptis į DeepL API iš naršyklės, gaunate tokią klaidą:
-```
-Access to fetch at 'https://api-free.deepl.com/v2/translate' from origin 'https://www.ponasobuolys.lt' 
-has been blocked by CORS policy: Response to preflight request doesn't pass access control check: 
-No 'Access-Control-Allow-Origin' header is present on the requested resource.
-```
+Keli pagrindiniai atvejai, kai susiduriame su CORS apribojimais:
 
-#### Sprendimas: Proxy serveris su Supabase Edge Functions
+1. **DeepL API užklausos**: 
+   ```
+   Access to fetch at 'https://api-free.deepl.com/v2/translate' from origin 'https://www.ponasobuolys.lt' 
+   has been blocked by CORS policy
+   ```
 
-1. **Proxy serverio funkcija**
-   - Sukurta Supabase Edge funkcija `/supabase/functions/translate/index.ts`
-   - Ši funkcija veikia kaip tarpininkas tarp kliento ir DeepL API
-   - Funkcija yra diegiama Supabase platformoje
+2. **RSS šaltinio gavimas**:
+   ```
+   Access to fetch at 'https://knowtechie.com/category/ai/feed/' from origin 'https://www.ponasobuolys.lt' 
+   has been blocked by CORS policy
+   ```
 
-2. **Kaip veikia proxy sprendimas**
-   - Kliento kodas siunčia užklausą į Supabase Edge funkciją
-   - Edge funkcija perduoda užklausą į DeepL API
-   - Gauna atsakymą ir grąžina jį klientui
-   - Prideda tinkamas CORS antraštes, kad leistų kreiptis iš bet kurio domeno
+#### Sprendimas: Proxy serveriai su Supabase Edge Functions
 
-3. **Diegimo instrukcijos**
-   - Įdiekite Supabase CLI įrankį: `npm install -g supabase`
-   - Prisiregistruokite prie Supabase: `supabase login`
-   - Susiekite projektą: `supabase link --project-ref <jūsų-projekto-id>`
-   - Įdiekite funkciją: `supabase functions deploy translate`
-   - Nustatykite aplinkos kintamąjį REACT_APP_TRANSLATION_PROXY_URL į Edge funkcijos URL
+Mūsų sistemoje naudojami du Supabase Edge Functions proxy serveriai:
 
-4. **Proxy serverio naudojimas**
-   - RssFeedService automatiškai aptinka, ar aplinkos kintamasis REACT_APP_TRANSLATION_PROXY_URL yra nustatytas
-   - Jei taip, naudoja proxy serverį užklausoms
-   - Jei ne, bando naudoti tiesioginį ryšį (kuris greičiausiai nepavyks dėl CORS)
+1. **Vertimo proxy serveris (`/supabase/functions/translate/`)**
+   - Veikia kaip tarpininkas tarp kliento ir DeepL API
+   - Perduoda vertimo užklausas ir gauna rezultatus
+
+2. **RSS proxy serveris (`/supabase/functions/rssfeed/`)**
+   - Veikia kaip tarpininkas tarp kliento ir RSS šaltinių
+   - Leidžia gauti RSS turinį iš bet kurio šaltinio be CORS apribojimų
+
+#### Kaip veikia proxy sprendimas
+
+1. **Kliento kodas siunčia užklausą į Supabase Edge funkciją**
+2. **Edge funkcija perduoda užklausą į tikslą (DeepL API arba RSS šaltinį)**
+3. **Gauna atsakymą ir grąžina jį klientui**
+4. **Prideda tinkamas CORS antraštes, kad leistų kreiptis iš bet kurio domeno**
+
+#### Diegimo instrukcijos
+
+1. **Įdiegite abi Edge funkcijas**:
+   ```
+   supabase functions deploy translate
+   supabase functions deploy rssfeed
+   ```
+
+2. **Nustatykite aplinkos kintamuosius**:
+   ```
+   REACT_APP_TRANSLATION_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/translate
+   REACT_APP_RSS_PROXY_URL=https://[jūsų-projektas].supabase.co/functions/v1/rssfeed
+   ```
+
+#### Proxy serverių naudojimas
+
+- **RssFeedService** automatiškai aptinka, ar aplinkos kintamasis `REACT_APP_RSS_PROXY_URL` yra nustatytas
+- Jei taip, RSS šaltiniui naudoja proxy serverį
+- Panašiai veikia ir vertimo funkcija su `REACT_APP_TRANSLATION_PROXY_URL` kintamuoju
 
 ## Paveikslėlių apdorojimas
 

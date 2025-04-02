@@ -28,7 +28,24 @@ export class RssFeedService {
    */
   public async fetchRssItems(): Promise<RssItem[]> {
     try {
-      const response = await fetch(this.rssUrl);
+      // Tikriname, ar yra sukonfigūruotas RSS proxy URL
+      const rssProxyUrl = process.env.REACT_APP_RSS_PROXY_URL;
+      let url = this.rssUrl;
+      
+      // Jei yra proxy URL, jį naudojame
+      if (rssProxyUrl) {
+        console.log('Naudojamas proxy serveris RSS šaltiniui');
+        url = `${rssProxyUrl}?url=${encodeURIComponent(this.rssUrl)}`;
+      } else {
+        console.log('Tiesioginis kreipimasis į RSS šaltinį');
+      }
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Klaida gaunant RSS: ${response.status} ${response.statusText}`);
+      }
+      
       const xmlText = await response.text();
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, "text/xml");
