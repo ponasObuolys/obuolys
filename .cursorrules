@@ -1,0 +1,60 @@
+{
+  "project_rules": [
+    {
+      "name": "Kalbos taisyklė",
+      "description": "Visas kodas, komentarai, dokumentacija ir vartotojo sąsaja turi būti lietuvių kalba, anglų ir rusų kalbomis išskyrus technines sąvokas ir kintamųjų pavadinimus. Vertimai LanguageContext.tsx faile."
+    },
+    {
+      "name": "Duomenų bazės struktūra",
+      "description": "Prieš keičiant kodą, susijusį su duomenų baze, būtina peržiūrėti DB_INFO.md failą, kad būtų išlaikyta duomenų bazės struktūros ir taisyklės."
+    },
+    {
+      "name": "Supabase integracijos",
+      "description": "Naudoti tik Supabase duomenų bazę. Visi duomenų bazės užklausų metodai turi būti nuoseklūs ir laikytis esamos struktūros."
+    },
+    {
+      "name": "Komponentų struktūra",
+      "description": "Nauji komponentai turi atitikti esamus projekto šablonus ir stilių. Naudokite shadcn/ui komponentus, Tailwind CSS, ir laikykitės esamos architektūros."
+    },
+    {
+      "name": "Kodo formatavimas",
+      "description": "Kodas turi būti formatuojamas pagal projektų TypeScript nustatymus. Naudoti aiškius kintamųjų pavadinimus, vengti maginio kodo ir tinkamai dokumentuoti sudėtingas funkcijas."
+    },
+    {
+      "name": "Maršrutų struktūra",
+      "description": "Nauji puslapiai turi būti registruoti App.tsx faile ir laikytis esamos maršrutų struktūros."
+    },
+    {
+      "name": "API užklausos",
+      "description": "Visos API užklausos turi būti nuoseklios ir laikytis DB_INFO.md faile nurodytų API endpointų. Užklausos turėtų būti atliekamos per integracijos modulius."
+    },
+    {
+      "name": "Validacija",
+      "description": "Visi formos duomenys turi būti validuojami naudojant zod biblioteką ir react-hook-form."
+    },
+    {
+      "name": "Klaidų apdorojimas",
+      "description": "Užklausų klaidos turi būti tinkamai apdorojamos ir pateikiamos naudotojui suprantamu formatu. Naudoti toast pranešimus."
+    },
+    {
+      "name": "Optimistiniai atnaujinimai",
+      "description": "Naudoti optimistinius atnaujinimus, kad vartotojo sąsaja būtų greitesnė ir responsingesnė."
+    },
+    {
+      "name": "Versijų kontrolė",
+      "description": "Kodo pakeitimai turi būti aprašyti aiškiais komentarais, nurodant pakeitimų priežastį ir paskirtį."
+    },
+    {
+      "name": "Paveikslėlių apdorojimas ir tingus įkėlimas",
+      "description": "Visoms svetainės nuotraukoms naudoti LazyImage komponentą vietoj standartinio <img> žymos. Sekti docs/LazyLoading.md rekomendacijas, naudoti addLazyLoadingToImages funkciją HTML turiniui ir useLazyImages hooką dinaminiams komponentams."
+    },
+    {
+      "name": "Administravimo skydelio funkcionalumas",
+      "description": "Administravimo skydelio komponentai turi laikytis nustatyto redagavimo šablono (ArticleEditor, NewsEditor, CourseEditor, ToolEditor). Redagavimo komponentai turi turėti vienodą sąsajos logiką, kad būtų išlaikytas nuoseklumas ir intuityvumas."
+    },
+    {
+      "name": "Turinio kūrimo ir valdymo darbo eiga",
+      "description": "Nauji turinio redaktoriai turi naudoti RichTextEditor komponentą. Turinio formatavimas, nuotraukų ir vaizdo įrašų įterpimas turi būti atliekamas naudojant esamus įrankius. Kursų, straipsnių ir naujienų metaduomenys turi atitikti esamus laukus ir duomenų struktūrą."
+    }
+  ]
+} 
