@@ -13,7 +13,6 @@ import NewsEditor from '@/components/admin/NewsEditor';
 import ToolEditor from '@/components/admin/ToolEditor';
 import CourseEditor from '@/components/admin/CourseEditor';
 import UserManager from '@/components/admin/UserManager';
-import RssSettingsPanel from '@/components/admin/RssSettingsPanel';
 import AdminDashboardStats from '@/components/admin/AdminDashboardStats';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -128,7 +127,6 @@ const AdminDashboard = () => {
             <TabsTrigger value="tools">Įrankiai</TabsTrigger>
             <TabsTrigger value="courses">Kursai</TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
-            <TabsTrigger value="rss">RSS</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
@@ -305,18 +303,6 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <UserManager onUpdate={fetchDashboardStats} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="rss">
-            <Card>
-              <CardHeader>
-                <CardTitle>RSS naujienų importavimas</CardTitle>
-                <CardDescription>Automatizuotas naujienų gavimas ir vertimas</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RssSettingsPanel />
               </CardContent>
             </Card>
           </TabsContent>

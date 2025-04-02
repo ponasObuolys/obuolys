@@ -1,4 +1,16 @@
-# RSS Naujienų Importavimo Sistema - Pakeitimų žurnalas
+# Ponas Obuolys - Pakeitimų žurnalas
+
+## 2023-07-20: RSS funkcionalumo pašalinimas
+
+- Pašalintas visas RSS naujienų importavimo funkcionalumas dėl nesuderinamumo problemų su CORS politika
+- Pašalinti API proxy serveriai (tiek Vercel, tiek Supabase Edge funkcijos)
+- Pašalintos visos su RSS susijusios paslaugos ir komponentai:
+  - `RssFeedService`
+  - `RssSchedulerService`
+  - `RssSettingsPanel`
+- Atnaujinta dokumentacija, nurodant, kad naujienos bus keliamos tik rankiniu būdu
+- Pašalinti komandiniai įrankiai ir proxy serveriai
+- Ateityje planuojama naudoti MAKE.COM integracijas automatizuotam naujienų importavimui
 
 ## 2023-07-15: Proxy Serverių Patobulinimai
 

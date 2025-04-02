@@ -1,168 +1,94 @@
-# Ponas Obuolys - RSS Naujienų Importavimo Sistema
+# Ponas Obuolys - Dirbtinio intelekto naujienų portalas
 
-## Apie sistemą
+## Apie svetainę
 
-Ši sistema leidžia automatiškai importuoti naujienas iš išorinių RSS šaltinių, išversti jas į lietuvių kalbą ir išsaugoti svetainės naujienų skiltyje.
+Tai dirbtinio intelekto naujienų ir informacijos portalas lietuvių kalba. Svetainėje pateikiamos naujienos, straipsniai, įrankių apžvalgos ir kursai, susiję su dirbtinio intelekto technologijomis.
 
-## Pagrindinės funkcijos
+## Svetainės struktūra
 
-1. **Automatinis RSS naujienų importavimas**
-   - Periodinis naujienų atnaujinimas (viena naujiena per dieną)
-   - Pasirinktas atnaujinimo intervalas
-   - Rankinis atnaujinimo inicijavimas
+1. **Naujienos** - trumpi pranešimai apie naujausias AI technologijų aktualijas
+2. **Straipsniai** - išsamūs analitiniai straipsniai apie dirbtinį intelektą
+3. **Įrankiai** - AI įrankių aprašymai, apžvalgos ir vertinimai
+4. **Kursai** - mokomoji medžiaga apie dirbtinį intelektą
 
-2. **Naujienų vertimas**
-   - Automatinis vertimas iš anglų į lietuvių kalbą
-   - Naudojamas DeepL API (aukštos kokybės vertimai)
+## Administravimo skydelis
 
-3. **Paveikslėlių išsaugojimas**
-   - Automatinis paveikslėlių parsisiuntimas iš originalių šaltinių
-   - Paveikslėlių įkėlimas į Supabase saugyklą
+Administravimo skydelis leidžia valdyti visą svetainės turinį:
 
-## Sistemos naudojimas
-
-### Administratoriaus valdymo skydelyje
-
-1. Eikite į **Administratoriaus valdymo skydelį**
-2. Pasirinkite **RSS** skirtuką
-3. Įveskite reikalingą informaciją:
-   - RSS šaltinio URL (pvz., https://knowtechie.com/category/ai/feed/)
-   - DeepL API raktas (API raktas jau sukonfigūruotas formoje)
-   - Atnaujinimo intervalą (valandomis)
-4. Įjunkite **Automatinis atnaujinimas** funkciją, jei norite, kad naujienos būtų atnaujinamos periodiškai
-5. Paspauskite **Išsaugoti nustatymus**
-
-### Rankinis atnaujinimas
-
-Jei norite atnaujinti naujienas rankiniu būdu:
-
-1. Administratoriaus valdymo skydelyje eikite į **RSS** skirtuką
-2. Paspauskite **Atnaujinti dabar** mygtuką
-
-### Naujienų limitai
-
-Sistema automatiškai importuoja **tik vieną naujieną per dieną**. Tai yra apsauga nuo svetainės perkrovimo turiniu. Jei norite pridėti daugiau naujienų, galite:
-
-1. Rankinio būdu pridėti naujienas naudodami **Naujienos** skirtuką administravimo skydelyje
-2. Palaukti kitos dienos, kai sistema vėl automatiškai importuos dar vieną naujieną
+1. **Naujienų valdymas** - rankiniu būdu pridėti, redaguoti ir šalinti naujienas
+2. **Straipsnių valdymas** - kurti ir redaguoti išsamius straipsnius
+3. **Įrankių valdymas** - pridėti naujus AI įrankius ir jų apžvalgas
+4. **Kursų valdymas** - kurti ir publikuoti mokomuosius kursus
+5. **Vartotojų valdymas** - administruoti svetainės vartotojus ir jų teises
 
 ## Techninė informacija
 
-### Reikalavimai
+### Techninė architektūra
 
-- Supabase projektas su sukonfigūruota `news` lentele
-- DeepL API raktas (nemokama versija pakankama)
-- Veikianti interneto prieiga
+Svetainė sukurta naudojant šias technologijas:
 
-### Sistemos architektūra
+1. **Frontend**: React, TypeScript, Tailwind CSS, Shadcn UI
+2. **Backend**: Supabase (duomenų bazė ir autentifikacija)
+3. **Saugykla**: Supabase Storage (failams, paveikslėliams)
+4. **Diegimas**: Vercel
 
-Sistemą sudaro šios pagrindinės dalys:
+### Duomenų bazės struktūra
 
-1. **RssFeedService** - atsakingas už RSS naujienų parsisiuntimą, vertimą ir saugojimą
-2. **RssSchedulerService** - atsakingas už periodinį atnaujinimą
-3. **RssSettingsPanel** - administratoriaus sąsaja nustatymų valdymui
-4. **Proxy serveriai** - peržengti CORS apribojimus:
-   - **Vercel Serverless funkcijos** (`/api/rssfeed.js` ir `/api/translate.js`)
-   - **Supabase Edge funkcijos** (alternatyvus sprendimas)
+Pagrindinės duomenų bazės lentelės:
 
-### Duomenų srautai
+1. **news** - naujienos ir jų metaduomenys
+2. **articles** - straipsniai ir jų turinys
+3. **tools** - AI įrankių informacija ir vertinimai
+4. **courses** - kursų duomenys ir struktūra
+5. **profiles** - vartotojų profiliai ir rolės
 
-1. Naujienos gaunamos iš RSS šaltinio per proxy serverį (Vercel arba Supabase)
-2. Ištraukiama reikalinga informacija (pavadinimas, aprašymas, turinys, nuorodos, paveikslėliai)
-3. Patikrinama, ar jau pasiektas dienos limitas (1 naujiena per dieną)
-4. Turinys verčiamas į lietuvių kalbą naudojant DeepL API per proxy serverį
-5. Paveikslėliai parsiunčiami ir įkeliami į Supabase saugyklą
-6. Sukuriamas naujas įrašas 'news' lentelėje
+## Turinio valdymas
 
-## Pastabos
+### Naujienų įkėlimas
 
-- Sistema prieš įkeliant naują naujiena patikrina, ar ji jau neegzistuoja (pagal originalią nuorodą)
-- Paveikslėliai išsaugomi su unikaliais pavadinimais, kad būtų išvengta konfliktų
-- DeepL API nemokama versija leidžia versti iki 500,000 simbolių per mėnesį
-- Dėl sistemos limitų, naujienos importuojamos tik po vieną per dieną
+Naujienos įkeliamos rankiniu būdu per administravimo skydelį:
 
-## DeepL API informacija
+1. Eikite į **Administratoriaus valdymo skydelį**
+2. Pasirinkite **Naujienos** skirtuką
+3. Spauskite **Nauja naujiena**
+4. Užpildykite reikiamus laukus:
+   - Pavadinimas
+   - Trumpas aprašymas
+   - Turinys (su formatavimu)
+   - Nuotrauka
+   - Nuoroda į šaltinį (jei yra)
+5. Paspauskite **Išsaugoti**
 
-- DeepL API dokumentacija: [https://www.deepl.com/docs-api](https://www.deepl.com/docs-api)
-- DeepL API raktą galite gauti užsiregistravę: [https://www.deepl.com/pro#developer](https://www.deepl.com/pro#developer)
-- Nemokama versija leidžia versti iki 500,000 simbolių per mėnesį
-- API palaiko HTML turinio vertimą, išsaugant visus formatavimo žymėjimus
+### Straipsnių kūrimas
 
-## CORS problemų sprendimas
+Straipsniai kuriami naudojant integruotą redaktorių:
 
-### Problema
+1. Administravimo skydelyje pasirinkite **Straipsniai**
+2. Spauskite **Naujas straipsnis**
+3. Naudokite teksto redaktorių su formatavimo galimybėmis
+4. Pridėkite paveikslėlius, nuorodas ir kitus elementus
+5. Nustatykite kategorijas ir žymas
+6. Paspauskite **Publikuoti** arba **Išsaugoti kaip juodraštį**
 
-Tiek DeepL API, tiek išoriniai RSS šaltiniai turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į juos iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas ir RSS gavimas gali neveikti svetainėje.
+## Vartotojų valdymas
 
-### Sprendimas: Jau įdiegti proxy serveriai
-
-Sistemoje jau yra **įdiegti ir sukonfigūruoti** du sprendimai, kaip apeiti CORS apribojimus:
-
-1. **Vercel Serverless funkcijos (pagrindinis sprendimas)**
-   - Jau integruotos į projektą (`/api/translate.js` ir `/api/rssfeed.js`)
-   - Patobulinti: 
-     - Išsamesnis klaidų apdorojimas ir logavimas
-     - Geresnis HTTP antraščių valdymas
-     - Didelių tekstų skaidymas vertimui
-     - RSS šaltinio duomenų optimizuotas gavimas
-
-2. **Supabase Edge funkcijos (alternatyvus sprendimas)**
-   - DeepL API: funkcijos kodas direktorijoje `/supabase/functions/translate/`
-   - RSS šaltiniui: funkcijos kodas direktorijoje `/supabase/functions/rssfeed/`
-
-### Aplinkos kintamieji
-
-Sistemoje jau nustatyti šie aplinkos kintamieji:
-
-```
-REACT_APP_RSS_PROXY_URL=/api/rssfeed
-REACT_APP_TRANSLATION_PROXY_URL=/api/translate
-```
-
-Šie kintamieji nurodo sistemai naudoti Vercel serverless funkcijas kaip proxy serverius. Jie jau sukonfigūruoti ir turėtų veikti be papildomų nustatymų.
-
-### Ką daryti, jei vis tiek yra CORS klaidų?
-
-Jei vis tiek pastebite CORS klaidas:
-
-1. **Patikrinkite, ar Vercel aplinka turi teisingus aplinkos kintamuosius**:
-   ```
-   REACT_APP_RSS_PROXY_URL=/api/rssfeed
-   REACT_APP_TRANSLATION_PROXY_URL=/api/translate
-   ```
-
-2. **Patikrinkite Vercel serverless funkcijų veikimą**:
-   - Bandykite atidaryti `/api/rssfeed?url=https://knowtechie.com/category/ai/feed/` naršyklėje
-   - Turėtumėte matyti RSS turinį XML formatu
-
-3. **Įjunkite Supabase Edge funkcijas kaip alternatyvą**:
-   - Jei Vercel sprendimas neveikia, sekite instrukcijas `RssSettingsPanel` skyriuje
-   - Nustatykite aplinkos kintamuosius į Supabase Edge funkcijų URL
-
-### Patobulinimai naujoje versijoje
-
-1. **Išplėstinis klaidų apdorojimas**:
-   - Detalesni klaidų pranešimai ir logavimas
-   - Klaidų kategorijos pagal DeepL API dokumentaciją
-
-2. **Teksto skaidymas**:
-   - Didelių tekstų automatinis skaidymas į mažesnes dalis
-   - Optimizuotas HTML turinio apdorojimas
-
-3. **Geresnė vartotojo informacija**:
-   - Aiškesni pranešimai apie proxy serverių statusą
-   - Instrukcijos konfigūracijai
+- **Administratoriai** - pilna prieiga prie visų funkcijų
+- **Redaktoriai** - gali kurti ir redaguoti turinį
+- **Vartotojai** - gali skaityti turinį ir palikti komentarus
 
 ## Saugumo pastabos
 
-- API raktai perduodami tik per serverio proxy
-- RSS duomenys apdorojami per saugius proxy serverius
-- Rekomenduojama apriboti prieigą prie administravimo skydelio tik autorizuotiems vartotojams
+- API raktai saugomi saugiai ir nėra matomi viešai
+- Visi vartotojų duomenys yra šifruojami
+- Rekomenduojama reguliariai atnaujinti slaptažodžius
 
 ## Tobulinimo galimybės
 
-- Vertimo šaltinio pasirinkimas (Google, Microsoft, DeepL ir kt.)
-- Vertimo kalbos pasirinkimas
-- Daugiau RSS šaltinių valdymas
-- Naujienų kategorijų automatinis nustatymas
-- Konfigūruojamas naujienų limitų nustatymas per administravimo sąsają
+- Komentarų sistema straipsniams ir naujienoms
+- Pažangesnė paieška su filtravimo galimybėmis
+- Integracijos su socialiniais tinklais
+- Prenumeratos sistema
+
+## Pastaba dėl naujienų importavimo
+
+**Svarbu**: Sprendžiant technines problemas, automatinis RSS naujienų importavimas buvo pašalintas iš sistemos. Visos naujienos dabar įkeliamos rankiniu būdu per administravimo skydelį. Ateityje planuojama įdiegti integracijas su MAKE.COM ar kitomis automatizavimo platformomis.
