@@ -28,7 +28,6 @@ export class RssFeedService {
    */
   public async fetchRssItems(): Promise<RssItem[]> {
     try {
-      console.log('Siunčiamasi naujienos iš:', this.rssUrl);
       const response = await fetch(this.rssUrl);
       const xmlText = await response.text();
       const parser = new DOMParser();
@@ -36,41 +35,15 @@ export class RssFeedService {
       
       const items = Array.from(xmlDoc.querySelectorAll("item"));
       
-      return await Promise.all(items.map(async item => {
+      return items.map(item => {
         // Ištraukiame paveikslėlio URL iš turinio
         let imageUrl: string | undefined;
-        let content = item.querySelector("content\\:encoded")?.textContent || 
-                     item.querySelector("encoded")?.textContent || 
-                     "";
+        const contentEncoded = item.querySelector("content\\:encoded")?.textContent || 
+                              item.querySelector("encoded")?.textContent || 
+                              "";
         
-        if (!content || content.trim() === '') {
-          // Jei nėra turinio, pabandome ištraukti jį iš aprašymo
-          const description = item.querySelector("description")?.textContent || "";
-          
-          // Patikrinti, ar aprašymas turi HTML turinį
-          if (description.includes('<') && description.includes('>')) {
-            content = description;
-          } else {
-            // Jei nėra HTML turinio, bandome gauti jį iš originalaus straipsnio
-            const link = item.querySelector("link")?.textContent || "";
-            if (link) {
-              try {
-                console.log('Bandoma ištraukti turinį iš originalaus straipsnio:', link);
-                const articleContent = await this.fetchOriginalArticleContent(link);
-                if (articleContent) {
-                  content = articleContent;
-                  console.log('Sėkmingai ištrauktas turinys iš originalaus straipsnio');
-                }
-              } catch (fetchError) {
-                console.error('Nepavyko ištraukti turinio iš originalaus straipsnio:', fetchError);
-              }
-            }
-          }
-        }
-        
-        // Ištraukiame paveikslėlio URL iš turinio
-        if (content) {
-          const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+        if (contentEncoded) {
+          const imgMatch = contentEncoded.match(/<img[^>]+src="([^">]+)"/);
           if (imgMatch && imgMatch[1]) {
             imageUrl = imgMatch[1];
           }
@@ -96,10 +69,10 @@ export class RssFeedService {
           description: item.querySelector("description")?.textContent || "",
           link: item.querySelector("link")?.textContent || "",
           pubDate: item.querySelector("pubDate")?.textContent || "",
-          content: content,
+          content: contentEncoded,
           imageUrl
         };
-      }));
+      });
     } catch (error) {
       console.error("Klaida gaunant RSS naujienas:", error);
       return [];
@@ -117,31 +90,70 @@ export class RssFeedService {
         return text;
       }
 
-      // Naudojame Vercel serverless funkciją kaip proxy
-      // Numatytasis kelias yra /api/translate
-      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL || '/api/translate';
+      // Bandome naudoti tarpinį serverį (proxy), jeigu jis sukonfigūruotas
+      // Šis URL turėtų būti pakeistas į realų jūsų serverio proxy endpoint
+      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL || '';
       
-      console.log('Naudojamas proxy serveris vertimui:', proxyUrl);
-      const response = await fetch(proxyUrl, {
+      if (proxyUrl) {
+        console.log('Naudojamas proxy serveris vertimui');
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: text,
+            apiKey: this.translationApiKey,
+            sourceLang: 'EN',
+            targetLang: 'LT',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Proxy serverio klaida: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.translatedText || text;
+      }
+      
+      // Jei proxy nėra, bandome tiesioginį API iškvietimą su no-cors režimu
+      // Pastaba: no-cors režimas neleidžia perskaityti atsakymo, todėl šis metodas veiks tik
+      // jei DeepL API palaiko JSONP ar kitus cross-origin sprendimus
+      console.log('Bandoma tiesiogiai kreiptis į DeepL API');
+      const response = await fetch("https://api-free.deepl.com/v2/translate", {
         method: 'POST',
+        mode: 'no-cors', // Pridedame no-cors režimą
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `DeepL-Auth-Key ${this.translationApiKey}`
         },
         body: JSON.stringify({
-          text: text,
-          apiKey: this.translationApiKey,
-          sourceLang: 'EN',
-          targetLang: 'LT',
+          text: [text],
+          source_lang: 'EN',
+          target_lang: 'LT',
+          tag_handling: 'html',
+          preserve_formatting: true
         }),
       });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Proxy serverio klaida: ${response.status} - ${errorData}`);
+      
+      // SVARBU: naudojant 'no-cors' režimą, mes negalėsime perskaityti atsakymo duomenų
+      // Šis kodas gali neveikti kaip tikimasi - čia reikia serverio pusės sprendimo
+      
+      // Apsauginis mechanizmas - jei DeepL API nepasiekiamas, grąžiname neišverstą tekstą
+      if (!response.ok && response.status !== 0) { // status 0 yra įprasta no-cors režimu
+        throw new Error(`DeepL API klaida: ${response.status}`);
       }
-
-      const data = await response.json();
-      return data.translatedText || text;
+      
+      try {
+        const data = await response.json();
+        return data?.translations?.[0]?.text || text;
+      } catch (e) {
+        console.warn('Nepavyko apdoroti atsakymo dėl CORS apribojimų - reikalingas proxy serveris');
+        
+        // Grąžiname originalų tekstą su perspėjimu
+        return text + ' [Vertimas nepavyko dėl CORS apribojimų]';
+      }
       
     } catch (error) {
       console.error('Klaida verčiant tekstą su DeepL:', error);
@@ -152,93 +164,12 @@ export class RssFeedService {
   }
 
   /**
-   * Gauna straipsnio turinį iš originalaus šaltinio
-   */
-  private async fetchOriginalArticleContent(url: string): Promise<string | null> {
-    try {
-      // Naudojame serverio proxy, kad apeitume CORS apribojimus
-      const proxyUrl = '/api/article-content';
-      
-      const response = await fetch(proxyUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Nepavyko gauti straipsnio turinio: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (!data.success || !data.html) {
-        return null;
-      }
-      
-      const html = data.html;
-      
-      // Ieškome straipsnio turinio naudodami paprastą DOM manipuliaciją
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      
-      // Bandome rasti straipsnio turinį pagal įvairias euristikas
-      // 1. Ieškome article elemento
-      let contentElement = doc.querySelector('article');
-      
-      // 2. Arba ieškome pagal įvairius klasės pavadinimus, kurie dažnai naudojami straipsniams
-      if (!contentElement) {
-        contentElement = doc.querySelector('.article-content, .post-content, .entry-content, .content-body, main');
-      }
-      
-      // 3. Jei vis dar neradome, tiesiog imame body
-      if (!contentElement) {
-        contentElement = doc.body;
-      }
-      
-      if (!contentElement) {
-        return null;
-      }
-      
-      // Tikriname, ar yra bent keletas pastraipų
-      const paragraphs = contentElement.querySelectorAll('p');
-      if (paragraphs.length < 2) {
-        return null;
-      }
-      
-      // Ištraukiame tik pagrindinį turinį, be navigacijos, footerių ir pan.
-      return contentElement.innerHTML;
-    } catch (error) {
-      console.error('Klaida gaunant straipsnio turinį:', error);
-      return null;
-    }
-  }
-
-  /**
    * Parsiunčia paveikslėlį ir įkelia į Supabase saugyklą
    */
   private async uploadImage(url: string, itemTitle: string): Promise<string | null> {
     try {
-      console.log('Bandoma parsisiųsti paveikslėlį iš:', url);
-      
-      // Naudojame paveikslėlių proxy serverį
-      const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(url)}`;
-      
-      // Tiesiogiai siųsti į Supabase, nenaudojant tarpinio blob
-      const response = await fetch(proxyUrl);
-      
-      if (!response.ok) {
-        throw new Error(`Nepavyko parsisiųsti paveikslėlio: ${response.status} ${response.statusText}`);
-      }
-      
+      const response = await fetch(url);
       const blob = await response.blob();
-      
-      if (blob.size === 0) {
-        throw new Error('Parsisiųstas paveikslėlis yra tuščias');
-      }
-      
-      console.log(`Sėkmingai parsisiųstas paveikslėlis: ${url}, dydis: ${blob.size} baitų, tipas: ${blob.type}`);
       
       // Sukuriame failą su saugiu pavadinimu
       const fileName = `${Date.now()}-${itemTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.${blob.type.split('/')[1] || 'jpg'}`;
@@ -257,73 +188,10 @@ export class RssFeedService {
         .from('site-images')
         .getPublicUrl(filePath);
       
-      console.log('Paveikslėlis sėkmingai įkeltas į:', urlData.publicUrl);
       return urlData.publicUrl;
     } catch (error) {
       console.error("Klaida įkeliant paveikslėlį:", error);
-      
-      // Bandome alternatyvų metodą
-      try {
-        console.log('Bandomas alternatyvus paveikslėlio parsisiuntimo metodas');
-        
-        // Sukurkime img elementą su proxy URL
-        const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(url)}`;
-        
-        return await new Promise((resolve, reject) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = async () => {
-            try {
-              // Nupieškime paveikslėlį į canvas, kad gautume blob
-              const canvas = document.createElement('canvas');
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext('2d');
-              ctx?.drawImage(img, 0, 0);
-              
-              // Konvertuojame į blob
-              canvas.toBlob(async (blob) => {
-                if (!blob) {
-                  reject(new Error('Nepavyko konvertuoti paveikslėlio į blob'));
-                  return;
-                }
-                
-                // Įkeliam į Supabase
-                const fileName = `${Date.now()}-${itemTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
-                const filePath = `news/covers/${fileName}`;
-                
-                const { data, error } = await supabase.storage
-                  .from('site-images')
-                  .upload(filePath, blob);
-                
-                if (error) {
-                  reject(error);
-                  return;
-                }
-                
-                // Gauname viešą URL
-                const { data: urlData } = supabase.storage
-                  .from('site-images')
-                  .getPublicUrl(filePath);
-                
-                console.log('Paveikslėlis sėkmingai įkeltas (alternatyviu metodu) į:', urlData.publicUrl);
-                resolve(urlData.publicUrl);
-              }, 'image/png');
-            } catch (canvasError) {
-              reject(canvasError);
-            }
-          };
-          img.onerror = () => {
-            reject(new Error('Nepavyko užkrauti paveikslėlio'));
-          };
-          img.src = proxyUrl;
-        });
-      } catch (altError) {
-        console.error("Klaida naudojant alternatyvų metodą:", altError);
-        
-        // Jei nepavyko parsisiųsti paveikslėlio, naudojame placeholder
-        return 'https://storage.googleapis.com/ponasobuolys.appspot.com/default-news-image.jpg';
-      }
+      return null;
     }
   }
 

@@ -26,7 +26,7 @@
 1. Eikite į **Administratoriaus valdymo skydelį**
 2. Pasirinkite **RSS** skirtuką
 3. Įveskite reikalingą informaciją:
-   - RSS šaltinio URL (pvz., https://rss.app/feeds/2TLki4gRlr57man8.xml)
+   - RSS šaltinio URL (pvz., https://knowtechie.com/category/ai/feed/)
    - DeepL API raktas (API raktas jau sukonfigūruotas formoje)
    - Atnaujinimo intervalą (valandomis)
 4. Įjunkite **Automatinis atnaujinimas** funkciją, jei norite, kad naujienos būtų atnaujinamos periodiškai
@@ -101,28 +101,24 @@ DeepL API turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į jį iš
 Access to fetch at 'https://api-free.deepl.com/v2/translate' has been blocked by CORS policy
 ```
 
-### Sprendimas: Vercel Serverless funkcija
+### Sprendimas: Proxy serveris
 
-Sistema naudoja Vercel serverless funkciją kaip proxy serverį DeepL API užklausoms:
+Sistemoje jau yra įdiegtas sprendimas, naudojantis Supabase Edge funkcijas kaip proxy serverį. Kad tai veiktų, reikia:
 
-1. **Serverless funkcija**
-   - Funkcijos kodas yra direktorijoje `/api/translate.js`
-   - Ši funkcija yra automatiškai įdiegiama, kai projektas diegiamas į Vercel
+1. **Įdiegti Supabase Edge funkciją**
+   - Funkcijos kodas yra direktorijoje `/supabase/functions/translate/`
+   - Sekite instrukcijas šios direktorijos README.md faile
 
-2. **Konfigūracija**
-   - Vercel projekte nustatykite aplinkos kintamąjį `DEEPL_API_KEY` su jūsų DeepL API raktu
-   - Jei norite naudoti kitą API kelią, galite pakeisti `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį
+2. **Konfigūruoti aplinkos kintamuosius**
+   - Sukurkite `.env` failą pagal `.env.example` šabloną
+   - Nustatykite `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį į jūsų įdiegtos funkcijos URL
 
-3. **Kaip tai veikia**
-   - Klientinis kodas siunčia užklausą į `/api/translate` Vercel serverless funkciją
-   - Serverless funkcija perduoda užklausą į DeepL API
-   - Atsakymas grąžinamas klientui be CORS apribojimų
+3. **Perkraukite sistemą**
+   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverį užklausoms į DeepL API
 
-### Lokalus testavimas
+### Daugiau informacijos
 
-Lokaliam testavimui:
-1. Sukurkite `.env` failą pagal `.env.example` šabloną
-2. Nustatykite `DEEPL_API_KEY` kintamąjį su jūsų DeepL API raktu
+Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama faile `RSS_INFO.md`.
 
 ## Tobulinimo galimybės
 
