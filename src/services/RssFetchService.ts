@@ -90,70 +90,31 @@ export class RssFeedService {
         return text;
       }
 
-      // Bandome naudoti tarpinį serverį (proxy), jeigu jis sukonfigūruotas
-      // Šis URL turėtų būti pakeistas į realų jūsų serverio proxy endpoint
-      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL || '';
+      // Naudojame Vercel serverless funkciją kaip proxy
+      // Numatytasis kelias yra /api/translate
+      const proxyUrl = process.env.REACT_APP_TRANSLATION_PROXY_URL || '/api/translate';
       
-      if (proxyUrl) {
-        console.log('Naudojamas proxy serveris vertimui');
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: text,
-            apiKey: this.translationApiKey,
-            sourceLang: 'EN',
-            targetLang: 'LT',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Proxy serverio klaida: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.translatedText || text;
-      }
-      
-      // Jei proxy nėra, bandome tiesioginį API iškvietimą su no-cors režimu
-      // Pastaba: no-cors režimas neleidžia perskaityti atsakymo, todėl šis metodas veiks tik
-      // jei DeepL API palaiko JSONP ar kitus cross-origin sprendimus
-      console.log('Bandoma tiesiogiai kreiptis į DeepL API');
-      const response = await fetch("https://api-free.deepl.com/v2/translate", {
+      console.log('Naudojamas proxy serveris vertimui:', proxyUrl);
+      const response = await fetch(proxyUrl, {
         method: 'POST',
-        mode: 'no-cors', // Pridedame no-cors režimą
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `DeepL-Auth-Key ${this.translationApiKey}`
         },
         body: JSON.stringify({
-          text: [text],
-          source_lang: 'EN',
-          target_lang: 'LT',
-          tag_handling: 'html',
-          preserve_formatting: true
+          text: text,
+          apiKey: this.translationApiKey,
+          sourceLang: 'EN',
+          targetLang: 'LT',
         }),
       });
-      
-      // SVARBU: naudojant 'no-cors' režimą, mes negalėsime perskaityti atsakymo duomenų
-      // Šis kodas gali neveikti kaip tikimasi - čia reikia serverio pusės sprendimo
-      
-      // Apsauginis mechanizmas - jei DeepL API nepasiekiamas, grąžiname neišverstą tekstą
-      if (!response.ok && response.status !== 0) { // status 0 yra įprasta no-cors režimu
-        throw new Error(`DeepL API klaida: ${response.status}`);
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Proxy serverio klaida: ${response.status} - ${errorData}`);
       }
-      
-      try {
-        const data = await response.json();
-        return data?.translations?.[0]?.text || text;
-      } catch (e) {
-        console.warn('Nepavyko apdoroti atsakymo dėl CORS apribojimų - reikalingas proxy serveris');
-        
-        // Grąžiname originalų tekstą su perspėjimu
-        return text + ' [Vertimas nepavyko dėl CORS apribojimų]';
-      }
+
+      const data = await response.json();
+      return data.translatedText || text;
       
     } catch (error) {
       console.error('Klaida verčiant tekstą su DeepL:', error);

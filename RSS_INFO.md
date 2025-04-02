@@ -153,30 +153,28 @@ has been blocked by CORS policy: Response to preflight request doesn't pass acce
 No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
-#### Sprendimas: Proxy serveris su Supabase Edge Functions
+#### Sprendimas: Vercel Serverless funkcija
 
-1. **Proxy serverio funkcija**
-   - Sukurta Supabase Edge funkcija `/supabase/functions/translate/index.ts`
-   - Ši funkcija veikia kaip tarpininkas tarp kliento ir DeepL API
-   - Funkcija yra diegiama Supabase platformoje
+1. **Serverless funkcija**
+   - Sukurta Vercel serverless funkcija `/api/translate.js`
+   - Funkcija automatiškai įdiegiama, kai projektas diegiamas į Vercel platformą
+   - Nereikia jokių papildomų įrankių ar konfigūracijos
 
-2. **Kaip veikia proxy sprendimas**
-   - Kliento kodas siunčia užklausą į Supabase Edge funkciją
-   - Edge funkcija perduoda užklausą į DeepL API
+2. **Kaip veikia serverless sprendimas**
+   - Kliento kodas siunčia užklausą į Vercel serverless funkciją (`/api/translate`)
+   - Serverless funkcija perduoda užklausą į DeepL API
    - Gauna atsakymą ir grąžina jį klientui
    - Prideda tinkamas CORS antraštes, kad leistų kreiptis iš bet kurio domeno
 
-3. **Diegimo instrukcijos**
-   - Įdiekite Supabase CLI įrankį: `npm install -g supabase`
-   - Prisiregistruokite prie Supabase: `supabase login`
-   - Susiekite projektą: `supabase link --project-ref <jūsų-projekto-id>`
-   - Įdiekite funkciją: `supabase functions deploy translate`
-   - Nustatykite aplinkos kintamąjį REACT_APP_TRANSLATION_PROXY_URL į Edge funkcijos URL
+3. **Konfigūracijos nustatymai**
+   - Vercel aplinkos kintamasis `DEEPL_API_KEY` - jūsų DeepL API raktas
+   - Aplinkos kintamasis `REACT_APP_TRANSLATION_PROXY_URL` - jei norite pakeisti numatytąjį `/api/translate` kelią
 
-4. **Proxy serverio naudojimas**
-   - RssFeedService automatiškai aptinka, ar aplinkos kintamasis REACT_APP_TRANSLATION_PROXY_URL yra nustatytas
-   - Jei taip, naudoja proxy serverį užklausoms
-   - Jei ne, bando naudoti tiesioginį ryšį (kuris greičiausiai nepavyks dėl CORS)
+4. **Saugumo ir veikimo charakteristikos**
+   - Vercel serverless funkcija veikia edge tinkle, užtikrinant greitą veikimą
+   - Kodo vykdymas yra izoliuotas ir saugus
+   - API raktus galima saugiai laikyti Vercel aplinkos kintamuosiuose
+   - Automatiškai didėja pajėgumai pagal apkrovą
 
 ## Paveikslėlių apdorojimas
 

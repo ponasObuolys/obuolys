@@ -101,24 +101,28 @@ DeepL API turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į jį iš
 Access to fetch at 'https://api-free.deepl.com/v2/translate' has been blocked by CORS policy
 ```
 
-### Sprendimas: Proxy serveris
+### Sprendimas: Vercel Serverless funkcija
 
-Sistemoje jau yra įdiegtas sprendimas, naudojantis Supabase Edge funkcijas kaip proxy serverį. Kad tai veiktų, reikia:
+Sistema naudoja Vercel serverless funkciją kaip proxy serverį DeepL API užklausoms:
 
-1. **Įdiegti Supabase Edge funkciją**
-   - Funkcijos kodas yra direktorijoje `/supabase/functions/translate/`
-   - Sekite instrukcijas šios direktorijos README.md faile
+1. **Serverless funkcija**
+   - Funkcijos kodas yra direktorijoje `/api/translate.js`
+   - Ši funkcija yra automatiškai įdiegiama, kai projektas diegiamas į Vercel
 
-2. **Konfigūruoti aplinkos kintamuosius**
-   - Sukurkite `.env` failą pagal `.env.example` šabloną
-   - Nustatykite `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį į jūsų įdiegtos funkcijos URL
+2. **Konfigūracija**
+   - Vercel projekte nustatykite aplinkos kintamąjį `DEEPL_API_KEY` su jūsų DeepL API raktu
+   - Jei norite naudoti kitą API kelią, galite pakeisti `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį
 
-3. **Perkraukite sistemą**
-   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverį užklausoms į DeepL API
+3. **Kaip tai veikia**
+   - Klientinis kodas siunčia užklausą į `/api/translate` Vercel serverless funkciją
+   - Serverless funkcija perduoda užklausą į DeepL API
+   - Atsakymas grąžinamas klientui be CORS apribojimų
 
-### Daugiau informacijos
+### Lokalus testavimas
 
-Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama faile `RSS_INFO.md`.
+Lokaliam testavimui:
+1. Sukurkite `.env` failą pagal `.env.example` šabloną
+2. Nustatykite `DEEPL_API_KEY` kintamąjį su jūsų DeepL API raktu
 
 ## Tobulinimo galimybės
 
