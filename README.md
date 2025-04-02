@@ -1,58 +1,52 @@
-# Welcome to your Lovable project
+# ponas Obuolys - Dirbtinio intelekto žinios
 
-## Project info
+## Projekto informacija
 
-**URL**: https://lovable.dev/projects/f18709cb-5e52-45f2-8f42-766e2eac0b57
+**URL**: https://ponasobuolys.lt
 
-## How can I edit this code?
+## Kaip redaguoti kodą?
 
-There are several ways of editing your application.
+Yra keli būdai redaguoti šią aplikaciją.
 
-**Use Lovable**
+**Naudojant lokalią aplinką**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f18709cb-5e52-45f2-8f42-766e2eac0b57) and start prompting.
+Jei norite dirbti lokaliai naudojant savo pasirinktą IDE, galite klonuoti šią repozitoriją ir įkelti pakeitimus.
 
-Changes made via Lovable will be committed automatically to this repo.
+Vienintelis reikalavimas - turėti įdiegtą Node.js ir npm - [įdiegti su nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Sekite šiuos žingsnius:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# 1 žingsnis: Klonuokite repozitoriją naudojant projekto Git URL.
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# 2 žingsnis: Pereikite į projekto direktoriją.
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
+# 3 žingsnis: Įdiekite reikalingas priklausomybes.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4 žingsnis: Paleiskite vystymo serverį su automatiniu perkrovimu ir momentine peržiūra.
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+**Redaguoti failą tiesiogiai GitHub platformoje**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Naviguokite į norimą(-us) failą(-us).
+- Paspauskite "Edit" mygtuką (pieštuko ikoną) failo peržiūros viršutiniame dešiniajame kampe.
+- Atlikite pakeitimus ir patvirtinkite juos.
 
-**Use GitHub Codespaces**
+**Naudoti GitHub Codespaces**
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Naviguokite į pagrindinį repozitorijos puslapį.
+- Paspauskite "Code" mygtuką (žalias mygtukas) viršutinėje dešinėje pusėje.
+- Pasirinkite "Codespaces" skirtuką.
+- Paspauskite "New codespace", kad paleistumėte naują Codespace aplinką.
+- Redaguokite failus tiesiogiai Codespace aplinkoje ir patvirtinkite bei įkelkite pakeitimus, kai baigsite.
 
-## What technologies are used for this project?
+## Kokios technologijos naudojamos šiame projekte?
 
-This project is built with .
+Šis projektas sukurtas naudojant:
 
 - Vite
 - TypeScript
@@ -60,10 +54,10 @@ This project is built with .
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## Kaip diegti šį projektą?
 
-Simply open [Lovable](https://lovable.dev/projects/f18709cb-5e52-45f2-8f42-766e2eac0b57) and click on Share -> Publish.
+Projektas yra diegiamas naudojant Vercel platformą, ir automatiškai atnaujinamas po kiekvieno pakeitimo.
 
-## I want to use a custom domain - is that possible?
+## Naudojamas domenas
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+Projektas naudoja custom domeną ponasobuolys.lt
