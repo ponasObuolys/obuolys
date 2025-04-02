@@ -91,6 +91,35 @@ Sistemą sudaro šios pagrindinės dalys:
 - Sistemoje API raktai saugomi localStorage, produkciniame variante rekomenduojama naudoti saugesnį sprendimą
 - Rekomenduojama apriboti prieigą prie administravimo skydelio tik autorizuotiems vartotojams
 
+## CORS problemų sprendimas
+
+### Problema
+
+DeepL API turi CORS apribojimus, kurie neleidžia tiesiogiai kreiptis į jį iš naršyklės kodo. Dėl šios priežasties tiesioginis vertimas gali neveikti svetainėje, ir jūs galite matyti klaidas:
+
+```
+Access to fetch at 'https://api-free.deepl.com/v2/translate' has been blocked by CORS policy
+```
+
+### Sprendimas: Proxy serveris
+
+Sistemoje jau yra įdiegtas sprendimas, naudojantis Supabase Edge funkcijas kaip proxy serverį. Kad tai veiktų, reikia:
+
+1. **Įdiegti Supabase Edge funkciją**
+   - Funkcijos kodas yra direktorijoje `/supabase/functions/translate/`
+   - Sekite instrukcijas šios direktorijos README.md faile
+
+2. **Konfigūruoti aplinkos kintamuosius**
+   - Sukurkite `.env` failą pagal `.env.example` šabloną
+   - Nustatykite `REACT_APP_TRANSLATION_PROXY_URL` kintamąjį į jūsų įdiegtos funkcijos URL
+
+3. **Perkraukite sistemą**
+   - Po konfigūracijos atnaujinimo sistema automatiškai naudos proxy serverį užklausoms į DeepL API
+
+### Daugiau informacijos
+
+Išsamesnė informacija apie CORS problemą ir jos sprendimą pateikiama faile `RSS_INFO.md`.
+
 ## Tobulinimo galimybės
 
 - Vertimo šaltinio pasirinkimas (Google, Microsoft, DeepL ir kt.)

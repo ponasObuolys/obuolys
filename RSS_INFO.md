@@ -140,6 +140,44 @@ const data = await response.json();
 const translatedText = data.translations[0].text;
 ```
 
+### DeepL API ir CORS apribojimų sprendimas
+
+DeepL API, kaip ir daugelis kitų trečiųjų šalių API, turi CORS (Cross-Origin Resource Sharing) apribojimus, kurie neleidžia tiesiogiai kreiptis į API iš naršyklės, jei užklausa siunčiama iš kito domeno. Tai saugumo mechanizmas, kuris apsaugo API nuo piktnaudžiavimo.
+
+#### Problemos aprašymas
+
+Kai bandote tiesiogiai kreiptis į DeepL API iš naršyklės, gaunate tokią klaidą:
+```
+Access to fetch at 'https://api-free.deepl.com/v2/translate' from origin 'https://www.ponasobuolys.lt' 
+has been blocked by CORS policy: Response to preflight request doesn't pass access control check: 
+No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+#### Sprendimas: Proxy serveris su Supabase Edge Functions
+
+1. **Proxy serverio funkcija**
+   - Sukurta Supabase Edge funkcija `/supabase/functions/translate/index.ts`
+   - Ši funkcija veikia kaip tarpininkas tarp kliento ir DeepL API
+   - Funkcija yra diegiama Supabase platformoje
+
+2. **Kaip veikia proxy sprendimas**
+   - Kliento kodas siunčia užklausą į Supabase Edge funkciją
+   - Edge funkcija perduoda užklausą į DeepL API
+   - Gauna atsakymą ir grąžina jį klientui
+   - Prideda tinkamas CORS antraštes, kad leistų kreiptis iš bet kurio domeno
+
+3. **Diegimo instrukcijos**
+   - Įdiekite Supabase CLI įrankį: `npm install -g supabase`
+   - Prisiregistruokite prie Supabase: `supabase login`
+   - Susiekite projektą: `supabase link --project-ref <jūsų-projekto-id>`
+   - Įdiekite funkciją: `supabase functions deploy translate`
+   - Nustatykite aplinkos kintamąjį REACT_APP_TRANSLATION_PROXY_URL į Edge funkcijos URL
+
+4. **Proxy serverio naudojimas**
+   - RssFeedService automatiškai aptinka, ar aplinkos kintamasis REACT_APP_TRANSLATION_PROXY_URL yra nustatytas
+   - Jei taip, naudoja proxy serverį užklausoms
+   - Jei ne, bando naudoti tiesioginį ryšį (kuris greičiausiai nepavyks dėl CORS)
+
 ## Paveikslėlių apdorojimas
 
 1. Sistema bando ištraukti paveikslėlio URL iš:
