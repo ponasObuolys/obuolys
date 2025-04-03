@@ -29,13 +29,39 @@ const PublicationsPage = () => {
     const fetchPublications = async () => {
       try {
         setLoading(true);
+        console.log("Fetching publications from Supabase...");
+        
+        // First, check if we can access the articles table at all
+        const { count, error: countError } = await supabase
+          .from('articles')
+          .select('*', { count: 'exact', head: true });
+          
+        console.log("Total articles in database:", count);
+        
+        if (countError) {
+          console.error("Error counting articles:", countError);
+          throw countError;
+        }
+        
+        // Now fetch the published articles
         const { data, error } = await supabase
           .from('articles')
           .select('*')
           .eq('published', true)
           .order('date', { ascending: false });
           
+        console.log("Published articles fetched:", data ? data.length : 0);
+        if (data) {
+          console.log("First article (if any):", data.length > 0 ? {
+            id: data[0].id,
+            title: data[0].title,
+            published: data[0].published,
+            content_type: data[0].content_type
+          } : "No articles");
+        }
+        
         if (error) {
+          console.error("Error fetching published articles:", error);
           throw error;
         }
         

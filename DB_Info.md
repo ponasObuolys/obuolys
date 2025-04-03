@@ -13,7 +13,7 @@ Stores user profile information.
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
-### 2. articles
+### 2. articles 
 Stores articles for the /straipsniai section.
 - `id` (UUID, PK): Unique identifier
 - `title` (TEXT): Article title
@@ -27,20 +27,7 @@ Stores articles for the /straipsniai section.
 - `featured` (BOOLEAN): Featured article status
 - `published` (BOOLEAN): Publication status
 - `image_url` (TEXT, nullable): Article cover image URL
-- `created_at` (TIMESTAMP): Creation timestamp
-- `updated_at` (TIMESTAMP): Last update timestamp
-
-### 3. news
-Stores news items for the /naujienos section.
-- `id` (UUID, PK): Unique identifier
-- `title` (TEXT): News title
-- `slug` (TEXT, unique): URL-friendly identifier
-- `description` (TEXT): Short description
-- `content` (TEXT): Full news content
-- `author` (TEXT): Author name
-- `date` (DATE): Publication date
-- `published` (BOOLEAN): Publication status
-- `image_url` (TEXT, nullable): News cover image URL
+- `content_type` (TEXT, nullable): Article content type
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
