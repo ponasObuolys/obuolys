@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { shareToFacebook } from '@/utils/facebookShare';
 
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
@@ -95,26 +96,14 @@ const PublicationDetail = () => {
   };
 
   const shareFacebook = () => {
-    const url = getArticleUrl();
-    try {
-      // Try the standard Facebook sharer with specific parameters
-      const shareWindow = window.open(
-        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-        'facebook-share-dialog',
-        'width=626,height=436'
-      );
-      
-      // Check if popup was blocked or failed to open
-      if (!shareWindow || shareWindow.closed || typeof shareWindow.closed === 'undefined') {
-        console.log("Facebook share window may have been blocked. Trying alternative method...");
-        // Fallback to direct navigation
-        window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-      }
-    } catch (error) {
-      console.error("Error sharing to Facebook:", error);
-      // Last resort fallback
-      window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    }
+    shareToFacebook({
+      url: getArticleUrl(),
+      title: publication.title,
+      description: publication.description || '',
+      quote: publication.title
+    }).catch(error => {
+      console.error("All Facebook sharing methods failed:", error);
+    });
   };
 
   return (
@@ -203,6 +192,8 @@ const PublicationDetail = () => {
                   onClick={shareFacebook} 
                   className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
                   data-href={getArticleUrl()}
+                  data-layout="button"
+                  data-size="large"
                 >
                   <Facebook className="mr-2 h-4 w-4" />
                   <span>Dalintis Facebook</span>

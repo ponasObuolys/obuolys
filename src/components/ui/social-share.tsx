@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { shareToFacebook, initFacebookSDK } from "@/utils/facebookShare";
 
 interface SocialShareProps {
   url: string;
@@ -19,6 +20,14 @@ export function SocialShare({
   showCopyLink = true
 }: SocialShareProps) {
   const [copied, setCopied] = useState(false);
+  const [fbInitialized, setFbInitialized] = useState(false);
+
+  // Initialize Facebook SDK when component mounts
+  useEffect(() => {
+    initFacebookSDK()
+      .then(() => setFbInitialized(true))
+      .catch(error => console.error("Failed to initialize Facebook SDK:", error));
+  }, []);
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
@@ -26,31 +35,16 @@ export function SocialShare({
 
   const shareFacebook = (e: React.MouseEvent) => {
     e.preventDefault();
-    try {
-      // Use enhanced Facebook sharer with additional parameters
-      const fbShareUrl = new URL('https://www.facebook.com/sharer/sharer.php');
-      fbShareUrl.searchParams.append('u', url);
-      if (title) fbShareUrl.searchParams.append('title', title);
-      if (description) fbShareUrl.searchParams.append('description', description);
-      
-      // Try the standard Facebook sharer with a more specific configuration
-      const shareWindow = window.open(
-        fbShareUrl.toString(),
-        'facebook-share-dialog',
-        'width=626,height=436,resizable=yes,scrollbars=yes'
-      );
-      
-      // Check if popup was blocked or failed to open
-      if (!shareWindow || shareWindow.closed || typeof shareWindow.closed === 'undefined') {
-        console.log("Facebook share window may have been blocked. Trying alternative method...");
-        // Fallback to direct navigation
-        window.location.href = fbShareUrl.toString();
-      }
-    } catch (error) {
-      console.error("Error sharing to Facebook:", error);
-      // Last resort fallback
-      window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-    }
+    
+    // Use our utility function that handles all the Facebook sharing logic
+    shareToFacebook({
+      url,
+      title,
+      description,
+      quote: title ? `${title} - ${description}` : description
+    }).catch(error => {
+      console.error("All Facebook sharing methods failed:", error);
+    });
   };
 
   const shareTwitter = (e: React.MouseEvent) => {
@@ -94,6 +88,8 @@ export function SocialShare({
               size="icon"
               aria-label="Share on Facebook"
               data-href={url}
+              data-layout="button"
+              data-size="large"
             >
               <Facebook className="h-4 w-4" />
             </Button>

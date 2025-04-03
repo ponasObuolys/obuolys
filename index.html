@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Facebook App ID -->
+    <meta property="fb:app_id" content="your-app-id" />
     <title>ponas Obuolys - Dirbtinio intelekto žinios</title>
     <meta name="description" content="Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai - ponas Obuolys" />
     <meta name="author" content="ponas Obuolys" />
@@ -23,6 +25,10 @@
   </head>
 
   <body>
+    <!-- Facebook SDK -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/lt_LT/sdk.js#xfbml=1&version=v19.0" nonce="random-nonce"></script>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
