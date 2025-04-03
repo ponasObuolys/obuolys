@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Facebook } from "lucide-react";
+import { SocialShare } from "@/components/ui/social-share";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/ui/lazy-image";
 
@@ -39,9 +39,8 @@ const FeaturedArticles = () => {
     fetchFeaturedArticles();
   }, []);
 
-  const shareFacebook = (slug: string) => {
-    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  const getShareUrl = (slug: string) => {
+    return `https://ponasobuolys.lt/publikacijos/${slug}`;
   };
 
   return (
@@ -82,17 +81,16 @@ const FeaturedArticles = () => {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="flex justify-between">
+                <CardFooter className="flex justify-between items-center">
                   <Link to={`/publikacijos/${article.slug}`}>
                     <Button className="button-primary">Skaityti daugiau</Button>
                   </Link>
-                  <Button 
-                    onClick={() => shareFacebook(article.slug)} 
-                    className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-                    size="icon"
-                  >
-                    <Facebook className="h-4 w-4" />
-                  </Button>
+                  <SocialShare 
+                    url={getShareUrl(article.slug)}
+                    title={article.title}
+                    description={article.description}
+                    showCopyLink={false}
+                  />
                 </CardFooter>
               </Card>
             ))}
