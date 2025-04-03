@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { shareToFacebook, initFacebookSDK } from "@/utils/facebookShare";
 
 interface SocialShareProps {
   url: string;
@@ -20,31 +19,13 @@ export function SocialShare({
   showCopyLink = true
 }: SocialShareProps) {
   const [copied, setCopied] = useState(false);
-  const [fbInitialized, setFbInitialized] = useState(false);
-
-  // Initialize Facebook SDK when component mounts
-  useEffect(() => {
-    initFacebookSDK()
-      .then(() => setFbInitialized(true))
-      .catch(error => console.error("Failed to initialize Facebook SDK:", error));
-  }, []);
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
   const encodedDescription = encodeURIComponent(description);
 
-  const shareFacebook = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
-    // Use our utility function that handles all the Facebook sharing logic
-    shareToFacebook({
-      url,
-      title,
-      description,
-      quote: title ? `${title} - ${description}` : description
-    }).catch(error => {
-      console.error("All Facebook sharing methods failed:", error);
-    });
+  const getFacebookShareUrl = () => {
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
   };
 
   const shareTwitter = (e: React.MouseEvent) => {
@@ -102,17 +83,15 @@ export function SocialShare({
         {/* Facebook Button */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              onClick={shareFacebook}
-              className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-              size="icon"
+            <a
+              href={getFacebookShareUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#1877F2] text-white hover:bg-[#1877F2]/90 h-9 w-9 p-0"
               aria-label="Share on Facebook"
-              data-href={url}
-              data-layout="button"
-              data-size="large"
             >
               <Facebook className="h-4 w-4" />
-            </Button>
+            </a>
           </TooltipTrigger>
           <TooltipContent>
             <p>Share on Facebook</p>

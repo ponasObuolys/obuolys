@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { shareToFacebook } from '@/utils/facebookShare';
 
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar, Link2, Check } from 'lucide-react';
@@ -119,20 +118,9 @@ const PublicationDetail = () => {
     );
   };
 
-  const shareFacebook = () => {
-    shareToFacebook({
-      url: getArticleUrl(),
-      title: publication.title,
-      description: publication.description || '',
-      quote: publication.title
-    }).catch(error => {
-      console.error("All Facebook sharing methods failed:", error);
-      toast({
-        title: "Klaida dalinantis",
-        description: "Nepavyko pasidalinti per Facebook. Pabandykite nukopijuoti nuorodą.",
-        variant: "destructive"
-      });
-    });
+  const getFacebookShareUrl = () => {
+    const url = getArticleUrl();
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   };
 
   return (
@@ -235,16 +223,15 @@ const PublicationDetail = () => {
                       </>
                     )}
                   </Button>
-                  <Button 
-                    onClick={shareFacebook} 
-                    className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-                    data-href={getArticleUrl()}
-                    data-layout="button"
-                    data-size="large"
+                  <a 
+                    href={getFacebookShareUrl()} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#1877F2] text-white hover:bg-[#1877F2]/90 h-10 px-4 py-2"
                   >
                     <Facebook className="mr-2 h-4 w-4" />
                     <span>Facebook</span>
-                  </Button>
+                  </a>
                 </div>
               </div>
             </div>
