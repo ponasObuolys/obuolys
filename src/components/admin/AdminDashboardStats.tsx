@@ -1,10 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AdminDashboardStatsProps {
   stats: {
     articlesCount: number;
-    newsCount: number;
     toolsCount: number;
     coursesCount: number;
     usersCount: number;
@@ -20,15 +18,6 @@ const AdminDashboardStats = ({ stats }: AdminDashboardStatsProps) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.articlesCount}</div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Naujienos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{stats.newsCount}</div>
         </CardContent>
       </Card>
       

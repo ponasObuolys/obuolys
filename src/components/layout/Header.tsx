@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -19,22 +18,11 @@ const Header = () => {
           </Link>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="nav-link">Pagrindinis</Link>
+          <nav className="hidden md:flex space-x-6">
             <Link to="/straipsniai" className="nav-link">Straipsniai</Link>
-            <Link to="/naujienos" className="nav-link">Naujienos</Link>
-            <div className="relative group">
-              <button className="nav-link flex items-center">
-                <span>Įrankiai</span>
-                <ChevronDown className="h-4 w-4 ml-1" />
-              </button>
-              <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg p-2 invisible group-hover:visible transition-all duration-300 opacity-0 group-hover:opacity-100">
-                <Link to="/irankiai" className="block px-4 py-2 text-sm text-secondary hover:bg-primary/10 rounded-md">Visi įrankiai</Link>
-                <Link to="/irankiai/generuoti" className="block px-4 py-2 text-sm text-secondary hover:bg-primary/10 rounded-md">Turinio generavimas</Link>
-                <Link to="/irankiai/analitika" className="block px-4 py-2 text-sm text-secondary hover:bg-primary/10 rounded-md">Analitika</Link>
-              </div>
-            </div>
+            {/* <Link to="/naujienos" className="nav-link">Naujienos</Link> */}
             <Link to="/kursai" className="nav-link">Kursai</Link>
+            <Link to="/irankiai" className="nav-link">Įrankiai</Link>
             <Link to="/kontaktai" className="nav-link">Kontaktai</Link>
           </nav>
           
@@ -69,55 +57,33 @@ const Header = () => {
             >
               Pagrindinis
             </Link>
-            <Link 
-              to="/straipsniai" 
-              className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
+            <Link
+              to="/straipsniai"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(false)}
             >
               Straipsniai
             </Link>
-            <Link 
-              to="/naujienos" 
-              className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
+            {/* <Link
+              to="/naujienos"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(false)}
             >
               Naujienos
-            </Link>
-            <div className="px-4 py-2">
-              <div className="flex items-center justify-between text-secondary">
-                <span>Įrankiai</span>
-                <ChevronDown className="h-4 w-4" />
-              </div>
-              <div className="ml-4 mt-2 space-y-2">
-                <Link 
-                  to="/irankiai" 
-                  className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Visi įrankiai
-                </Link>
-                <Link 
-                  to="/irankiai/generuoti" 
-                  className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Turinio generavimas
-                </Link>
-                <Link 
-                  to="/irankiai/analitika" 
-                  className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Analitika
-                </Link>
-              </div>
-            </div>
-            <Link 
-              to="/kursai" 
-              className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
+            </Link> */}
+            <Link
+              to="/kursai"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(false)}
             >
               Kursai
+            </Link>
+            <Link
+              to="/irankiai"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Įrankiai
             </Link>
             <Link 
               to="/kontaktai" 

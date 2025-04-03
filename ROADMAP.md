@@ -28,6 +28,10 @@ Sukurti platformą, kurioje youtuberis Ponas Obuolys galėtų dalintis savo žin
         *   Pridėti validaciją.
 *   **[X] Klaidų taisymas:**
     *   **[X] 404 klaida atnaujinus puslapį:** Ištaisyta sukūrus `vercel.json`.
+*   **[X] Naujienų skilties pašalinimas:**
+    *   Pašalintas `/naujienos` maršrutas ir susiję komponentai.
+    *   Pašalintos nuorodos iš navigacijos.
+    *   Pašalintas naujienų valdymas iš admin panelės.
 
 ## Ilgalaikiai Planai (Ateities idėjos)
 
