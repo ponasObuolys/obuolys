@@ -40,7 +40,7 @@ const FeaturedArticles = () => {
   }, []);
 
   const shareFacebook = (slug: string) => {
-    const url = `https://ponasobuolys.lt/straipsniai/${slug}`;
+    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
   };
 
@@ -83,7 +83,7 @@ const FeaturedArticles = () => {
                   )}
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Link to={`/straipsniai/${article.slug}`}>
+                  <Link to={`/publikacijos/${article.slug}`}>
                     <Button className="button-primary">Skaityti daugiau</Button>
                   </Link>
                   <Button 
@@ -104,7 +104,7 @@ const FeaturedArticles = () => {
         )}
         
         <div className="text-center mt-12">
-          <Link to="/straipsniai">
+          <Link to="/publikacijos">
             <Button className="button-outline">Visi straipsniai</Button>
           </Link>
         </div>

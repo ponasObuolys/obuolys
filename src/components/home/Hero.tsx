@@ -17,7 +17,7 @@ const Hero = () => {
               Naujienos, straipsniai ir kursai lietuvių kalba.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/straipsniai">
+              <Link to="/publikacijos">
                 <Button className="button-primary w-full sm:w-auto">Naujausi straipsniai</Button>
               </Link>
               <Link to="/kursai">
