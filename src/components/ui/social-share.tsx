@@ -27,18 +27,24 @@ export function SocialShare({
   const shareFacebook = (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      // Try the standard Facebook sharer
+      // Use enhanced Facebook sharer with additional parameters
+      const fbShareUrl = new URL('https://www.facebook.com/sharer/sharer.php');
+      fbShareUrl.searchParams.append('u', url);
+      if (title) fbShareUrl.searchParams.append('title', title);
+      if (description) fbShareUrl.searchParams.append('description', description);
+      
+      // Try the standard Facebook sharer with a more specific configuration
       const shareWindow = window.open(
-        `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+        fbShareUrl.toString(),
         'facebook-share-dialog',
-        'width=626,height=436'
+        'width=626,height=436,resizable=yes,scrollbars=yes'
       );
       
       // Check if popup was blocked or failed to open
       if (!shareWindow || shareWindow.closed || typeof shareWindow.closed === 'undefined') {
         console.log("Facebook share window may have been blocked. Trying alternative method...");
         // Fallback to direct navigation
-        window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        window.location.href = fbShareUrl.toString();
       }
     } catch (error) {
       console.error("Error sharing to Facebook:", error);
@@ -87,6 +93,7 @@ export function SocialShare({
               className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
               size="icon"
               aria-label="Share on Facebook"
+              data-href={url}
             >
               <Facebook className="h-4 w-4" />
             </Button>

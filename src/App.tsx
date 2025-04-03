@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
@@ -29,12 +30,13 @@ const SiteLayout = () => (
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ImageLoadingProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ImageLoadingProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<SiteLayout />} > {/* Use SiteLayout as the element */} 
@@ -52,10 +54,11 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-          </TooltipProvider>
-        </ImageLoadingProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+            </TooltipProvider>
+          </ImageLoadingProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

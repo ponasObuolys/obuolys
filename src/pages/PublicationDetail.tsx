@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
@@ -89,13 +90,57 @@ const PublicationDetail = () => {
     );
   }
   
+  const getArticleUrl = () => {
+    return `https://ponasobuolys.lt/publikacijos/${slug}`;
+  };
+
   const shareFacebook = () => {
-    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    const url = getArticleUrl();
+    try {
+      // Try the standard Facebook sharer with specific parameters
+      const shareWindow = window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+        'facebook-share-dialog',
+        'width=626,height=436'
+      );
+      
+      // Check if popup was blocked or failed to open
+      if (!shareWindow || shareWindow.closed || typeof shareWindow.closed === 'undefined') {
+        console.log("Facebook share window may have been blocked. Trying alternative method...");
+        // Fallback to direct navigation
+        window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      }
+    } catch (error) {
+      console.error("Error sharing to Facebook:", error);
+      // Last resort fallback
+      window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    }
   };
 
   return (
     <>
+      <Helmet>
+        <title>{publication.title} | ponas Obuolys</title>
+        <meta name="description" content={publication.description || ''} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={getArticleUrl()} />
+        <meta property="og:title" content={publication.title} />
+        <meta property="og:description" content={publication.description || ''} />
+        {publication.image_url && <meta property="og:image" content={publication.image_url} />}
+        <meta property="og:site_name" content="ponas Obuolys" />
+        <meta property="article:published_time" content={publication.date} />
+        {publication.category && <meta property="article:section" content={publication.category} />}
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={getArticleUrl()} />
+        <meta name="twitter:title" content={publication.title} />
+        <meta name="twitter:description" content={publication.description || ''} />
+        {publication.image_url && <meta name="twitter:image" content={publication.image_url} />}
+      </Helmet>
+
       <article className="container mx-auto px-4 py-12">
         <Link to="/publikacijos" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -157,6 +202,7 @@ const PublicationDetail = () => {
                 <Button 
                   onClick={shareFacebook} 
                   className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
+                  data-href={getArticleUrl()}
                 >
                   <Facebook className="mr-2 h-4 w-4" />
                   <span>Dalintis Facebook</span>
