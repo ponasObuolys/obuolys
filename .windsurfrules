@@ -1,0 +1,25 @@
+# Ponas Obuolys Project Rules
+
+## Language Requirements
+- All code, comments, and documentation must be in Lithuanian, except for technical terms and variable names
+- Use proper Lithuanian grammar and spelling in all user-facing content
+- Maintain consistent terminology across the project
+
+## Code Style
+- Follow the React TypeScript style guide
+- Use camelCase for variables and functions
+- Use PascalCase for components and interfaces
+- Use kebab-case for file names
+- Maximum line length: 100 characters
+- Use 2 spaces for indentation
+- Always use semicolons
+- Use single quotes for strings
+- Always use explicit type annotations
+
+## Project Constraints
+- Mobile-first responsive design
+- Support for modern browsers only (Chrome, Firefox, Safari, Edge)
+- Accessibility compliance (WCAG 2.1 AA)
+- Performance optimization for fast loading times
+- SEO-friendly content structure
+- Secure coding practices

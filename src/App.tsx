@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
 import HomePage from "./pages/Index";
 import PublicationsPage from "./pages/PublicationsPage";
@@ -33,8 +34,9 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <ImageLoadingProvider>
-            <TooltipProvider>
+          <LanguageProvider>
+            <ImageLoadingProvider>
+              <TooltipProvider>
               <Toaster />
               <Sonner />
             <BrowserRouter>
@@ -54,8 +56,9 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-            </TooltipProvider>
-          </ImageLoadingProvider>
+              </TooltipProvider>
+            </ImageLoadingProvider>
+          </LanguageProvider>
         </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
