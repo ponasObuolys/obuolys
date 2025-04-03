@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import Layout from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -95,7 +95,7 @@ const Auth = () => {
   }
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto py-12 flex justify-center">
         <div className="w-full max-w-md">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -234,7 +234,7 @@ const Auth = () => {
           </Tabs>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

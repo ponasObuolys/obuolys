@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Layout from '@/components/layout/Layout';
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -71,7 +71,7 @@ const PublicationsPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -182,7 +182,7 @@ const PublicationsPage = () => {
           )}
         </div>
       </section>
-    </Layout>
+    </>
   );
 };
 

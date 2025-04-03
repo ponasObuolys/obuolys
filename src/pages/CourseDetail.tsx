@@ -1,6 +1,6 @@
 
 import { useParams, Link } from 'react-router-dom';
-import Layout from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, Users, Star, Check, CheckCircle, AlertCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -110,7 +110,7 @@ const CourseDetail = () => {
   
   if (!course) {
     return (
-      <Layout>
+      <>
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Kursas nerastas</h1>
           <p className="mb-6">Atsiprašome, bet ieškomas kursas neegzistuoja.</p>
@@ -118,12 +118,12 @@ const CourseDetail = () => {
             <Button className="button-primary">Grįžti į kursų sąrašą</Button>
           </Link>
         </div>
-      </Layout>
+      </>
     );
   }
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-12">
         <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -270,7 +270,7 @@ const CourseDetail = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

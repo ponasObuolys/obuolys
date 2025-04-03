@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import Layout from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -46,7 +46,7 @@ const ContactPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -201,7 +201,7 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 };
 

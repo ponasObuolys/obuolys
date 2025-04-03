@@ -1,4 +1,4 @@
-import Layout from '@/components/layout/Layout';
+
 import Hero from '@/components/home/Hero';
 import FeaturedArticles from '@/components/home/FeaturedArticles';
 // import AINews from '@/components/home/AINews'; // Removed
@@ -9,7 +9,7 @@ import CallToAction from '@/components/home/CallToAction';
 
 const Index = () => {
   return (
-    <Layout>
+    <>
       <Hero />
       <FeaturedArticles />
       {/* <AINews /> */}
@@ -17,7 +17,7 @@ const Index = () => {
       <Courses />
       <CallToAction />
       {/* Removed FeaturesSection, CoursesPreview, ToolsSection, CtaSection components */}
-    </Layout>
+    </>
   );
 };
 

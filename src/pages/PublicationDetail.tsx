@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Layout from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
@@ -67,17 +67,17 @@ const PublicationDetail = () => {
   
   if (loading) {
     return (
-      <Layout>
+      <>
         <div className="container mx-auto px-4 py-16 text-center">
           <p>Kraunama...</p>
         </div>
-      </Layout>
+      </>
     );
   }
   
   if (!publication) {
     return (
-      <Layout>
+      <>
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Publikacija nerasta</h1>
           <p className="mb-6">Atsiprašome, bet ieškoma publikacija neegzistuoja.</p>
@@ -85,7 +85,7 @@ const PublicationDetail = () => {
             <Button className="button-primary">Grįžti į publikacijų sąrašą</Button>
           </Link>
         </div>
-      </Layout>
+      </>
     );
   }
   
@@ -95,7 +95,7 @@ const PublicationDetail = () => {
   };
 
   return (
-    <Layout>
+    <>
       <article className="container mx-auto px-4 py-12">
         <Link to="/publikacijos" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -166,7 +166,7 @@ const PublicationDetail = () => {
           </div>
         </div>
       </article>
-    </Layout>
+    </>
   );
 };
 

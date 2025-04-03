@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import Layout from '@/components/layout/Layout';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -92,12 +92,12 @@ const AdminDashboard = () => {
   // Display loading state
   if (loading) {
     return (
-      <Layout>
+      <>
         <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold mb-8">Administratoriaus valdymo skydelis</h1>
           <p className="text-center">Kraunama...</p>
         </div>
-      </Layout>
+      </>
     );
   }
 
@@ -107,7 +107,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-8">Administratoriaus valdymo skydelis</h1>
         
@@ -261,7 +261,7 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </Layout>
+    </>
   );
 };
 

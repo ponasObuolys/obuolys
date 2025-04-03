@@ -15,7 +15,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">404</h1>
         <p className="text-xl text-gray-600 mb-8">Oops! Puslapis nerastas</p>
@@ -26,7 +26,7 @@ const NotFound = () => {
           <Button className="button-primary">Grįžti į pagrindinį puslapį</Button>
         </Link>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Layout from '@/components/layout/Layout';
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,7 +72,7 @@ const ToolsPage = () => {
   const categories = [...new Set(tools.map(tool => tool.category))];
 
   return (
-    <Layout>
+    <>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -176,7 +176,7 @@ const ToolsPage = () => {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 };
 
