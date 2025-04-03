@@ -19,7 +19,7 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link to="/straipsniai" className="nav-link">Straipsniai</Link>
+            <Link to="/publikacijos" className="nav-link">Publikacijos</Link>
             {/* <Link to="/naujienos" className="nav-link">Naujienos</Link> */}
             <Link to="/kursai" className="nav-link">Kursai</Link>
             <Link to="/irankiai" className="nav-link">Įrankiai</Link>
@@ -58,11 +58,11 @@ const Header = () => {
               Pagrindinis
             </Link>
             <Link
-              to="/straipsniai"
+              to="/publikacijos"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Straipsniai
+              Publikacijos
             </Link>
             {/* <Link
               to="/naujienos"

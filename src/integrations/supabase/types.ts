@@ -14,6 +14,7 @@ export type Database = {
           author: string
           category: string
           content: string
+          content_type: string
           created_at: string
           date: string
           description: string
@@ -30,6 +31,7 @@ export type Database = {
           author: string
           category: string
           content: string
+          content_type: string
           created_at?: string
           date: string
           description: string
@@ -57,6 +59,7 @@ export type Database = {
           title?: string
           updated_at?: string
           image_url?: string | null
+          content_type?: string
         }
         Relationships: []
       }

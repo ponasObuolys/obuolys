@@ -9,19 +9,22 @@ import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
 import useLazyImages from '@/hooks/useLazyImages';
 import { extractImagesFromHTML, preloadImagesWhenIdle } from '@/utils/imagePreloader';
 import LazyImage from '@/components/ui/lazy-image';
+import { Badge } from "@/components/ui/badge";
+import { Tables } from "@/integrations/supabase/types";
 
-const ArticleDetail = () => {
+type Publication = Tables<"articles">;
+
+const PublicationDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [article, setArticle] = useState<any>(null);
+  const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const contentRef = useRef<HTMLDivElement>(null);
   
-  // Apply lazy loading to images in the article content
   useLazyImages(contentRef);
   
   useEffect(() => {
-    const fetchArticle = async () => {
+    const fetchPublication = async () => {
       try {
         setLoading(true);
         
@@ -39,9 +42,8 @@ const ArticleDetail = () => {
         }
         
         if (data) {
-          setArticle(data);
+          setPublication(data as Publication);
           
-          // Preload images from article content when browser is idle
           if (data.content) {
             const imageUrls = extractImagesFromHTML(data.content);
             preloadImagesWhenIdle(imageUrls);
@@ -50,17 +52,16 @@ const ArticleDetail = () => {
       } catch (error: any) {
         toast({
           title: "Klaida",
-          description: "Nepavyko gauti straipsnio informacijos. Bandykite vėliau.",
+          description: "Nepavyko gauti publikacijos informacijos. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching article:", error.message);
+        console.error("Error fetching publication:", error.message);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchArticle();
-    // Scroll to top when component mounts
+    fetchPublication();
     window.scrollTo(0, 0);
   }, [slug, toast]);
   
@@ -74,14 +75,14 @@ const ArticleDetail = () => {
     );
   }
   
-  if (!article) {
+  if (!publication) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Straipsnis nerastas</h1>
-          <p className="mb-6">Atsiprašome, bet ieškomas straipsnis neegzistuoja.</p>
-          <Link to="/straipsniai">
-            <Button className="button-primary">Grįžti į straipsnių sąrašą</Button>
+          <h1 className="text-2xl font-bold mb-4">Publikacija nerasta</h1>
+          <p className="mb-6">Atsiprašome, bet ieškoma publikacija neegzistuoja.</p>
+          <Link to="/publikacijos">
+            <Button className="button-primary">Grįžti į publikacijų sąrašą</Button>
           </Link>
         </div>
       </Layout>
@@ -89,65 +90,70 @@ const ArticleDetail = () => {
   }
   
   const shareFacebook = () => {
-    const url = `https://ponasobuolys.lt/straipsniai/${slug}`;
+    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
   };
 
   return (
     <Layout>
       <article className="container mx-auto px-4 py-12">
-        <Link to="/straipsniai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
+        <Link to="/publikacijos" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          <span>Grįžti į straipsnių sąrašą</span>
+          <span>Grįžti į publikacijų sąrašą</span>
         </Link>
         
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary">
-                {article.category}
-              </span>
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              {publication.content_type && (
+                <Badge 
+                  variant={publication.content_type === 'Naujiena' ? "destructive" : "secondary"}
+                >
+                  {publication.content_type}
+                </Badge>
+              )}
+              <Badge variant="outline">{publication.category}</Badge>
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{article.title}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">{publication.title}</h1>
             
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-600">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
-                <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>
+                <span>{new Date(publication.date).toLocaleDateString('lt-LT')}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="mr-1 h-4 w-4" />
-                <span>{article.read_time} skaitymo</span>
+                <span>{publication.read_time} skaitymo</span>
               </div>
               <div>
-                Autorius: <span className="font-medium">{article.author}</span>
+                Autorius: <span className="font-medium">{publication.author}</span>
               </div>
             </div>
             
-            {article.image_url ? (
+            {publication.image_url ? (
               <div className="mb-8 rounded-md overflow-hidden">
                 <LazyImage 
-                  src={article.image_url} 
-                  alt={article.title} 
+                  src={publication.image_url} 
+                  alt={publication.title} 
                   className="w-full h-auto"
                 />
               </div>
             ) : (
               <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
-                Straipsnio nuotrauka
+                Publikacijos nuotrauka
               </div>
             )}
             
             <div 
               ref={contentRef}
               className="prose max-w-none mb-8" 
-              dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(article.content) }} 
+              dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(publication.content || '') }}
             />
             
             <div className="border-t border-gray-200 pt-6 mt-8">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p className="font-medium">Dalintis straipsniu:</p>
+                <p className="font-medium">Dalintis publikacija:</p>
                 <Button 
                   onClick={shareFacebook} 
                   className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
@@ -164,4 +170,4 @@ const ArticleDetail = () => {
   );
 };
 
-export default ArticleDetail;
+export default PublicationDetail;

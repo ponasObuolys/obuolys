@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import ArticleEditor from '@/components/admin/ArticleEditor';
+import PublicationEditor from '@/components/admin/PublicationEditor';
 import ToolEditor from '@/components/admin/ToolEditor';
 import CourseEditor from '@/components/admin/CourseEditor';
 import UserManager from '@/components/admin/UserManager';
@@ -22,7 +22,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [dashboardStats, setDashboardStats] = useState({
-    articlesCount: 0,
+    publicationsCount: 0,
     toolsCount: 0,
     coursesCount: 0,
     usersCount: 0
@@ -44,8 +44,8 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch articles count
-      const { count: articlesCount, error: articlesError } = await supabase
+      // Fetch articles count -> publications count
+      const { count: publicationsCount, error: publicationsError } = await supabase
         .from('articles')
         .select('*', { count: 'exact', head: true });
 
@@ -64,12 +64,12 @@ const AdminDashboard = () => {
         .from('profiles')
         .select('*', { count: 'exact', head: true });
 
-      if (articlesError || toolsError || coursesError || usersError) {
+      if (publicationsError || toolsError || coursesError || usersError) {
         throw new Error('Error fetching dashboard statistics');
       }
 
       setDashboardStats({
-        articlesCount: articlesCount || 0,
+        publicationsCount: publicationsCount || 0,
         toolsCount: toolsCount || 0,
         coursesCount: coursesCount || 0,
         usersCount: usersCount || 0
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-8">
             <TabsTrigger value="overview">Apžvalga</TabsTrigger>
-            <TabsTrigger value="articles">Straipsniai</TabsTrigger>
+            <TabsTrigger value="publications">Publikacijos</TabsTrigger>
             <TabsTrigger value="tools">Įrankiai</TabsTrigger>
             <TabsTrigger value="courses">Kursai</TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
@@ -132,9 +132,9 @@ const AdminDashboard = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start" 
-                    onClick={() => handleCreateNew('articles')}
+                    onClick={() => handleCreateNew('publications')}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Naujas straipsnis
+                    <Plus className="mr-2 h-4 w-4" /> Nauja publikacija
                   </Button>
                   <Button 
                     variant="outline" 
@@ -155,9 +155,9 @@ const AdminDashboard = () => {
             </div>
           </TabsContent>
           
-          <TabsContent value="articles">
+          <TabsContent value="publications">
             {editingItem ? (
-              <ArticleEditor 
+              <PublicationEditor 
                 id={editingItem === 'new' ? null : editingItem} 
                 onCancel={() => setEditingItem(null)}
                 onSave={() => {
@@ -169,15 +169,15 @@ const AdminDashboard = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Straipsnių valdymas</CardTitle>
-                    <CardDescription>Tvarkykite svetainės straipsnius</CardDescription>
+                    <CardTitle>Publikacijų valdymas</CardTitle>
+                    <CardDescription>Tvarkykite svetainės straipsnius ir naujienas</CardDescription>
                   </div>
-                  <Button onClick={() => handleCreateNew('articles')}>
-                    <Plus className="mr-2 h-4 w-4" /> Naujas straipsnis
+                  <Button onClick={() => handleCreateNew('publications')}>
+                    <Plus className="mr-2 h-4 w-4" /> Nauja publikacija
                   </Button>
                 </CardHeader>
                 <CardContent>
-                  <ArticlesList 
+                  <PublicationsList 
                     onEdit={(id) => setEditingItem(id)} 
                     onDelete={fetchDashboardStats}
                   />
@@ -266,69 +266,67 @@ const AdminDashboard = () => {
 };
 
 // Article list component for the admin dashboard
-const ArticlesList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelete: () => void }) => {
-  const [articles, setArticles] = useState<any[]>([]);
+const PublicationsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelete: () => void }) => {
+  const [publications, setPublications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchArticles();
+    fetchPublications();
   }, []);
 
-  const fetchArticles = async () => {
+  const fetchPublications = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false });
-        
+        .select('id, title, slug, date, published')
+        .order('date', { ascending: false });
+
       if (error) throw error;
-      setArticles(data || []);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
+      setPublications(data || []);
+    } catch (error: any) {
+      console.error('Error fetching publications:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko gauti straipsnių sąrašo.",
+        description: "Nepavyko gauti publikacijų sąrašo.",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm("Ar tikrai norite ištrinti šią publikaciją?")) return;
     try {
       const { error } = await supabase
         .from('articles')
         .delete()
-        .eq('id', id);
-        
+        .match({ id });
+
       if (error) throw error;
-      
       toast({
         title: "Sėkmingai ištrinta",
-        description: "Straipsnis buvo sėkmingai ištrintas.",
+        description: "Publikacija buvo sėkmingai ištrinta.",
       });
-      
-      fetchArticles();
+      fetchPublications();
       onDelete();
-    } catch (error) {
-      console.error('Error deleting article:', error);
+    } catch (error: any) {
+      console.error('Error deleting publication:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko ištrinti straipsnio.",
+        description: "Nepavyko ištrinti publikacijos.",
         variant: "destructive",
       });
     }
   };
 
   if (loading) {
-    return <p>Kraunami straipsniai...</p>;
+    return <p>Kraunamos publikacijos...</p>;
   }
 
-  if (articles.length === 0) {
-    return <p>Straipsnių nerasta. Sukurkite naują straipsnį.</p>;
+  if (publications.length === 0) {
+    return <p>Publikacijų nėra.</p>;
   }
 
   return (
@@ -336,34 +334,26 @@ const ArticlesList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDe
       <TableHeader>
         <TableRow>
           <TableHead>Pavadinimas</TableHead>
-          <TableHead>Kategorija</TableHead>
           <TableHead>Data</TableHead>
-          <TableHead>Publikuota</TableHead>
+          <TableHead>Statusas</TableHead>
           <TableHead>Veiksmai</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {articles.map((article) => (
-          <TableRow key={article.id}>
-            <TableCell className="font-medium">{article.title}</TableCell>
-            <TableCell>{article.category}</TableCell>
-            <TableCell>{new Date(article.date).toLocaleDateString('lt-LT')}</TableCell>
-            <TableCell>{article.published ? 'Taip' : 'Ne'}</TableCell>
-            <TableCell className="flex space-x-2">
-              <Button variant="outline" size="sm" onClick={() => onEdit(article.id)}>
-                <FilePenLine className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                onClick={() => {
-                  if (window.confirm('Ar tikrai norite ištrinti šį straipsnį?')) {
-                    handleDelete(article.id);
-                  }
-                }}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+        {publications.map((item) => (
+          <TableRow key={item.id}>
+            <TableCell className="font-medium">{item.title}</TableCell>
+            <TableCell>{new Date(item.date).toLocaleDateString('lt-LT')}</TableCell>
+            <TableCell>{item.published ? 'Publikuota' : 'Juodraštis'}</TableCell>
+            <TableCell>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" onClick={() => onEdit(item.id)}>
+                  <FilePenLine className="h-4 w-4 mr-1" /> Redaguoti
+                </Button>
+                <Button variant="destructive" size="sm" onClick={() => handleDelete(item.id)}>
+                  <Trash2 className="h-4 w-4 mr-1" /> Ištrinti
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

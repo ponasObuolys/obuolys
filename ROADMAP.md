@@ -19,7 +19,7 @@ Sukurti platformą, kurioje youtuberis Ponas Obuolys galėtų dalintis savo žin
     *   Sukurti galimybę užsisakyti konsultacijas per Stripe.
 *   **[ ] Veikiančios formos:**
     *   Kontaktų forma:
-        *   Sukurti formos komponentą.
+        *   [ ] Sukurti formos komponentą.
         *   Integruoti su backend'u arba el. pašto siuntimo paslauga (pvz., Supabase functions, Resend).
         *   Pridėti validaciją.
     *   Naujienlaiškio forma:
@@ -32,6 +32,11 @@ Sukurti platformą, kurioje youtuberis Ponas Obuolys galėtų dalintis savo žin
     *   Pašalintas `/naujienos` maršrutas ir susiję komponentai.
     *   Pašalintos nuorodos iš navigacijos.
     *   Pašalintas naujienų valdymas iš admin panelės.
+*   **[X] Straipsnių ir naujienų sujungimas:**
+    *   Pervadinta "Straipsniai" į "Publikacijos" (navigacija, puslapiai, admin panelė).
+    *   Pridėtas `content_type` laukas `articles` lentelei (DB pakeitimas).
+    *   Atnaujintas `PublicationEditor`, leidžiant pasirinkti tipą.
+    *   Pridėtos vizualios žymos (Badges) publikacijų sąraše ir detalės puslapyje.
 
 ## Ilgalaikiai Planai (Ateities idėjos)
 

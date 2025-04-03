@@ -8,9 +8,13 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/ui/lazy-image";
+import { Badge } from "@/components/ui/badge";
+import { Tables } from "@/integrations/supabase/types";
+
+type Publication = Tables<"articles">;
 
 const PublicationsPage = () => {
-  const [publications, setPublications] = useState<any[]>([]);
+  const [publications, setPublications] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
@@ -114,20 +118,25 @@ const PublicationsPage = () => {
           ) : filteredPublications.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPublications.map((item) => (
-                <Card key={item.id} className="article-card">
+                <Card key={item.id} className="article-card flex flex-col">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
                       <div className="text-sm text-gray-500">
-                        {new Date(item.date).toLocaleDateString('lt-LT')} · {item.read_time} skaitymo
+                        {new Date(item.date).toLocaleDateString('lt-LT')} · {item.read_time}
                       </div>
-                      <div className="text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary">
-                        {item.category}
-                      </div>
+                      {item.content_type && (
+                        <Badge 
+                          variant={item.content_type === 'Naujiena' ? "destructive" : "secondary"}
+                          className="ml-auto"
+                        >
+                          {item.content_type}
+                        </Badge>
+                      )}
                     </div>
                     <CardTitle className="text-xl">{item.title}</CardTitle>
                     <CardDescription>{item.description}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     {item.image_url ? (
                       <div className="h-40 overflow-hidden rounded-md">
                         <LazyImage 

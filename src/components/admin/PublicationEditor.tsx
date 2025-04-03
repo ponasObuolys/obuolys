@@ -5,26 +5,51 @@ import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '@/integrations/supabase/client';
 import { FileUpload } from '@/components/ui/file-upload';
 import LazyImage from '@/components/ui/lazy-image';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-interface ArticleEditorProps {
+const publicationSchema = z.object({
+  title: z.string().min(1, { message: "Pavadinimas yra privalomas" }),
+  slug: z.string().min(1, { message: "URL identifikatorius yra privalomas" })
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Netinkamas URL formato pavyzdys: naudoja-mazasias-raides-ir-bruksnelius" }),
+  description: z.string().min(1, { message: "Aprašymas yra privalomas" }),
+  category: z.string().min(1, { message: "Kategorija yra privaloma" }),
+  read_time: z.string().min(1, { message: "Skaitymo laikas yra privalomas" }),
+  author: z.string().min(1, { message: "Autorius yra privalomas" }),
+  date: z.string().min(1, { message: "Data yra privaloma" }),
+  featured: z.boolean().optional(),
+  published: z.boolean().optional(),
+  image_url: z.string().url({ message: "Netinkamas paveikslėlio URL formatas" }).nullable().or(z.literal('')),
+  content_type: z.enum(['Straipsnis', 'Naujiena'], {
+    required_error: "Turinio tipas yra privalomas",
+    invalid_type_error: "Netinkamas turinio tipas",
+  }),
+});
+
+type PublicationFormData = z.infer<typeof publicationSchema>;
+
+interface PublicationEditorProps {
   id: string | null;
   onCancel: () => void;
   onSave: () => void;
 }
 
-const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
+const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   
-  const form = useForm({
+  const form = useForm<PublicationFormData>({
+    resolver: zodResolver(publicationSchema),
     defaultValues: {
       title: '',
       slug: '',
@@ -36,13 +61,18 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
       featured: false,
       published: false,
       image_url: '',
+      content_type: 'Straipsnis',
     }
   });
 
   useEffect(() => {
-    const fetchArticle = async () => {
-      if (!id || id === 'new') return;
+    const fetchPublication = async () => {
+      if (!id || id === 'new') {
+        setInitialLoading(false);
+        return;
+      }
       
+      setInitialLoading(true);
       try {
         const { data, error } = await supabase
           .from('articles')
@@ -64,15 +94,16 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
             featured: data.featured,
             published: data.published,
             image_url: data.image_url || '',
+            content_type: data.content_type as 'Straipsnis' | 'Naujiena' || 'Straipsnis',
           });
           setContent(data.content);
           setImageUrl(data.image_url || null);
         }
       } catch (error) {
-        console.error('Error fetching article:', error);
+        console.error('Error fetching publication:', error);
         toast({
           title: "Klaida",
-          description: "Nepavyko gauti straipsnio duomenų.",
+          description: "Nepavyko gauti publikacijos duomenų.",
           variant: "destructive",
         });
       } finally {
@@ -80,7 +111,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
       }
     };
     
-    fetchArticle();
+    fetchPublication();
   }, [id, form, toast]);
 
   const generateSlug = (title: string) => {
@@ -94,17 +125,15 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
     const title = event.target.value;
     form.setValue('title', title);
     
-    // Only auto-generate slug if it's empty or if this is a new article
     if (!form.getValues('slug') || id === null) {
       form.setValue('slug', generateSlug(title));
     }
   };
 
   const handleImageUpload = (url: string) => {
-    console.log("ArticleEditor handleImageUpload gavo URL:", url);
+    console.log("PublicationEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
     
-    // Eksplicitiškai nustatyti form.setValue su gautu URL
     if (url) {
       form.setValue('image_url', url, { 
         shouldValidate: true,
@@ -115,53 +144,60 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
     }
   };
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: PublicationFormData) => {
     if (!content.trim()) {
       toast({
         title: "Klaida",
-        description: "Įveskite straipsnio turinį.",
+        description: "Įveskite publikacijos turinį.",
         variant: "destructive",
       });
       return;
     }
     
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      const articleData = {
-        ...values,
-        content,
+      const publicationDataForSupabase: TablesInsert<"articles"> = {
+        title: values.title,
+        slug: values.slug,
+        description: values.description,
+        category: values.category,
+        read_time: values.read_time,
+        author: values.author,
+        date: values.date,
+        featured: values.featured || false,
+        published: values.published || false,
+        content_type: values.content_type,
+        content: content,
         image_url: imageUrl,
       };
       
       let response;
       
       if (id && id !== 'new') {
-        // Update existing article
+        const { id: _, created_at, ...updateData } = publicationDataForSupabase;
         response = await supabase
           .from('articles')
-          .update(articleData)
+          .update(updateData as TablesUpdate<"articles">)
           .eq('id', id);
       } else {
-        // Create new article
         response = await supabase
           .from('articles')
-          .insert([articleData]);
+          .insert([publicationDataForSupabase]);
       }
       
       if (response.error) throw response.error;
       
       toast({
         title: "Sėkmingai išsaugota",
-        description: id ? "Straipsnis atnaujintas." : "Naujas straipsnis sukurtas.",
+        description: id ? "Publikacija atnaujinta." : "Nauja publikacija sukurta.",
       });
       
       onSave();
     } catch (error) {
-      console.error('Error saving article:', error);
+      console.error('Error saving publication:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko išsaugoti straipsnio.",
+        description: "Nepavyko išsaugoti publikacijos.",
         variant: "destructive",
       });
     } finally {
@@ -173,7 +209,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Straipsnio redagavimas</CardTitle>
+          <CardTitle>Publikacijos redagavimas</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center py-4">Kraunami duomenys...</p>
@@ -185,7 +221,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{id ? 'Redaguoti straipsnį' : 'Naujas straipsnis'}</CardTitle>
+        <CardTitle>{id ? 'Redaguoti publikaciją' : 'Nauja publikacija'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -199,7 +235,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                     <FormLabel>Pavadinimas</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Straipsnio pavadinimas" 
+                        placeholder="Publikacijos pavadinimas" 
                         {...field}
                         onChange={onTitleChange}
                       />
@@ -216,7 +252,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                   <FormItem>
                     <FormLabel>URL identifikatorius (slug)</FormLabel>
                     <FormControl>
-                      <Input placeholder="straipsnio-pavadinimas" {...field} />
+                      <Input placeholder="publikacijos-pavadinimas" {...field} />
                     </FormControl>
                     <FormDescription>
                       Unikalus identifikatorius naudojamas URL adrese
@@ -234,7 +270,7 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                 <FormItem>
                   <FormLabel>Aprašymas</FormLabel>
                   <FormControl>
-                    <Input placeholder="Trumpas straipsnio aprašymas" {...field} />
+                    <Input placeholder="Trumpas publikacijos aprašymas" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -244,12 +280,33 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
                 control={form.control}
+                name="content_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Turinio Tipas</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pasirinkite tipą" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Straipsnis">Straipsnis</SelectItem>
+                        <SelectItem value="Naujiena">Naujiena</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Kategorija</FormLabel>
                     <FormControl>
-                      <Input placeholder="Straipsnio kategorija" {...field} />
+                      <Input placeholder="Dirbtinis intelektas" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -263,13 +320,15 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                   <FormItem>
                     <FormLabel>Skaitymo laikas</FormLabel>
                     <FormControl>
-                      <Input placeholder="pvz. 5 min" {...field} />
+                      <Input placeholder="5 min" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="author"
@@ -277,7 +336,21 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                   <FormItem>
                     <FormLabel>Autorius</FormLabel>
                     <FormControl>
-                      <Input placeholder="Straipsnio autorius" {...field} />
+                      <Input placeholder="Vardenis Pavardenis" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -285,84 +358,42 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Publikavimo data</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <FormItem>
+              <FormLabel>Turinys</FormLabel>
+              <FormControl>
+                <RichTextEditor 
+                  value={content} 
+                  onChange={setContent} 
+                />
+              </FormControl>
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Pagrindinis paveikslėlis</FormLabel>
+              <FormControl>
+                <FileUpload 
+                  bucket="site-images"
+                  folder={`articles/covers/${form.getValues('slug') || 'new-publication'}`}
+                  acceptedFileTypes="image/jpeg,image/png,image/webp"
+                  maxSizeMB={2}
+                  onUploadComplete={handleImageUpload}
+                />
+              </FormControl>
+              {imageUrl && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium mb-2">Esamas paveikslėlis:</p>
+                  <LazyImage src={imageUrl} alt="Esamas paveikslėlis" className="max-w-xs rounded-md" />
+                </div>
               )}
-            />
+              <FormMessage>{form.formState.errors.image_url?.message}</FormMessage>
+            </FormItem>
 
-            <div className="border rounded-md p-4">
-              <h3 className="text-lg font-medium mb-4">Straipsnio viršelio nuotrauka</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <FormLabel>Įkelti naują nuotrauką</FormLabel>
-                  <FileUpload
-                    bucket="site-images"
-                    folder="articles/covers"
-                    acceptedFileTypes="image/jpeg,image/png,image/webp"
-                    maxSizeMB={2}
-                    onUploadComplete={handleImageUpload}
-                  />
-                  <FormDescription>
-                    Rekomenduojamas dydis: 1200 x 800 pikselių. Maksimalus dydis: 2MB
-                  </FormDescription>
-                </div>
-                <div>
-                  {imageUrl ? (
-                    <div className="space-y-2">
-                      <FormLabel>Esama nuotrauka</FormLabel>
-                      <div className="border rounded-md overflow-hidden aspect-video">
-                        <LazyImage
-                          src={imageUrl}
-                          alt="Straipsnio nuotrauka"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => {
-                          setImageUrl(null);
-                          form.setValue('image_url', '');
-                        }}
-                      >
-                        Pašalinti nuotrauką
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="border rounded-md p-4 h-full flex items-center justify-center bg-muted">
-                      <p className="text-muted-foreground text-center">
-                        Nuotrauka nepasirinkta
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="border rounded-md p-4">
-              <h3 className="text-lg font-medium mb-4">Straipsnio turinys</h3>
-              <RichTextEditor 
-                value={content} 
-                onChange={setContent} 
-                placeholder="Įveskite straipsnio turinį..." 
-              />
-            </div>
-
-            <div className="flex space-x-6">
+            <div className="flex items-center space-x-4">
               <FormField
                 control={form.control}
                 name="featured"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -370,22 +401,16 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Rekomenduojamas straipsnis
-                      </FormLabel>
-                      <FormDescription>
-                        Rodomas pagrindiniame puslapyje
-                      </FormDescription>
+                      <FormLabel>Rodyti pagrindiniame puslapyje</FormLabel>
                     </div>
                   </FormItem>
                 )}
               />
-              
               <FormField
                 control={form.control}
                 name="published"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -393,11 +418,9 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Publikuotas
-                      </FormLabel>
+                      <FormLabel>Publikuoti</FormLabel>
                       <FormDescription>
-                        Matomas viešai
+                        Ar ši publikacija matoma lankytojams?
                       </FormDescription>
                     </div>
                   </FormItem>
@@ -405,14 +428,14 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
               />
             </div>
 
-            <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={onCancel}>
+            <CardFooter className="flex justify-end space-x-4 p-0 pt-6">
+              <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
                 Atšaukti
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saugoma...' : 'Išsaugoti'}
+                {loading ? 'Išsaugoma...' : (id ? 'Atnaujinti' : 'Sukurti')}
               </Button>
-            </div>
+            </CardFooter>
           </form>
         </Form>
       </CardContent>
@@ -420,4 +443,4 @@ const ArticleEditor = ({ id, onCancel, onSave }: ArticleEditorProps) => {
   );
 };
 
-export default ArticleEditor;
+export default PublicationEditor;
