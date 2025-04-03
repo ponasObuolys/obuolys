@@ -33,23 +33,26 @@ const CourseDetail: FC = () => {
     const fetchCourse = async () => {
       try {
         console.log('Fetching course with slug:', slug);
+        // Fetch as an array, limit to 1 result
         const { data, error } = await supabase
           .from('courses')
           .select('*')
           .eq('slug', slug)
           .eq('published', true)
-          .single();
+          .limit(1); 
 
         if (error) {
           console.error('Supabase error:', error);
           throw error;
         }
 
-        console.log('Course data received:', data);
-        if (data) {
-          setCourse(data);
+        console.log('Course data array received:', data);
+        // Check if the array has data
+        if (data && data.length > 0) {
+          setCourse(data[0]); // Set the first element
         } else {
           console.log('No course data found');
+          setCourse(null); // Explicitly set to null if no data
         }
       } catch (error) {
         console.error('Error fetching course:', error);
