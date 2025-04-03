@@ -4,20 +4,35 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
+// Išplėstas vartotojo tipas su papildomais laukais, pagal DB struktūrą
+export interface ExtendedUser extends User {
+  username?: string;
+  avatarUrl?: string;
+  isAdmin?: boolean;
+}
+
+// Profilio atnaujinimo tipas
+export interface ProfileUpdateData {
+  username?: string;
+  email?: string;
+}
+
 interface AuthContextProps {
-  user: User | null;
+  user: ExtendedUser | null;
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
+  updateUserProfile: (data: ProfileUpdateData) => Promise<void>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -25,9 +40,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Gauti papildomą profilio informaciją
+          const extendedUser = await getExtendedUserData(session.user);
+          setUser(extendedUser);
+        } else {
+          setUser(null);
+        }
         
         if (session?.user) {
           setTimeout(() => {
@@ -40,9 +62,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        // Gauti papildomą profilio informaciją
+        const extendedUser = await getExtendedUserData(session.user);
+        setUser(extendedUser);
+      } else {
+        setUser(null);
+      }
       
       if (session?.user) {
         checkAdminStatus(session.user.id);
@@ -133,6 +162,99 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Gauti išplėstus vartotojo duomenis pagal DB struktūrą
+  const getExtendedUserData = async (basicUser: User): Promise<ExtendedUser> => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url, is_admin')
+        .eq('id', basicUser.id)
+        .single();
+
+      if (error) throw error;
+
+      return {
+        ...basicUser,
+        username: data.username,
+        avatarUrl: data.avatar_url,
+        isAdmin: data.is_admin
+      };
+    } catch (error) {
+      console.error('Error fetching user profile data:', error);
+      return basicUser;
+    }
+  };
+
+  // Atnaujinti vartotojo profilį pagal DB struktūrą
+  const updateUserProfile = async (data: ProfileUpdateData) => {
+    try {
+      if (!user) throw new Error('Vartotojas neprisijungęs');
+
+      // Atnaujinti profilio lentelėje
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          username: data.username
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      // Atnaujinti el. paštą, jei jis pakeistas
+      if (data.email && data.email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: data.email
+        });
+        if (emailError) throw emailError;
+      }
+
+      // Atnaujinti vartotojo būseną kontekste
+      if (user) {
+        const updatedUser = {
+          ...user,
+          username: data.username || user.username,
+          email: data.email || user.email
+        };
+        setUser(updatedUser);
+      }
+
+      toast({
+        title: "Profilis atnaujintas",
+        description: "Jūsų profilis buvo sėkmingai atnaujintas.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Klaida",
+        description: error.message || "Įvyko klaida atnaujinant profilį",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  // Atnaujinti slaptažodį
+  const updatePassword = async (currentPassword: string, newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Slaptažodis pakeistas",
+        description: "Jūsų slaptažodis buvo sėkmingai pakeistas.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Klaida",
+        description: error.message || "Įvyko klaida keičiant slaptažodį",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -143,6 +265,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signIn,
         signUp,
         signOut,
+        updateUserProfile,
+        updatePassword
       }}
     >
       {children}

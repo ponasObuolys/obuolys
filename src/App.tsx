@@ -13,6 +13,7 @@ import CoursesPage from "./pages/CoursesPage";
 import CourseDetail from "./pages/CourseDetail";
 import ContactPage from "./pages/ContactPage";
 import Auth from "./pages/Auth";
+import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import Layout from "@/components/layout/Layout";
@@ -45,6 +46,7 @@ function App() {
                   <Route path="/kursai/:slug" element={<CourseDetail />} />
                   <Route path="/kontaktai" element={<ContactPage />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/profilis" element={<ProfilePage />} />
                   <Route path="/admin" element={<AdminDashboard />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>

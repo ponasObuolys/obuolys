@@ -48,15 +48,9 @@ export function UserDropdown() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/profile" className="flex items-center w-full cursor-pointer">
+          <Link to="/profilis" className="flex items-center w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            <span>Profilis</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center w-full cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Nustatymai</span>
+            <span>Mano profilis</span>
           </Link>
         </DropdownMenuItem>
         

@@ -23,13 +23,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/straipsniai" className="text-gray-300 hover:text-primary transition-colors duration-300">
-                  Straipsniai
-                </Link>
-              </li>
-              <li>
-                <Link to="/naujienos" className="text-gray-300 hover:text-primary transition-colors duration-300">
-                  Naujienos
+                <Link to="/publikacijos" className="text-gray-300 hover:text-primary transition-colors duration-300">
+                  Publikacijos
                 </Link>
               </li>
               <li>
