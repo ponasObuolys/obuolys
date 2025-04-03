@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { shareToFacebook } from '@/utils/facebookShare';
 
 import { Button } from '@/components/ui/button';
-import { Facebook, ArrowLeft, Clock, Calendar } from 'lucide-react';
+import { Facebook, ArrowLeft, Clock, Calendar, Link2, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
@@ -91,8 +91,32 @@ const PublicationDetail = () => {
     );
   }
   
+  const [linkCopied, setLinkCopied] = useState(false);
+
   const getArticleUrl = () => {
     return `https://ponasobuolys.lt/publikacijos/${slug}`;
+  };
+
+  const copyLinkToClipboard = () => {
+    const url = getArticleUrl();
+    navigator.clipboard.writeText(url).then(
+      () => {
+        setLinkCopied(true);
+        toast({
+          title: "Nuoroda nukopijuota",
+          description: "Dabar galite ją įklijuoti bet kur",
+        });
+        setTimeout(() => setLinkCopied(false), 2000);
+      },
+      (err) => {
+        console.error("Nepavyko nukopijuoti nuorodos:", err);
+        toast({
+          title: "Klaida",
+          description: "Nepavyko nukopijuoti nuorodos",
+          variant: "destructive"
+        });
+      }
+    );
   };
 
   const shareFacebook = () => {
@@ -103,6 +127,11 @@ const PublicationDetail = () => {
       quote: publication.title
     }).catch(error => {
       console.error("All Facebook sharing methods failed:", error);
+      toast({
+        title: "Klaida dalinantis",
+        description: "Nepavyko pasidalinti per Facebook. Pabandykite nukopijuoti nuorodą.",
+        variant: "destructive"
+      });
     });
   };
 
@@ -188,16 +217,35 @@ const PublicationDetail = () => {
             <div className="border-t border-gray-200 pt-6 mt-8">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p className="font-medium">Dalintis publikacija:</p>
-                <Button 
-                  onClick={shareFacebook} 
-                  className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-                  data-href={getArticleUrl()}
-                  data-layout="button"
-                  data-size="large"
-                >
-                  <Facebook className="mr-2 h-4 w-4" />
-                  <span>Dalintis Facebook</span>
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={copyLinkToClipboard} 
+                    className="bg-gray-800 text-white hover:bg-gray-700"
+                    variant="outline"
+                  >
+                    {linkCopied ? (
+                      <>
+                        <Check className="mr-2 h-4 w-4" />
+                        <span>Nuoroda nukopijuota</span>
+                      </>
+                    ) : (
+                      <>
+                        <Link2 className="mr-2 h-4 w-4" />
+                        <span>Kopijuoti nuorodą</span>
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={shareFacebook} 
+                    className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
+                    data-href={getArticleUrl()}
+                    data-layout="button"
+                    data-size="large"
+                  >
+                    <Facebook className="mr-2 h-4 w-4" />
+                    <span>Facebook</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

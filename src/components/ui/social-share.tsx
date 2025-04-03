@@ -80,6 +80,26 @@ export function SocialShare({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <TooltipProvider>
+        {/* Copy Link Button - Now First */}
+        {showCopyLink && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={copyToClipboard}
+                className="bg-gray-800 text-white hover:bg-gray-700"
+                size="icon"
+                aria-label="Copy link"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{copied ? "Copied!" : "Copy link"}</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+        
+        {/* Facebook Button */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -131,23 +151,7 @@ export function SocialShare({
           </TooltipContent>
         </Tooltip>
 
-        {showCopyLink && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={copyToClipboard}
-                className="bg-gray-200 text-gray-800 hover:bg-gray-300"
-                size="icon"
-                aria-label="Copy link"
-              >
-                {copied ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{copied ? "Copied!" : "Copy link"}</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
+
       </TooltipProvider>
     </div>
   );
