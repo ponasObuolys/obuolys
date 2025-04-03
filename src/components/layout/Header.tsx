@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { UserDropdown } from '@/components/ui/user-dropdown';
+import { SocialLinks } from '@/components/ui/SocialLinks';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +28,7 @@ const Header = () => {
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
+            <SocialLinks className="text-secondary hover:text-primary" />
             {user ? (
               <UserDropdown />
             ) : (
@@ -114,6 +116,9 @@ const Header = () => {
                   <Button className="w-full button-primary">Prisijungti</Button>
                 </Link>
               )}
+            </div>
+            <div className="px-4 py-2 flex justify-center">
+              <SocialLinks className="text-secondary hover:text-primary" />
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { Mail, Youtube, MessageSquare } from 'lucide-react';
+import { SocialLinks } from '@/components/ui/SocialLinks';
 
 const Footer = () => {
   return (
@@ -12,33 +11,7 @@ const Footer = () => {
             <p className="text-gray-300 mb-4">
               Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba.
             </p>
-            <div className="flex space-x-4">
-              <a 
-                href="mailto:labas@ponasobuolys.lt" 
-                className="text-white hover:text-primary transition-colors duration-300"
-                aria-label="Email"
-              >
-                <Mail className="h-6 w-6" />
-              </a>
-              <a 
-                href="https://www.youtube.com/@ponasobuolys" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-primary transition-colors duration-300"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-6 w-6" />
-              </a>
-              <a 
-                href="https://wa.me/message/RSBW27G7DYBVP1" 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-primary transition-colors duration-300"
-                aria-label="WhatsApp"
-              >
-                <MessageSquare className="h-6 w-6" />
-              </a>
-            </div>
+            <SocialLinks className="text-white hover:text-primary" />
           </div>
           
           <div>
@@ -80,25 +53,22 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Kontaktai</h3>
             <ul className="space-y-2">
-              <li className="flex items-start">
-                <Mail className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+              <li>
                 <a href="mailto:labas@ponasobuolys.lt" className="text-gray-300 hover:text-primary transition-colors duration-300">
                   labas@ponasobuolys.lt
                 </a>
               </li>
-              <li className="flex items-start">
-                <Youtube className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+              <li>
                 <a 
                   href="https://www.youtube.com/@ponasobuolys"
                   target="_blank"
                   rel="noopener noreferrer" 
                   className="text-gray-300 hover:text-primary transition-colors duration-300"
                 >
-                  @ponasobuolys
+                  @ponasobuolys (YouTube)
                 </a>
               </li>
-              <li className="flex items-start">
-                <MessageSquare className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+              <li>
                 <a 
                   href="https://wa.me/message/RSBW27G7DYBVP1"
                   target="_blank"
