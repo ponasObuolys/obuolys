@@ -9,7 +9,7 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-in">
             <h1 className="mb-6">
-              <span className="gradient-text">Dirbtinio intelekto</span> žinios,<br />
+              <span className="gradient-text">Dirbtinio intelekto</span> publikacijos,<br />
               įrankiai ir kursai
             </h1>
             <p className="text-lg mb-8">
@@ -18,7 +18,7 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/publikacijos">
-                <Button className="button-primary w-full sm:w-auto">Naujausi straipsniai</Button>
+                <Button className="button-primary w-full sm:w-auto">Naujausios publikacijos</Button>
               </Link>
               <Link to="/kursai">
                 <Button className="button-outline w-full sm:w-auto">Pradėti mokytis</Button>

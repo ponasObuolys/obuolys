@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { SocialLinks } from '@/components/ui/SocialLinks';
 
 const Footer = () => {
   return (
@@ -11,7 +10,7 @@ const Footer = () => {
             <p className="text-gray-300 mb-4">
               Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba.
             </p>
-            <SocialLinks className="text-white hover:text-primary" />
+
           </div>
           
           <div>

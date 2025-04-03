@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { generateSlug } from '@/utils/stringUtils';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,12 +78,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
     fetchTool();
   }, [id, form, toast]);
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-  };
+  // Using the imported generateSlug utility function that handles Lithuanian characters
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;

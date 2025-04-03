@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { SocialShare } from "@/components/ui/social-share";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/ui/lazy-image";
 
@@ -47,9 +46,9 @@ const FeaturedArticles = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="mb-4">Populiariausi <span className="gradient-text">straipsniai</span></h2>
+          <h2 className="mb-4">Populiariausi <span className="gradient-text">publikacijos</span></h2>
           <p className="max-w-2xl mx-auto">
-            Naujausi ir populiariausi straipsniai apie dirbtinį intelektą ir jo pritaikymą
+            Naujausi ir populiariausi publikacijos apie dirbtinį intelektą ir jo pritaikymą
           </p>
         </div>
         
@@ -81,16 +80,10 @@ const FeaturedArticles = () => {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter className="flex justify-between items-center">
+                <CardFooter className="flex justify-center items-center">
                   <Link to={`/publikacijos/${article.slug}`}>
                     <Button className="button-primary">Skaityti daugiau</Button>
                   </Link>
-                  <SocialShare 
-                    url={getShareUrl(article.slug)}
-                    title={article.title}
-                    description={article.description}
-                    showCopyLink={false}
-                  />
                 </CardFooter>
               </Card>
             ))}
@@ -103,7 +96,7 @@ const FeaturedArticles = () => {
         
         <div className="text-center mt-12">
           <Link to="/publikacijos">
-            <Button className="button-outline">Visi straipsniai</Button>
+            <Button className="button-outline">Visos publikacijos</Button>
           </Link>
         </div>
       </div>
