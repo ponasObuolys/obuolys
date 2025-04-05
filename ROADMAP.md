@@ -14,29 +14,36 @@ Sukurti platformą, kurioje youtuberis Ponas Obuolys galėtų dalintis savo žin
 
 ## Trumpalaikiai Prioritetai (Artimiausi darbai)
 
+*   **[X] Įrankių puslapio (/irankiai) atnaujinimas:**
+    *   [X] Perkeltas paieškos laukelis virš kategorijų, pagerintas jo matomumas.
+    *   [X] Atnaujinta įrankių kortelių navigacija (paspaudus veda į detalų puslapį `/irankiai/:slug`).
+    *   [X] "Išbandyti" mygtukas veikia kaip tiesioginė nuoroda į išorinę svetainę.
+    *   [X] Sukurtas įrankio detalaus aprašymo puslapis (`ToolDetailPage.tsx`) su šablonu (`ToolDetailCard.tsx`).
+    *   [X] Pridėta "Grįžti į įrankių sąrašą" nuoroda.
+    *   [X] Pagerintas kategorijų filtravimas (vizualinis indikatorius, veikia su paieška).
 *   **[ ] Stripe API integracija:**
-    *   Sukurti galimybę įsigyti kursus per Stripe.
-    *   Sukurti galimybę užsisakyti konsultacijas per Stripe.
+    *   [ ] Sukurti galimybę įsigyti kursus per Stripe.
+    *   [ ] Sukurti galimybę užsisakyti konsultacijas per Stripe.
 *   **[ ] Veikiančios formos:**
     *   Kontaktų forma:
         *   [ ] Sukurti formos komponentą.
-        *   Integruoti su backend'u arba el. pašto siuntimo paslauga (pvz., Supabase functions, Resend).
-        *   Pridėti validaciją.
+        *   [ ] Integruoti su backend'u arba el. pašto siuntimo paslauga (pvz., Supabase functions, Resend).
+        *   [ ] Pridėti validaciją.
     *   Naujienlaiškio forma:
-        *   Sukurti formos komponentą.
-        *   Integruoti su el. pašto rinkodaros įrankiu (pvz., Mailchimp, Brevo) arba saugoti prenumeratorius Supabase.
-        *   Pridėti validaciją.
+        *   [ ] Sukurti formos komponentą.
+        *   [ ] Integruoti su el. pašto rinkodaros įrankiu (pvz., Mailchimp, Brevo) arba saugoti prenumeratorius Supabase.
+        *   [ ] Pridėti validaciją.
 *   **[X] Klaidų taisymas:**
     *   **[X] 404 klaida atnaujinus puslapį:** Ištaisyta sukūrus `vercel.json`.
 *   **[X] Naujienų skilties pašalinimas:**
-    *   Pašalintas `/naujienos` maršrutas ir susiję komponentai.
-    *   Pašalintos nuorodos iš navigacijos.
-    *   Pašalintas naujienų valdymas iš admin panelės.
+    *   [X] Pašalintas `/naujienos` maršrutas ir susiję komponentai.
+    *   [X] Pašalintos nuorodos iš navigacijos.
+    *   [X] Pašalintas naujienų valdymas iš admin panelės.
 *   **[X] Straipsnių ir naujienų sujungimas:**
-    *   Pervadinta "Straipsniai" į "Publikacijos" (navigacija, puslapiai, admin panelė).
-    *   Pridėtas `content_type` laukas `articles` lentelei (DB pakeitimas).
-    *   Atnaujintas `PublicationEditor`, leidžiant pasirinkti tipą.
-    *   Pridėtos vizualios žymos (Badges) publikacijų sąraše ir detalės puslapyje.
+    *   [X] Pervadinta "Straipsniai" į "Publikacijos" (navigacija, puslapiai, admin panelė).
+    *   [X] Pridėtas `content_type` laukas `articles` lentelei (DB pakeitimas).
+    *   [X] Atnaujintas `PublicationEditor`, leidžiant pasirinkti tipą.
+    *   [X] Pridėtos vizualios žymos (Badges) publikacijų sąraše ir detalės puslapyje.
 
 ## Ilgalaikiai Planai (Ateities idėjos)
 

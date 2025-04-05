@@ -1,72 +1,85 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Tag, Star } from "lucide-react";
+import { ExternalLink, Tag, Star, Eye } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
+import { Link } from 'react-router-dom';
+import { cn } from "@/lib/utils";
 
-interface ToolCardProps {
-  tool: {
-    id: string;
-    name: string;
-    short_description: string;
-    description?: string;
-    image_url?: string;
-    category: string;
-    url: string;
-  };
+interface Tool {
+  id: string;
+  name: string;
+  slug: string;
+  short_description: string;
+  description?: string;
+  image_url?: string;
+  category: string;
+  url: string;
+  featured?: boolean;
 }
 
-const ToolCard = ({ tool }: ToolCardProps) => {
+interface ToolCardProps {
+  tool: Tool;
+  className?: string;
+}
+
+const ToolCard = ({ tool, className }: ToolCardProps) => {
+  const truncatedDescription = tool.description 
+    ? (tool.description.length > 100 ? tool.description.substring(0, 100) + '...' : tool.description)
+    : tool.short_description;
+
   return (
-    <Card className="tool-card flex flex-col overflow-hidden">
-      <div className="card-image-container">
-        {tool.category && (
-          <div className="category-tag">{tool.category}</div>
-        )}
-        {tool.image_url ? (
-          <LazyImage 
-            src={tool.image_url} 
-            alt={tool.name} 
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-            Įrankio nuotrauka
-          </div>
-        )}
-      </div>
-      
-      <div className="card-content">
-        <h3 className="card-title">{tool.name}</h3>
-        <p className="card-description">{tool.short_description}</p>
-        
-        <div className="card-metadata">
-          <div>
-            <Tag size={14} />
-            <span>{tool.category}</span>
-          </div>
-          <div>
-            <Star size={14} />
-            <span>Rekomenduojama</span>
+    <Card className={cn("tool-card flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg", className)}>
+      <Link to={`/irankiai/${tool.slug}`} className="flex flex-col h-full">
+        <div className="card-image-container relative">
+          {tool.category && (
+            <div className="category-tag absolute top-2 left-2 bg-primary/80 text-primary-foreground text-xs font-semibold px-2 py-1 rounded">
+              {tool.category}
+            </div>
+          )}
+          {tool.featured && (
+            <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-semibold px-2 py-1 rounded flex items-center">
+              <Star className="w-3 h-3 mr-1" /> Rekomenduojama
+            </div>
+          )}
+          <div className="aspect-video overflow-hidden">
+            {tool.image_url ? (
+              <LazyImage 
+                src={tool.image_url} 
+                alt={tool.name} 
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
+                Įrankio nuotrauka
+              </div>
+            )}
           </div>
         </div>
         
-        {tool.description && (
-          <p className="text-sm text-gray-600 mt-2 mb-4">{tool.description.substring(0, 100)}...</p>
-        )}
-        
-        <div className="flex justify-between items-center mt-auto">
-          <a 
-            href={tool.url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="w-full"
-          >
-            <Button className="w-full button-secondary flex items-center justify-center">
+        <div className="card-content flex flex-col flex-grow p-4">
+          <h3 className="card-title text-lg font-semibold mb-2 line-clamp-2">{tool.name}</h3>
+          <p className="card-description text-sm text-muted-foreground mb-4 flex-grow line-clamp-3">{truncatedDescription}</p>
+          
+          <div className="flex justify-between items-center mt-auto pt-4 border-t border-border">
+            <div className="flex items-center text-sm text-primary hover:underline">
+              <Eye className="w-4 h-4 mr-1" /> Peržiūrėti detales
+            </div>
+            
+            <Button 
+              size="sm" 
+              variant="secondary"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(tool.url, '_blank', 'noopener,noreferrer');
+              }}
+              className="flex items-center gap-1"
+            >
               <span>Išbandyti</span>
-              <ExternalLink className="ml-2 h-4 w-4" />
+              <ExternalLink className="h-4 w-4" />
             </Button>
-          </a>
+          </div>
         </div>
-      </div>
+      </Link>
     </Card>
   );
 };

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+// import { Button } from "@/components/ui/button"; // Komentuojama, nes bus perkelta
+// import { Input } from "@/components/ui/input"; // Komentuojama, nes bus perkelta
+// import { Search } from "lucide-react"; // Komentuojama, nes bus perkelta
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ToolCard from '@/components/ui/tool-card';
+// Importuojame naujus komponentus
+import ToolSearch from '@/components/tools/ToolSearch';
+import ToolCategories from '@/components/tools/ToolCategories';
 
 const ToolsPage = () => {
   const [tools, setTools] = useState<any[]>([]);
@@ -29,7 +32,7 @@ const ToolsPage = () => {
         
         if (data) {
           setTools(data);
-          setFilteredTools(data);
+          setFilteredTools(data); // Iš pradžių rodomi visi įrankiai
         }
       } catch (error: any) {
         toast({
@@ -53,7 +56,7 @@ const ToolsPage = () => {
     if (searchQuery) {
       result = result.filter(tool => 
         tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (tool.description && tool.description.toLowerCase().includes(searchQuery.toLowerCase())) || // Pridėtas description tikrinimas
         tool.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -80,40 +83,23 @@ const ToolsPage = () => {
             </p>
           </div>
           
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-              <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  type="text"
-                  placeholder="Ieškoti įrankių..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant={selectedCategory === null ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(null)}
-                  className="px-3 py-1 h-auto"
-                >
-                  Visi
-                </Button>
-                {categories.map(category => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    onClick={() => setSelectedCategory(category)}
-                    className="px-3 py-1 h-auto"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
+          {/* Paieškos ir kategorijų sekcija */}
+          <div className="mb-12 max-w-3xl mx-auto space-y-6">
+            {/* Paieškos komponentas */}
+            <ToolSearch 
+              searchQuery={searchQuery} 
+              setSearchQuery={setSearchQuery} 
+            />
+            
+            {/* Kategorijų komponentas */}
+            <ToolCategories 
+              categories={categories} 
+              selectedCategory={selectedCategory} 
+              setSelectedCategory={setSelectedCategory} 
+            />
           </div>
           
+          {/* Įrankių sąrašas */}
           {loading ? (
             <div className="text-center py-12">
               <p className="text-xl text-gray-500">Kraunami įrankiai...</p>
@@ -130,9 +116,10 @@ const ToolsPage = () => {
             </div>
           )}
           
-          <div className="mt-16 bg-white rounded-lg p-8 shadow">
+          {/* Apie rekomendacijas sekcija */}
+          <div className="mt-16 bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow">
             <h2 className="text-2xl font-bold mb-4">Apie įrankių rekomendacijas</h2>
-            <p className="mb-6">
+            <p className="mb-6 text-muted-foreground">
               Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų naudingumą, 
               kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti partnerinės, už kurias 
               gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį ar paslaugą. Tačiau tai 

@@ -11,6 +11,7 @@ import HomePage from "./pages/Index";
 import PublicationsPage from "./pages/PublicationsPage";
 import PublicationDetail from "./pages/PublicationDetail";
 import ToolsPage from "./pages/ToolsPage";
+import ToolDetailPage from "./pages/ToolDetailPage";
 import CoursesPage from "./pages/CoursesPage";
 import CourseDetail from "./pages/CourseDetail";
 import ContactPage from "./pages/ContactPage";
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/publikacijos" element={<PublicationsPage />} />
                   <Route path="/publikacijos/:slug" element={<PublicationDetail />} />
                   <Route path="/irankiai" element={<ToolsPage />} />
+                  <Route path="/irankiai/:slug" element={<ToolDetailPage />} />
                   <Route path="/kursai" element={<CoursesPage />} />
                   <Route path="/kursai/:slug" element={<CourseDetail />} />
                   <Route path="/kontaktai" element={<ContactPage />} />
