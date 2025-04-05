@@ -65,24 +65,13 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
     // First make sure we have a selection or cursor positioned
     const selection = window.getSelection();
     if (!selection || !editorRef.current) return;
+
+    // Use formatBlock command which is generally more reliable for headings
+    execCommand('formatBlock', `<h${level}>`);
     
-    // Get the current line/paragraph
-    const range = selection.getRangeAt(0);
-    const currentBlock = range.startContainer.parentElement;
-    
-    // Create new heading element
-    const heading = document.createElement(`h${level}`);
-    
-    // If we have a block element selected, replace it with heading
-    if (currentBlock && editorRef.current.contains(currentBlock)) {
-      heading.innerHTML = currentBlock.innerHTML;
-      currentBlock.parentNode?.replaceChild(heading, currentBlock);
-    } else {
-      // Otherwise just insert at current position
-      execCommand('formatBlock', `<h${level}>`);
-    }
-    
-    handleEditorChange();
+    // Ensure focus remains in the editor after formatting
+    editorRef.current?.focus();
+    handleEditorChange(); // Ensure change is captured
   };
 
   const insertLink = () => {
@@ -278,18 +267,21 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
       
       <div
         ref={editorRef}
-        contentEditable
-        className="min-h-[300px] p-4 focus:outline-none"
+        contentEditable={true}
+        className="bg-background p-4 min-h-[300px] focus:outline-none prose dark:prose-invert max-w-none rich-text-editor-content"
+        style={{ direction: 'ltr', textAlign: 'left' }}
         onInput={handleEditorChange}
-        dangerouslySetInnerHTML={{ __html: value }}
+        onBlur={handleEditorChange}
         data-placeholder={placeholder}
+        suppressContentEditableWarning={true}
       />
       
       <style>{`
-        [contenteditable=true]:empty:before {
+        .rich-text-editor-content[contentEditable=true]:empty::before {
           content: attr(data-placeholder);
-          color: #9ca3af;
-          display: block;
+          color: #a1a1aa;
+          position: absolute;
+          pointer-events: none;
         }
         .video-container {
           position: relative;
