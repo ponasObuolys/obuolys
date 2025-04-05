@@ -69,7 +69,7 @@ const ToolDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="full-width-container py-16 text-center">
+      <div className="container mx-auto py-16 text-center">
         {/* Galima pridėti spinnerį */}
         <p className="text-xl text-muted-foreground">Kraunama įrankio informacija...</p>
       </div>
@@ -78,7 +78,7 @@ const ToolDetailPage = () => {
 
   if (!tool) {
     return (
-      <div className="full-width-container py-16 text-center">
+      <div className="container mx-auto py-16 text-center">
         <h1 className="text-3xl font-semibold mb-6">Įrankis nerastas</h1>
         <p className="text-muted-foreground mb-8">Atsiprašome, bet įrankis, kurio ieškote, neegzistuoja.</p>
         <Link to="/irankiai">
@@ -92,7 +92,7 @@ const ToolDetailPage = () => {
 
   return (
     <section className="py-12 md:py-16">
-      <div className="full-width-container px-4 max-w-4xl"> {/* Sumažintas konteinerio plotis */} 
+      <div className="container mx-auto px-4 max-w-4xl"> {/* Sumažintas konteinerio plotis */} 
         <div className="mb-8">
           <Link to="/irankiai">
             <Button variant="outline" className="mb-8 group flex items-center">

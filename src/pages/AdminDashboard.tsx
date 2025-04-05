@@ -93,7 +93,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <>
-        <div className="full-width-container py-8">
+        <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold mb-8">Administratoriaus valdymo skydelis</h1>
           <p className="text-center">Kraunama...</p>
         </div>
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
 
   return (
     <>
-      <div className="full-width-container py-8">
+      <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-8">Administratoriaus valdymo skydelis</h1>
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>

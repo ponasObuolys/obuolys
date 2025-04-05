@@ -96,7 +96,7 @@ const Auth = () => {
 
   return (
     <>
-      <div className="full-width-container py-12 flex justify-center">
+      <div className="container mx-auto py-12 flex justify-center">
         <div className="w-full max-w-md">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">

@@ -64,7 +64,7 @@ const PublicationsPage = () => {
   return (
     <Layout>
       <section className="py-12 md:py-16">
-        <div className="full-width-container px-4">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="mb-4"><span className="gradient-text">Publikacijos</span></h1>
             <p className="max-w-2xl mx-auto">

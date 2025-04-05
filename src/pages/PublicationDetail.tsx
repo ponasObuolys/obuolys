@@ -69,7 +69,7 @@ const PublicationDetail = () => {
   if (loading) {
     return (
       <>
-        <div className="full-width-container px-4 py-16 text-center">
+        <div className="container mx-auto px-4 py-16 text-center">
           <p>Kraunama...</p>
         </div>
       </>
@@ -79,7 +79,7 @@ const PublicationDetail = () => {
   if (!publication) {
     return (
       <>
-        <div className="full-width-container px-4 py-16 text-center">
+        <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Publikacija nerasta</h1>
           <p className="mb-6">Atsiprašome, bet ieškoma publikacija neegzistuoja.</p>
           <Link to="/publikacijos">
@@ -118,7 +118,7 @@ const PublicationDetail = () => {
         {publication.image_url && <meta name="twitter:image" content={publication.image_url} />}
       </Helmet>
 
-      <article className="full-width-container px-4 py-12">
+      <article className="container mx-auto px-4 py-12">
         <Link to="/publikacijos" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           <span>Grįžti į publikacijų sąrašą</span>

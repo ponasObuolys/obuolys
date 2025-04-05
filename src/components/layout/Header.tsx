@@ -11,8 +11,8 @@ const Header = () => {
   const { user } = useAuth();
   
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="px-6 py-3">
+    <header className="bg-white shadow-sm sticky top-0 z-50 w-full">
+      <div className="container mx-auto py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-primary font-bold text-2xl">ponas Obuolys</span>
@@ -49,8 +49,8 @@ const Header = () => {
       
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-md">
-          <div className="px-6 py-3 space-y-2">
+        <div className="md:hidden bg-white shadow-md w-full">
+          <div className="container mx-auto py-3 space-y-2">
             <Link 
               to="/" 
               className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"

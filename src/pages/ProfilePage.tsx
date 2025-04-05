@@ -310,14 +310,14 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="full-width-container py-12 flex justify-center">
+      <div className="container mx-auto py-12 flex justify-center">
         <p>Kraunama...</p>
       </div>
     );
   }
 
   return (
-    <div className="full-width-container py-8 px-4 max-w-5xl">
+    <div className="container mx-auto py-8 px-4 max-w-5xl">
       <h1 className="text-3xl font-bold mb-6">Mano profilis</h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
