@@ -4,13 +4,6 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
-// Išplėstas vartotojo tipas su papildomais laukais
-interface ExtendedUser extends User {
-  username?: string;
-  avatarUrl?: string;
-  isAdmin?: boolean;
-}
-
 // Profilio atnaujinimo tipas
 export interface ProfileUpdateData {
   username?: string;
@@ -19,7 +12,7 @@ export interface ProfileUpdateData {
 }
 
 interface AuthContextProps {
-  user: ExtendedUser | null;
+  user: User | null;
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
@@ -29,12 +22,13 @@ interface AuthContextProps {
   updateUserProfile: (data: ProfileUpdateData) => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   uploadProfileImage: (imageFile: File) => Promise<string>;
+  getUserProfile: () => Promise<{ username?: string; avatarUrl?: string } | null>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<ExtendedUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -42,27 +36,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
+        setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Gauti išplėstus vartotojo duomenis iš profiles lentelės
-          await fetchUserProfile(session.user);
+          setTimeout(() => {
+            checkAdminStatus(session.user.id);
+          }, 0);
         } else {
-          setUser(null);
           setIsAdmin(false);
         }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setUser(session?.user ?? null);
       
       if (session?.user) {
-        await fetchUserProfile(session.user);
-      } else {
-        setUser(null);
+        checkAdminStatus(session.user.id);
       }
       setLoading(false);
     });
@@ -70,34 +64,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Gauti išplėstus vartotojo duomenis
-  const fetchUserProfile = async (authUser: User) => {
+  const checkAdminStatus = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, avatar_url, is_admin')
-        .eq('id', authUser.id)
+        .select('is_admin')
+        .eq('id', userId)
+        .single();
+      
+      if (error) throw error;
+      setIsAdmin(data?.is_admin || false);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    }
+  };
+  
+  // Gauti vartotojo profilio duomenis
+  const getUserProfile = async () => {
+    try {
+      if (!user) return null;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', user.id)
         .single();
       
       if (error) throw error;
       
-      const extendedUser: ExtendedUser = {
-        ...authUser,
+      return {
         username: data?.username || null,
-        avatarUrl: data?.avatar_url || null,
-        isAdmin: data?.is_admin || false
+        avatarUrl: data?.avatar_url || null
       };
-      
-      setUser(extendedUser);
-      setIsAdmin(data?.is_admin || false);
     } catch (error) {
       console.error('Klaida gaunant vartotojo profilį:', error);
-      setUser(authUser);
-      setIsAdmin(false);
+      return null;
     }
   };
 
-  // Ši funkcija nebereikalinga, nes admin statusas gaunamas fetchUserProfile funkcijoje
+
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -191,17 +197,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (emailError) throw emailError;
       }
 
-      // Atnaujinti vartotojo objektą lokaliai
-      setUser(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          username: data.username || prev.username,
-          avatarUrl: data.avatarUrl || prev.avatarUrl,
-          email: data.email || prev.email
-        };
-      });
-
       toast({
         title: "Profilis atnaujintas",
         description: "Jūsų profilis buvo sėkmingai atnaujintas.",
@@ -292,7 +287,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signOut,
         updateUserProfile,
         updatePassword,
-        uploadProfileImage
+        uploadProfileImage,
+        getUserProfile
       }}
     >
       {children}

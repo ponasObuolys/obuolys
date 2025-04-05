@@ -47,7 +47,8 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 const ProfilePage = () => {
-  const { user, loading, updateUserProfile, updatePassword, uploadProfileImage } = useAuth();
+  const { user, loading, updateUserProfile, updatePassword, uploadProfileImage, getUserProfile } = useAuth();
+  const [profileData, setProfileData] = useState<{ username?: string; avatarUrl?: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('profile');
@@ -106,11 +107,19 @@ const ProfilePage = () => {
     }
 
     if (user) {
-      // Užpildyti formą vartotojo duomenimis
-      profileForm.reset({
-        username: user.username || '',
-        email: user.email || '',
-      });
+      // Gauti vartotojo profilio duomenis iš profiles lentelės
+      const loadProfileData = async () => {
+        const profile = await getUserProfile();
+        setProfileData(profile);
+        
+        // Užpildyti formą vartotojo duomenimis
+        profileForm.reset({
+          username: profile?.username || '',
+          email: user.email || '',
+        });
+      };
+      
+      loadProfileData();
 
       // Gauti išsaugotas publikacijas (pavyzdinis kodas)
       fetchSavedPublications();
@@ -333,8 +342,8 @@ const ProfilePage = () => {
               <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center mb-6">
                 <div>
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={user?.avatarUrl || ''} alt={user?.username || 'Vartotojas'} />
-                    <AvatarFallback>{user?.username?.charAt(0).toUpperCase() || 'V'}</AvatarFallback>
+                    <AvatarImage src={profileData?.avatarUrl || ''} alt={profileData?.username || 'Vartotojas'} />
+                    <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || 'V'}</AvatarFallback>
                   </Avatar>
                 </div>
                 <div>
