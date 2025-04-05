@@ -11,13 +11,13 @@ export default {
 	prefix: "",
 	theme: {
 		container: {
-			center: true,
+			center: false,
 			padding: {
-				DEFAULT: '1rem',
+				DEFAULT: '1.5rem',
 				sm: '2rem',
 			},
 			screens: {
-				'2xl': '1440px'
+				'2xl': '100%'
 			}
 		},
 		extend: {
