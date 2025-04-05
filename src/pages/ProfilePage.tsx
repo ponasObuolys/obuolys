@@ -47,7 +47,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 const ProfilePage = () => {
-  const { user, loading, updateUserProfile, updatePassword } = useAuth();
+  const { user, loading, updateUserProfile, updatePassword, uploadProfileImage } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('profile');
@@ -221,8 +221,8 @@ const ProfilePage = () => {
     }
   };
 
-  // Pavyzdinė nuotraukos apkarpymo ir išsaugojimo funkcija
-  const handleCropComplete = () => {
+  // Nuotraukos apkarpymo ir išsaugojimo funkcija
+  const handleCropComplete = async () => {
     if (!imageRef || !crop.width || !crop.height) return;
     
     const canvas = document.createElement('canvas');
@@ -248,19 +248,39 @@ const ProfilePage = () => {
     );
     
     // Konvertuojame į base64 ir išsaugome
-    const base64Image = canvas.toDataURL('image/jpeg');
-    
-    // Čia būtų tikras API kvietimas išsaugoti profilio nuotrauką
-    // uploadProfileImage(base64Image);
-    
-    // Uždarome apkarpymo dialogą
-    setShowCropDialog(false);
-    
-    // Pranešame vartotojui
-    toast({
-      title: "Nuotrauka atnaujinta",
-      description: "Jūsų profilio nuotrauka buvo sėkmingai atnaujinta."
-    });
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        toast({
+          title: "Klaida",
+          description: "Nepavyko konvertuoti nuotraukos",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      try {
+        // Konvertuojame blob į File objektą
+        const file = new File([blob], 'profile-image.jpg', { type: 'image/jpeg' });
+        
+        // Įkeliame nuotrauką naudodami AuthContext funkciją
+        await uploadProfileImage(file);
+        
+        // Uždarome apkarpymo dialogą
+        setShowCropDialog(false);
+        
+        // Pranešame vartotojui
+        toast({
+          title: "Nuotrauka atnaujinta",
+          description: "Jūsų profilio nuotrauka buvo sėkmingai atnaujinta."
+        });
+      } catch (error: any) {
+        toast({
+          title: "Klaida",
+          description: error.message || "Įvyko klaida įkeliant nuotrauką",
+          variant: "destructive"
+        });
+      }
+    }, 'image/jpeg', 0.95);
   };
 
   // Pranešimo nustatymų keitimas
@@ -608,10 +628,13 @@ const ProfilePage = () => {
       
       {/* Nuotraukos apkarpymo dialogas */}
       <Dialog open={showCropDialog} onOpenChange={setShowCropDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" aria-describedby="crop-dialog-description">
           <DialogHeader>
             <DialogTitle>Apkarpykite profilio nuotrauką</DialogTitle>
           </DialogHeader>
+          <p id="crop-dialog-description" className="text-sm text-muted-foreground mb-2">
+            Apkarpykite savo profilio nuotrauką. Rekomenduojama kvadratinė forma.
+          </p>
           <div className="py-4">
             {uploadedImage && (
               <ReactCrop

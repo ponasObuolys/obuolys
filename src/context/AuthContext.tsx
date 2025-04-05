@@ -4,14 +4,22 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
+// Išplėstas vartotojo tipas su papildomais laukais
+interface ExtendedUser extends User {
+  username?: string;
+  avatarUrl?: string;
+  isAdmin?: boolean;
+}
+
 // Profilio atnaujinimo tipas
 export interface ProfileUpdateData {
   username?: string;
   email?: string;
+  avatarUrl?: string;
 }
 
 interface AuthContextProps {
-  user: User | null;
+  user: ExtendedUser | null;
   session: Session | null;
   isAdmin: boolean;
   loading: boolean;
@@ -20,12 +28,13 @@ interface AuthContextProps {
   signOut: () => Promise<void>;
   updateUserProfile: (data: ProfileUpdateData) => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  uploadProfileImage: (imageFile: File) => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,27 +42,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
         
         if (session?.user) {
-          setTimeout(() => {
-            checkAdminStatus(session.user.id);
-          }, 0);
+          // Gauti išplėstus vartotojo duomenis iš profiles lentelės
+          await fetchUserProfile(session.user);
         } else {
+          setUser(null);
           setIsAdmin(false);
         }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
       
       if (session?.user) {
-        checkAdminStatus(session.user.id);
+        await fetchUserProfile(session.user);
+      } else {
+        setUser(null);
       }
       setLoading(false);
     });
@@ -61,21 +70,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminStatus = async (userId: string) => {
+  // Gauti išplėstus vartotojo duomenis
+  const fetchUserProfile = async (authUser: User) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('is_admin')
-        .eq('id', userId)
+        .select('username, avatar_url, is_admin')
+        .eq('id', authUser.id)
         .single();
       
       if (error) throw error;
+      
+      const extendedUser: ExtendedUser = {
+        ...authUser,
+        username: data?.username || null,
+        avatarUrl: data?.avatar_url || null,
+        isAdmin: data?.is_admin || false
+      };
+      
+      setUser(extendedUser);
       setIsAdmin(data?.is_admin || false);
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error('Klaida gaunant vartotojo profilį:', error);
+      setUser(authUser);
       setIsAdmin(false);
     }
   };
+
+  // Ši funkcija nebereikalinga, nes admin statusas gaunamas fetchUserProfile funkcijoje
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -148,12 +170,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!user) throw new Error('Vartotojas neprisijungęs');
 
+      // Paruošiame atnaujinimo objektą
+      const updates: any = {};
+      if (data.username) updates.username = data.username;
+      if (data.avatarUrl) updates.avatar_url = data.avatarUrl;
+
       // Atnaujinti profilio lentelėje
       const { error } = await supabase
         .from('profiles')
-        .update({
-          username: data.username
-        })
+        .update(updates)
         .eq('id', user.id);
 
       if (error) throw error;
@@ -165,6 +190,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
         if (emailError) throw emailError;
       }
+
+      // Atnaujinti vartotojo objektą lokaliai
+      setUser(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          username: data.username || prev.username,
+          avatarUrl: data.avatarUrl || prev.avatarUrl,
+          email: data.email || prev.email
+        };
+      });
 
       toast({
         title: "Profilis atnaujintas",
@@ -203,6 +239,47 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Įkelti profilio nuotrauką
+  const uploadProfileImage = async (imageFile: File): Promise<string> => {
+    try {
+      if (!user) throw new Error('Vartotojas neprisijungęs');
+
+      // Sukurti unikalų failo pavadinimą
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${user.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      // Įkelti failą į storage
+      const { error: uploadError } = await supabase.storage
+        .from('site-images')
+        .upload(filePath, imageFile, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Gauti viešą URL
+      const { data } = supabase.storage
+        .from('site-images')
+        .getPublicUrl(filePath);
+
+      const avatarUrl = data.publicUrl;
+
+      // Atnaujinti vartotojo profilį su nauju avatarUrl
+      await updateUserProfile({ avatarUrl });
+
+      return avatarUrl;
+    } catch (error: any) {
+      toast({
+        title: "Klaida",
+        description: error.message || "Įvyko klaida įkeliant nuotrauką",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -214,7 +291,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUp,
         signOut,
         updateUserProfile,
-        updatePassword
+        updatePassword,
+        uploadProfileImage
       }}
     >
       {children}
