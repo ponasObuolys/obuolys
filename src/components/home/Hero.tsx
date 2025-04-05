@@ -5,7 +5,7 @@ import LazyImage from '@/components/ui/lazy-image';
 const Hero = () => {
   return (
     <section className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
+      <div className="px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-in">
             <h1 className="mb-6">

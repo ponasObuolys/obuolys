@@ -76,7 +76,7 @@ const CourseDetail: FC = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
+      <div className="full-width-container px-4 py-16 text-center">
         <p>Kraunama...</p>
       </div>
     );
@@ -84,7 +84,7 @@ const CourseDetail: FC = () => {
 
   if (!course) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
+      <div className="full-width-container px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Kursas nerastas</h1>
         <p className="mb-6">Atsiprašome, bet ieškomas kursas neegzistuoja.</p>
         <Link to="/kursai">
@@ -95,7 +95,7 @@ const CourseDetail: FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="full-width-container px-4 py-12">
       <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
         <span>Grįžti į kursų sąrašą</span>

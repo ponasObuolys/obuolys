@@ -38,7 +38,7 @@ const AITools = () => {
 
   return (
     <section id="tools" className="py-16 bg-slate-50 dark:bg-slate-950">
-      <div className="container mx-auto px-4">
+      <div className="px-6">
         <div className="text-center mb-12">
           <h2 className="gradient-text">Rekomenduojami įrankiai</h2>
           <p className="max-w-2xl mx-auto mt-4">

@@ -138,4 +138,9 @@
   .button-outline {
     @apply border border-primary text-primary px-4 py-2 rounded shadow hover:shadow-md hover:bg-primary/10 transition-all duration-300;
   }
+  
+  /* Naujas konteineris per visą ekrano plotį vietoj Tailwind container */
+  .full-width-container {
+    @apply px-6 w-full max-w-full;
+  }
 }
