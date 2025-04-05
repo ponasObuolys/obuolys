@@ -24,7 +24,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
   };
 
   return (
-    <Card className="article-card flex flex-col overflow-hidden">
+    <Card className="article-card">
       <div className="card-image-container">
         {article.category && (
           <div className="category-tag">{article.category}</div>
@@ -33,39 +33,42 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           <LazyImage 
             src={article.image_url} 
             alt={article.title} 
+            className="object-cover absolute inset-0 w-full h-full"
           />
         ) : (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+          <div className="absolute inset-0 bg-slate-100 flex items-center justify-center text-slate-400">
             Publikacijos nuotrauka
           </div>
         )}
       </div>
       
       <div className="card-content">
-        <h3 className="card-title">{article.title}</h3>
-        <p className="card-description">{article.description}</p>
+        <h3 className="card-title line-clamp-2">{article.title}</h3>
+        <p className="card-description line-clamp-3">{article.description}</p>
         
         <div className="card-metadata">
-          <div>
+          <div className="flex items-center gap-1">
             <CalendarDays size={14} />
             <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>
           </div>
-          <div>
+          <div className="flex items-center gap-1">
             <Clock size={14} />
             <span>{article.read_time} skaitymo</span>
           </div>
         </div>
         
         <div className="flex justify-between items-center mt-auto">
-          <Link to={`/publikacijos/${article.slug}`} className="w-3/4">
+          <Link to={`/publikacijos/${article.slug}`} className="flex-grow mr-2">
             <Button className="button-primary w-full">Skaityti daugiau</Button>
           </Link>
           <Button 
-            onClick={() => shareFacebook(article.slug)} 
-            className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
+            variant="ghost"
             size="icon"
+            onClick={() => shareFacebook(article.slug)} 
+            className="text-blue-600 hover:bg-blue-100"
+            aria-label="Dalintis Facebook"
           >
-            <Facebook className="h-4 w-4" />
+            <Facebook className="h-5 w-5" />
           </Button>
         </div>
       </div>

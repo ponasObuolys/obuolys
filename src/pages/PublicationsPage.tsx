@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Facebook, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import LazyImage from "@/components/ui/lazy-image";
 import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
+import ArticleCard from "@/components/ui/article-card";
 
 type Publication = Tables<"articles">;
 
@@ -22,7 +21,7 @@ const PublicationsPage = () => {
   
   // Get unique categories from publications
   const categories = ['Visos kategorijos', 
-    ...Array.from(new Set(publications.map(item => item.category)))
+    ...Array.from(new Set(publications.map(item => item.category).filter(Boolean)))
   ];
   
   useEffect(() => {
@@ -31,19 +30,6 @@ const PublicationsPage = () => {
         setLoading(true);
         console.log("Fetching publications from Supabase...");
         
-        // First, check if we can access the articles table at all
-        const { count, error: countError } = await supabase
-          .from('articles')
-          .select('*', { count: 'exact', head: true });
-          
-        console.log("Total articles in database:", count);
-        
-        if (countError) {
-          console.error("Error counting articles:", countError);
-          throw countError;
-        }
-        
-        // Now fetch the published articles
         const { data, error } = await supabase
           .from('articles')
           .select('*')
@@ -51,14 +37,6 @@ const PublicationsPage = () => {
           .order('date', { ascending: false });
           
         console.log("Published articles fetched:", data ? data.length : 0);
-        if (data) {
-          console.log("First article (if any):", data.length > 0 ? {
-            id: data[0].id,
-            title: data[0].title,
-            published: data[0].published,
-            content_type: data[0].content_type
-          } : "No articles");
-        }
         
         if (error) {
           console.error("Error fetching published articles:", error);
@@ -85,17 +63,12 @@ const PublicationsPage = () => {
   
   const filteredPublications = publications.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.description.toLowerCase().includes(searchQuery.toLowerCase());
+                          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = selectedCategory === "Visos kategorijos" || item.category === selectedCategory;
     
     return matchesSearch && matchesCategory;
   });
   
-  const shareFacebook = (slug: string) => {
-    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-  };
-
   return (
     <>
       <section className="py-12 md:py-16">
@@ -128,7 +101,7 @@ const PublicationsPage = () => {
                         ? 'bg-primary text-white hover:bg-primary/90' 
                         : 'bg-white text-secondary hover:bg-gray-100'
                     }`}
-                    onClick={() => setSelectedCategory(category)}
+                    onClick={() => setSelectedCategory(category!)}
                   >
                     {category}
                   </Button>
@@ -142,54 +115,9 @@ const PublicationsPage = () => {
               <p className="text-xl text-gray-500">Kraunamos publikacijos...</p>
             </div>
           ) : filteredPublications.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="articles-grid">
               {filteredPublications.map((item) => (
-                <Card key={item.id} className="article-card flex flex-col">
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="text-sm text-gray-500">
-                        {new Date(item.date).toLocaleDateString('lt-LT')} · {item.read_time}
-                      </div>
-                      {item.content_type && (
-                        <Badge 
-                          variant={item.content_type === 'Naujiena' ? "destructive" : "secondary"}
-                          className="ml-auto"
-                        >
-                          {item.content_type}
-                        </Badge>
-                      )}
-                    </div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
-                    <CardDescription>{item.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    {item.image_url ? (
-                      <div className="h-40 overflow-hidden rounded-md">
-                        <LazyImage 
-                          src={item.image_url} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                        Publikacijos nuotrauka
-                      </div>
-                    )}
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Link to={`/publikacijos/${item.slug}`}>
-                      <Button className="button-primary">Skaityti daugiau</Button>
-                    </Link>
-                    <Button 
-                      onClick={() => shareFacebook(item.slug)} 
-                      className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-                      size="icon"
-                    >
-                      <Facebook className="h-4 w-4" />
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <ArticleCard key={item.id} article={item} />
               ))}
             </div>
           ) : (
