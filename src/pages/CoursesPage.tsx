@@ -59,7 +59,7 @@ const CoursesPage = () => {
               <p className="text-xl text-gray-500">Kraunami kursai...</p>
             </div>
           ) : courses.length > 0 ? (
-            <div className="courses-grid max-w-7xl mx-auto">
+            <div className="courses-grid">
               {courses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
