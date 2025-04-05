@@ -123,7 +123,7 @@ const ToolsPage = () => {
           ) : filteredTools.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredTools.map((tool) => (
-                <Card key={tool.id} className="flex flex-col h-full custom-card">
+                <Card key={tool.id} className="flex flex-col h-full custom-card" style={{ minHeight: '400px', maxHeight: '400px' }}>
                   {tool.image_url && (
                     <div className="aspect-video w-full overflow-hidden">
                       <LazyImage
@@ -137,11 +137,11 @@ const ToolsPage = () => {
                     <div className="mb-2 text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary inline-block">
                       {tool.category}
                     </div>
-                    <CardTitle className="text-xl">{tool.name}</CardTitle>
-                    <CardDescription>{tool.short_description}</CardDescription>
+                    <CardTitle className="text-xl h-14 overflow-hidden">{tool.name}</CardTitle>
+                    <CardDescription className="h-20 overflow-hidden">{tool.short_description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <p className="text-sm">{tool.description}</p>
+                    <p className="text-sm h-24 overflow-hidden">{tool.description}</p>
                   </CardContent>
                   <CardFooter>
                     <a 

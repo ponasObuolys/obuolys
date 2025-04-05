@@ -114,7 +114,7 @@ const PublicationsPage = () => {
           ) : filteredPublications.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPublications.map((item) => (
-                <Card key={item.id} className="article-card">
+                <Card key={item.id} className="article-card h-full flex flex-col" style={{ minHeight: '500px', maxHeight: '500px' }}>
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
                       <div className="text-sm text-gray-500">
@@ -124,10 +124,10 @@ const PublicationsPage = () => {
                         {item.category}
                       </div>
                     </div>
-                    <CardTitle className="text-xl">{item.title}</CardTitle>
-                    <CardDescription>{item.description}</CardDescription>
+                    <CardTitle className="text-xl h-16 overflow-hidden">{item.title}</CardTitle>
+                    <CardDescription className="h-20 overflow-hidden">{item.description}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     {item.image_url ? (
                       <div className="h-40 overflow-hidden rounded-md">
                         <LazyImage 
