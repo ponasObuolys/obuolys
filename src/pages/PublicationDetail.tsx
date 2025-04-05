@@ -169,7 +169,7 @@ const PublicationDetail = () => {
             
             <div 
               ref={contentRef}
-              className="prose max-w-none mb-8" 
+              className="prose max-w-none mb-8 text-left"
               dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(publication.content || '') }}
             />
             

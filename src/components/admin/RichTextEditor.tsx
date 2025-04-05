@@ -152,11 +152,13 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
           variant="secondary" 
           size="sm" 
           onClick={() => { 
-            console.log('Attempting to execute: insertUnorderedList');
-            editorRef.current?.focus(); 
-            const success = document.execCommand('insertUnorderedList'); 
-            console.log('insertUnorderedList executed, success:', success);
-            handleEditorChange();
+            // Temporarily simplified for debugging
+            console.log('Unordered List Button CLICKED!');
+            // console.log('Attempting to execute: insertUnorderedList');
+            // editorRef.current?.focus(); 
+            // const success = document.execCommand('insertUnorderedList'); 
+            // console.log('insertUnorderedList executed, success:', success);
+            // handleEditorChange();
           }}
         >
           <List className="h-4 w-4" />
