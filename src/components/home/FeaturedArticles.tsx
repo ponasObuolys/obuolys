@@ -57,15 +57,15 @@ const FeaturedArticles = () => {
         ) : articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article) => (
-              <Card key={article.id} className="article-card">
+              <Card key={article.id} className="article-card h-full flex flex-col" style={{ minHeight: '500px', maxHeight: '500px' }}>
                 <CardHeader>
                   <div className="mb-2 text-sm text-gray-500">
                     {new Date(article.date).toLocaleDateString('lt-LT')} · {article.read_time} skaitymo
                   </div>
-                  <CardTitle className="text-xl">{article.title}</CardTitle>
-                  <CardDescription>{article.description}</CardDescription>
+                  <CardTitle className="text-xl h-16 overflow-hidden">{article.title}</CardTitle>
+                  <CardDescription className="h-20 overflow-hidden">{article.description}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   {article.image_url ? (
                     <div className="h-40 overflow-hidden rounded-md">
                       <LazyImage 
