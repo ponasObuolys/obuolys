@@ -125,8 +125,8 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
   };
 
   return (
-    <div className="border rounded-md overflow-hidden">
-      <div className="bg-muted p-2 border-b flex flex-wrap gap-1">
+    <div className="border rounded-md overflow-hidden flex flex-col">
+      <div className="bg-muted p-2 border-b flex flex-wrap gap-1 sticky top-0 z-10">
         <Button type="button" variant="secondary" size="sm" onClick={() => formatText('bold')}>
           <Bold className="h-4 w-4" />
         </Button>
@@ -147,16 +147,60 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
           <Pilcrow className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('insertUnorderedList')}>
+        <Button 
+          type="button" 
+          variant="secondary" 
+          size="sm" 
+          onClick={() => { 
+            console.log('Attempting to execute: insertUnorderedList');
+            editorRef.current?.focus(); 
+            const success = document.execCommand('insertUnorderedList'); 
+            console.log('insertUnorderedList executed, success:', success);
+            handleEditorChange();
+          }}
+        >
           <List className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('insertOrderedList')}>
+        <Button 
+          type="button" 
+          variant="secondary" 
+          size="sm" 
+          onClick={() => { 
+            console.log('Attempting to execute: insertOrderedList');
+            editorRef.current?.focus(); 
+            const success = document.execCommand('insertOrderedList'); 
+            console.log('insertOrderedList executed, success:', success);
+            handleEditorChange();
+          }}
+        >
           <ListOrdered className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('formatBlock', '<blockquote>')}>
+        <Button 
+          type="button" 
+          variant="secondary" 
+          size="sm" 
+          onClick={() => { 
+            console.log('Attempting to execute: formatBlock blockquote');
+            editorRef.current?.focus(); 
+            const success = document.execCommand('formatBlock', false, '<blockquote>'); 
+            console.log('formatBlock blockquote executed, success:', success);
+            handleEditorChange();
+          }}
+        >
           <Quote className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => execCommand('formatBlock', '<pre>')}>
+        <Button 
+          type="button" 
+          variant="secondary" 
+          size="sm" 
+          onClick={() => { 
+            console.log('Attempting to execute: formatBlock pre');
+            editorRef.current?.focus(); 
+            const success = document.execCommand('formatBlock', false, '<pre>'); 
+            console.log('formatBlock pre executed, success:', success);
+            handleEditorChange();
+          }}
+        >
           <Code className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
@@ -267,7 +311,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
       <div
         ref={editorRef}
         contentEditable={true}
-        className="bg-background p-4 min-h-[300px] focus:outline-none prose dark:prose-invert max-w-none rich-text-editor-content"
+        className="bg-background p-4 min-h-[300px] focus:outline-none prose dark:prose-invert max-w-none rich-text-editor-content flex-grow overflow-y-auto"
         style={{ direction: 'ltr', textAlign: 'left' }}
         onInput={handleEditorChange}
         onBlur={handleEditorChange}
