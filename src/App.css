@@ -41,7 +41,7 @@
   color: #888;
 }
 
-/* Kortelių stiliai */
+/* Kortelių stiliai - Udemy stilius */
 .course-card,
 .article-card,
 .tool-card {
@@ -54,21 +54,55 @@
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s, box-shadow 0.2s;
+  background-color: white;
 }
 
+/* Kortelių tinklelio išdėstymas */
+.courses-grid,
+.articles-grid,
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .courses-grid,
+  .articles-grid,
+  .tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .courses-grid,
+  .articles-grid,
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .courses-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Kursų kortelės stilius */
 .course-card {
-  min-height: 600px;
-  max-height: 600px;
+  max-width: 350px;
+  justify-self: center;
 }
 
 .article-card {
-  min-height: 500px;
-  max-height: 500px;
+  max-width: 350px;
+  justify-self: center;
 }
 
 .tool-card {
-  min-height: 400px;
-  max-height: 400px;
+  max-width: 350px;
+  justify-self: center;
 }
 
 .course-card:hover,
@@ -78,18 +112,50 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.course-image-container {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
+/* Paveikslėlių konteineris */
+.card-image-container {
   position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 santykis */
+  overflow: hidden;
 }
 
-.course-content {
+.card-image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover .card-image-container img,
+.article-card:hover .card-image-container img,
+.tool-card:hover .card-image-container img {
+  transform: scale(1.05);
+}
+
+/* Kategorijos žyma */
+.category-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* Kortelės turinys */
+.card-content {
+  padding: 16px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  padding: 1rem;
 }
 
 /* Teksto apribojimai */
@@ -112,57 +178,89 @@
 }
 
 /* Kortelių tinklelio stiliai */
-.courses-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 2rem;
-  width: 100%;
-}
-
-.articles-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 2rem;
-  width: 100%;
-}
-
+.courses-grid,
+.articles-grid,
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  gap: 20px;
   width: 100%;
+  justify-items: center;
 }
 
-@media (min-width: 768px) {
-  .courses-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
+@media (min-width: 640px) {
+  .courses-grid,
+  .articles-grid,
   .tools-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  .courses-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .articles-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
+  .courses-grid,
+  .articles-grid,
   .tools-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1280px) {
-  .tools-grid {
+  .courses-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* Kortelės antraštė */
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* Kortelės aprašymas */
+.card-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+/* Metaduomenys */
+.card-metadata {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.card-metadata > * {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.card-metadata svg {
+  margin-right: 4px;
+  width: 14px;
+  height: 14px;
+}
+
+/* Kaina */
+.card-price {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: auto;
+  align-self: flex-end;
 }

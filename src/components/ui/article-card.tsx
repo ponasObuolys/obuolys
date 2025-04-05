@@ -1,7 +1,7 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Facebook } from "lucide-react";
+import { Facebook, Clock, CalendarDays } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
 
 interface ArticleCardProps {
@@ -24,50 +24,51 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
   };
 
   return (
-    <Card className="article-card flex flex-col h-full overflow-hidden">
-      <CardHeader>
-        <div className="flex justify-between items-start mb-2">
-          <div className="text-sm text-gray-500">
-            {new Date(article.date).toLocaleDateString('lt-LT')} · {article.read_time} skaitymo
-          </div>
-          {article.category && (
-            <div className="text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary">
-              {article.category}
-            </div>
-          )}
-        </div>
-        <CardTitle className="text-xl line-clamp-2 h-14">{article.title}</CardTitle>
-        <CardDescription className="line-clamp-3 h-18">{article.description}</CardDescription>
-      </CardHeader>
-      
-      <CardContent className="flex-grow">
+    <Card className="article-card flex flex-col overflow-hidden">
+      <div className="card-image-container">
+        {article.category && (
+          <div className="category-tag">{article.category}</div>
+        )}
         {article.image_url ? (
-          <div className="h-40 overflow-hidden rounded-md">
-            <LazyImage 
-              src={article.image_url} 
-              alt={article.title} 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <LazyImage 
+            src={article.image_url} 
+            alt={article.title} 
+          />
         ) : (
-          <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
             Publikacijos nuotrauka
           </div>
         )}
-      </CardContent>
+      </div>
       
-      <CardFooter className="flex justify-between mt-auto">
-        <Link to={`/publikacijos/${article.slug}`}>
-          <Button className="button-primary">Skaityti daugiau</Button>
-        </Link>
-        <Button 
-          onClick={() => shareFacebook(article.slug)} 
-          className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-          size="icon"
-        >
-          <Facebook className="h-4 w-4" />
-        </Button>
-      </CardFooter>
+      <div className="card-content">
+        <h3 className="card-title">{article.title}</h3>
+        <p className="card-description">{article.description}</p>
+        
+        <div className="card-metadata">
+          <div>
+            <CalendarDays size={14} />
+            <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>
+          </div>
+          <div>
+            <Clock size={14} />
+            <span>{article.read_time} skaitymo</span>
+          </div>
+        </div>
+        
+        <div className="flex justify-between items-center mt-auto">
+          <Link to={`/publikacijos/${article.slug}`} className="w-3/4">
+            <Button className="button-primary w-full">Skaityti daugiau</Button>
+          </Link>
+          <Button 
+            onClick={() => shareFacebook(article.slug)} 
+            className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
+            size="icon"
+          >
+            <Facebook className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
     </Card>
   );
 };
