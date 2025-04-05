@@ -70,11 +70,17 @@
 @layer base {
   * {
     @apply border-border;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
   }
 
   body {
     @apply bg-gradient-main text-foreground min-h-screen;
     font-family: 'Inter', sans-serif;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -94,7 +100,7 @@
   }
   
   p {
-    @apply text-secondary/90 leading-relaxed;
+    @apply text-secondary/90 leading-relaxed max-w-full;
   }
   
   .gradient-text {
