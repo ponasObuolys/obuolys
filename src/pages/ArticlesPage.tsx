@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Facebook, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import LazyImage from "@/components/ui/lazy-image";
+import ArticleCard from "@/components/ui/article-card";
 
 const PublicationsPage = () => {
   const [publications, setPublications] = useState<any[]>([]);
@@ -61,10 +59,7 @@ const PublicationsPage = () => {
     return matchesSearch && matchesCategory;
   });
   
-  const shareFacebook = (slug: string) => {
-    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-  };
+
 
   return (
     <Layout>
@@ -112,49 +107,9 @@ const PublicationsPage = () => {
               <p className="text-xl text-gray-500">Kraunamos publikacijos...</p>
             </div>
           ) : filteredPublications.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPublications.map((item) => (
-                <Card key={item.id} className="article-card h-full flex flex-col" style={{ minHeight: '500px', maxHeight: '500px' }}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="text-sm text-gray-500">
-                        {new Date(item.date).toLocaleDateString('lt-LT')} · {item.read_time} skaitymo
-                      </div>
-                      <div className="text-xs font-medium py-1 px-2 rounded-full bg-primary/10 text-primary">
-                        {item.category}
-                      </div>
-                    </div>
-                    <CardTitle className="text-xl h-16 overflow-hidden">{item.title}</CardTitle>
-                    <CardDescription className="h-20 overflow-hidden">{item.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    {item.image_url ? (
-                      <div className="h-40 overflow-hidden rounded-md">
-                        <LazyImage 
-                          src={item.image_url} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-                        Publikacijos nuotrauka
-                      </div>
-                    )}
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Link to={`/publikacijos/${item.slug}`}>
-                      <Button className="button-primary">Skaityti daugiau</Button>
-                    </Link>
-                    <Button 
-                      onClick={() => shareFacebook(item.slug)} 
-                      className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90"
-                      size="icon"
-                    >
-                      <Facebook className="h-4 w-4" />
-                    </Button>
-                  </CardFooter>
-                </Card>
+            <div className="articles-grid">
+              {filteredPublications.map((article) => (
+                <ArticleCard key={article.id} article={article} />
               ))}
             </div>
           ) : (

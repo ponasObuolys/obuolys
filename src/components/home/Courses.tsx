@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Clock, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import LazyImage from "@/components/ui/lazy-image";
+import CourseCard from "@/components/ui/course-card";
 
 const Courses = () => {
   const [courses, setCourses] = useState<any[]>([]);
@@ -51,51 +49,9 @@ const Courses = () => {
         {loading ? (
           <div className="text-center">Kraunami kursai...</div>
         ) : courses.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="courses-grid">
             {courses.map((course) => (
-              <Card key={course.id} className="custom-card h-full flex flex-col" style={{ minHeight: '600px', maxHeight: '600px' }}>
-                {course.image_url && (
-                  <div className="aspect-video w-full overflow-hidden">
-                    <LazyImage
-                      src={course.image_url}
-                      alt={course.title}
-                      className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                    />
-                  </div>
-                )}
-                <CardHeader>
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="text-sm font-medium py-1 px-3 rounded-full bg-accent/10 text-accent inline-block">
-                      {course.level}
-                    </div>
-                    <div className="text-xl font-bold text-primary">{course.price}</div>
-                  </div>
-                  <CardTitle className="text-2xl">{course.title}</CardTitle>
-                  <CardDescription className="text-base h-20 overflow-hidden">{course.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="py-2 flex-grow">
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-5 w-5 text-primary" />
-                    <span>{course.duration}</span>
-                  </div>
-                  <div className="mt-6">
-                    <h4 className="font-bold text-md mb-2 flex items-center">
-                      <BookOpen className="mr-2 h-5 w-5 text-primary" />
-                      Kurso turinys:
-                    </h4>
-                    <ul className="space-y-2 pl-7 list-disc">
-                      {course.highlights && course.highlights.map((item: string, index: number) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-                <CardFooter className="pt-4">
-                  <Link to={`/kursai/${course.slug}`} className="w-full">
-                    <Button className="w-full button-primary">Sužinoti daugiau</Button>
-                  </Link>
-                </CardFooter>
-              </Card>
+              <CourseCard key={course.id} course={course} />
             ))}
           </div>
         ) : (
