@@ -20,8 +20,8 @@ interface CourseCardProps {
 
 const CourseCard = ({ course }: CourseCardProps) => {
   return (
-    <Card className="course-card flex flex-col overflow-hidden">
-      <div className="card-image-container">
+    <Card className="course-card w-full max-w-[300px] flex flex-col overflow-hidden shadow-md rounded-lg h-[400px]">
+      <div className="card-image-container h-[169px]">
         {course.level && (
           <div className="category-tag">{course.level}</div>
         )}
@@ -29,6 +29,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <LazyImage 
             src={course.image_url} 
             alt={course.title} 
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
@@ -37,42 +38,28 @@ const CourseCard = ({ course }: CourseCardProps) => {
         )}
       </div>
       
-      <div className="card-content">
-        <h3 className="card-title">{course.title}</h3>
-        <p className="card-description">{course.description}</p>
+      <div className="card-content p-4 flex flex-col flex-1">
+        <h3 className="card-title text-base font-bold mb-2 line-clamp-2">{course.title}</h3>
+        <p className="card-description text-sm text-gray-600 mb-3 line-clamp-3">{course.description}</p>
         
-        <div className="card-metadata">
-          <div>
+        <div className="card-metadata flex gap-3 text-xs text-gray-500 mb-3">
+          <div className="flex items-center gap-1">
             <Clock size={14} />
             <span>{course.duration || 'Nenurodyta'}</span>
           </div>
-          <div>
-            <Users size={14} />
-            <span>Pradedantiesiems</span>
-          </div>
-          <div>
+          <div className="flex items-center gap-1">
             <BarChart size={14} />
             <span>{course.level || 'Pradedantiesiems'}</span>
           </div>
         </div>
         
-        {course.highlights && course.highlights.length > 0 && (
-          <div className="mt-2 mb-4">
-            <ul className="space-y-1 pl-5 list-disc text-sm text-gray-600">
-              {course.highlights.slice(0, 2).map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
         <div className="flex justify-between items-center mt-auto">
-          <Link to={`/kursai/${course.slug}`} className="w-3/4">
-            <Button className="button-primary w-full">Sužinoti daugiau</Button>
-          </Link>
-          <div className="card-price">
+          <div className="card-price font-bold text-right">
             {course.price ? `${course.price}` : 'Nemokamas'}
           </div>
+          <Link to={`/kursai/${course.slug}`} className="w-3/5">
+            <Button className="button-primary w-full text-sm py-1">Sužinoti daugiau</Button>
+          </Link>
         </div>
       </div>
     </Card>

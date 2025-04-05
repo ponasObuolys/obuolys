@@ -49,7 +49,7 @@ const Courses = () => {
         {loading ? (
           <div className="text-center">Kraunami kursai...</div>
         ) : courses.length > 0 ? (
-          <div className="courses-grid">
+          <div className="courses-grid max-w-4xl mx-auto">
             {courses.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
