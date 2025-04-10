@@ -24,6 +24,23 @@ const Hero = () => {
                 <Button className="button-outline w-full sm:w-auto">Pradėti mokytis</Button>
               </Link>
             </div>
+            
+            {/* Support Section */}
+            <div className="mt-12 border-t pt-6">
+              <h3 className="text-md font-semibold mb-3 text-gray-700">Padėk projektui augti:</h3>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a href="https://patreon.com/ponasObuolys" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    Paremk per Patreon
+                  </Button>
+                </a>
+                <a href="https://www.youtube.com/@ponasObuolys/join" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    Tapk YouTube Nariu
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="relative">

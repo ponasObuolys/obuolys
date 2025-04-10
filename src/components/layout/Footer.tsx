@@ -74,6 +74,32 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-white mb-4">Paremk mane</h3>
+            <ul className="space-y-2">
+              <li>
+                <a 
+                  href="https://patreon.com/ponasObuolys"
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-gray-300 hover:text-primary transition-colors duration-300 flex items-center"
+                >
+                  <span className="mr-2">Patreon</span> 
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://www.youtube.com/@ponasObuolys/join"
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-gray-300 hover:text-primary transition-colors duration-300 flex items-center"
+                >
+                  <span className="mr-2">YouTube Narystė</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">

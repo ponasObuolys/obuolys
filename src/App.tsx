@@ -20,6 +20,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import Layout from "@/components/layout/Layout";
+import SupportPage from "./pages/SupportPage";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ function App() {
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/profilis" element={<ProfilePage />} />
                   <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/paremti" element={<SupportPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </Routes>

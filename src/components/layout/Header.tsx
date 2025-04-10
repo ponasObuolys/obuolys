@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { UserDropdown } from '@/components/ui/user-dropdown';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 
 
 const Header = () => {
@@ -28,6 +34,27 @@ const Header = () => {
           </nav>
           
           <div className="hidden md:flex items-center space-x-4">
+            {/* Support Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="nav-link flex items-center">
+                  Paremk <Heart className="ml-1 h-4 w-4 text-red-500" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <a href="https://patreon.com/ponasObuolys" target="_blank" rel="noopener noreferrer">
+                    Patreon
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="https://www.youtube.com/@ponasObuolys/join" target="_blank" rel="noopener noreferrer">
+                    YouTube Narystė
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {user ? (
               <UserDropdown />
             ) : (
@@ -93,6 +120,29 @@ const Header = () => {
             >
               Kontaktai
             </Link>
+            
+            {/* Mobile Support Links */}
+            <div className="border-t border-gray-100 pt-2 mt-2">
+              <a 
+                href="https://patreon.com/ponasObuolys" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Paremk per Patreon
+              </a>
+              <a 
+                href="https://www.youtube.com/@ponasObuolys/join" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Tapk YouTube Nariu
+              </a>
+            </div>
+
             <div className="px-4 py-2">
               {user ? (
                 <Link 

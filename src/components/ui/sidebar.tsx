@@ -365,15 +365,40 @@ SidebarHeader.displayName = "SidebarHeader"
 
 const SidebarFooter = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
+  React.ComponentProps<"div"> & {
+    className?: string
+  }
+>(({ className, children, ...props }, ref) => {
   return (
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn(
+        "mt-auto flex flex-col gap-2 p-4",
+        useSidebar().isMobile && "border-t border-border",
+        className
+      )}
       {...props}
-    />
+    >
+      {children}
+      {/* Support Links in Footer */}
+      <Separator className="my-2" />
+      <h4 className="text-xs font-semibold text-muted-foreground px-2">Paremk projektą:</h4>
+      <SidebarLink
+        href="https://patreon.com/ponasObuolys"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Patreon
+      </SidebarLink>
+      <SidebarLink
+        href="https://www.youtube.com/@ponasObuolys/join"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        YouTube Narystė
+      </SidebarLink>
+    </div>
   )
 })
 SidebarFooter.displayName = "SidebarFooter"
@@ -732,6 +757,26 @@ const SidebarMenuSubButton = React.forwardRef<
   )
 })
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
+
+// Definition for SidebarLink, assuming it's similar to SidebarMenuButton or a styled anchor tag
+const SidebarLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.ComponentProps<"a">
+>(({ className, children, ...props }, ref) => {
+  return (
+    <a
+      ref={ref}
+      className={cn(
+        "flex items-center gap-2 rounded-md px-2 py-1 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground", 
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </a>
+  )
+});
+SidebarLink.displayName = "SidebarLink";
 
 export {
   Sidebar,
