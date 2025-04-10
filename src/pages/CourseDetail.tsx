@@ -24,6 +24,15 @@ interface Course {
   updated_at: string;
 }
 
+// Funkcija Patreon nuorodai gauti pagal kurso slug
+const getPatreonLink = (slug: string): string => {
+  const patreonLinks: { [key: string]: string } = {
+    'lovable-workshop-su-ponu-obuoliu': 'https://www.patreon.com/posts/lovable-workshop-120266952',
+    'vibe-coding-masterclass': 'https://www.patreon.com/posts/vibe-coding-su-125505176'
+  };
+  return patreonLinks[slug] || '#';
+};
+
 const CourseDetail: FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -141,7 +150,12 @@ const CourseDetail: FC = () => {
             <div className="text-center mb-6">
               <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
               <div className="text-sm mb-4 text-gray-500">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
-              <Button className="w-full button-primary text-lg py-6">Įsigyti kursą</Button>
+              <Button 
+                className="w-full button-primary text-lg py-6"
+                onClick={() => window.location.href = getPatreonLink(course.slug)}
+              >
+                Įsigyti kursą
+              </Button>
             </div>
             
             <div className="border-t border-gray-200 pt-6">
