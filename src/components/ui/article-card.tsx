@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Facebook, Clock, CalendarDays } from "lucide-react";
+import { Clock, CalendarDays } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
 
 interface ArticleCardProps {
@@ -18,10 +18,6 @@ interface ArticleCardProps {
 }
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
-  const shareFacebook = (slug: string) => {
-    const url = `https://ponasobuolys.lt/publikacijos/${slug}`;
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-  };
 
   return (
     <Card className="article-card">
@@ -61,15 +57,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
           <Link to={`/publikacijos/${article.slug}`} className="flex-1 mr-2">
             <Button className="button-primary w-full text-sm py-1.5">Skaityti daugiau</Button>
           </Link>
-          <Button 
-            variant="ghost"
-            size="icon"
-            onClick={() => shareFacebook(article.slug)} 
-            className="text-blue-600 hover:bg-blue-100 flex-shrink-0"
-            aria-label="Dalintis Facebook"
-          >
-            <Facebook className="h-5 w-5" />
-          </Button>
+
         </div>
       </div>
     </Card>

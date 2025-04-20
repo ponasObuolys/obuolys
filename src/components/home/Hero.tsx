@@ -29,13 +29,19 @@ const Hero = () => {
           </div>
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-50"></div>
-              <div className="relative bg-white rounded-xl p-6 shadow-lg">
-                <div className="aspect-video rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+              {/* Dinaminis švytėjimo efektas po kortele */}
+{/* Glow sluoksnis su didesniu opacity ir z-10 */}
+<div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-accent rounded-xl blur opacity-80 animate-glow z-10 pointer-events-none"></div>
+              {/* Baltos kortelės fonas su permatomumu, kad matytųsi glow */}
+<div className="relative bg-white/70 rounded-xl p-6 shadow-lg z-20">
+                {/* Permatomas pilkas fonas, kad matytųsi švytėjimas */}
+{/* Frosted glass efektas su blur ir permatomumu, kad matytųsi švytėjimas */}
+{/* Dar išraiškingesnis Frosted Glass efektas su didesniu blur ir mažesniu opacity */}
+<div className="aspect-video rounded-md overflow-hidden bg-gray-200/20 flex items-center justify-center border-4 border-white backdrop-blur-xl backdrop-saturate-150">
                   <LazyImage 
                     src="/obuolys-logo.png" 
                     alt="Ponas Obuolys" 
-                    className="w-3/4 h-3/4 object-contain transition-transform hover:scale-110 duration-300"
+                    className="w-full h-full object-contain transition-transform hover:scale-110 duration-300"
                   />
                 </div>
               </div>
