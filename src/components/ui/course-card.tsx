@@ -55,7 +55,11 @@ const CourseCard = ({ course }: CourseCardProps) => {
         
         <div className="flex justify-between items-center mt-auto">
           <div className="card-price">
-            {course.price ? `${course.price}` : 'Nemokamas'}
+            {course.price && !isNaN(Number(course.price))
+              ? `${Number(course.price).toFixed(2)} €`
+              : course.price
+                ? `${course.price} €`
+                : 'Nemokamas'}
           </div>
           <Link to={`/kursai/${course.slug}`} className="ml-auto">
             <Button className="button-primary">Sužinoti daugiau</Button>

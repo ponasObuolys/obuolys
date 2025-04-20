@@ -39,7 +39,7 @@ const AdminDashboardStats = ({ stats }: AdminDashboardStatsProps) => {
         </CardContent>
       </Card>
 
-      <Card className="lg:col-span-4">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Vartotojai</CardTitle>
         </CardHeader>

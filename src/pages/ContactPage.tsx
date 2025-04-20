@@ -52,15 +52,15 @@ const ContactPage = () => {
           <div className="text-center mb-12">
             <h1 className="mb-4"><span className="gradient-text">Kontaktai</span></h1>
             <p className="max-w-2xl mx-auto">
-              Turite klausimų ar pasiūlymų? Susisiekite su mumis ir mielai atsakysime
+              Turite klausimų ar pasiūlymų? Susisiekite su manimi ir mielai atsakysiu.
             </p>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
-              <h2 className="text-2xl font-bold mb-6">Susisiekite tiesiogiai</h2>
+              <h2 className="text-2xl font-bold mb-6 text-center">Susisiekite tiesiogiai</h2>
               
-              <div className="space-y-6">
+              <div className="space-y-6 text-left">
                 <a 
                   href="mailto:labas@ponasobuolys.lt" 
                   className="flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
@@ -105,19 +105,19 @@ const ContactPage = () => {
                 </a>
               </div>
               
-              <div className="mt-12">
-                <h3 className="text-xl font-bold mb-4">Priėmimo valandos</h3>
+              <div className="mt-12 text-left">
+                <h3 className="text-xl font-bold mb-4">Darbo valandos</h3>
                 <p className="mb-4">
-                  Į laiškus ir žinutes atsakome darbo dienomis nuo 9:00 iki 17:00 val.
+                  Į laiškus ir žinutes atsakau darbo dienomis nuo 9:00 iki 17:00 val.
                 </p>
                 <p>
-                  Stengiamės atsakyti per 24 valandas, tačiau kartais tai gali užtrukti iki 2 darbo dienų.
+                  Stengiuosi atsakyti per 24 valandas, tačiau kartais tai gali užtrukti iki 2 darbo dienų
                 </p>
               </div>
             </div>
             
             <div>
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-6 text-left">
                 <h2 className="text-2xl font-bold mb-6">Siųsti žinutę</h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -197,7 +197,7 @@ const ContactPage = () => {
               Ieškote AI eksperto, lektoriaus ar norite aptarti bendradarbiavimo galimybes?
               Mielai aptarsime, kaip galėčiau padėti jūsų projektui ar renginiui.
             </p>
-            <Button className="button-primary">Aptarti bendradarbiavimą</Button>
+
           </div>
         </div>
       </section>

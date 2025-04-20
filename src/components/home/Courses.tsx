@@ -16,7 +16,7 @@ const Courses = () => {
           .from('courses')
           .select('*')
           .eq('published', true)
-          .limit(2);
+          .limit(4);
           
         if (error) {
           throw error;
@@ -48,15 +48,27 @@ const Courses = () => {
         
         {loading ? (
           <div className="text-center">Kraunami kursai...</div>
-        ) : courses.length > 0 ? (
-          <div className="courses-grid">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
         ) : (
-          <div className="text-center">
-            <p>Šiuo metu nėra aktyvių kursų</p>
+          <div className="courses-grid">
+            {courses.length > 0 ? (
+              // Rodome turimus kursus
+              courses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))
+            ) : (
+              // Jei nėra kursų, rodome pranešimą
+              <div className="col-span-4 text-center">
+                <p>Šiuo metu nėra aktyvių kursų</p>
+              </div>
+            )}
+            {/* Jei turime mažiau nei 4 kursus, pridedame tuščias korteles, kad užpildytume vietą */}
+            {courses.length > 0 && courses.length < 4 && (
+              Array.from({ length: 4 - courses.length }).map((_, index) => (
+                <div key={`empty-${index}`} className="course-card-placeholder rounded-lg border border-dashed border-gray-300 h-[300px] flex items-center justify-center">
+                  <p className="text-gray-400">Netrukus bus daugiau kursų</p>
+                </div>
+              ))
+            )}
           </div>
         )}
         

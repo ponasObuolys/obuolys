@@ -47,8 +47,28 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
   const [content, setContent] = useState('');
+  const [readTimeManuallyEdited, setReadTimeManuallyEdited] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [customCategory, setCustomCategory] = useState('');
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   
+  // Gauti unikalias kategorijas iš Supabase
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('category')
+        .neq('category', '')
+        .neq('category', null);
+      if (!error && data) {
+        const unique = Array.from(new Set(data.map((a: { category: string }) => a.category).filter(Boolean)));
+        setCategories(unique);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const form = useForm<PublicationFormData>({
     resolver: zodResolver(publicationSchema),
     defaultValues: {
@@ -57,14 +77,23 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
       description: '',
       category: '',
       read_time: '',
-      author: '',
+      author: 'ponas Obuolys',
       date: new Date().toISOString().split('T')[0],
       featured: false,
       published: false,
       image_url: '',
       content_type: 'Straipsnis',
-    }
+    },
+    mode: 'onChange',
   });
+
+  // Užtikrina, kad autorius visada būtų 'ponas Obuolys', jei laukas tuščias
+  useEffect(() => {
+    const author = form.getValues('author');
+    if (!author || !author.trim()) {
+      form.setValue('author', 'ponas Obuolys');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPublication = async () => {
@@ -90,7 +119,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
             description: data.description,
             category: data.category,
             read_time: data.read_time,
-            author: data.author,
+            author: data.author && data.author.trim() ? data.author : 'ponas Obuolys',
             date: new Date(data.date).toISOString().split('T')[0],
             featured: data.featured,
             published: data.published,
@@ -115,7 +144,17 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
     fetchPublication();
   }, [id, form, toast]);
 
-  // Using the utility function that handles Lithuanian characters
+  // Automatinis skaitymo laiko paskaičiavimas
+  useEffect(() => {
+    if (readTimeManuallyEdited) return;
+    // Ištrauk žodžius iš content (be HTML žymų)
+    const text = content.replace(/<[^>]+>/g, ' ');
+    const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+    const minutes = Math.max(1, Math.round(wordCount / 200));
+    if (form.getValues('read_time') !== `${minutes} min`) {
+      form.setValue('read_time', `${minutes} min`, { shouldValidate: true });
+    }
+  }, [content, readTimeManuallyEdited]);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
@@ -302,8 +341,46 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   <FormItem>
                     <FormLabel>Kategorija</FormLabel>
                     <FormControl>
-                      <Input placeholder="Dirbtinis intelektas" {...field} />
+                      <>
+                        <Select
+                          value={isCustomCategory ? 'custom' : field.value}
+                          onValueChange={val => {
+                            if (val === 'custom') {
+                              setIsCustomCategory(true);
+                              setCustomCategory('');
+                              form.setValue('category', '');
+                            } else {
+                              setIsCustomCategory(false);
+                              form.setValue('category', val, { shouldValidate: true });
+                            }
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pasirinkite kategoriją" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map(cat => (
+                              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                            ))}
+                            <SelectItem value="custom"><em>Įvesti naują...</em></SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {isCustomCategory && (
+                          <Input
+                            className="mt-2"
+                            placeholder="Nauja kategorija"
+                            value={customCategory}
+                            onChange={e => {
+                              setCustomCategory(e.target.value);
+                              form.setValue('category', e.target.value, { shouldValidate: true });
+                            }}
+                          />
+                        )}
+                      </>
                     </FormControl>
+                    <FormDescription>
+                      Galite pasirinkti iš sąrašo arba sukurti naują kategoriją.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -316,8 +393,22 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   <FormItem>
                     <FormLabel>Skaitymo laikas</FormLabel>
                     <FormControl>
-                      <Input placeholder="5 min" {...field} />
+                      <Input
+                        placeholder="5 min"
+                        {...field}
+                        onChange={e => {
+                          field.onChange(e);
+                          setReadTimeManuallyEdited(true);
+                        }}
+                        onBlur={e => {
+                          // Jei laukas tuščias, vėl įjungiam automatinį skaičiavimą
+                          if (!e.target.value) setReadTimeManuallyEdited(false);
+                        }}
+                      />
                     </FormControl>
+                    <FormDescription>
+                      Šis laukas pildomas automatiškai pagal teksto kiekį, bet galite jį pakeisti ranka.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -332,8 +423,11 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   <FormItem>
                     <FormLabel>Autorius</FormLabel>
                     <FormControl>
-                      <Input placeholder="Vardenis Pavardenis" {...field} />
+                      <Input placeholder="ponas Obuolys" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      Pagal nutylėjimą: ponas Obuolys. Galite įrašyti kitą autorių.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
