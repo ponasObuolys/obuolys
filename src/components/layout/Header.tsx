@@ -25,7 +25,7 @@ const Header = () => {
           </Link>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-6">
+          <nav className="hidden lg:flex space-x-6">
             <Link to="/publikacijos" className="nav-link">Publikacijos</Link>
             {/* <Link to="/naujienos" className="nav-link">Naujienos</Link> */}
             <Link to="/kursai" className="nav-link">Kursai</Link>
@@ -33,7 +33,7 @@ const Header = () => {
             <Link to="/kontaktai" className="nav-link">Kontaktai</Link>
           </nav>
           
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {/* Support Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -67,7 +67,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-secondary hover:text-primary transition-colors duration-300"
+            className="lg:hidden text-secondary hover:text-primary transition-colors duration-300"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -76,7 +76,7 @@ const Header = () => {
       
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-md w-full">
+        <div className="lg:hidden bg-white shadow-md w-full">
           <div className="container mx-auto py-3 space-y-2">
             <Link 
               to="/" 

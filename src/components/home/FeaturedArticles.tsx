@@ -9,16 +9,20 @@ const FeaturedArticles = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Funkcija nustatyti kiek rodyti pagal lango dydį
+    const getLimit = () => (window.matchMedia('(min-width: 1024px)').matches ? 3 : 4);
+
     const fetchFeaturedArticles = async () => {
       try {
         setLoading(true);
+        const limit = getLimit();
         const { data, error } = await supabase
           .from('articles')
           .select('*')
           .eq('published', true)
           .eq('featured', true)
           .order('date', { ascending: false })
-          .limit(3);
+          .limit(limit);
           
         if (error) {
           throw error;
@@ -35,6 +39,11 @@ const FeaturedArticles = () => {
     };
     
     fetchFeaturedArticles();
+
+    // Reaguok į lango dydžio pokytį
+    const handleResize = () => fetchFeaturedArticles();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
 

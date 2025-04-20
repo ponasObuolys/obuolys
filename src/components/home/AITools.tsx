@@ -9,15 +9,19 @@ const AITools = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Funkcija nustatyti kiek rodyti pagal lango dydį
+    const getLimit = () => (window.matchMedia('(min-width: 1024px)').matches ? 3 : 4);
+
     const fetchTools = async () => {
       try {
         setLoading(true);
+        const limit = getLimit();
         const { data, error } = await supabase
           .from('tools')
           .select('*')
           .eq('published', true)
           .eq('featured', true)
-          .limit(4);
+          .limit(limit);
           
         if (error) {
           throw error;
@@ -34,6 +38,11 @@ const AITools = () => {
     };
     
     fetchTools();
+
+    // Reaguok į lango dydžio pokytį
+    const handleResize = () => fetchTools();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
