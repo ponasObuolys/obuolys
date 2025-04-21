@@ -9,6 +9,8 @@ import ToolCard from '@/components/ui/tool-card';
 import ToolSearch from '@/components/tools/ToolSearch';
 import ToolCategories from '@/components/tools/ToolCategories';
 
+import { Helmet } from 'react-helmet-async';
+
 const ToolsPage = () => {
   const [tools, setTools] = useState<any[]>([]);
   const [filteredTools, setFilteredTools] = useState<any[]>([]);
@@ -74,6 +76,15 @@ const ToolsPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>AI Įrankiai | Ponas Obuolys</title>
+        <meta name="description" content="Išbandykite geriausius dirbtinio intelekto įrankius, skirtus produktyvumui, kūrybai ir verslui. Atraskite AI įrankius lietuvių kalba!" />
+        <meta property="og:title" content="AI Įrankiai | Ponas Obuolys" />
+        <meta property="og:description" content="Išbandykite geriausius dirbtinio intelekto įrankius, skirtus produktyvumui, kūrybai ir verslui. Atraskite AI įrankius lietuvių kalba!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ponasobuolys.lt/irankiai" />
+        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
+      </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">

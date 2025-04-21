@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Youtube, MessageSquare } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
+import { Helmet } from 'react-helmet-async';
+
 const ContactPage = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -47,6 +49,15 @@ const ContactPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kontaktai | Ponas Obuolys</title>
+        <meta name="description" content="Susisiekite su Ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar klausimų apie dirbtinį intelektą." />
+        <meta property="og:title" content="Kontaktai | Ponas Obuolys" />
+        <meta property="og:description" content="Susisiekite su Ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar klausimų apie dirbtinį intelektą." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ponasobuolys.lt/kontaktai" />
+        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
+      </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">

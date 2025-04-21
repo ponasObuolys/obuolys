@@ -16,6 +16,10 @@ import { Tables } from "@/integrations/supabase/types";
 type Publication = Tables<"articles">;
 
 const PublicationDetail = () => {
+  // Helmet žymoms
+  const getMetaTitle = () => publication?.title ? `${publication.title} | Ponas Obuolys` : 'Publikacija | Ponas Obuolys';
+  const getMetaDescription = () => publication?.description || 'Dirbtinio intelekto publikacija ir AI straipsnis lietuvių kalba.';
+  const getMetaImage = () => publication?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
   const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);

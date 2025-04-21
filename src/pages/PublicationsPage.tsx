@@ -12,6 +12,8 @@ import ArticleCard from "@/components/ui/article-card";
 
 type Publication = Tables<"articles">;
 
+import { Helmet } from 'react-helmet-async';
+
 const PublicationsPage = () => {
   const [publications, setPublications] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,6 +73,15 @@ const PublicationsPage = () => {
   
   return (
     <>
+      <Helmet>
+        <title>Publikacijos | Ponas Obuolys</title>
+        <meta name="description" content="Visos dirbtinio intelekto publikacijos, naujienos ir AI straipsniai lietuvių kalba. Skaitykite naujausius Ponas Obuolys straipsnius!" />
+        <meta property="og:title" content="Publikacijos | Ponas Obuolys" />
+        <meta property="og:description" content="Visos dirbtinio intelekto publikacijos, naujienos ir AI straipsniai lietuvių kalba. Skaitykite naujausius Ponas Obuolys straipsnius!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ponasobuolys.lt/publikacijos" />
+        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
+      </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">

@@ -33,7 +33,13 @@ const getPatreonLink = (slug: string): string => {
   return patreonLinks[slug] || '#';
 };
 
+import { Helmet } from 'react-helmet-async';
+
 const CourseDetail: FC = () => {
+  // Helmet žymoms
+  const getMetaTitle = () => course?.title ? `${course.title} | AI Kursas | Ponas Obuolys` : 'AI Kursas | Ponas Obuolys';
+  const getMetaDescription = () => course?.description || 'Dirbtinio intelekto kursas lietuvių kalba.';
+  const getMetaImage = () => course?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,27 +127,26 @@ const CourseDetail: FC = () => {
                 <Clock className="mr-2 h-5 w-5 text-primary" />
                 <span>{course.duration}</span>
               </div>
-              <div className="flex items-center">
-                <Star className="mr-2 h-5 w-5 text-primary" />
-                <span>{course.level}</span>
-              </div>
-            </div>
-            
-            <div className="mb-6">
-              <h3 className="text-xl font-bold mb-3">Ką išmoksite:</h3>
-              <ul className="space-y-2">
-                {course.highlights?.map((item, index) => (
-                  <li key={index} className="flex items-start">
-                    <Check className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            <div className="mt-8">
-              <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: course.content }} />
-            </div>
+            <Helmet>
+              <title>{getMetaTitle()}</title>
+              <meta name="description" content={getMetaDescription()} />
+              <meta property="og:title" content={getMetaTitle()} />
+              <meta property="og:description" content={getMetaDescription()} />
+              <meta property="og:type" content="article" />
+              <meta property="og:url" content={`https://ponasobuolys.lt/kursai/${course?.slug || ''}`} />
+              <meta property="og:image" content={getMetaImage()} />
+            </Helmet>
+
+            <Tabs defaultValue="aprasymas" className="mb-8">
+              <TabsList>
+                <TabsTrigger value="aprasymas">Aprašymas</TabsTrigger>
+              </TabsList>
+              <TabsContent value="aprasymas">
+                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: course.content }} />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
         

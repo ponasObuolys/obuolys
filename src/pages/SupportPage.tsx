@@ -3,10 +3,22 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
 
+import { Helmet } from 'react-helmet-async';
+
 const SupportPage: FC = () => {
   return (
-    <div className="container mx-auto px-4 py-16 max-w-3xl text-center">
-      <Heart className="mx-auto h-16 w-16 text-red-500 mb-6" />
+    <>
+      <Helmet>
+        <title>Parama | Ponas Obuolys</title>
+        <meta name="description" content="Paremkite Ponas Obuolys projektą ir prisidėkite prie kokybiško AI turinio kūrimo lietuvių kalba." />
+        <meta property="og:title" content="Parama | Ponas Obuolys" />
+        <meta property="og:description" content="Paremkite Ponas Obuolys projektą ir prisidėkite prie kokybiško AI turinio kūrimo lietuvių kalba." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ponasobuolys.lt/parama" />
+        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
+      </Helmet>
+      <div className="container mx-auto px-4 py-16 max-w-3xl text-center">
+        <Heart className="mx-auto h-16 w-16 text-red-500 mb-6" />
       <h1 className="text-4xl font-bold mb-4">Paremk "Ponas Obuolys" Projektą</h1>
       <p className="text-lg text-gray-700 mb-8">
         Jūsų parama padeda man kurti kokybišką turinį lietuvių kalba apie dirbtinį intelektą – straipsnius, įrankius, kursus ir video. 
@@ -49,6 +61,7 @@ const SupportPage: FC = () => {
         <Button variant="outline">Grįžti į pagrindinį puslapį</Button>
       </Link>
     </div>
+    </>
   );
 };
 

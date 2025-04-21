@@ -5,6 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import CourseCard from "@/components/ui/course-card";
 
+import { Helmet } from 'react-helmet-async';
+
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +46,15 @@ const CoursesPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Kursai | Ponas Obuolys</title>
+        <meta name="description" content="AI kursai ir mokymai lietuvių kalba. Sužinokite, kaip panaudoti dirbtinį intelektą savo veikloje su Ponas Obuolys kursais!" />
+        <meta property="og:title" content="Kursai | Ponas Obuolys" />
+        <meta property="og:description" content="AI kursai ir mokymai lietuvių kalba. Sužinokite, kaip panaudoti dirbtinį intelektą savo veikloje su Ponas Obuolys kursais!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ponasobuolys.lt/kursai" />
+        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
+      </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
