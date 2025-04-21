@@ -6,7 +6,7 @@ export const SocialLinks = ({ className }: { className?: string }) => {
       <a
         href="mailto:labas@ponasobuolys.lt"
         className="text-gray-500 hover:text-primary transition-colors duration-300"
-        aria-label="Email"
+        aria-label="Siųsti el. laišką"
       >
         <Mail className="h-6 w-6" />
       </a>
@@ -15,7 +15,7 @@ export const SocialLinks = ({ className }: { className?: string }) => {
         target="_blank"
         rel="noopener noreferrer"
         className="text-gray-500 hover:text-primary transition-colors duration-300"
-        aria-label="YouTube"
+        aria-label="Apsilankyti YouTube"
       >
         <Youtube className="h-6 w-6" />
       </a>
@@ -24,7 +24,7 @@ export const SocialLinks = ({ className }: { className?: string }) => {
         target="_blank"
         rel="noopener noreferrer"
         className="text-gray-500 hover:text-primary transition-colors duration-300"
-        aria-label="Facebook"
+        aria-label="Apsilankyti Facebook"
       >
         <Facebook className="h-6 w-6" />
       </a>
@@ -33,7 +33,7 @@ export const SocialLinks = ({ className }: { className?: string }) => {
         target="_blank"
         rel="noopener noreferrer"
         className="text-gray-500 hover:text-primary transition-colors duration-300"
-        aria-label="WhatsApp"
+        aria-label="Rašyti WhatsApp"
       >
         <MessageSquare className="h-6 w-6" />
       </a>

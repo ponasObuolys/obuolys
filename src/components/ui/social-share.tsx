@@ -69,13 +69,13 @@ export function SocialShare({
                 onClick={copyToClipboard}
                 className="bg-gray-800 text-white hover:bg-gray-700"
                 size="icon"
-                aria-label="Copy link"
+                aria-label="Kopijuoti nuorodą"
               >
                 {copied ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{copied ? "Copied!" : "Copy link"}</p>
+              <p>{copied ? "Nukopijuota!" : "Kopijuoti nuorodą"}</p>
             </TooltipContent>
           </Tooltip>
         )}
@@ -88,13 +88,13 @@ export function SocialShare({
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#1877F2] text-white hover:bg-[#1877F2]/90 h-9 w-9 p-0"
-              aria-label="Share on Facebook"
+              aria-label="Dalintis Facebook"
             >
               <Facebook className="h-4 w-4" />
             </a>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Share on Facebook</p>
+            <p>Dalintis Facebook</p>
           </TooltipContent>
         </Tooltip>
 
@@ -104,13 +104,13 @@ export function SocialShare({
               onClick={shareTwitter}
               className="bg-[#1DA1F2] text-white hover:bg-[#1DA1F2]/90"
               size="icon"
-              aria-label="Share on Twitter"
+              aria-label="Dalintis Twitter"
             >
               <Twitter className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Share on Twitter</p>
+            <p>Dalintis Twitter</p>
           </TooltipContent>
         </Tooltip>
 
@@ -120,13 +120,13 @@ export function SocialShare({
               onClick={shareLinkedin}
               className="bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90"
               size="icon"
-              aria-label="Share on LinkedIn"
+              aria-label="Dalintis LinkedIn"
             >
               <Linkedin className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Share on LinkedIn</p>
+            <p>Dalintis LinkedIn</p>
           </TooltipContent>
         </Tooltip>
 
