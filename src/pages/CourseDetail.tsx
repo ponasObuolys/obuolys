@@ -38,7 +38,7 @@ import { Helmet } from 'react-helmet-async';
 const CourseDetail: FC = () => {
   // Helmet žymoms
   const getMetaTitle = () => course?.title ? `${course.title} | AI Kursas | Ponas Obuolys` : 'AI Kursas | Ponas Obuolys';
-  const getMetaDescription = () => course?.description || 'Dirbtinio intelekto kursas lietuvių kalba.';
+  const getMetaDescription = () => course?.description || 'AI kursas pradedantiesiems ir pažengusiems, nuotoliniai mokymai apie dirbtinį intelektą lietuvių kalba.';
   const getMetaImage = () => course?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);

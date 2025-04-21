@@ -25,7 +25,7 @@ import { Helmet } from 'react-helmet-async';
 const ToolDetailPage = () => {
   // Helmet žymoms
   const getMetaTitle = () => tool?.name ? `${tool.name} | AI Įrankis | Ponas Obuolys` : 'AI Įrankis | Ponas Obuolys';
-  const getMetaDescription = () => tool?.description || 'Dirbtinio intelekto įrankis lietuvių kalba.';
+  const getMetaDescription = () => tool?.description || 'Rekomenduojamas AI įrankis lietuvių kalba. Sužinokite, kaip šis dirbtinio intelekto sprendimas gali padėti jūsų veikloje.';
   const getMetaImage = () => tool?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
   const [tool, setTool] = useState<Tool | null>(null); // Naudojamas Tool tipas

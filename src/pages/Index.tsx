@@ -13,8 +13,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Ponas Obuolys – Dirbtinio intelekto naujienos, įrankiai ir kursai</title>
-        <meta name="description" content="Naujausios AI naujienos, įrankiai, kursai ir straipsniai lietuvių kalba. Atraskite dirbtinio intelekto galimybes su Ponas Obuolys!" />
+        <title>Ponas Obuolys – Dirbtinio intelekto naujienos, AI įrankiai, kursai ir straipsniai lietuvių kalba</title>
+        <meta name="description" content="Atraskite įdomiausias AI naujienas, dirbtinio intelekto įrankius, kursus ir straipsnius lietuvių kalba. Nemokamos rekomendacijos ir patarimai apie AI Lietuvoje." />
         <meta property="og:title" content="Ponas Obuolys – Dirbtinio intelekto naujienos, įrankiai ir kursai" />
         <meta property="og:description" content="Naujausios AI naujienos, įrankiai, kursai ir straipsniai lietuvių kalba. Atraskite dirbtinio intelekto galimybes su Ponas Obuolys!" />
         <meta property="og:type" content="website" />

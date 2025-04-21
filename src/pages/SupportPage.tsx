@@ -10,7 +10,7 @@ const SupportPage: FC = () => {
     <>
       <Helmet>
         <title>Parama | Ponas Obuolys</title>
-        <meta name="description" content="Paremkite Ponas Obuolys projektą ir prisidėkite prie kokybiško AI turinio kūrimo lietuvių kalba." />
+        <meta name="description" content="Prisidėkite prie AI edukacijos Lietuvoje – remkite Ponas Obuolys projektą ir padėkite kurti kokybišką turinį apie dirbtinį intelektą lietuvių kalba." />
         <meta property="og:title" content="Parama | Ponas Obuolys" />
         <meta property="og:description" content="Paremkite Ponas Obuolys projektą ir prisidėkite prie kokybiško AI turinio kūrimo lietuvių kalba." />
         <meta property="og:type" content="website" />
