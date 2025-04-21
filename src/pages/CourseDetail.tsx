@@ -137,6 +137,38 @@ const CourseDetail: FC = () => {
               <meta property="og:type" content="article" />
               <meta property="og:url" content={`https://ponasobuolys.lt/kursai/${course?.slug || ''}`} />
               <meta property="og:image" content={getMetaImage()} />
+
+              {/* Schema.org Course struktūrizuoti duomenys */}
+              <script type="application/ld+json">
+                {JSON.stringify({
+                  '@context': 'https://schema.org',
+                  '@type': 'Course',
+                  'name': course.title,
+                  'description': course.description,
+                  'provider': {
+                    '@type': 'Organization',
+                    'name': 'Ponas Obuolys',
+                    'sameAs': 'https://ponasobuolys.lt',
+                    'logo': {
+                      '@type': 'ImageObject',
+                      'url': 'https://ponasobuolys.lt/apple-logo.png'
+                    }
+                  },
+                  'inLanguage': 'lt',
+                  'url': `https://ponasobuolys.lt/kursai/${course?.slug || ''}`,
+                  'image': course.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
+                  'datePublished': course.created_at,
+                  'dateModified': course.updated_at,
+                  'courseMode': course.level,
+                  'offers': course.price ? {
+                    '@type': 'Offer',
+                    'price': course.price,
+                    'priceCurrency': 'EUR',
+                    'availability': 'https://schema.org/InStock',
+                    'url': `https://ponasobuolys.lt/kursai/${course?.slug || ''}`
+                  } : undefined
+                })}
+              </script>
             </Helmet>
 
             <Tabs defaultValue="aprasymas" className="mb-8">

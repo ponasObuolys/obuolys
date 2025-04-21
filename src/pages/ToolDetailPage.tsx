@@ -106,6 +106,36 @@ const ToolDetailPage = () => {
         <meta property="og:type" content="article" />
         <meta property="og:url" content={`https://ponasobuolys.lt/irankiai/${tool?.slug || ''}`} />
         <meta property="og:image" content={getMetaImage()} />
+
+        {/* Schema.org SoftwareApplication struktūrizuoti duomenys */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            'name': tool.name,
+            'description': tool.description,
+            'applicationCategory': tool.category,
+            'operatingSystem': 'All',
+            'image': tool.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
+            'url': `https://ponasobuolys.lt/irankiai/${tool?.slug || ''}`,
+            'offers': {
+              '@type': 'Offer',
+              'price': '0',
+              'priceCurrency': 'EUR',
+              'availability': 'https://schema.org/InStock',
+              'url': tool.url
+            },
+            'publisher': {
+              '@type': 'Organization',
+              'name': 'Ponas Obuolys',
+              'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://ponasobuolys.lt/apple-logo.png'
+              }
+            },
+            'inLanguage': 'lt'
+          })}
+        </script>
       </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 py-8 max-w-3xl"> 

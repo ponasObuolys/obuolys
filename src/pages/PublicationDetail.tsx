@@ -120,6 +120,37 @@ const PublicationDetail = () => {
         <meta name="twitter:title" content={publication.title} />
         <meta name="twitter:description" content={publication.description || ''} />
         {publication.image_url && <meta name="twitter:image" content={publication.image_url} />}
+
+        {/* Schema.org Article struktūrizuoti duomenys */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            'mainEntityOfPage': {
+              '@type': 'WebPage',
+              '@id': getArticleUrl()
+            },
+            'headline': publication.title,
+            'description': publication.description || '',
+            'image': publication.image_url ? [publication.image_url] : ['https://ponasobuolys.lt/og-cover.jpg'],
+            'author': {
+              '@type': 'Person',
+              'name': publication.author || 'Ponas Obuolys'
+            },
+            'publisher': {
+              '@type': 'Organization',
+              'name': 'Ponas Obuolys',
+              'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://ponasobuolys.lt/apple-logo.png'
+              }
+            },
+            'datePublished': publication.date,
+            'dateModified': publication.updated_at || publication.date,
+            'articleSection': publication.category || undefined,
+            'inLanguage': 'lt'
+          })}
+        </script>
       </Helmet>
 
       <article className="container mx-auto px-4 py-12">
