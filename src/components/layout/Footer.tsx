@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { SocialLinks } from '@/components/ui/SocialLinks';
 
 const Footer = () => {
   return (
@@ -46,33 +47,9 @@ const Footer = () => {
           
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Kontaktai</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="mailto:labas@ponasobuolys.lt" className="text-gray-300 hover:text-primary transition-colors duration-300">
-                  labas@ponasobuolys.lt
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://www.youtube.com/@ponasobuolys"
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-gray-300 hover:text-primary transition-colors duration-300"
-                >
-                  @ponasobuolys (YouTube)
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://wa.me/message/RSBW27G7DYBVP1"
-                  target="_blank"
-                  rel="noopener noreferrer" 
-                  className="text-gray-300 hover:text-primary transition-colors duration-300"
-                >
-                  WhatsApp
-                </a>
-              </li>
-            </ul>
+            <div className="mt-2 flex justify-center">
+              <SocialLinks className="justify-center" />
+            </div>
           </div>
 
 

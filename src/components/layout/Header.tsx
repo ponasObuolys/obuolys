@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
@@ -15,7 +15,19 @@ import {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
-  
+  const location = useLocation();
+
+  // Navigacijos meniu punktai
+  const navLinks = [
+    { to: '/publikacijos', label: 'Publikacijos' },
+    // { to: '/naujienos', label: 'Naujienos' },
+    { to: '/kursai', label: 'Kursai' },
+    { to: '/irankiai', label: 'Įrankiai' },
+    { to: '/kontaktai', label: 'Kontaktai' },
+  ];
+
+  const isActive = (to: string) => location.pathname === to;
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50 w-full">
       <div className="container mx-auto py-3">
@@ -23,14 +35,33 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-primary font-bold text-2xl">ponas Obuolys</span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex space-x-6">
-            <Link to="/publikacijos" className="nav-link">Publikacijos</Link>
-            {/* <Link to="/naujienos" className="nav-link">Naujienos</Link> */}
-            <Link to="/kursai" className="nav-link">Kursai</Link>
-            <Link to="/irankiai" className="nav-link">Įrankiai</Link>
-            <Link to="/kontaktai" className="nav-link">Kontaktai</Link>
+            {navLinks.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`nav-link group relative flex flex-col items-center transition-colors duration-300 px-1 ${
+                  isActive(to)
+                    ? 'text-primary'
+                    : 'text-secondary hover:text-primary'
+                }`}
+              >
+                <span className="relative z-10 leading-tight">{label}</span>
+                {isActive(to) ? (
+                  <span
+                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-[2px] bg-primary rounded transition-all duration-300 ease-in-out opacity-100 translate-x-0"
+                    style={{ minWidth: '100%' }}
+                  />
+                ) : (
+                  <span
+                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-[2px] bg-primary rounded transition-all duration-300 ease-in-out opacity-0 -translate-x-full group-hover:opacity-100 group-hover:translate-x-0"
+                    style={{ minWidth: '100%' }}
+                  />
+                )}
+              </Link>
+            ))}
           </nav>
           
           <div className="hidden lg:flex items-center space-x-4">
