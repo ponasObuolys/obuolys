@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import LazyImage from '@/components/ui/lazy-image';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
@@ -28,8 +29,16 @@ const SupportPage: FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         {/* Patreon Card */}
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 flex flex-col items-center">
-          <img src="/patreon-logo.png" alt="Patreon Logo" className="h-12 mb-4" /> 
-          {/* Replace with actual Patreon logo if available */}
+          <LazyImage
+  src="/patreon-logo.png"
+  alt="Patreon"
+  width={120}
+  height={48}
+  className="h-12 mb-4 w-auto"
+  sizes="(max-width: 640px) 80vw, 120px"
+  srcSizes={[60, 90, 120, 180]}
+  priority={false}
+/>
           <h2 className="text-2xl font-semibold mb-3">Tapk Patronu</h2>
           <p className="text-gray-600 mb-6 text-center">
             Gaukite išskirtinį turinį, ankstyvą prieigą prie naujienų ir kitų privalumų prisijungdami per Patreon.
@@ -41,7 +50,16 @@ const SupportPage: FC = () => {
 
         {/* YouTube Membership Card */}
         <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 flex flex-col items-center">
-           <img src="/youtube-logo.png" alt="YouTube Logo" className="h-10 mb-4" /> 
+           <LazyImage
+  src="/youtube-logo.png"
+  alt="YouTube"
+  width={100}
+  height={40}
+  className="h-10 mb-4 w-auto"
+  sizes="(max-width: 640px) 80vw, 100px"
+  srcSizes={[50, 75, 100, 150]}
+  priority={false}
+/>
            {/* Replace with actual YouTube logo if available */}
           <h2 className="text-2xl font-semibold mb-3">Tapk Nariu YouTube</h2>
           <p className="text-gray-600 mb-6 text-center">
