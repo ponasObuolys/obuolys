@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
+import { Analytics } from '@vercel/analytics/react';
 import HomePage from "./pages/Index";
 import PublicationsPage from "./pages/PublicationsPage";
 import PublicationDetail from "./pages/PublicationDetail";
@@ -60,6 +61,7 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
+              <Analytics />
               </TooltipProvider>
             </ImageLoadingProvider>
           </LanguageProvider>
