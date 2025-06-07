@@ -1,5 +1,13 @@
 # Supabase Database Structure
 
+## Project information
+
+- **Organization**: GretvejaTestai (ID: `swjlhbffcbuifucwvssy`)
+- **Project**: ponasObuolys (ID: `jzixoslapmlqafrlbvpk`)
+- **Region**: eu-central-1
+- **Status**: ACTIVE_HEALTHY
+- **PostgreSQL version**: 15.8.1.054
+
 This document outlines the database structure for the Ponas Obuolys website.
 
 ## Tables
@@ -10,6 +18,7 @@ Stores user profile information.
 - `username` (TEXT, nullable): Username
 - `avatar_url` (TEXT, nullable): Profile picture URL
 - `is_admin` (BOOLEAN, nullable): Administrator status
+- `pareigos` (TEXT, nullable): User position/role description
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
 
@@ -93,6 +102,19 @@ Stores call-to-action section content.
 - `active` (BOOLEAN): Active status
 - `created_at` (TIMESTAMP): Creation timestamp
 - `updated_at` (TIMESTAMP): Last update timestamp
+
+### 9. translation_requests
+Stores translation request logs for DeepL API proxy.
+- `id` (BIGSERIAL, PK): Unique identifier
+- `source_text` (TEXT): Original text to translate
+- `translated_text` (TEXT, nullable): Translated text result
+- `source_lang` (VARCHAR): Source language code (default: 'EN')
+- `target_lang` (VARCHAR): Target language code (default: 'LT')
+- `chars_count` (INTEGER, nullable): Character count for billing
+- `status` (VARCHAR, nullable): Request status
+- `created_at` (TIMESTAMP): Request timestamp
+- `request_ip` (VARCHAR, nullable): Client IP address
+- `origin_domain` (VARCHAR, nullable): Origin domain
 
 ## Row Level Security (RLS) Policies
 
