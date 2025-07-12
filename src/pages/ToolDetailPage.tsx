@@ -57,14 +57,15 @@ const ToolDetailPage = () => {
           // Šis blokas teoriškai neturėtų būti pasiektas, jei .single() veikia teisingai
           throw new Error("Įrankis nerastas.");
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti įrankio informacijos.";
         toast({
           title: "Klaida",
-          description: error.message || "Nepavyko gauti įrankio informacijos.",
+          description: errorMessage,
           variant: "destructive"
         });
         setTool(null); // Nustatome į null klaidos atveju
-        console.error("Error fetching tool details:", error.message);
+        console.error("Error fetching tool details:", errorMessage);
       } finally {
         setLoading(false);
       }

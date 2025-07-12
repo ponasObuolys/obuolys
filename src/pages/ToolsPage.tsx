@@ -4,7 +4,10 @@ import { useState, useEffect } from 'react';
 // import { Search } from "lucide-react"; // Komentuojama, nes bus perkelta
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import ToolCard from '@/components/ui/tool-card';
+
+type Tool = Database['public']['Tables']['tools']['Row'];
 // Importuojame naujus komponentus
 import ToolSearch from '@/components/tools/ToolSearch';
 import ToolCategories from '@/components/tools/ToolCategories';
@@ -12,8 +15,8 @@ import ToolCategories from '@/components/tools/ToolCategories';
 import { Helmet } from 'react-helmet-async';
 
 const ToolsPage = () => {
-  const [tools, setTools] = useState<any[]>([]);
-  const [filteredTools, setFilteredTools] = useState<any[]>([]);
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [filteredTools, setFilteredTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -36,13 +39,14 @@ const ToolsPage = () => {
           setTools(data);
           setFilteredTools(data); // Iš pradžių rodomi visi įrankiai
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti įrankių";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti įrankių. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching tools:", error.message);
+        console.error("Error fetching tools:", errorMessage);
       } finally {
         setLoading(false);
       }

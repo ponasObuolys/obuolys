@@ -5,12 +5,15 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import ArticleCard from "@/components/ui/article-card";
+
+type Article = Database['public']['Tables']['articles']['Row'];
 
 import { Helmet } from 'react-helmet-async';
 
 const PublicationsPage = () => {
-  const [publications, setPublications] = useState<any[]>([]);
+  const [publications, setPublications] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
@@ -38,13 +41,14 @@ const PublicationsPage = () => {
         if (data) {
           setPublications(data);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti publikacijų";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti publikacijų. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching publications:", error.message);
+        console.error("Error fetching publications:", errorMessage);
       } finally {
         setLoading(false);
       }

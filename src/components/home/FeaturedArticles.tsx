@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ArticleCard from "@/components/ui/article-card";
 
 const FeaturedArticles = () => {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

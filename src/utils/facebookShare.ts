@@ -5,7 +5,14 @@
 // Declare the FB global object from the Facebook SDK
 declare global {
   interface Window {
-    FB: any;
+    FB: {
+      ui: (options: {
+        method: string;
+        href: string;
+        quote?: string;
+        hashtag?: string;
+      }, callback: (response: { error_code?: string }) => void) => void;
+    };
   }
 }
 
@@ -49,7 +56,7 @@ export const shareFacebookWithSDK = (options: {
           href: url,
           quote: quote || options.title || '',
           hashtag: hashtag ? `#${hashtag}` : undefined,
-        }, (response: any) => {
+        }, (response: { error_code?: string }) => {
           if (response && !response.error_code) {
             resolve();
           } else {

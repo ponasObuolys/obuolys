@@ -75,8 +75,9 @@ const Auth = () => {
     try {
       await signIn(data.email, data.password);
       navigate('/');
-    } catch (error: any) {
-      setAuthError(error.message || 'Įvyko klaida prisijungiant');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida prisijungiant';
+      setAuthError(errorMessage);
     }
   };
 
@@ -85,8 +86,9 @@ const Auth = () => {
     try {
       await signUp(data.email, data.password, data.username);
       setActiveTab('login');
-    } catch (error: any) {
-      setAuthError(error.message || 'Įvyko klaida registruojantis');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida registruojantis';
+      setAuthError(errorMessage);
     }
   };
 

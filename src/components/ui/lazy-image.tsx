@@ -66,6 +66,8 @@ const LazyImage: React.FC<LazyImageProps> = ({
   useEffect(() => {
     if (!imageRef.current) return;
     
+    const currentImageRef = imageRef.current;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
@@ -78,11 +80,11 @@ const LazyImage: React.FC<LazyImageProps> = ({
       }
     );
     
-    observer.observe(imageRef.current);
+    observer.observe(currentImageRef);
     
     return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
+      if (currentImageRef) {
+        observer.unobserve(currentImageRef);
       }
     };
   }, [threshold]);

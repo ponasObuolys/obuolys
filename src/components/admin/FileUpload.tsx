@@ -6,6 +6,51 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
+// Image optimization function
+const optimizeImage = (file: File, maxWidth = 1200, maxHeight = 800, quality = 0.8): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      // Calculate new dimensions while maintaining aspect ratio
+      let { width, height } = img;
+      
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width = width * ratio;
+        height = height * ratio;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Draw and compress image
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const optimizedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve(optimizedFile);
+          } else {
+            reject(new Error('Failed to optimize image'));
+          }
+        },
+        'image/jpeg',
+        quality
+      );
+    };
+    
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 interface FileUploadProps {
   bucket: string;
   folder: string;
@@ -80,8 +125,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setUploading(true);
       setProgress(0);
 
-      // Naudojame originalų failą be optimizavimo
-      const fileToUpload = file;
+      // Optimizuojame paveikslėlį prieš įkeliant
+      let fileToUpload = file;
+      
+      if (file.type.startsWith('image/')) {
+        try {
+          fileToUpload = await optimizeImage(file);
+        } catch (optimizeError) {
+          console.warn('Image optimization failed, using original:', optimizeError);
+          fileToUpload = file;
+        }
+      }
 
       // Sukurti unikalų failo pavadinimą
       const fileExt = fileToUpload.name.split('.').pop();
@@ -114,10 +168,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
       // Perduoti URL į tėvinį komponentą
       onUploadComplete(urlData.publicUrl);
       clearFile();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Nepavyko įkelti failo';
       toast({
         title: 'Įkėlimo klaida',
-        description: error.message || 'Nepavyko įkelti failo',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -150,20 +205,20 @@ const FileUpload: React.FC<FileUploadProps> = ({
       </div>
 
       {preview && (
-        <div className="relative rounded-md border overflow-hidden aspect-video">
+        <div className="relative rounded-md border overflow-hidden">
           <img
             src={preview}
             alt="Failo peržiūra"
-            className="w-full h-full object-contain"
+            className="w-full max-w-md h-48 object-cover rounded-md"
           />
         </div>
       )}
 
       {file && !preview && (
-        <div className="flex items-center justify-center rounded-md border p-4 aspect-video">
+        <div className="flex items-center justify-center rounded-md border p-4 max-w-md h-48">
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <ImageIcon className="h-8 w-8" />
-            <span>{file.name}</span>
+            <span className="text-center text-sm">{file.name}</span>
             <span className="text-xs">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -78,8 +78,8 @@ const ProfilePage = () => {
   });
   
   // Išsaugotos publikacijos ir kursai
-  const [savedPublications, setSavedPublications] = useState([]);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [savedPublications, setSavedPublications] = useState<Array<{id: string; title: string; date: string; image: string}>>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<Array<{id: string; title: string; image: string; progress: number}>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const profileForm = useForm<ProfileFormValues>({
@@ -98,6 +98,52 @@ const ProfilePage = () => {
       confirmPassword: '',
     },
   });
+
+  // Pavyzdinė funkcija išsaugotoms publikacijoms gauti
+  const fetchSavedPublications = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // API užklausa išsaugotoms publikacijoms gauti
+      // const response = await fetch('/api/saved-publications');
+      // const data = await response.json();
+      // setSavedPublications(data);
+      
+      // Laikinas pavyzdinis kodas
+      setTimeout(() => {
+        setSavedPublications([
+          { id: '1', title: 'Mokslinė publikacija 1', date: '2025-03-01', image: '/images/publication1.jpg' },
+          { id: '2', title: 'Straipsnis apie biologiją', date: '2025-02-15', image: '/images/publication2.jpg' },
+        ]);
+        setIsLoading(false);
+      }, 500);
+    } catch (error) {
+      console.error('Klaida gaunant išsaugotas publikacijas:', error);
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Pavyzdinė funkcija prenumeruojamiems kursams gauti
+  const fetchEnrolledCourses = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // API užklausa kursams gauti
+      // const response = await fetch('/api/enrolled-courses');
+      // const data = await response.json();
+      // setEnrolledCourses(data);
+      
+      // Laikinas pavyzdinis kodas
+      setTimeout(() => {
+        setEnrolledCourses([
+          { id: '1', title: 'Biologija pradedantiesiems', progress: 60, image: '/images/course1.jpg' },
+          { id: '2', title: 'Genomikos pagrindai', progress: 25, image: '/images/course2.jpg' },
+        ]);
+        setIsLoading(false);
+      }, 500);
+    } catch (error) {
+      console.error('Klaida gaunant prenumeruojamus kursus:', error);
+      setIsLoading(false);
+    }
+  }, []);
 
   // Užkraunami vartotojo duomenys
   useEffect(() => {
@@ -127,53 +173,8 @@ const ProfilePage = () => {
       // Gauti kursų prenumeratas (pavyzdinis kodas)
       fetchEnrolledCourses();
     }
-  }, [user, loading]);
+  }, [user, loading, navigate, getUserProfile, profileForm, fetchSavedPublications, fetchEnrolledCourses]);
 
-  // Pavyzdinė funkcija išsaugotoms publikacijoms gauti
-  const fetchSavedPublications = async () => {
-    setIsLoading(true);
-    try {
-      // API užklausa išsaugotoms publikacijoms gauti
-      // const response = await fetch('/api/saved-publications');
-      // const data = await response.json();
-      // setSavedPublications(data);
-      
-      // Laikinas pavyzdinis kodas
-      setTimeout(() => {
-        setSavedPublications([
-          { id: 1, title: 'Mokslinė publikacija 1', date: '2025-03-01', image: '/images/publication1.jpg' },
-          { id: 2, title: 'Straipsnis apie biologiją', date: '2025-02-15', image: '/images/publication2.jpg' },
-        ]);
-        setIsLoading(false);
-      }, 500);
-    } catch (error) {
-      console.error('Klaida gaunant išsaugotas publikacijas:', error);
-      setIsLoading(false);
-    }
-  };
-
-  // Pavyzdinė funkcija prenumeruojamiems kursams gauti
-  const fetchEnrolledCourses = async () => {
-    setIsLoading(true);
-    try {
-      // API užklausa kursams gauti
-      // const response = await fetch('/api/enrolled-courses');
-      // const data = await response.json();
-      // setEnrolledCourses(data);
-      
-      // Laikinas pavyzdinis kodas
-      setTimeout(() => {
-        setEnrolledCourses([
-          { id: 1, title: 'Biologija pradedantiesiems', progress: 60, image: '/images/course1.jpg' },
-          { id: 2, title: 'Genomikos pagrindai', progress: 25, image: '/images/course2.jpg' },
-        ]);
-        setIsLoading(false);
-      }, 500);
-    } catch (error) {
-      console.error('Klaida gaunant prenumeruojamus kursus:', error);
-      setIsLoading(false);
-    }
-  };
 
   // Profilio atnaujinimas
   const onProfileSubmit = async (data: ProfileFormValues) => {
@@ -188,8 +189,9 @@ const ProfilePage = () => {
         title: "Profilis atnaujintas",
         description: "Jūsų profilis buvo sėkmingai atnaujintas."
       });
-    } catch (error: any) {
-      setProfileError(error.message || 'Įvyko klaida atnaujinant profilį');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida atnaujinant profilį';
+      setProfileError(errorMessage);
     } finally {
       setSavingProfile(false);
     }
@@ -211,8 +213,9 @@ const ProfilePage = () => {
       
       // Išvalyti formą
       passwordForm.reset();
-    } catch (error: any) {
-      setPasswordError(error.message || 'Įvyko klaida keičiant slaptažodį');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida keičiant slaptažodį';
+      setPasswordError(errorMessage);
     } finally {
       setSavingPassword(false);
     }
@@ -282,10 +285,11 @@ const ProfilePage = () => {
           title: "Nuotrauka atnaujinta",
           description: "Jūsų profilio nuotrauka buvo sėkmingai atnaujinta."
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
         toast({
           title: "Klaida",
-          description: error.message || "Įvyko klaida įkeliant nuotrauką",
+          description: errorMessage,
           variant: "destructive"
         });
       }
@@ -430,7 +434,7 @@ const ProfilePage = () => {
                   <p className="text-muted-foreground">Neturite išsaugotų publikacijų</p>
                 ) : (
                   <div className="space-y-4">
-                    {savedPublications.map((pub: any) => (
+                    {savedPublications.map((pub) => (
                       <div key={pub.id} className="flex items-center space-x-4 p-4 border rounded-md">
                         <div className="w-16 h-16 bg-gray-200 rounded-md overflow-hidden">
                           <img src={pub.image} alt={pub.title} className="w-full h-full object-cover" />
@@ -464,7 +468,7 @@ const ProfilePage = () => {
                   <p className="text-muted-foreground">Neturite prenumeruojamų kursų</p>
                 ) : (
                   <div className="space-y-4">
-                    {enrolledCourses.map((course: any) => (
+                    {enrolledCourses.map((course) => (
                       <div key={course.id} className="p-4 border rounded-md">
                         <div className="flex items-center space-x-4 mb-2">
                           <div className="w-16 h-16 bg-gray-200 rounded-md overflow-hidden">

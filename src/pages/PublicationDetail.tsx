@@ -54,13 +54,14 @@ const PublicationDetail = () => {
             preloadImagesWhenIdle(imageUrls);
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti publikacijos informacijos";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti publikacijos informacijos. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching publication:", error.message);
+        console.error("Error fetching publication:", errorMessage);
       } finally {
         setLoading(false);
       }

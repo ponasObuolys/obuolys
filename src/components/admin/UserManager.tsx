@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -25,6 +25,7 @@ interface User {
   email: string;
   created_at_auth: string;
   is_admin: boolean;
+  avatar_url?: string;
 }
 
 const UserManager = ({ onUpdate }: UserManagerProps) => {
@@ -32,26 +33,41 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       
-      // Get profiles data
+      // Use user_profiles view to get email data from auth.users
       const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('*');
         
-      if (profilesError) throw profilesError;
+      if (profilesError) {
+        console.error('Error fetching from user_profiles:', profilesError);
+        // Fallback to profiles table if user_profiles view is not accessible
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('profiles')
+          .select('*');
+          
+        if (fallbackError) throw fallbackError;
+        
+        const transformedData = fallbackData?.map((profile: Profile) => ({
+          ...profile,
+          email: 'Nėra prieigos', // We can't access auth.users directly
+          created_at_auth: profile.created_at,
+        })) || [];
+        
+        setUsers(transformedData);
+        return;
+      }
       
-      // Transform the data - we won't try to get emails from auth
-      const transformedData = profilesData?.map((profile: Profile) => ({
-        ...profile,
-        email: 'N/A', // We can't access auth.users directly
-        created_at_auth: profile.created_at,
+      // Transform the data using user_profiles view
+      const transformedData = profilesData?.map((profile: Record<string, unknown>) => ({
+        id: profile.id,
+        username: profile.username,
+        email: profile.email || 'Nenurodytas',
+        created_at_auth: profile.auth_created_at || profile.created_at,
+        is_admin: profile.is_admin,
       })) || [];
       
       setUsers(transformedData);
@@ -65,7 +81,11 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
@@ -103,54 +123,85 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   };
 
   if (loading) {
-    return <p>Kraunami vartotojai...</p>;
+    return <p className="text-center py-4">Kraunama...</p>;
   }
 
   if (users.length === 0) {
-    return <p>Vartotojų nerasta.</p>;
+    return <p className="text-center py-4">Vartotojų nerasta.</p>;
   }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Vartotojo vardas</TableHead>
-          <TableHead>El. paštas</TableHead>
-          <TableHead>Registracijos data</TableHead>
-          <TableHead>Administratorius</TableHead>
-          <TableHead>Veiksmai</TableHead>
+          <TableHead className="text-left">Vartotojo vardas</TableHead>
+          <TableHead className="text-left">El. paštas</TableHead>
+          <TableHead className="text-left w-32">Registracijos data</TableHead>
+          <TableHead className="text-left w-28">Administratorius</TableHead>
+          <TableHead className="text-right w-48">Veiksmai</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {users.map((user) => (
           <TableRow key={user.id}>
-            <TableCell className="font-medium">{user.username || 'Nenurodytas'}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{new Date(user.created_at_auth).toLocaleDateString('lt-LT')}</TableCell>
-            <TableCell>{user.is_admin ? 'Taip' : 'Ne'}</TableCell>
-            <TableCell className="flex space-x-2">
-              <Button 
-                variant={user.is_admin ? "destructive" : "outline"}
-                size="sm" 
-                onClick={() => toggleAdminStatus(user.id, user.is_admin)}
-              >
-                {user.is_admin ? (
-                  <>
-                    <Ban className="h-4 w-4 mr-1" /> Atimti teises
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="h-4 w-4 mr-1" /> Suteikti teises
-                  </>
+            <TableCell className="font-medium text-left">
+              <div className="flex items-center space-x-3">
+                {user.avatar_url && (
+                  <img 
+                    src={user.avatar_url} 
+                    alt="Avatar" 
+                    className="w-8 h-8 rounded-full"
+                  />
                 )}
-              </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                onClick={() => suspendUser(user.id)}
-              >
-                <Ban className="h-4 w-4 mr-1" /> Suspenduoti
-              </Button>
+                <div>
+                  <div className="font-medium">{user.username || 'Nenurodytas'}</div>
+                  <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
+                </div>
+              </div>
+            </TableCell>
+            <TableCell className="text-left">
+              <span className="text-sm">{user.email}</span>
+            </TableCell>
+            <TableCell className="text-left whitespace-nowrap">
+              <span className="text-sm">
+                {new Date(user.created_at_auth).toLocaleDateString('lt-LT')}
+              </span>
+            </TableCell>
+            <TableCell className="text-left">
+              <span className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                user.is_admin 
+                  ? 'bg-red-100 text-red-800' 
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {user.is_admin ? 'Taip' : 'Ne'}
+              </span>
+            </TableCell>
+            <TableCell className="text-right">
+              <div className="flex justify-end space-x-2">
+                <Button 
+                  variant={user.is_admin ? "destructive" : "outline"}
+                  size="sm" 
+                  onClick={() => toggleAdminStatus(user.id, user.is_admin)}
+                >
+                  {user.is_admin ? (
+                    <>
+                      <Ban className="h-4 w-4 mr-1" /> Atimti teises
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-1" /> Suteikti teises
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => suspendUser(user.id)}
+                  disabled
+                >
+                  <Ban className="h-4 w-4 mr-1" /> Suspenduoti
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

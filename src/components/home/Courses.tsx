@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import CourseCard from "@/components/ui/course-card";
 
 const Courses = () => {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

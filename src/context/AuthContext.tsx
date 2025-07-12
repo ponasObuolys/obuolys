@@ -116,10 +116,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Prisijungimas sėkmingas",
         description: "Sveiki sugrįžę!",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida prisijungiant";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida prisijungiant",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -142,10 +143,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Registracija sėkminga",
         description: "Prašome patvirtinti savo el. paštą.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida registruojantis";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida registruojantis",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -160,10 +162,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Atsijungta",
         description: "Sėkmingai atsijungėte nuo sistemos.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida atsijungiant";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida atsijungiant",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -177,7 +180,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!user) throw new Error('Vartotojas neprisijungęs');
 
       // Paruošiame atnaujinimo objektą
-      const updates: any = {};
+      const updates: Record<string, unknown> = {};
       if (data.username) updates.username = data.username;
       if (data.avatarUrl) updates.avatar_url = data.avatarUrl;
 
@@ -201,10 +204,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Profilis atnaujintas",
         description: "Jūsų profilis buvo sėkmingai atnaujintas.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida atnaujinant profilį";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida atnaujinant profilį",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -224,10 +228,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         title: "Slaptažodis pakeistas",
         description: "Jūsų slaptažodis buvo sėkmingai pakeistas.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida keičiant slaptažodį";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida keičiant slaptažodį",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -265,10 +270,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await updateUserProfile({ avatarUrl });
 
       return avatarUrl;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
       toast({
         title: "Klaida",
-        description: error.message || "Įvyko klaida įkeliant nuotrauką",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;

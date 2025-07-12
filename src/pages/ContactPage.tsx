@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, Youtube, MessageSquare } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 import { Helmet } from 'react-helmet-async';
 
@@ -24,12 +25,28 @@ const ContactPage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Save contact message to database
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+            status: 'unread'
+          }
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
       toast({
         title: "Žinutė išsiųsta",
         description: "Dėkojame už jūsų žinutę. Susisieksime kuo greičiau.",
@@ -42,9 +59,16 @@ const ContactPage = () => {
         subject: '',
         message: ''
       });
-      
+    } catch (error) {
+      console.error('Error saving contact message:', error);
+      toast({
+        title: "Klaida",
+        description: "Nepavyko išsiųsti žinutės. Bandykite dar kartą arba susisiekite el. paštu.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (

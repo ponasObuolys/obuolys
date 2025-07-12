@@ -79,7 +79,21 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
     // No need to refocus here usually, focus should remain
   };
 
+  // Check if format is currently active
+  const isFormatActive = (format: string) => {
+    return document.queryCommandState(format);
+  };
+
+  // Check if block format is currently active
+  const isBlockFormatActive = (blockType: string) => {
+    return document.queryCommandValue('formatBlock').toLowerCase() === blockType.toLowerCase();
+  };
+
   const formatText = (format: string) => {
+    execCommand(format);
+  };
+
+  const toggleFormat = (format: string) => {
     execCommand(format);
   };
 
@@ -87,8 +101,27 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
     // First make sure we have a selection or cursor positioned
     const selection = window.getSelection();
     if (!selection || !editorRef.current) return;
-    // Use formatBlock command which is generally more reliable for headings
-    execCommand('formatBlock', `<h${level}>`);
+    
+    // Check if heading is already applied, if so, remove it
+    const currentBlock = document.queryCommandValue('formatBlock');
+    if (currentBlock.toLowerCase() === `h${level}`) {
+      execCommand('formatBlock', '<p>');
+    } else {
+      execCommand('formatBlock', `<h${level}>`);
+    }
+  };
+
+  const toggleBlockFormat = (blockTag: string) => {
+    const currentBlock = document.queryCommandValue('formatBlock');
+    if (currentBlock.toLowerCase() === blockTag.toLowerCase()) {
+      execCommand('formatBlock', '<p>');
+    } else {
+      execCommand('formatBlock', blockTag);
+    }
+  };
+
+  const toggleList = (listType: 'insertUnorderedList' | 'insertOrderedList') => {
+    execCommand(listType);
   };
 
   const insertLink = () => {
@@ -110,7 +143,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
   const insertVideo = () => {
     if (!videoUrl.trim()) return;
     let videoId = '';
-    const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+    const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
     const match = videoUrl.match(ytRegex);
     let embedHtml = '';
     if (match && match[1]) {
@@ -127,23 +160,59 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
   return (
     <div className="border rounded-md overflow-hidden flex flex-col">
       <div className="bg-muted p-2 border-b flex flex-wrap gap-1 sticky top-0 z-10">
-        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('bold')}>
+        <Button 
+          type="button" 
+          variant={isFormatActive('bold') ? 'default' : 'secondary'} 
+          size="sm" 
+          onClick={() => toggleFormat('bold')} 
+          title="Paryškintas"
+        >
           <Bold className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('italic')}>
+        <Button 
+          type="button" 
+          variant={isFormatActive('italic') ? 'default' : 'secondary'} 
+          size="sm" 
+          onClick={() => toggleFormat('italic')} 
+          title="Kursyvas"
+        >
           <Italic className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => formatText('underline')}>
+        <Button 
+          type="button" 
+          variant={isFormatActive('underline') ? 'default' : 'secondary'} 
+          size="sm" 
+          onClick={() => toggleFormat('underline')} 
+          title="Pabrauktas"
+        >
           <Underline className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button type="button" variant="secondary" size="sm" onClick={() => insertHeading(1)}>
+        <Button 
+          type="button" 
+          variant={isBlockFormatActive('h1') ? 'default' : 'secondary'} 
+          size="sm" 
+          onClick={() => insertHeading(1)} 
+          title="Antraštė 1"
+        >
           <Heading1 className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" onClick={() => insertHeading(2)}>
+        <Button 
+          type="button" 
+          variant={isBlockFormatActive('h2') ? 'default' : 'secondary'} 
+          size="sm" 
+          onClick={() => insertHeading(2)} 
+          title="Antraštė 2"
+        >
           <Heading2 className="h-4 w-4" />
         </Button>
-        <Button type="button" variant="secondary" size="sm" title="Pastraipa" onClick={() => execCommand('formatBlock', '<p>')}>
+        <Button 
+          type="button" 
+          variant={isBlockFormatActive('p') ? 'default' : 'secondary'} 
+          size="sm" 
+          title="Pastraipa" 
+          onClick={() => toggleBlockFormat('<p>')}
+        >
           <Pilcrow className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
@@ -151,15 +220,8 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
           type="button" 
           variant="secondary" 
           size="sm" 
-          onClick={() => { 
-            // Temporarily simplified for debugging
-            console.log('Unordered List Button CLICKED!');
-            // console.log('Attempting to execute: insertUnorderedList');
-            // editorRef.current?.focus(); 
-            // const success = document.execCommand('insertUnorderedList'); 
-            // console.log('insertUnorderedList executed, success:', success);
-            // handleEditorChange();
-          }}
+          onClick={() => toggleList('insertUnorderedList')}
+          title="Sąrašas"
         >
           <List className="h-4 w-4" />
         </Button>
@@ -167,41 +229,26 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
           type="button" 
           variant="secondary" 
           size="sm" 
-          onClick={() => { 
-            console.log('Attempting to execute: insertOrderedList');
-            editorRef.current?.focus(); 
-            const success = document.execCommand('insertOrderedList'); 
-            console.log('insertOrderedList executed, success:', success);
-            handleEditorChange();
-          }}
+          onClick={() => toggleList('insertOrderedList')}
+          title="Numeruotas sąrašas"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
         <Button 
           type="button" 
-          variant="secondary" 
+          variant={isBlockFormatActive('blockquote') ? 'default' : 'secondary'} 
           size="sm" 
-          onClick={() => { 
-            console.log('Attempting to execute: formatBlock blockquote');
-            editorRef.current?.focus(); 
-            const success = document.execCommand('formatBlock', false, '<blockquote>'); 
-            console.log('formatBlock blockquote executed, success:', success);
-            handleEditorChange();
-          }}
+          onClick={() => toggleBlockFormat('<blockquote>')}
+          title="Citata"
         >
           <Quote className="h-4 w-4" />
         </Button>
         <Button 
           type="button" 
-          variant="secondary" 
+          variant={isBlockFormatActive('pre') ? 'default' : 'secondary'} 
           size="sm" 
-          onClick={() => { 
-            console.log('Attempting to execute: formatBlock pre');
-            editorRef.current?.focus(); 
-            const success = document.execCommand('formatBlock', false, '<pre>'); 
-            console.log('formatBlock pre executed, success:', success);
-            handleEditorChange();
-          }}
+          onClick={() => toggleBlockFormat('<pre>')}
+          title="Kodas"
         >
           <Code className="h-4 w-4" />
         </Button>
@@ -210,7 +257,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Link Dialog */}
         <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection}>
+            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti nuorodą">
               <LinkIcon className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -250,7 +297,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Image Dialog */}
         <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection}>
+            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti paveikslėlį">
               <Image className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -281,7 +328,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
         {/* Video Dialog */}
         <Dialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection}>
+            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti vaizdo įrašą">
               <Youtube className="h-4 w-4" />
             </Button>
           </DialogTrigger>

@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ToolCard from '@/components/ui/tool-card';
 
 const AITools = () => {
-  const [tools, setTools] = useState<any[]>([]);
+  const [tools, setTools] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

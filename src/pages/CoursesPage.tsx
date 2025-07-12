@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import CourseCard from "@/components/ui/course-card";
+
+type Course = Database['public']['Tables']['courses']['Row'];
 
 import { Helmet } from 'react-helmet-async';
 
 const CoursesPage = () => {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   
@@ -29,13 +32,14 @@ const CoursesPage = () => {
         if (data) {
           setCourses(data);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti kursų";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti kursų. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching courses:", error.message);
+        console.error("Error fetching courses:", errorMessage);
       } finally {
         setLoading(false);
       }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { generateSlug } from '@/utils/stringUtils';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '@/integrations/supabase/client';
-import { FileUpload } from '@/components/ui/file-upload';
+import FileUpload from './FileUpload';
 import LazyImage from '@/components/ui/lazy-image';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,20 +54,21 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   
   // Gauti unikalias kategorijas iš Supabase
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('category')
-        .neq('category', '')
-        .neq('category', null);
-      if (!error && data) {
-        const unique = Array.from(new Set(data.map((a: { category: string }) => a.category).filter(Boolean)));
-        setCategories(unique);
-      }
-    };
-    fetchCategories();
+  const fetchCategories = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('category')
+      .neq('category', '')
+      .neq('category', null);
+    if (!error && data) {
+      const unique = Array.from(new Set(data.map((a: { category: string }) => a.category).filter(Boolean)));
+      setCategories(unique);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const form = useForm<PublicationFormData>({
     resolver: zodResolver(publicationSchema),
@@ -93,56 +94,56 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
     if (!author || !author.trim()) {
       form.setValue('author', 'ponas Obuolys');
     }
-  }, []);
+  }, [form]);
+
+  const fetchPublication = useCallback(async () => {
+    if (!id || id === 'new') {
+      setInitialLoading(false);
+      return;
+    }
+    
+    setInitialLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('id', id)
+        .single();
+        
+      if (error) throw error;
+      
+      if (data) {
+        form.reset({
+          title: data.title,
+          slug: data.slug,
+          description: data.description,
+          category: data.category,
+          read_time: data.read_time,
+          author: data.author && data.author.trim() ? data.author : 'ponas Obuolys',
+          date: new Date(data.date).toISOString().split('T')[0],
+          featured: data.featured,
+          published: data.published,
+          image_url: data.image_url || '',
+          content_type: data.content_type as 'Straipsnis' | 'Naujiena' || 'Straipsnis',
+        });
+        setContent(data.content);
+        setImageUrl(data.image_url || null);
+      }
+    } catch (error) {
+      console.error('Error fetching publication:', error);
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti publikacijos duomenų.",
+        variant: "destructive",
+      });
+    } finally {
+      setInitialLoading(false);
+    }
+  }, [id, form, toast]);
 
   useEffect(() => {
-    const fetchPublication = async () => {
-      if (!id || id === 'new') {
-        setInitialLoading(false);
-        return;
-      }
-      
-      setInitialLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('articles')
-          .select('*')
-          .eq('id', id)
-          .single();
-          
-        if (error) throw error;
-        
-        if (data) {
-          form.reset({
-            title: data.title,
-            slug: data.slug,
-            description: data.description,
-            category: data.category,
-            read_time: data.read_time,
-            author: data.author && data.author.trim() ? data.author : 'ponas Obuolys',
-            date: new Date(data.date).toISOString().split('T')[0],
-            featured: data.featured,
-            published: data.published,
-            image_url: data.image_url || '',
-            content_type: data.content_type as 'Straipsnis' | 'Naujiena' || 'Straipsnis',
-          });
-          setContent(data.content);
-          setImageUrl(data.image_url || null);
-        }
-      } catch (error) {
-        console.error('Error fetching publication:', error);
-        toast({
-          title: "Klaida",
-          description: "Nepavyko gauti publikacijos duomenų.",
-          variant: "destructive",
-        });
-      } finally {
-        setInitialLoading(false);
-      }
-    };
-    
     fetchPublication();
-  }, [id, form, toast]);
+  }, [fetchPublication]);
 
   // Automatinis skaitymo laiko paskaičiavimas
   useEffect(() => {
@@ -154,7 +155,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
     if (form.getValues('read_time') !== `${minutes} min`) {
       form.setValue('read_time', `${minutes} min`, { shouldValidate: true });
     }
-  }, [content, readTimeManuallyEdited]);
+  }, [content, readTimeManuallyEdited, form]);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
@@ -465,7 +466,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   bucket="site-images"
                   folder={`articles/covers/${form.getValues('slug') || 'new-publication'}`}
                   acceptedFileTypes="image/jpeg,image/png,image/webp"
-                  maxSizeMB={2}
+                  maxFileSizeMB={2}
                   onUploadComplete={handleImageUpload}
                 />
               </FormControl>
@@ -478,12 +479,12 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
               <FormMessage>{form.formState.errors.image_url?.message}</FormMessage>
             </FormItem>
 
-            <div className="flex items-center space-x-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="featured"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -491,7 +492,10 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Rodyti pagrindiniame puslapyje</FormLabel>
+                      <FormLabel className="text-sm font-medium">Rekomenduojamas</FormLabel>
+                      <FormDescription className="text-xs">
+                        Rodyti pagrindiniame puslapyje
+                      </FormDescription>
                     </div>
                   </FormItem>
                 )}
@@ -500,7 +504,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                 control={form.control}
                 name="published"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -508,8 +512,8 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Publikuoti</FormLabel>
-                      <FormDescription>
+                      <FormLabel className="text-sm font-medium">Publikuoti</FormLabel>
+                      <FormDescription className="text-xs">
                         Ar ši publikacija matoma lankytojams?
                       </FormDescription>
                     </div>

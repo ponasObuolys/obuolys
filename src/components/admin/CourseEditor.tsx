@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '@/integrations/supabase/client';
 import { X, Plus } from 'lucide-react';
-import { FileUpload } from '@/components/ui/file-upload';
+import FileUpload from './FileUpload';
 import LazyImage from '@/components/ui/lazy-image';
 
 interface CourseEditorProps {
@@ -123,7 +123,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
     }
   };
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: Record<string, unknown>) => {
     if (!content.trim()) {
       toast({
         title: "Klaida",
@@ -353,7 +353,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                     bucket="site-images"
                     folder="courses/covers"
                     acceptedFileTypes="image/jpeg,image/png,image/webp"
-                    maxSizeMB={2}
+                    maxFileSizeMB={2}
                     onUploadComplete={handleImageUpload}
                   />
                   <FormDescription>
@@ -397,7 +397,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
               control={form.control}
               name="published"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -405,10 +405,10 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>
+                    <FormLabel className="text-sm font-medium">
                       Publikuotas
                     </FormLabel>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       Matomas viešai
                     </FormDescription>
                   </div>

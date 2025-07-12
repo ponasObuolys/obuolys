@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { FileUpload } from '@/components/ui/file-upload';
+import FileUpload from './FileUpload';
 import LazyImage from '@/components/ui/lazy-image';
 
 interface ToolEditorProps {
@@ -90,7 +90,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
     }
   };
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: Record<string, unknown>) => {
     try {
       setLoading(true);
       
@@ -125,7 +125,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
       });
       
       onSave();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving tool:', error);
       toast({
         title: "Klaida",
@@ -258,7 +258,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                           bucket="site-images"
                           folder="tools"
                           acceptedFileTypes="image/jpeg,image/png,image/webp"
-                          maxSizeMB={2}
+                          maxFileSizeMB={2}
                           onUploadComplete={handleImageUpload}
                         />
                         {imageUrl && (
@@ -307,12 +307,12 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
               )}
             />
 
-            <div className="flex space-x-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="featured"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -320,10 +320,10 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
+                      <FormLabel className="text-sm font-medium">
                         Rekomenduojamas
                       </FormLabel>
-                      <FormDescription>
+                      <FormDescription className="text-xs">
                         Rodomas pagrindiniame puslapyje
                       </FormDescription>
                     </div>
@@ -335,7 +335,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                 control={form.control}
                 name="published"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -343,10 +343,10 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
+                      <FormLabel className="text-sm font-medium">
                         Publikuotas
                       </FormLabel>
-                      <FormDescription>
+                      <FormDescription className="text-xs">
                         Matomas viešai
                       </FormDescription>
                     </div>

@@ -48,13 +48,14 @@ const PublicationsPage = () => {
         if (data) {
           setPublications(data);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti publikacijų";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti publikacijų. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching publications:", error.message);
+        console.error("Error fetching publications:", errorMessage);
       } finally {
         setLoading(false);
       }
