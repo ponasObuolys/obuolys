@@ -27,7 +27,6 @@ interface Course {
 // Funkcija Patreon nuorodai gauti pagal kurso slug
 const getPatreonLink = (slug: string): string => {
   const patreonLinks: { [key: string]: string } = {
-    'lovable-workshop-su-ponu-obuoliu': 'https://www.patreon.com/posts/lovable-workshop-120266952',
     'vibe-coding-masterclass': 'https://www.patreon.com/posts/vibe-coding-su-125505176'
   };
   return patreonLinks[slug] || '#';
