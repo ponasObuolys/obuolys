@@ -29,6 +29,7 @@ npm run preview
 - No test commands are currently configured. Consider implementing tests using Jest + Testing Library
 - The project uses Vite for fast development and building
 - ESLint is configured for code quality checks
+- No explicit typecheck command configured - run TypeScript compiler directly: `npx tsc --noEmit`
 
 ## Architecture Overview
 
@@ -90,10 +91,11 @@ The project uses Supabase with Row Level Security (RLS) policies. All database o
 - **Translations**: Managed via LanguageContext.tsx
 
 ### Database Guidelines
-- **Always check DB_Info.md** before modifying database-related code
+- **Always check DB.md** before modifying database-related code
 - **Use Supabase exclusively** for all database operations
 - **RLS Policies**: Respect existing Row Level Security configurations
 - **Tables**: profiles, articles, tools, courses, contact_messages, hero_sections, cta_sections, translation_requests
+- **Project ID**: jzixoslapmlqafrlbvpk (ponasObuolys)
 
 ### Development Standards
 - **Components**: Use shadcn/ui components and follow existing patterns
@@ -127,9 +129,9 @@ The project uses Supabase with Row Level Security (RLS) policies. All database o
 - `src/components/layout/Layout.tsx` - Main layout wrapper
 
 ### Documentation
-- `DB_Info.md` - Complete database schema documentation
+- `DB.md` - Complete database schema documentation
 - `TECHNICAL_DOCUMENTATION.md` - Detailed technical overview
-- `DB_ANALYSIS_REPORT.md` - Database analysis and issues
+- `README.md` - Project overview and content management guide
 
 ## Common Development Tasks
 
@@ -141,13 +143,29 @@ The project uses Supabase with Row Level Security (RLS) policies. All database o
 ### Working with Database
 1. Check types in `src/integrations/supabase/types.ts`
 2. Use Supabase client from `src/integrations/supabase/client.ts`
-3. Follow RLS policies documented in DB_Info.md
+3. Follow RLS policies documented in DB.md
 
 ### Creating Admin Features
 1. Follow existing patterns in `src/components/admin/`
 2. Use FileUpload component for images
 3. Implement with RichTextEditor for content
 4. Add proper validation with zod schemas
+
+## Critical Project Rules (.cursorrules)
+
+### Lithuanian Language Requirement
+All UI, content, and documentation must be in Lithuanian. English allowed only for technical terms and variable names. Translations managed via LanguageContext.tsx.
+
+### Content Management Workflow
+- **News**: Manual entry only through admin dashboard (automatic RSS removed)
+- **Articles/Tools/Courses**: Use RichTextEditor for content creation
+- **Images**: Always use LazyImage component instead of `<img>` tags
+- **Admin Patterns**: Follow existing editor patterns (ArticleEditor, NewsEditor, etc.)
+
+### Validation and Error Handling
+- All forms must use react-hook-form with zod validation
+- Display user-friendly error messages via toast notifications
+- Implement optimistic updates for better UX
 
 ## Known Issues and Notes
 
