@@ -457,6 +457,29 @@ Failų objektų metaduomenys.
 - **RLS**: Įjungta
 - **Svarbus laukas**: path_tokens - generuojamas automatiškai iš name lauko
 
+#### storage.prefixes
+Katalogų prefiksų lentelė, naudojama hierarchinei naršymo logikai ir paieškos optimizacijoms.
+- **RLS**: Įjungta
+- **Ryšiai**: Susieta su storage.buckets per foreign key
+
+#### storage.s3_multipart_uploads
+S3 multipart įkėlimų metaduomenys.
+- **RLS**: Įjungta
+- **Ryšiai**: Susieta su storage.buckets per foreign key
+
+#### storage.s3_multipart_uploads_parts
+S3 multipart įkėlimų dalių metaduomenys.
+- **RLS**: Įjungta
+- **Ryšiai**: Susieta su storage.s3_multipart_uploads per foreign key (ON DELETE CASCADE)
+
+#### storage.buckets_analytics
+Kaupiamoji statistika apie bucket'us (vidinė analitika).
+- **RLS**: Įjungta
+
+#### storage.migrations
+Storage schemos vidinių migracijų žurnalas.
+- **RLS**: Įjungta
+
 ### PUBLIC schema
 
 #### profiles
@@ -579,9 +602,24 @@ Duomenų bazės migracijų dokumentacija.
 - **storage.filename(name)**: Gauti failo pavadinimą
 - **storage.extension(name)**: Gauti failo plėtinį
 - **storage.foldername(name)**: Gauti aplanko pavadinimą
+- **storage.get_level(name)**: Gauti hierarchijos lygį pagal kelią
+- **storage.get_prefix(name)**: Gauti viršutinį prefiksą pagal kelią
+- **storage.get_prefixes(name)**: Gauti visus prefiksus iki failo
 - **storage.get_size_by_bucket()**: Gauti bucket'o dydį
-- **storage.list_objects_with_delimiter()**: Sąrašas objektų su skirtukais
-- **storage.search()**: Paieška storage objektuose
+- **storage.list_objects_with_delimiter(...)**: Sąrašas objektų su skirtukais
+- **storage.list_multipart_uploads_with_delimiter(...)**: Sąrašas multipart įkėlimų su skirtukais
+- **storage.search(...) / search_v1_optimised(...) / search_legacy_v1(...) / search_v2(...)**: Paieškos funkcijos su optimizacijomis
+- **storage.operation()**: Grąžina dabartinę storage operaciją
+- **storage.add_prefixes(bucket_id, name)**: Prideda trūkstamus prefiksus
+- **storage.lock_top_prefixes(bucket_ids, names)**: Užrakina viršutinius prefiksus
+- **storage.delete_leaf_prefixes(bucket_ids, names)**: Pašalina lapinius prefiksus
+- **storage.delete_prefix(bucket_id, name)**: Pašalina konkretų prefiksą, jei galima
+- **storage.objects_insert_prefix_trigger()**: Trigerio funkcija prefiksams kurti įrašo metu
+- **storage.objects_update_prefix_trigger()**: Trigerio funkcija prefiksams valyti/kurti perkelimo metu
+- **storage.objects_delete_cleanup() / storage.objects_update_cleanup()**: Valymo funkcijos po DELETE/UPDATE
+- **storage.prefixes_insert_trigger() / storage.prefixes_delete_cleanup()**: Prefiksų kūrimo/valymo trigerių funkcijos
+- **storage.update_updated_at_column()**: Atnaujina updated_at stulpelį
+- **storage.enforce_bucket_name_length()**: Apriboja bucket pavadinimo ilgį
 
 ### Triggeriai
 
@@ -596,9 +634,20 @@ Duomenų bazės migracijų dokumentacija.
 - **update_cta_sections_modtime**: cta_sections lentelei
 - **update_objects_updated_at**: storage.objects lentelei
 
+## Peržiūros (Views)
+
+- **public.auth_users_view**: SELECT id, email, created_at FROM auth.users
+- **public.user_profiles**: JOIN tarp public.profiles ir auth.users (id)
+
 #### Specialūs triggeriai
 - **trigger_set_translation_chars_count**: Automatiškai apskaičiuoja simbolių skaičių translation_requests lentelėje
 - **migration_documentation_updated_at**: Specialus trigger migracijų dokumentacijai
+ - **objects_insert_create_prefix**: storage.objects – kuria prefiksus prieš INSERT
+ - **objects_update_cleanup**: storage.objects – valymas po UPDATE (old/new rows)
+ - **objects_delete_cleanup**: storage.objects – valymas po DELETE
+ - **prefixes_create_hierarchy**: storage.prefixes – kuria prefiksų hierarchiją
+ - **prefixes_delete_cleanup**: storage.prefixes – valymas po DELETE
+ - **enforce_bucket_name_length_trigger**: storage.buckets – tikrina pavadinimo ilgį
 
 ## Indeksai
 
@@ -616,6 +665,46 @@ Duomenų bazės migracijų dokumentacija.
 - **Unikalūs**: bname (bucket name), bucketid_objname (bucket_id + name)
 - **Performanso**: idx_objects_bucket_id_name, name_prefix_search
 
+### Išsamus indeksų sąrašas
+
+#### auth schema
+- audit_log_entries: audit_log_entries_pkey, audit_logs_instance_id_idx
+- flow_state: flow_state_pkey, flow_state_created_at_idx, idx_auth_code, idx_user_id_auth_method
+- identities: identities_pkey, identities_provider_id_provider_unique, identities_user_id_idx, identities_email_idx
+- mfa_amr_claims: amr_id_pk, mfa_amr_claims_session_id_authentication_method_pkey
+- mfa_challenges: mfa_challenges_pkey, mfa_challenge_created_at_idx
+- mfa_factors: mfa_factors_pkey, factor_id_created_at_idx, mfa_factors_last_challenged_at_key, mfa_factors_user_friendly_name_unique, mfa_factors_user_id_idx, unique_phone_factor_per_user
+- oauth_clients: oauth_clients_pkey, oauth_clients_client_id_key, oauth_clients_client_id_idx, oauth_clients_deleted_at_idx
+- one_time_tokens: one_time_tokens_pkey, one_time_tokens_user_id_token_type_key, one_time_tokens_relates_to_hash_idx, one_time_tokens_token_hash_hash_idx
+- refresh_tokens: refresh_tokens_pkey, refresh_tokens_token_unique, refresh_tokens_updated_at_idx, refresh_tokens_instance_id_idx, refresh_tokens_instance_id_user_id_idx, refresh_tokens_parent_idx, refresh_tokens_session_id_revoked_idx
+- saml_providers: saml_providers_pkey, saml_providers_entity_id_key, saml_providers_sso_provider_id_idx
+- saml_relay_states: saml_relay_states_pkey, saml_relay_states_created_at_idx, saml_relay_states_for_email_idx, saml_relay_states_sso_provider_id_idx
+- schema_migrations: schema_migrations_pkey
+- sessions: sessions_pkey, sessions_user_id_idx, sessions_not_after_idx, user_id_created_at_idx
+- sso_domains: sso_domains_pkey, sso_domains_domain_idx, sso_domains_sso_provider_id_idx
+- sso_providers: sso_providers_pkey, sso_providers_resource_id_idx, sso_providers_resource_id_pattern_idx
+- users: users_pkey, users_instance_id_idx, users_instance_id_email_idx, users_is_anonymous_idx, users_email_partial_key, users_phone_key, confirmation_token_idx, email_change_token_current_idx, email_change_token_new_idx, reauthentication_token_idx, recovery_token_idx
+
+#### public schema
+- articles: articles_pkey, articles_slug_key
+- contact_messages: contact_messages_pkey
+- courses: courses_pkey, courses_slug_key
+- cta_sections: cta_sections_pkey
+- hero_sections: hero_sections_pkey
+- migration_documentation: migration_documentation_pkey, migration_documentation_migration_version_key
+- profiles: profiles_pkey, profiles_username_key
+- tools: tools_pkey, tools_slug_key
+- translation_requests: translation_requests_pkey, idx_translation_requests_created_at, idx_translation_requests_status
+
+#### storage schema
+- buckets: buckets_pkey, bname
+- buckets_analytics: buckets_analytics_pkey
+- migrations: migrations_pkey, migrations_name_key
+- objects: objects_pkey, bucketid_objname, idx_objects_bucket_id_name, idx_objects_lower_name, name_prefix_search, idx_name_bucket_level_unique, objects_bucket_id_level_idx
+- prefixes: prefixes_pkey, idx_prefixes_lower_name
+- s3_multipart_uploads: s3_multipart_uploads_pkey, idx_multipart_uploads_list
+- s3_multipart_uploads_parts: s3_multipart_uploads_parts_pkey
+
 ## Apribojimai ir patikros
 
 ### Check constraints
@@ -623,12 +712,27 @@ Duomenų bazės migracijų dokumentacija.
 - **auth.sso_providers**: resource_id ne tuščias
 - **auth.saml_providers**: entity_id, metadata_xml ne tušti
 - **auth.one_time_tokens**: token_hash ne tuščias
+- **auth.oauth_clients**: client_name ≤ 1024, client_uri ≤ 2048, logo_uri ≤ 2048
+- **auth.sso_domains**: domain ne tuščias
+- **auth.saml_relay_states**: request_id ne tuščias
+- **auth.saml_providers**: metadata_url gali būti NULL arba > 0 simbolių
 
 ### Foreign key constraints
 - **profiles.id** → **auth.users.id** (ON DELETE CASCADE)
 - **auth.identities.user_id** → **auth.users.id** (ON DELETE CASCADE)
 - **auth.sessions.user_id** → **auth.users.id** (ON DELETE CASCADE)
 - **storage.objects.bucket_id** → **storage.buckets.id**
+- **auth.mfa_challenges.factor_id** → **auth.mfa_factors.id** (ON DELETE CASCADE)
+- **auth.mfa_factors.user_id** → **auth.users.id** (ON DELETE CASCADE)
+- **auth.mfa_amr_claims.session_id** → **auth.sessions.id** (ON DELETE CASCADE)
+- **auth.refresh_tokens.session_id** → **auth.sessions.id** (ON DELETE CASCADE)
+- **auth.saml_relay_states.sso_provider_id** → **auth.sso_providers.id** (ON DELETE CASCADE)
+- **auth.saml_relay_states.flow_state_id** → **auth.flow_state.id** (ON DELETE CASCADE)
+- **auth.saml_providers.sso_provider_id** → **auth.sso_providers.id** (ON DELETE CASCADE)
+- **storage.prefixes.bucket_id** → **storage.buckets.id**
+- **storage.s3_multipart_uploads.bucket_id** → **storage.buckets.id**
+- **storage.s3_multipart_uploads_parts.upload_id** → **storage.s3_multipart_uploads.id** (ON DELETE CASCADE)
+- **storage.s3_multipart_uploads_parts.bucket_id** → **storage.buckets.id**
 
 ## Extensionai
 
@@ -665,10 +769,15 @@ Duomenų bazės migracijų dokumentacija.
   - Nėra MIME tipų apribojimų
 
 ### RLS politikos storage
-- Administratoriai gali valdyti visus bucket'us ir objektus
-- Autentifikuoti vartotojai gali įkelti failus į site-images
-- Visi gali peržiūrėti site-images bucket'o failus
-- Failų savininkai gali šalinti savo failus
+- Buckets:
+  - Public buckets are viewable by everyone (SELECT)
+  - Buckets can be created/updated/deleted by admins (INSERT/UPDATE/DELETE)
+- Objects (site-images):
+  - Anyone can view site images (SELECT)
+  - Any authenticated user can upload to site images (INSERT)
+  - Admin can insert/update/delete storage (INSERT/UPDATE/DELETE)
+  - Only owner can delete own files (DELETE WHERE owner = auth.uid())
+  - Public can read storage (SELECT su papildoma sąlyga auth.role() = 'authenticated')
 
 ## Duomenų tipai
 
@@ -711,4 +820,4 @@ Duomenų bazės migracijų dokumentacija.
 - Duomenų validacija įrašymo metu
 - Optimizuoti update operacijos
 
-Šis dokumentas atspindi tikrą duomenų bazės būklę projekto **ponasObuolys** Supabase projekte (jzixoslapmlqafrlbvpk) 2025-01-01 datos būklę. 
+Šis dokumentas atspindi tikrą duomenų bazės būklę projekto **ponasObuolys** Supabase projekte (jzixoslapmlqafrlbvpk) 2025-09-23 datos būklę. 

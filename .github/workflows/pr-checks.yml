@@ -1,0 +1,285 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run TypeScript check
+      run: npm run type-check
+
+    - name: Check for security vulnerabilities
+      run: npm audit --audit-level moderate
+
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run unit tests
+      run: npm run test:coverage
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-pr
+
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Check bundle size
+      run: npm run bundle-size:check
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [build-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Run E2E tests
+      run: npm run test:e2e
+      env:
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
+
+    - name: Upload E2E test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          playwright-report/
+          e2e/test-results/
+
+  visual-regression:
+    runs-on: ubuntu-latest
+    needs: [build-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Run visual regression tests
+      run: npm run test:visual
+      env:
+        PLAYWRIGHT_BASE_URL: http://localhost:4173
+
+    - name: Upload visual diff results
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: visual-diff-results
+        path: e2e/visual-results/
+
+  accessibility-tests:
+    runs-on: ubuntu-latest
+    needs: [build-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+    - name: Run accessibility tests
+      run: npm run test:a11y
+
+    - name: Upload accessibility results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: accessibility-results
+        path: accessibility-results/
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    needs: [build-test]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+
+    - name: Run Lighthouse CI
+      run: |
+        npm install -g @lhci/cli@0.12.x
+        lhci autorun
+
+    - name: Upload Lighthouse results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lighthouse-results
+        path: lighthouse-results/
+
+  pr-summary:
+    runs-on: ubuntu-latest
+    needs: [quality-checks, unit-tests, build-test, e2e-tests]
+    if: always()
+
+    steps:
+    - name: Create PR summary
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: pr } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+
+          const results = {
+            'quality-checks': '${{ needs.quality-checks.result }}',
+            'unit-tests': '${{ needs.unit-tests.result }}',
+            'build-test': '${{ needs.build-test.result }}',
+            'e2e-tests': '${{ needs.e2e-tests.result }}'
+          };
+
+          const statusEmoji = {
+            'success': '✅',
+            'failure': '❌',
+            'cancelled': '⏸️',
+            'skipped': '⏭️'
+          };
+
+          let summary = `## 🧪 Test Results Summary\n\n`;
+
+          for (const [job, result] of Object.entries(results)) {
+            const emoji = statusEmoji[result] || '❓';
+            summary += `${emoji} **${job}**: ${result}\n`;
+          }
+
+          const allPassed = Object.values(results).every(result => result === 'success');
+
+          summary += `\n---\n`;
+          summary += allPassed
+            ? `🎉 **All checks passed!** This PR is ready for review.`
+            : `⚠️ **Some checks failed.** Please fix the issues before merging.`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });

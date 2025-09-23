@@ -2,8 +2,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://jzixoslapmlqafrlbvpk.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6aXhvc2xhcG1scWFmcmxidnBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNTg0ODksImV4cCI6MjA1ODkzNDQ4OX0.KZ_ss29tqo3TLFuXqyMa6dj2M4KxjGm9socf8ELVSN0";
+// Supabase kliento inicializavimas naudojant aplinkos kintamuosius (Vite)
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

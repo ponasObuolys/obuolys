@@ -1,0 +1,213 @@
+name: Test Coverage and Quality Gates
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run unit tests with coverage
+      run: npm run test:coverage
+
+    - name: Check coverage thresholds
+      run: npm run test:coverage:check
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+
+    - name: Comment coverage on PR
+      if: github.event_name == 'pull_request'
+      uses: 5monkeys/cobertura-action@master
+      with:
+        path: coverage/cobertura-coverage.xml
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 80
+        fail_below_threshold: true
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      supabase:
+        image: supabase/supabase-cli:latest
+        options: >-
+          --health-cmd "supabase status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Setup test database
+      run: |
+        npm run supabase:start
+        npm run supabase:reset
+      env:
+        SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+    - name: Run integration tests
+      run: npm run test:integration
+      env:
+        INTEGRATION_TESTS: true
+        VITE_SUPABASE_URL: http://localhost:54321
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_TEST }}
+
+    - name: Upload integration test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-results
+        path: |
+          test-results/
+          coverage/
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run Playwright tests
+      run: npm run test:e2e
+      env:
+        PLAYWRIGHT_BASE_URL: http://localhost:8080
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL_TEST }}
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY_TEST }}
+
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+
+  quality-gates:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run TypeScript check
+      run: npm run type-check
+
+    - name: Check bundle size
+      run: |
+        npm run build:analyze
+        npm run bundle-size:check
+
+    - name: Security audit
+      run: npm audit --audit-level moderate
+
+    - name: Check for outdated dependencies
+      run: npm outdated || true
+
+    - name: Quality gate summary
+      run: |
+        echo "## Quality Gate Results 📊" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Unit tests passed with >80% coverage" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Integration tests passed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ ESLint checks passed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ TypeScript compilation successful" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Security audit passed" >> $GITHUB_STEP_SUMMARY
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build for production
+      run: npm run build
+
+    - name: Run Lighthouse CI
+      run: |
+        npm install -g @lhci/cli@0.12.x
+        lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+    - name: Bundle size check
+      run: |
+        npm run build:analyze
+        # Check that main bundle is under 500KB
+        BUNDLE_SIZE=$(stat -c%s "dist/assets/index-*.js" | head -1)
+        if [ $BUNDLE_SIZE -gt 512000 ]; then
+          echo "Bundle size too large: $BUNDLE_SIZE bytes (max: 512000)"
+          exit 1
+        fi
+        echo "Bundle size: $BUNDLE_SIZE bytes ✅"
