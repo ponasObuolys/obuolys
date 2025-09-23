@@ -37,7 +37,17 @@ const ContactMessageManager = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setMessages(data || []);
+      // Normalizuojame status reikšmes į sąjungą 'unread' | 'read', kad atitiktų komponento tipą
+      const normalized: ContactMessage[] = (data ?? []).map((row) => ({
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        subject: row.subject,
+        message: row.message,
+        created_at: row.created_at,
+        status: row.status === 'read' ? 'read' as const : 'unread' as const,
+      }));
+      setMessages(normalized);
     } catch (error) {
       console.error('Error fetching contact messages:', error);
       toast({
@@ -131,7 +141,7 @@ const ContactMessageManager = () => {
       console.error('Error deleting message:', error);
       toast({
         title: 'Klaida',
-        description: 'Nepavyko ištrinti pranešimo.',
+        description: `Nepavyko ištrinti pranešimo: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: 'destructive',
       });
     }

@@ -4,12 +4,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
 import { Analytics } from '@vercel/analytics/react';
-import { createLazyComponent, createNamedLazyComponent } from "@/utils/lazyLoad";
+import {
+  createLazyComponent,
+  createNamedLazyComponent,
+  setupIntelligentPreloading
+} from "@/utils/lazyLoad";
 import { reportWebVitals } from "@/utils/webVitals";
 import Layout from "@/components/layout/Layout";
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -18,20 +22,39 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import HomePage from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Lazy load heavy/less frequently accessed pages
-const PublicationsPage = createLazyComponent(() => import("./pages/PublicationsPage"));
-const PublicationDetail = createLazyComponent(() => import("./pages/PublicationDetail"));
-const ToolsPage = createLazyComponent(() => import("./pages/ToolsPage"));
-const ToolDetailPage = createLazyComponent(() => import("./pages/ToolDetailPage"));
-const CoursesPage = createLazyComponent(() => import("./pages/CoursesPage"));
-const CourseDetail = createLazyComponent(() => import("./pages/CourseDetail"));
-const ContactPage = createLazyComponent(() => import("./pages/ContactPage"));
-const SupportPage = createLazyComponent(() => import("./pages/SupportPage"));
+// Lazy load pages with intelligent caching
+const PublicationsPage = createLazyComponent(() => import("./pages/PublicationsPage"), {
+  cacheKey: "publications",
+  preload: true
+});
+const PublicationDetail = createLazyComponent(() => import("./pages/PublicationDetail"), {
+  cacheKey: "publication-detail"
+});
+const ToolsPage = createLazyComponent(() => import("./pages/ToolsPage"), {
+  cacheKey: "tools",
+  preload: true
+});
+const ToolDetailPage = createLazyComponent(() => import("./pages/ToolDetailPage"), {
+  cacheKey: "tool-detail"
+});
+const CoursesPage = createLazyComponent(() => import("./pages/CoursesPage"), {
+  cacheKey: "courses"
+});
+const CourseDetail = createLazyComponent(() => import("./pages/CourseDetail"), {
+  cacheKey: "course-detail"
+});
+const ContactPage = createLazyComponent(() => import("./pages/ContactPage"), {
+  cacheKey: "contact"
+});
+const SupportPage = createLazyComponent(() => import("./pages/SupportPage"), {
+  cacheKey: "support"
+});
 
-// Lazy load authentication and admin pages (separate chunks)
-const Auth = createNamedLazyComponent("auth", () => import("./pages/Auth"));
-const ProfilePage = createNamedLazyComponent("profile", () => import("./pages/ProfilePage"));
-const AdminDashboard = createNamedLazyComponent("admin", () => import("./pages/AdminDashboard"));
+// Authentication and admin pages with separate chunking
+const Auth = createNamedLazyComponent("auth-pages", () => import("./pages/Auth"));
+const ProfilePage = createNamedLazyComponent("auth-pages", () => import("./pages/ProfilePage"));
+const AdminDashboard = createNamedLazyComponent("admin-dashboard", () => import("./pages/AdminDashboard"));
+const AdminUserCleanup = createNamedLazyComponent("admin-dashboard", () => import("./pages/AdminUserCleanup"));
 
 const queryClient = new QueryClient();
 
@@ -45,6 +68,63 @@ const SiteLayout = () => (
 function App() {
   // Initialize Web Vitals monitoring
   reportWebVitals();
+
+  // Setup intelligent preloading
+  useEffect(() => {
+    const preloadManager = setupIntelligentPreloading([
+      {
+        path: "publications",
+        importFn: () => import("./pages/PublicationsPage"),
+        priority: "high"
+      },
+      {
+        path: "tools",
+        importFn: () => import("./pages/ToolsPage"),
+        priority: "high"
+      },
+      {
+        path: "courses",
+        importFn: () => import("./pages/CoursesPage"),
+        priority: "medium"
+      },
+      {
+        path: "contact",
+        importFn: () => import("./pages/ContactPage"),
+        priority: "medium"
+      },
+      {
+        path: "support",
+        importFn: () => import("./pages/SupportPage"),
+        priority: "low"
+      },
+      {
+        path: "publication-detail",
+        importFn: () => import("./pages/PublicationDetail"),
+        priority: "medium"
+      },
+      {
+        path: "tool-detail",
+        importFn: () => import("./pages/ToolDetailPage"),
+        priority: "medium"
+      },
+      {
+        path: "course-detail",
+        importFn: () => import("./pages/CourseDetail"),
+        priority: "low"
+      }
+    ]);
+
+    // Log preloading status in development
+    if (process.env.NODE_ENV === 'development') {
+      setTimeout(() => {
+        console.log('Preloading status:', preloadManager.getCacheStatus());
+      }, 3000);
+    }
+
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
 
   return (
     <HelmetProvider>
@@ -140,6 +220,14 @@ function App() {
                     }
                   />
                   <Route
+                    path="/admin/cleanup"
+                    element={
+                      <Suspense fallback={<LoadingSpinner text="Kraunamas naudotojų valymo skydelis..." />}>
+                        <AdminUserCleanup />
+                      </Suspense>
+                    }
+                  />
+                  <Route
                     path="/paremti"
                     element={
                       <Suspense fallback={<LoadingSpinner text="Kraunamas paramos puslapis..." />}>
@@ -151,7 +239,7 @@ function App() {
                 </Route>
               </Routes>
             </BrowserRouter>
-              <Analytics />
+              {import.meta.env.PROD && <Analytics />}
               </TooltipProvider>
             </ImageLoadingProvider>
           </LanguageProvider>

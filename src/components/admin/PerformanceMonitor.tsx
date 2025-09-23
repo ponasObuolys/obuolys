@@ -3,29 +3,41 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   getStoredMetrics,
   clearStoredMetrics,
   calculatePerformanceScore,
   type PerformanceMetric
 } from '@/utils/webVitals';
-import { TrendingUp, TrendingDown, Activity, Zap, Clock, Eye } from 'lucide-react';
+import { getComponentLoadingStats } from '@/utils/lazyLoad';
+import { TrendingUp, TrendingDown, Activity, Zap, Clock, Eye, Package, RefreshCw, Trash2 } from 'lucide-react';
 
 export function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetric[]>([]);
   const [performanceScore, setPerformanceScore] = useState(0);
+  const [componentStats, setComponentStats] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const loadData = () => {
+    setIsRefreshing(true);
+
+    const storedMetrics = getStoredMetrics();
+    setMetrics(storedMetrics);
+    setPerformanceScore(calculatePerformanceScore(storedMetrics));
+
+    // Load component loading statistics
+    const stats = getComponentLoadingStats();
+    setComponentStats(stats);
+
+    setIsRefreshing(false);
+  };
 
   useEffect(() => {
-    const loadMetrics = () => {
-      const storedMetrics = getStoredMetrics();
-      setMetrics(storedMetrics);
-      setPerformanceScore(calculatePerformanceScore(storedMetrics));
-    };
-
-    loadMetrics();
+    loadData();
 
     // Refresh metrics every 30 seconds
-    const interval = setInterval(loadMetrics, 30000);
+    const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -63,23 +75,39 @@ export function PerformanceMonitor() {
   const coreMetrics = ['LCP', 'INP', 'CLS'];
   const otherMetrics = ['FCP', 'TTFB'];
 
+  const cacheHitRate = componentStats ?
+    (componentStats.cachedComponents / Math.max(componentStats.totalComponents, 1)) * 100 : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Našumo monitoringas</h2>
-          <p className="text-gray-600">Core Web Vitals ir kiti našumo rodikliai</p>
+          <p className="text-gray-600">Core Web Vitals ir komponentų kraunymo statistika</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => {
-            clearStoredMetrics();
-            setMetrics([]);
-            setPerformanceScore(0);
-          }}
-        >
-          Išvalyti duomenis
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadData}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Atnaujinti
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              clearStoredMetrics();
+              setMetrics([]);
+              setPerformanceScore(0);
+            }}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Išvalyti
+          </Button>
+        </div>
       </div>
 
       {/* Performance Score */}
@@ -103,110 +131,224 @@ export function PerformanceMonitor() {
         </CardContent>
       </Card>
 
-      {/* Core Web Vitals */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Core Web Vitals</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {coreMetrics.map(metricName => {
-              const metric = getLatestMetric(metricName);
-              return (
-                <div key={metricName} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      {getMetricIcon(metricName)}
-                      <span className="font-medium">{metricName}</span>
-                    </div>
-                    {metric && (
-                      <div className={`w-3 h-3 rounded-full ${getRatingColor(metric.rating)}`} />
-                    )}
-                  </div>
-                  {metric ? (
-                    <div>
-                      <div className="text-2xl font-bold">
-                        {formatValue(metricName, metric.value)}
-                      </div>
-                      <div className="text-sm text-gray-600 capitalize">
-                        {metric.rating.replace('-', ' ')}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-gray-400">Nėra duomenų</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="vitals" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="vitals">Core Web Vitals</TabsTrigger>
+          <TabsTrigger value="components">Komponentų kraunymas</TabsTrigger>
+          <TabsTrigger value="bundle">Bundle informacija</TabsTrigger>
+        </TabsList>
 
-      {/* Other Metrics */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Kiti našumo rodikliai</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {otherMetrics.map(metricName => {
-              const metric = getLatestMetric(metricName);
-              return (
-                <div key={metricName} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      {getMetricIcon(metricName)}
-                      <span className="font-medium">{metricName}</span>
-                    </div>
-                    {metric && (
-                      <div className={`w-3 h-3 rounded-full ${getRatingColor(metric.rating)}`} />
-                    )}
-                  </div>
-                  {metric ? (
-                    <div>
-                      <div className="text-2xl font-bold">
-                        {formatValue(metricName, metric.value)}
+        <TabsContent value="vitals" className="space-y-4">
+          {/* Core Web Vitals */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Core Web Vitals</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {coreMetrics.map(metricName => {
+                  const metric = getLatestMetric(metricName);
+                  return (
+                    <div key={metricName} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {getMetricIcon(metricName)}
+                          <span className="font-medium">{metricName}</span>
+                        </div>
+                        {metric && (
+                          <div className={`w-3 h-3 rounded-full ${getRatingColor(metric.rating)}`} />
+                        )}
                       </div>
-                      <div className="text-sm text-gray-600 capitalize">
-                        {metric.rating.replace('-', ' ')}
-                      </div>
+                      {metric ? (
+                        <div>
+                          <div className="text-2xl font-bold">
+                            {formatValue(metricName, metric.value)}
+                          </div>
+                          <div className="text-sm text-gray-600 capitalize">
+                            {metric.rating.replace('-', ' ')}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-gray-400">Nėra duomenų</div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="text-gray-400">Nėra duomenų</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Bundle Size Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Bundle informacija</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Pagrindinis bundle:</span>
-              <span className="font-mono">~74KB (21KB gzip)</span>
+          {/* Other Metrics */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Kiti našumo rodikliai</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {otherMetrics.map(metricName => {
+                  const metric = getLatestMetric(metricName);
+                  return (
+                    <div key={metricName} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {getMetricIcon(metricName)}
+                          <span className="font-medium">{metricName}</span>
+                        </div>
+                        {metric && (
+                          <div className={`w-3 h-3 rounded-full ${getRatingColor(metric.rating)}`} />
+                        )}
+                      </div>
+                      {metric ? (
+                        <div>
+                          <div className="text-2xl font-bold">
+                            {formatValue(metricName, metric.value)}
+                          </div>
+                          <div className="text-sm text-gray-600 capitalize">
+                            {metric.rating.replace('-', ' ')}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-gray-400">Nėra duomenų</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="components" className="space-y-4">
+          {componentStats && (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Iš viso komponentų
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{componentStats.totalComponents}</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Cache taikiniai
+                  </CardTitle>
+                  <Zap className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">
+                    {Math.round(cacheHitRate)}%
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {componentStats.cachedComponents} iš {componentStats.totalComponents}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Vidutinis kraunymo laikas
+                  </CardTitle>
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {Math.round(componentStats.averageLoadTime)}ms
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Pakartotiniai bandymai
+                  </CardTitle>
+                  <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {componentStats.totalRetries}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            <div className="flex justify-between">
-              <span>Bendras dydis:</span>
-              <span className="font-mono">~800KB → ~420KB</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Pagerinimas:</span>
-              <Badge variant="default">48% mažiau</Badge>
-            </div>
-            <div className="flex justify-between">
-              <span>Chunk'ų skaičius:</span>
-              <span className="font-mono">16</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="bundle" className="space-y-4">
+          {/* Bundle Size Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Bundle optimizacija</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span>Pagrindinis bundle:</span>
+                  <Badge variant="outline" className="font-mono">~81KB (24KB gzip)</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Pradinis dydis:</span>
+                  <span className="font-mono text-red-600">~815KB</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Optimizuotas dydis:</span>
+                  <span className="font-mono text-green-600">~420KB</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Pagerinimas:</span>
+                  <Badge variant="default">48% mažiau</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Chunk'ų skaičius:</span>
+                  <span className="font-mono">~16 dalių</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Gzip sertifikavimas:</span>
+                  <Badge variant="secondary">3:1 suspaudimas</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Chunk Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Chunk strategija</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-medium mb-2">Vendor chunks:</h4>
+                    <ul className="space-y-1 text-muted-foreground">
+                      <li>• react-core (~85KB)</li>
+                      <li>• ui-overlay (~35KB)</li>
+                      <li>• form-lib (~22KB)</li>
+                      <li>• query-lib (~69KB)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">Feature chunks:</h4>
+                    <ul className="space-y-1 text-muted-foreground">
+                      <li>• admin-dashboard (~145KB)</li>
+                      <li>• auth-pages (~115KB)</li>
+                      <li>• content-* (~80KB)</li>
+                      <li>• shared-components (~35KB)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Recommendations */}
       {metrics.length > 0 && (

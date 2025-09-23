@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { SafeRichText } from "@/components/ui/SafeHtml";
+import { secureLogger } from '@/utils/browserLogger';
 import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
 import useLazyImages from '@/hooks/useLazyImages';
 import { extractImagesFromHTML, preloadImagesWhenIdle } from '@/utils/imagePreloader';
@@ -61,7 +63,7 @@ const PublicationDetail = () => {
           description: "Nepavyko gauti publikacijos informacijos. Bandykite vėliau.",
           variant: "destructive"
         });
-        console.error("Error fetching publication:", errorMessage);
+        secureLogger.error("Error fetching publication", { error: errorMessage, slug });
       } finally {
         setLoading(false);
       }
@@ -203,11 +205,12 @@ const PublicationDetail = () => {
               </div>
             )}
             
-            <div 
-              ref={contentRef}
-              className="prose max-w-none mb-8 text-left"
-              dangerouslySetInnerHTML={{ __html: addLazyLoadingToImages(publication.content || '') }}
-            />
+            <div ref={contentRef}>
+              <SafeRichText
+                content={addLazyLoadingToImages(publication.content || '')}
+                className="prose max-w-none mb-8 text-left"
+              />
+            </div>
             
 
           </div>

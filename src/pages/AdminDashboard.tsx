@@ -19,6 +19,13 @@ import ContactMessageManager from '@/components/admin/ContactMessageManager';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, FilePenLine, Trash2 } from 'lucide-react';
+import type { Tables } from '@/integrations/supabase/types';
+
+// Tipai sąrašų vaizdavimui
+type ArticleListItem = Pick<
+  Tables<'articles'>,
+  'id' | 'title' | 'slug' | 'date' | 'published' | 'featured' | 'content_type' | 'description' | 'content'
+>;
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -307,7 +314,7 @@ const AdminDashboard = () => {
 
 // Article list component for the admin dashboard
 const PublicationsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelete: () => void }) => {
-  const [publications, setPublications] = useState<Record<string, unknown>[]>([]);
+  const [publications, setPublications] = useState<ArticleListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -320,7 +327,7 @@ const PublicationsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, 
         .order('date', { ascending: false });
 
       if (error) throw error;
-      setPublications(data || []);
+      setPublications((data as ArticleListItem[]) || []);
     } catch (error: unknown) {
       console.error('Error fetching publications:', error);
       toast({
@@ -355,7 +362,7 @@ const PublicationsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, 
       console.error('Error deleting publication:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko ištrinti publikacijos.",
+        description: `Nepavyko ištrinti publikacijos: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: "destructive",
       });
     }
@@ -437,7 +444,7 @@ const PublicationsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, 
 
 // Tools list component for the admin dashboard
 const ToolsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelete: () => void }) => {
-  const [tools, setTools] = useState<Record<string, unknown>[]>([]);
+  const [tools, setTools] = useState<Tables<'tools'>[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -450,7 +457,7 @@ const ToolsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelet
         .order('created_at', { ascending: false });
         
       if (error) throw error;
-      setTools(data || []);
+      setTools((data as Tables<'tools'>[]) || []);
     } catch (error) {
       console.error('Error fetching tools:', error);
       toast({
@@ -487,7 +494,7 @@ const ToolsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelet
       console.error('Error deleting tool:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko ištrinti įrankio.",
+        description: `Nepavyko ištrinti įrankio: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: "destructive",
       });
     }
@@ -586,7 +593,7 @@ const ToolsList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelet
 
 // Courses list component for the admin dashboard
 const CoursesList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDelete: () => void }) => {
-  const [courses, setCourses] = useState<Record<string, unknown>[]>([]);
+  const [courses, setCourses] = useState<Tables<'courses'>[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -599,7 +606,7 @@ const CoursesList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDel
         .order('created_at', { ascending: false });
         
       if (error) throw error;
-      setCourses(data || []);
+      setCourses((data as Tables<'courses'>[]) || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast({
@@ -636,7 +643,7 @@ const CoursesList = ({ onEdit, onDelete }: { onEdit: (id: string) => void, onDel
       console.error('Error deleting course:', error);
       toast({
         title: "Klaida",
-        description: "Nepavyko ištrinti kurso.",
+        description: `Nepavyko ištrinti kurso: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: "destructive",
       });
     }

@@ -323,7 +323,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      auth_users_view: {
+        Row: {
+          id: string
+          email: string
+          created_at: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          id: string
+          username: string | null
+          avatar_url: string | null
+          is_admin: boolean | null
+          created_at: string
+          updated_at: string
+          email: string
+          auth_created_at: string
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: {

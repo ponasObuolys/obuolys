@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Save, Plus, Eye, EyeOff } from 'lucide-react';
+import type { TablesInsert } from '@/integrations/supabase/types';
 
 const ctaSectionSchema = z.object({
   title: z.string().min(1, 'Pavadinimas yra privalomas'),
@@ -91,9 +92,17 @@ const CTASectionEditor = () => {
         });
       } else {
         // Create new section
+        const payload: TablesInsert<'cta_sections'> = {
+          title: data.title,
+          description: data.description,
+          button_text: data.button_text,
+          button_url: data.button_url,
+          active: data.active,
+        };
+
         const { error } = await supabase
           .from('cta_sections')
-          .insert([data]);
+          .insert(payload);
 
         if (error) throw error;
 
@@ -165,7 +174,7 @@ const CTASectionEditor = () => {
       console.error('Error deleting CTA section:', error);
       toast({
         title: 'Klaida',
-        description: 'Nepavyko ištrinti CTA sekcijos.',
+        description: `Nepavyko ištrinti CTA sekcijos: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: 'destructive',
       });
     } finally {

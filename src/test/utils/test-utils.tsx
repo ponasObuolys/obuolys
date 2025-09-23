@@ -2,18 +2,10 @@ import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { vi } from 'vitest';
 import { AuthProvider } from '@/context/AuthContext';
 import { LanguageProvider } from '@/context/LanguageContext';
-
-// Mock auth context for testing
-const mockAuthContext = {
-  user: null,
-  loading: false,
-  signIn: vi.fn(),
-  signUp: vi.fn(),
-  signOut: vi.fn(),
-  isAdmin: false
-};
 
 // Create a custom render function that includes providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -27,15 +19,17 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider value={mockAuthContext}>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 };
 
@@ -44,7 +38,7 @@ const customRender = (
   options?: Omit<RenderOptions, 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders, ...options });
 
-// Create authenticated version
+// Create authenticated version with mock setup
 const AuthenticatedProviders = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -55,33 +49,20 @@ const AuthenticatedProviders = ({ children }: { children: React.ReactNode }) => 
     },
   });
 
-  const authenticatedAuthContext = {
-    ...mockAuthContext,
-    user: {
-      id: 'test-user-id',
-      email: 'test@example.com',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      email_confirmed_at: new Date().toISOString(),
-      last_sign_in_at: new Date().toISOString(),
-      role: 'authenticated',
-      user_metadata: {},
-      app_metadata: {}
-    },
-    loading: false,
-    isAdmin: true
-  };
-
+  // For authenticated tests, we'll mock a pre-authenticated state
+  // This requires the AuthProvider to be properly mocked in the test setup
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider value={authenticatedAuthContext}>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 };
 

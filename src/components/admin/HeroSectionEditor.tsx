@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
+import type { TablesInsert } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from './FileUpload';
 import { Save, Plus, Eye, EyeOff } from 'lucide-react';
@@ -94,9 +95,18 @@ const HeroSectionEditor = () => {
         });
       } else {
         // Create new section
+        const insertPayload: TablesInsert<'hero_sections'> = {
+          title: data.title,
+          subtitle: data.subtitle,
+          button_text: data.button_text,
+          button_url: data.button_url,
+          image_url: data.image_url || null,
+          active: data.active,
+        };
+
         const { error } = await supabase
           .from('hero_sections')
-          .insert([data]);
+          .insert([insertPayload]);
 
         if (error) throw error;
 
@@ -170,7 +180,7 @@ const HeroSectionEditor = () => {
       console.error('Error deleting hero section:', error);
       toast({
         title: 'Klaida',
-        description: 'Nepavyko ištrinti hero sekcijos.',
+        description: `Nepavyko ištrinti hero sekcijos: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
         variant: 'destructive',
       });
     } finally {

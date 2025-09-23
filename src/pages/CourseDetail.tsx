@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, Users, Star, Check, CheckCircle, AlertCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { SafeRichText } from "@/components/ui/SafeHtml";
+import { secureLogger } from '@/utils/browserLogger';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
@@ -46,7 +48,7 @@ const CourseDetail: FC = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log('Fetching course with slug:', slug);
+        secureLogger.info('Fetching course with slug', { slug });
         // Fetch as an array, limit to 1 result
         const { data, error } = await supabase
           .from('courses')
@@ -56,20 +58,20 @@ const CourseDetail: FC = () => {
           .limit(1); 
 
         if (error) {
-          console.error('Supabase error:', error);
+          secureLogger.error('Supabase error', { error });
           throw error;
         }
 
-        console.log('Course data array received:', data);
+        secureLogger.info('Course data array received', { dataLength: data?.length });
         // Check if the array has data
         if (data && data.length > 0) {
           setCourse(data[0]); // Set the first element
         } else {
-          console.log('No course data found');
+          secureLogger.warn('No course data found', { slug });
           setCourse(null); // Explicitly set to null if no data
         }
       } catch (error) {
-        console.error('Error fetching course:', error);
+        secureLogger.error('Error fetching course', { error, slug });
         toast({
           title: "Klaida",
           description: "Nepavyko gauti kurso informacijos. Bandykite vėliau.",
@@ -175,7 +177,7 @@ const CourseDetail: FC = () => {
                 <TabsTrigger value="aprasymas">Aprašymas</TabsTrigger>
               </TabsList>
               <TabsContent value="aprasymas">
-                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: course.content }} />
+                <SafeRichText content={course.content} className="prose max-w-none" />
               </TabsContent>
             </Tabs>
           </div>
