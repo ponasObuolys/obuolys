@@ -152,12 +152,12 @@ export default defineConfig(({ mode, command }) => ({
           return `assets/[name]-[hash:8][extname]`;
         }
       },
+      // Sumažiname agresyvų treeshake, kad išvengtume neteisingo modulio inicializavimo tvarkos
+      // ir su tuo susijusių TDZ ("Cannot access 'x' before initialization") klaidų gamyboje.
       treeshake: {
         moduleSideEffects: false,
         propertyReadSideEffects: false,
-        unknownGlobalSideEffects: false,
-        // More aggressive tree shaking
-        preset: 'smallest'
+        unknownGlobalSideEffects: false
       },
       // Optimize external dependencies
       external: (id) => {
@@ -205,8 +205,7 @@ export default defineConfig(({ mode, command }) => ({
     // Use modern JavaScript features for smaller output
     target: 'es2020',
     // Optimize for better compression
-    keepNames: false,
-    mangleProps: /^_/,
+    keepNames: false
   },
   // Define constants for better tree shaking
   define: {
