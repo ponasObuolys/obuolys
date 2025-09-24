@@ -9,12 +9,8 @@ export default defineConfig(({ mode, command }) => ({
     port: 8080,
   },
   plugins: [
-    react({
-      // Enable React Fast Refresh optimizations
-      fastRefresh: true,
-      // Skip automatic JSX runtime injection for better performance
-      jsxImportSource: undefined,
-    }),
+    // React Fast Refresh įjungtas pagal nutylėjimą Vite aplinkoje
+    react(),
   ],
   resolve: {
     alias: {
