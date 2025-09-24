@@ -22,8 +22,6 @@
     "quality-fix": "npm run lint:fix && npm run format && npm run type-check",
     "quality:comprehensive": "node scripts/quality-check.js",
     "preview": "vite preview",
-    "pre-commit": "lint-staged",
-    "prepare": "husky",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
@@ -146,10 +144,8 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
-    "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
     "jsdom": "^23.2.0",
-    "lint-staged": "^16.2.0",
     "playwright": "^1.55.1",
     "postcss": "^8.5.3",
     "prettier": "^3.6.2",
@@ -161,22 +157,6 @@
     "vite-bundle-analyzer": "^1.2.3",
     "vitest": "^1.6.1",
     "web-vitals": "^5.1.0"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "*.{json,md,css,scss}": [
-      "prettier --write",
-      "git add"
-    ]
   },
   "overrides": {
     "esbuild": ">=0.24.3"

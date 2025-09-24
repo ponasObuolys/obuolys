@@ -11,7 +11,6 @@ vi.mock('react-helmet-async', () => ({
   HelmetProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 import Index from '@/pages/Index';
-import { createMockArticle, createMockTool, createMockCourse } from '@/test/utils/supabase-test-utils';
 
 // Mock the child components to focus on Index page logic
 vi.mock('@/components/home/Hero', () => ({

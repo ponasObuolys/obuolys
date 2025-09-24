@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Clock, Users, BarChart } from "lucide-react";
+import { Clock, BarChart } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
 
 interface CourseCardProps {

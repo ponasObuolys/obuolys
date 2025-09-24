@@ -80,7 +80,7 @@ describe('SafeHtml Component', () => {
   });
 
   it('removes dangerous event handlers', () => {
-    const maliciousContent = '<p onclick="alert(\"xss\")">Click me</p>';
+    const maliciousContent = `<p onclick="alert('xss')">Click me</p>`;
     const sanitizedContent = '<p>Click me</p>';
     sanitizeMock.mockReturnValue(sanitizedContent);
 
@@ -90,7 +90,7 @@ describe('SafeHtml Component', () => {
   });
 
   it('sanitizes dangerous href attributes', () => {
-    const maliciousContent = '<a href="javascript:alert(\"xss\")">Click</a>';
+    const maliciousContent = `<a href="javascript:alert('xss')">Click</a>`;
     const sanitizedContent = '<a>Click</a>';
     sanitizeMock.mockReturnValue(sanitizedContent);
 

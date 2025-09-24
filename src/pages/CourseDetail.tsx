@@ -1,9 +1,8 @@
 import type { FC } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, Users, Star, Check, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { secureLogger } from '@/utils/browserLogger';
 import { useEffect, useState } from 'react';

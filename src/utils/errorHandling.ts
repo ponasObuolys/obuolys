@@ -238,7 +238,7 @@ export const useErrorHandler = () => {
 /**
  * Utility function to create typed async handlers
  */
-export const createAsyncHandler = <T extends (...args: any[]) => Promise<any>>(
+export const createAsyncHandler = <T extends (...args: unknown[]) => Promise<unknown>>(
   handler: T,
   errorHandler: (error: unknown) => void = handleError
 ) => {

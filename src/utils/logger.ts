@@ -1,4 +1,4 @@
-import winston from 'winston';
+import winston from "winston";
 
 // Security patterns for sensitive data detection
 const SENSITIVE_PATTERNS = [
@@ -11,33 +11,34 @@ const SENSITIVE_PATTERNS = [
   /session/i,
   /cookie/i,
   /bearer/i,
-  /jwt/i
+  /jwt/i,
 ];
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
  * Sanitizes data to remove sensitive information before logging
  * @param data - The data to sanitize
  * @returns Sanitized data safe for logging
  */
-function sanitizeData(data: any): any {
-  if (typeof data === 'string') {
-    // Check if string looks like sensitive data
+function sanitizeData(data: unknown): unknown {
+  if (typeof data === "string") {
     if (SENSITIVE_PATTERNS.some(pattern => pattern.test(data))) {
-      return '[REDACTED]';
+      return "[REDACTED]";
     }
     return data;
   }
 
   if (Array.isArray(data)) {
-    return data.map(sanitizeData);
+    return data.map(item => sanitizeData(item));
   }
 
-  if (data && typeof data === 'object') {
-    const sanitized: any = {};
+  if (isRecord(data)) {
+    const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(data)) {
-      // Redact sensitive keys
       if (SENSITIVE_PATTERNS.some(pattern => pattern.test(key))) {
-        sanitized[key] = '[REDACTED]';
+        sanitized[key] = "[REDACTED]";
       } else {
         sanitized[key] = sanitizeData(value);
       }
@@ -48,23 +49,40 @@ function sanitizeData(data: any): any {
   return data;
 }
 
+const sanitizeToRecord = (meta: unknown): Record<string, unknown> => {
+  const sanitized = sanitizeData(meta);
+
+  if (isRecord(sanitized)) {
+    return sanitized;
+  }
+
+  if (Array.isArray(sanitized)) {
+    return { data: sanitized };
+  }
+
+  if (sanitized === undefined || sanitized === null) {
+    return {};
+  }
+
+  return { value: sanitized };
+};
+
 /**
  * Environment-aware logger configuration
  * In production: only errors and warnings
  * In development: full logging with sanitization
  */
-const logLevel = process.env.NODE_ENV === 'production' ? 'warn' : 'info';
+const logLevel = process.env.NODE_ENV === "production" ? "warn" : "info";
 
 const logger = winston.createLogger({
   level: logLevel,
   format: winston.format.combine(
     winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
+      format: "YYYY-MM-DD HH:mm:ss",
     }),
     winston.format.errors({ stack: true }),
     winston.format.printf(({ level, message, timestamp, stack, ...meta }) => {
-      // Sanitize metadata
-      const sanitizedMeta = sanitizeData(meta);
+      const sanitizedMeta = sanitizeToRecord(meta);
 
       let log = `${timestamp} [${level.toUpperCase()}]: ${message}`;
 
@@ -79,37 +97,34 @@ const logger = winston.createLogger({
       return log;
     })
   ),
-  defaultMeta: { service: 'ponas-obuolys' },
+  defaultMeta: { service: "ponas-obuolys" },
   transports: [
-    // Error logs to separate file
     new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      maxsize: 5242880, // 5MB
+      filename: "logs/error.log",
+      level: "error",
+      maxsize: 5242880,
       maxFiles: 5,
-      tailable: true
+      tailable: true,
     }),
-
-    // All logs to combined file (if not production)
-    ...(process.env.NODE_ENV !== 'production' ? [
-      new winston.transports.File({
-        filename: 'logs/combined.log',
-        maxsize: 5242880, // 5MB
-        maxFiles: 5,
-        tailable: true
-      })
-    ] : [])
-  ]
+    ...(process.env.NODE_ENV !== "production"
+      ? [
+          new winston.transports.File({
+            filename: "logs/combined.log",
+            maxsize: 5242880,
+            maxFiles: 5,
+            tailable: true,
+          }),
+        ]
+      : []),
+  ],
 });
 
-// Add console transport in development
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    )
-  }));
+if (process.env.NODE_ENV !== "production") {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+    })
+  );
 }
 
 /**
@@ -120,45 +135,45 @@ export const secureLogger = {
   /**
    * Log error message with automatic sanitization
    */
-  error: (message: string, meta?: any) => {
-    logger.error(message, sanitizeData(meta || {}));
+  error: (message: string, meta?: unknown) => {
+    logger.error(message, sanitizeToRecord(meta));
   },
 
   /**
    * Log warning message with automatic sanitization
    */
-  warn: (message: string, meta?: any) => {
-    logger.warn(message, sanitizeData(meta || {}));
+  warn: (message: string, meta?: unknown) => {
+    logger.warn(message, sanitizeToRecord(meta));
   },
 
   /**
    * Log info message with automatic sanitization (development only)
    */
-  info: (message: string, meta?: any) => {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.info(message, sanitizeData(meta || {}));
+  info: (message: string, meta?: unknown) => {
+    if (process.env.NODE_ENV !== "production") {
+      logger.info(message, sanitizeToRecord(meta));
     }
   },
 
   /**
    * Log debug message with automatic sanitization (development only)
    */
-  debug: (message: string, meta?: any) => {
-    if (process.env.NODE_ENV !== 'production') {
-      logger.debug(message, sanitizeData(meta || {}));
+  debug: (message: string, meta?: unknown) => {
+    if (process.env.NODE_ENV !== "production") {
+      logger.debug(message, sanitizeToRecord(meta));
     }
   },
 
   /**
    * Log HTTP request/response with security filtering
    */
-  http: (method: string, url: string, status: number, duration?: number, meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
-    const message = `${method} ${url} ${status}${duration ? ` ${duration}ms` : ''}`;
+  http: (method: string, url: string, status: number, duration?: number, meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta);
+    const message = `${method} ${url} ${status}${duration ? ` ${duration}ms` : ""}`;
 
     if (status >= 400) {
       logger.error(`HTTP Error: ${message}`, sanitizedMeta);
-    } else if (process.env.NODE_ENV !== 'production') {
+    } else if (process.env.NODE_ENV !== "production") {
       logger.info(`HTTP: ${message}`, sanitizedMeta);
     }
   },
@@ -166,13 +181,13 @@ export const secureLogger = {
   /**
    * Log authentication events with security focus
    */
-  auth: (event: string, userId?: string, meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
+  auth: (event: string, userId?: string, meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta);
     const logData = {
       event,
-      userId: userId || 'anonymous',
+      userId: userId || "anonymous",
       timestamp: new Date().toISOString(),
-      ...sanitizedMeta
+      ...sanitizedMeta,
     };
 
     logger.info(`Auth: ${event}`, logData);
@@ -181,21 +196,21 @@ export const secureLogger = {
   /**
    * Log security events (always logged, even in production)
    */
-  security: (event: string, severity: 'low' | 'medium' | 'high' | 'critical', meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
+  security: (event: string, severity: "low" | "medium" | "high" | "critical", meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta);
     const logData = {
       event,
       severity,
       timestamp: new Date().toISOString(),
-      ...sanitizedMeta
+      ...sanitizedMeta,
     };
 
-    if (severity === 'critical' || severity === 'high') {
+    if (severity === "critical" || severity === "high") {
       logger.error(`Security: ${event}`, logData);
     } else {
       logger.warn(`Security: ${event}`, logData);
     }
-  }
+  },
 };
 
 /**
@@ -203,25 +218,25 @@ export const secureLogger = {
  * Use this as a drop-in replacement for console statements
  */
 export const log = {
-  error: (message: any, ...args: any[]) => {
+  error: (message: unknown, ...args: unknown[]) => {
     secureLogger.error(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  warn: (message: any, ...args: any[]) => {
+  warn: (message: unknown, ...args: unknown[]) => {
     secureLogger.warn(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  info: (message: any, ...args: any[]) => {
+  info: (message: unknown, ...args: unknown[]) => {
     secureLogger.info(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  log: (message: any, ...args: any[]) => {
+  log: (message: unknown, ...args: unknown[]) => {
     secureLogger.info(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  debug: (message: any, ...args: any[]) => {
+  debug: (message: unknown, ...args: unknown[]) => {
     secureLogger.debug(String(message), { args: args.length > 0 ? args : undefined });
-  }
+  },
 };
 
 export default secureLogger;

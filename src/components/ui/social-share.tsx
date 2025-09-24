@@ -14,7 +14,6 @@ interface SocialShareProps {
 export function SocialShare({
   url,
   title = "",
-  description = "",
   className = "",
   showCopyLink = true
 }: SocialShareProps) {
@@ -22,8 +21,6 @@ export function SocialShare({
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
-  const encodedDescription = encodeURIComponent(description);
-
   const getFacebookShareUrl = () => {
     return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
   };

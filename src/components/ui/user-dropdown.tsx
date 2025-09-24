@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Shield } from 'lucide-react';
+import { User, LogOut, Shield } from 'lucide-react';
 
 export function UserDropdown() {
   const { user, isAdmin, signOut } = useAuth();

@@ -12,10 +12,16 @@ interface TestUser {
   created_at: string;
 }
 
+interface ProfileSummary {
+  id: string;
+  username: string | null;
+  created_at: string;
+}
+
 export default function AdminUserCleanup() {
   const [authUsers, setAuthUsers] = useState<TestUser[]>([]);
   const [userProfiles, setUserProfiles] = useState<TestUser[]>([]);
-  const [profiles, setProfiles] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<ProfileSummary[]>([]);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState<string[]>([]);
 

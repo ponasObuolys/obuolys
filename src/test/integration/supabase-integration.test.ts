@@ -1,13 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
-import { createMockSupabaseClient, createMockUser, createMockArticle, createMockTool, createMockCourse, createMockContactMessage } from '@/test/utils/supabase-test-utils';
+import { createMockArticle, createMockTool, createMockCourse } from '@/test/utils/supabase-test-utils';
 
 // Mock-based integration tests for Supabase operations
 // These tests verify the integration patterns without requiring a real database
 
 describe('Supabase Integration Tests', () => {
-  const mockUser = createMockUser();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -25,6 +23,7 @@ describe('Supabase Integration Tests', () => {
       // Test passes by verifying the supabase client is accessible
       expect(supabase).toBeDefined();
       expect(supabase.from).toBeDefined();
+      expect(mockArticle.title).toBe('Test Article');
     });
 
     it('updates articles correctly', async () => {

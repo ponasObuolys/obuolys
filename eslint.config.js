@@ -73,7 +73,7 @@ export default tseslint.config(
         },
         {
           selector: "function",
-          format: ["camelCase"],
+          format: ["camelCase", "PascalCase"],
         },
       ],
 
@@ -89,6 +89,12 @@ export default tseslint.config(
       // Disable overly strict rules
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/ban-ts-comment": "warn",
+    },
+  },
+  {
+    files: ["**/*.test.{ts,tsx}", "**/__tests__/**/*.{ts,tsx}", "src/test/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   }
 );

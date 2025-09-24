@@ -195,13 +195,13 @@ export interface FormField {
   options?: Array<{ value: string; label: string }>;
 }
 
-export interface FormConfig {
+export interface FormConfig<TData = Record<string, unknown>> {
   fields: FormField[];
   submitButtonText: string;
   resetButtonText?: string;
-  onSubmit: (data: any) => Promise<void> | void;
+  onSubmit: (data: TData) => Promise<void> | void;
   onReset?: () => void;
-  defaultValues?: Record<string, any>;
+  defaultValues?: Partial<TData>;
 }
 
 // Form state management
@@ -215,7 +215,7 @@ export interface FormState<T> {
 }
 
 export interface FormActions<T> {
-  setField: (field: keyof T, value: any) => void;
+  setField: <K extends keyof T>(field: K, value: T[K]) => void;
   setError: (field: keyof T, error: string) => void;
   clearError: (field: keyof T) => void;
   resetForm: () => void;
@@ -226,10 +226,10 @@ export interface FormActions<T> {
 export interface UseFormReturn<T> {
   state: FormState<T>;
   actions: FormActions<T>;
-  register: (field: keyof T) => {
+  register: <K extends keyof T>(field: K) => {
     name: string;
-    value: any;
-    onChange: (value: any) => void;
+    value: T[K] | undefined;
+    onChange: (value: T[K]) => void;
     onBlur: () => void;
     error?: string;
   };
@@ -251,8 +251,8 @@ export interface ValidationResult {
 // Async form submission
 export interface AsyncFormSubmission<T> {
   data: T;
-  onSuccess?: (result: any) => void;
-  onError?: (error: any) => void;
+  onSuccess?: (result: unknown) => void;
+  onError?: (error: unknown) => void;
   onFinally?: () => void;
 }
 

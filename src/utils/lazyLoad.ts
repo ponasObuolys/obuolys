@@ -1,7 +1,7 @@
-import { lazy, createElement, ComponentType } from 'react';
+import { createElement, lazy, type ComponentType, type LazyExoticComponent } from "react";
 
 // Cache for storing preloaded components
-const componentCache = new Map<string, Promise<any>>();
+const componentCache = new Map<string, Promise<LazyModule<ComponentType<unknown>>>>();
 const preloadedComponents = new Set<string>();
 
 // Performance metrics for component loading
@@ -15,50 +15,68 @@ interface LoadingMetrics {
 
 const loadingMetrics = new Map<string, LoadingMetrics>();
 
+type LazyModule<T extends ComponentType<unknown>> = { default: T } & Record<string, unknown>;
+
+type LazyImport<T extends ComponentType<unknown>> = () => Promise<LazyModule<T>>;
+
+type LazyComponentOptions = {
+  minLoadTime?: number;
+  cacheKey?: string;
+  preload?: boolean;
+  retryCount?: number;
+};
+
+const storeInCache = <T extends ComponentType<unknown>>(
+  key: string,
+  modulePromise: Promise<LazyModule<T>>
+) => {
+  componentCache.set(key, modulePromise as Promise<LazyModule<ComponentType<unknown>>>);
+};
+
+const getFromCache = <T extends ComponentType<unknown>>(
+  key: string
+): Promise<LazyModule<T>> | undefined => {
+  const cached = componentCache.get(key);
+  return cached as Promise<LazyModule<T>> | undefined;
+};
+
 /**
  * Creates a lazy-loaded component with intelligent caching and preloading
- * @param importFn - Function that returns a dynamic import
- * @param options - Configuration options
  */
-export const createLazyComponent = (
-  importFn: () => Promise<any>,
-  options: {
-    minLoadTime?: number;
-    cacheKey?: string;
-    preload?: boolean;
-    retryCount?: number;
-  } = {}
-) => {
+export const createLazyComponent = <T extends ComponentType<unknown>>(
+  importFn: LazyImport<T>,
+  options: LazyComponentOptions = {}
+): LazyExoticComponent<T> => {
   const { minLoadTime = 50, cacheKey, preload = false, retryCount = 3 } = options;
 
-  const loadComponent = async (attempt = 1): Promise<any> => {
+  const loadComponent = async (attempt = 1): Promise<LazyModule<T>> => {
     const startTime = performance.now();
     const metrics: LoadingMetrics = {
       startTime,
       cached: false,
-      retries: attempt - 1
+      retries: attempt - 1,
     };
 
     try {
-      // Check cache first
-      if (cacheKey && componentCache.has(cacheKey)) {
-        metrics.cached = true;
-        const cachedResult = await componentCache.get(cacheKey)!;
-        metrics.endTime = performance.now();
-        metrics.duration = metrics.endTime - startTime;
-        loadingMetrics.set(cacheKey, metrics);
-        return cachedResult;
+      if (cacheKey) {
+        const cached = getFromCache<T>(cacheKey);
+        if (cached) {
+          metrics.cached = true;
+          const cachedResult = await cached;
+          metrics.endTime = performance.now();
+          metrics.duration = metrics.endTime - startTime;
+          loadingMetrics.set(cacheKey, metrics);
+          return cachedResult;
+        }
       }
 
-      // Load component with minimum time for UX
       const [moduleExports] = await Promise.all([
         importFn(),
-        new Promise(resolve => setTimeout(resolve, minLoadTime))
+        new Promise(resolve => setTimeout(resolve, minLoadTime)),
       ]);
 
-      // Cache the result
       if (cacheKey) {
-        componentCache.set(cacheKey, Promise.resolve(moduleExports));
+        storeInCache(cacheKey, Promise.resolve(moduleExports));
       }
 
       metrics.endTime = performance.now();
@@ -80,7 +98,6 @@ export const createLazyComponent = (
 
   const LazyComponent = lazy(loadComponent);
 
-  // Preload component if requested
   if (preload && cacheKey && !preloadedComponents.has(cacheKey)) {
     preloadedComponents.add(cacheKey);
     loadComponent().catch(error => {
@@ -94,37 +111,33 @@ export const createLazyComponent = (
 
 /**
  * Creates a chunk-specific lazy component with advanced error handling
- * @param chunkName - Name of the chunk for better debugging
- * @param importFn - Function that returns a dynamic import
  */
-export const createNamedLazyComponent = (
+export const createNamedLazyComponent = <T extends ComponentType<unknown>>(
   chunkName: string,
-  importFn: () => Promise<any>
-) => {
-  return createLazyComponent(importFn, {
+  importFn: LazyImport<T>
+) =>
+  createLazyComponent(importFn, {
     cacheKey: chunkName,
     preload: false,
-    retryCount: 3
+    retryCount: 3,
   });
-};
 
 /**
  * Preloads a component and stores it in cache
- * @param importFn - Function that returns a dynamic import
- * @param cacheKey - Key to store the component in cache
  */
-export const preloadComponent = (
-  importFn: () => Promise<any>,
+export const preloadComponent = <T extends ComponentType<unknown>>(
+  importFn: LazyImport<T>,
   cacheKey?: string
-): Promise<any> => {
+): Promise<LazyModule<T>> => {
   const key = cacheKey || `preload_${Date.now()}`;
 
-  if (componentCache.has(key)) {
-    return componentCache.get(key)!;
+  const cached = getFromCache<T>(key);
+  if (cached) {
+    return cached;
   }
 
   const componentPromise = importFn();
-  componentCache.set(key, componentPromise);
+  storeInCache(key, componentPromise);
   preloadedComponents.add(key);
 
   return componentPromise;
@@ -132,35 +145,30 @@ export const preloadComponent = (
 
 /**
  * Preloads components based on user interaction hints
- * @param routes - Array of route information with preload priorities
  */
-export const setupIntelligentPreloading = (routes: {
-  path: string;
-  importFn: () => Promise<any>;
-  priority: 'high' | 'medium' | 'low';
-  trigger?: 'hover' | 'visible' | 'idle';
-}[]) => {
-  const preloadQueue: { fn: () => Promise<any>; priority: number }[] = [];
-
-  // Sort routes by priority
-  const sortedRoutes = routes.sort((a, b) => {
+export const setupIntelligentPreloading = (
+  routes: Array<{
+    path: string;
+    importFn: LazyImport<ComponentType<unknown>>;
+    priority: "high" | "medium" | "low";
+    trigger?: "hover" | "visible" | "idle";
+  }>
+) => {
+  const sortedRoutes = routes.slice().sort((a, b) => {
     const priorities = { high: 3, medium: 2, low: 1 };
     return priorities[b.priority] - priorities[a.priority];
   });
 
-  // Preload high priority components immediately
   sortedRoutes
-    .filter(route => route.priority === 'high')
+    .filter(route => route.priority === "high")
     .forEach(route => {
       preloadComponent(route.importFn, route.path);
     });
 
-  // Queue medium priority components for idle time
-  const mediumPriorityRoutes = sortedRoutes.filter(route => route.priority === 'medium');
+  const mediumPriorityRoutes = sortedRoutes.filter(route => route.priority === "medium");
 
-  // Use requestIdleCallback for medium priority preloading
   const preloadOnIdle = () => {
-    if ('requestIdleCallback' in window) {
+    if ("requestIdleCallback" in window) {
       window.requestIdleCallback(() => {
         const route = mediumPriorityRoutes.shift();
         if (route) {
@@ -171,7 +179,6 @@ export const setupIntelligentPreloading = (routes: {
         }
       });
     } else {
-      // Fallback for browsers without requestIdleCallback
       setTimeout(() => {
         const route = mediumPriorityRoutes.shift();
         if (route) {
@@ -192,12 +199,13 @@ export const setupIntelligentPreloading = (routes: {
       if (route) {
         return preloadComponent(route.importFn, route.path);
       }
+      return undefined;
     },
     getLoadingMetrics: () => loadingMetrics,
     getCacheStatus: () => ({
       cached: Array.from(componentCache.keys()),
-      preloaded: Array.from(preloadedComponents)
-    })
+      preloaded: Array.from(preloadedComponents),
+    }),
   };
 };
 
@@ -205,60 +213,71 @@ export const setupIntelligentPreloading = (routes: {
  * Enhanced error boundary component for lazy loading failures
  */
 export const createErrorFallback = (chunkName: string) => {
-  return () => createElement('div',
-    {
-      className: 'flex items-center justify-center min-h-[200px] p-8 bg-gray-50 rounded-lg border border-gray-200',
-      role: 'alert',
-      'aria-label': 'Komponentas neįkeltas'
-    },
-    createElement('div',
-      { className: 'text-center max-w-md' },
-      createElement('div',
-        { className: 'mb-4' },
-        createElement('svg',
-          {
-            className: 'w-12 h-12 text-gray-400 mx-auto',
-            fill: 'none',
-            stroke: 'currentColor',
-            viewBox: '0 0 24 24'
-          },
-          createElement('path',
+  return () =>
+    createElement(
+      "div",
+      {
+        className:
+          "flex items-center justify-center min-h-[200px] p-8 bg-gray-50 rounded-lg border border-gray-200",
+        role: "alert",
+        "aria-label": "Komponentas neikeltas",
+      },
+      createElement(
+        "div",
+        { className: "text-center max-w-md" },
+        createElement(
+          "div",
+          { className: "mb-4" },
+          createElement(
+            "svg",
             {
-              strokeLinecap: 'round',
-              strokeLinejoin: 'round',
+              className: "w-12 h-12 text-gray-400 mx-auto",
+              fill: "none",
+              stroke: "currentColor",
+              viewBox: "0 0 24 24",
+            },
+            createElement("path", {
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
               strokeWidth: 2,
-              d: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z'
-            }
+              d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z",
+            })
           )
         )
       ),
-      createElement('h3',
-        { className: 'text-lg font-medium text-gray-900 mb-2' },
-        'Nepavyko įkelti komponento'
+      createElement(
+        "h3",
+        { className: "text-lg font-medium text-gray-900 mb-2" },
+        "Nepavyko ikelti komponento"
       ),
-      createElement('p',
-        { className: 'text-gray-600 mb-4 text-sm' },
-        `Komponentas "${chunkName}" negali būti įkeltas. Patikrinkite interneto ryšį.`
+      createElement(
+        "p",
+        { className: "text-gray-600 mb-4 text-sm" },
+        `Komponentas "${chunkName}" negali buti ikeltas. Patikrinkite interneto ry�i.`
       ),
-      createElement('div',
-        { className: 'flex flex-col sm:flex-row gap-2 justify-center' },
-        createElement('button',
+      createElement(
+        "div",
+        { className: "flex flex-col sm:flex-row gap-2 justify-center" },
+        createElement(
+          "button",
           {
             onClick: () => window.location.reload(),
-            className: 'px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors'
+            className:
+              "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors",
           },
-          'Atnaujinti puslapį'
+          "Atnaujinti puslapi"
         ),
-        createElement('button',
+        createElement(
+          "button",
           {
             onClick: () => window.history.back(),
-            className: 'px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors'
+            className:
+              "px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors",
           },
-          'Grįžti atgal'
+          "Gri�ti atgal"
         )
       )
-    )
-  );
+    );
 };
 
 /**
@@ -269,12 +288,12 @@ export const getComponentLoadingStats = () => {
     totalComponents: loadingMetrics.size,
     cachedComponents: Array.from(loadingMetrics.values()).filter(m => m.cached).length,
     averageLoadTime: 0,
-    totalRetries: Array.from(loadingMetrics.values()).reduce((sum, m) => sum + m.retries, 0)
+    totalRetries: Array.from(loadingMetrics.values()).reduce((sum, m) => sum + m.retries, 0),
   };
 
   const durations = Array.from(loadingMetrics.values())
     .map(m => m.duration)
-    .filter(d => d !== undefined) as number[];
+    .filter((d): d is number => d !== undefined);
 
   if (durations.length > 0) {
     stats.averageLoadTime = durations.reduce((sum, d) => sum + d, 0) / durations.length;

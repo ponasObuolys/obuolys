@@ -82,12 +82,9 @@ export const shareFacebookWithSDK = (options: {
  * Fallback method using URL sharing
  * Used when the FB SDK is not available or fails
  */
-export const fallbackToUrlShare = (options: {
+export const fallbackToUrlShare = ({ url }: {
   url: string;
-  title?: string;
-  description?: string;
 }): void => {
-  const { url, title, description } = options;
   
   try {
     // Create Facebook share URL with parameters

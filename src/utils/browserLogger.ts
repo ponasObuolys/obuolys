@@ -14,29 +14,32 @@ const SENSITIVE_PATTERNS = [
   /session/i,
   /cookie/i,
   /bearer/i,
-  /jwt/i
+  /jwt/i,
 ];
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
  * Sanitizes data to remove sensitive information before logging
  */
-function sanitizeData(data: any): any {
-  if (typeof data === 'string') {
+function sanitizeData(data: unknown): unknown {
+  if (typeof data === "string") {
     if (SENSITIVE_PATTERNS.some(pattern => pattern.test(data))) {
-      return '[REDACTED]';
+      return "[REDACTED]";
     }
     return data;
   }
 
   if (Array.isArray(data)) {
-    return data.map(sanitizeData);
+    return data.map(item => sanitizeData(item));
   }
 
-  if (data && typeof data === 'object') {
-    const sanitized: any = {};
+  if (isRecord(data)) {
+    const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(data)) {
       if (SENSITIVE_PATTERNS.some(pattern => pattern.test(key))) {
-        sanitized[key] = '[REDACTED]';
+        sanitized[key] = "[REDACTED]";
       } else {
         sanitized[key] = sanitizeData(value);
       }
@@ -47,10 +50,28 @@ function sanitizeData(data: any): any {
   return data;
 }
 
+const sanitizeToRecord = (meta: unknown): Record<string, unknown> => {
+  const sanitized = sanitizeData(meta);
+
+  if (isRecord(sanitized)) {
+    return sanitized;
+  }
+
+  if (Array.isArray(sanitized)) {
+    return { data: sanitized };
+  }
+
+  if (sanitized === undefined || sanitized === null) {
+    return {};
+  }
+
+  return { value: sanitized };
+};
+
 /**
  * Log levels for browser environment
  */
-type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+type LogLevel = "error" | "warn" | "info" | "debug";
 
 /**
  * Check if we're in production environment
@@ -63,7 +84,7 @@ const isProduction = import.meta.env.PROD;
 function shouldLog(level: LogLevel): boolean {
   if (isProduction) {
     // In production, only log errors and warnings
-    return level === 'error' || level === 'warn';
+    return level === "error" || level === "warn";
   }
   // In development, log everything
   return true;
@@ -72,9 +93,9 @@ function shouldLog(level: LogLevel): boolean {
 /**
  * Format log message with timestamp and level
  */
-function formatMessage(level: LogLevel, message: string, meta?: any): string {
+function formatMessage(level: LogLevel, message: string, meta?: unknown): string {
   const timestamp = new Date().toISOString();
-  const sanitizedMeta = meta ? sanitizeData(meta) : {};
+  const sanitizedMeta = meta ? sanitizeToRecord(meta) : {};
 
   let log = `[${timestamp}] [${level.toUpperCase()}]: ${message}`;
 
@@ -92,9 +113,9 @@ export const secureLogger = {
   /**
    * Log error message with automatic sanitization
    */
-  error: (message: string, meta?: any) => {
-    if (shouldLog('error')) {
-      const formattedMessage = formatMessage('error', message, meta);
+  error: (message: string, meta?: unknown) => {
+    if (shouldLog("error")) {
+      const formattedMessage = formatMessage("error", message, meta);
       console.error(formattedMessage);
 
       // In production, could send to external logging service
@@ -108,9 +129,9 @@ export const secureLogger = {
   /**
    * Log warning message with automatic sanitization
    */
-  warn: (message: string, meta?: any) => {
-    if (shouldLog('warn')) {
-      const formattedMessage = formatMessage('warn', message, meta);
+  warn: (message: string, meta?: unknown) => {
+    if (shouldLog("warn")) {
+      const formattedMessage = formatMessage("warn", message, meta);
       console.warn(formattedMessage);
     }
   },
@@ -118,9 +139,9 @@ export const secureLogger = {
   /**
    * Log info message with automatic sanitization (development only)
    */
-  info: (message: string, meta?: any) => {
-    if (shouldLog('info')) {
-      const formattedMessage = formatMessage('info', message, meta);
+  info: (message: string, meta?: unknown) => {
+    if (shouldLog("info")) {
+      const formattedMessage = formatMessage("info", message, meta);
       console.info(formattedMessage);
     }
   },
@@ -128,9 +149,9 @@ export const secureLogger = {
   /**
    * Log debug message with automatic sanitization (development only)
    */
-  debug: (message: string, meta?: any) => {
-    if (shouldLog('debug')) {
-      const formattedMessage = formatMessage('debug', message, meta);
+  debug: (message: string, meta?: unknown) => {
+    if (shouldLog("debug")) {
+      const formattedMessage = formatMessage("debug", message, meta);
       console.debug(formattedMessage);
     }
   },
@@ -138,9 +159,9 @@ export const secureLogger = {
   /**
    * Log HTTP request/response with security filtering
    */
-  http: (method: string, url: string, status: number, duration?: number, meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
-    const message = `${method} ${url} ${status}${duration ? ` ${duration}ms` : ''}`;
+  http: (method: string, url: string, status: number, duration?: number, meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta || {});
+    const message = `${method} ${url} ${status}${duration ? ` ${duration}ms` : ""}`;
 
     if (status >= 400) {
       secureLogger.error(`HTTP Error: ${message}`, sanitizedMeta);
@@ -152,13 +173,13 @@ export const secureLogger = {
   /**
    * Log authentication events with security focus
    */
-  auth: (event: string, userId?: string, meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
+  auth: (event: string, userId?: string, meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta || {});
     const logData = {
       event,
-      userId: userId || 'anonymous',
+      userId: userId || "anonymous",
       timestamp: new Date().toISOString(),
-      ...sanitizedMeta
+      ...sanitizedMeta,
     };
 
     secureLogger.info(`Auth: ${event}`, logData);
@@ -167,21 +188,21 @@ export const secureLogger = {
   /**
    * Log security events (always logged, even in production)
    */
-  security: (event: string, severity: 'low' | 'medium' | 'high' | 'critical', meta?: any) => {
-    const sanitizedMeta = sanitizeData(meta || {});
+  security: (event: string, severity: "low" | "medium" | "high" | "critical", meta?: unknown) => {
+    const sanitizedMeta = sanitizeToRecord(meta || {});
     const logData = {
       event,
       severity,
       timestamp: new Date().toISOString(),
-      ...sanitizedMeta
+      ...sanitizedMeta,
     };
 
-    if (severity === 'critical' || severity === 'high') {
+    if (severity === "critical" || severity === "high") {
       secureLogger.error(`Security: ${event}`, logData);
     } else {
       secureLogger.warn(`Security: ${event}`, logData);
     }
-  }
+  },
 };
 
 /**
@@ -189,25 +210,25 @@ export const secureLogger = {
  * Use this as a drop-in replacement for console statements
  */
 export const log = {
-  error: (message: any, ...args: any[]) => {
+  error: (message: unknown, ...args: unknown[]) => {
     secureLogger.error(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  warn: (message: any, ...args: any[]) => {
+  warn: (message: unknown, ...args: unknown[]) => {
     secureLogger.warn(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  info: (message: any, ...args: any[]) => {
+  info: (message: unknown, ...args: unknown[]) => {
     secureLogger.info(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  log: (message: any, ...args: any[]) => {
+  log: (message: unknown, ...args: unknown[]) => {
     secureLogger.info(String(message), { args: args.length > 0 ? args : undefined });
   },
 
-  debug: (message: any, ...args: any[]) => {
+  debug: (message: unknown, ...args: unknown[]) => {
     secureLogger.debug(String(message), { args: args.length > 0 ? args : undefined });
-  }
+  },
 };
 
 export default secureLogger;

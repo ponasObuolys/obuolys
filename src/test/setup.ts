@@ -7,7 +7,7 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
 // Imituojame IntersectionObserver (naudojama LazyImage testuose)
-global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
+global.IntersectionObserver = vi.fn().mockImplementation((_callback) => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
@@ -26,7 +26,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 // Imituojame HTMLCanvasElement.getContext (pvz., recharts grafikai)
 Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
   writable: true,
-  value: (function mockedGetContext(contextId: any, options?: any) {
+  value: (function mockedGetContext(contextId: string, _options?: unknown) {
     if (contextId === '2d') {
       return {
         canvas: document.createElement('canvas'),
@@ -99,14 +99,15 @@ Object.defineProperty(window, 'matchMedia', {
 // Imituojame scrollTo su abiem parašais (options arba x,y)
 Object.defineProperty(window, 'scrollTo', {
   writable: true,
-  value: ((..._args: any[]) => { /* tyčinis no-op */ }) as unknown as Window['scrollTo']
+  value: ((..._args: Parameters<Window['scrollTo']>) => { /* tyčinis no-op */ }) as unknown as Window['scrollTo']
 });
 
 // Helmet susijusiems testams – neliečiame read-only document.head, tik prireikus imit. classList
 if (typeof document !== 'undefined') {
   // Imituojame classList tik jei jo nėra
-  if (document.head && !(document.head as any).classList) {
-    Object.defineProperty(document.head, 'classList', {
+  const headElement = document.head as (HTMLElement & { classList?: DOMTokenList });
+  if (headElement && !headElement.classList) {
+    Object.defineProperty(headElement, 'classList', {
       value: {
         add: vi.fn(),
         remove: vi.fn(),
@@ -147,7 +148,7 @@ afterAll(() => {
 // Create a more robust Supabase mock that works across different test scenarios
 const createGlobalSupabaseMock = () => {
   const mockAuth = {
-    onAuthStateChange: vi.fn((callback) => {
+    onAuthStateChange: vi.fn((_callback) => {
       // Don't auto-trigger callbacks in global setup
       return {
         data: { subscription: { unsubscribe: vi.fn() } }

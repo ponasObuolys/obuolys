@@ -52,7 +52,7 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
       ALLOWED_TAGS: allowedTags,
       ALLOWED_ATTR: allowedAttributes,
       // Paliekame vidinį turinį, nebent aiškiai nurodyta pašalinti kartu su žyme
-      KEEP_CONTENT: true,
+      KEEP_CONTENT: !stripIgnoreTag,
       FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'textarea'],
       FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],
       ALLOW_DATA_ATTR: false,
@@ -64,7 +64,7 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
 
     try {
       return DOMPurify.sanitize(content, sanitizeConfig);
-    } catch (error) {
+    } catch {
       // Silently handle sanitization errors to prevent XSS
       // In production, this would be logged to external service
       return ''; // Return empty string on error to prevent XSS

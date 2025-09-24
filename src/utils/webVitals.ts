@@ -127,6 +127,6 @@ export function calculatePerformanceScore(metrics: PerformanceMetric[]): number 
 // Extend window type for TypeScript
 declare global {
   interface Window {
-    va?: (event: string, name: string, data?: any) => void;
+    va?: (event: string, name: string, data?: Record<string, unknown>) => void;
   }
 }
