@@ -1,23 +1,31 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import FileUpload from './FileUpload';
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Bold,
-  Italic,
-  Underline,
-  Link as LinkIcon,
-  Image,
-  List,
-  ListOrdered,
+  Code,
   Heading1,
   Heading2,
+  Image,
+  Italic,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  Pilcrow,
   Quote,
-  Code,
+  Underline,
   Youtube,
-  Pilcrow
-} from 'lucide-react';
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import FileUpload from "./FileUpload";
 
 interface RichTextEditorProps {
   value: string;
@@ -25,14 +33,18 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
-const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' }: RichTextEditorProps) => {
+const RichTextEditor = ({
+  value,
+  onChange,
+  placeholder = "Įveskite turinį...",
+}: RichTextEditorProps) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
-  const [linkUrl, setLinkUrl] = useState('');
-  const [linkText, setLinkText] = useState('');
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkText, setLinkText] = useState("");
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [videoDialogOpen, setVideoDialogOpen] = useState(false);
-  const [videoUrl, setVideoUrl] = useState('');
+  const [videoUrl, setVideoUrl] = useState("");
   const [savedRange, setSavedRange] = useState<Range | null>(null);
 
   // Sync the editor content with the value prop
@@ -71,8 +83,8 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
   // Format actions
   const execCommand = (command: string, value: string | null = null) => {
     editorRef.current?.focus(); // Ensure focus before command
-    if (command === 'insertHTML') {
-        restoreSelection(); // Restore selection specifically for insertHTML
+    if (command === "insertHTML") {
+      restoreSelection(); // Restore selection specifically for insertHTML
     }
     document.execCommand(command, false, value);
     handleEditorChange();
@@ -86,11 +98,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
 
   // Check if block format is currently active
   const isBlockFormatActive = (blockType: string) => {
-    return document.queryCommandValue('formatBlock').toLowerCase() === blockType.toLowerCase();
-  };
-
-  const formatText = (format: string) => {
-    execCommand(format);
+    return document.queryCommandValue("formatBlock").toLowerCase() === blockType.toLowerCase();
   };
 
   const toggleFormat = (format: string) => {
@@ -101,163 +109,170 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
     // First make sure we have a selection or cursor positioned
     const selection = window.getSelection();
     if (!selection || !editorRef.current) return;
-    
+
     // Check if heading is already applied, if so, remove it
-    const currentBlock = document.queryCommandValue('formatBlock');
+    const currentBlock = document.queryCommandValue("formatBlock");
     if (currentBlock.toLowerCase() === `h${level}`) {
-      execCommand('formatBlock', '<p>');
+      execCommand("formatBlock", "<p>");
     } else {
-      execCommand('formatBlock', `<h${level}>`);
+      execCommand("formatBlock", `<h${level}>`);
     }
   };
 
   const toggleBlockFormat = (blockTag: string) => {
-    const currentBlock = document.queryCommandValue('formatBlock');
+    const currentBlock = document.queryCommandValue("formatBlock");
     if (currentBlock.toLowerCase() === blockTag.toLowerCase()) {
-      execCommand('formatBlock', '<p>');
+      execCommand("formatBlock", "<p>");
     } else {
-      execCommand('formatBlock', blockTag);
+      execCommand("formatBlock", blockTag);
     }
   };
 
-  const toggleList = (listType: 'insertUnorderedList' | 'insertOrderedList') => {
+  const toggleList = (listType: "insertUnorderedList" | "insertOrderedList") => {
     execCommand(listType);
   };
 
   const insertLink = () => {
     if (!linkUrl.trim()) return;
     const linkHtml = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText || linkUrl}</a>`;
-    execCommand('insertHTML', linkHtml);
-    setLinkUrl('');
-    setLinkText('');
+    execCommand("insertHTML", linkHtml);
+    setLinkUrl("");
+    setLinkText("");
     setLinkDialogOpen(false);
   };
 
-  const handleInsertImage = (uploadedUrl: string, altText: string = '') => {
+  const handleInsertImage = (uploadedUrl: string, altText = "") => {
     if (!uploadedUrl.trim()) return;
     const imgHtml = `<img src="${uploadedUrl}" alt="${altText}" class="my-4 rounded max-w-full h-auto" loading="lazy" />`;
-    execCommand('insertHTML', imgHtml);
+    execCommand("insertHTML", imgHtml);
     setImageDialogOpen(false);
   };
 
   const insertVideo = () => {
     if (!videoUrl.trim()) return;
-    let videoId = '';
-    const ytRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
+    let videoId = "";
+    const ytRegex =
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
     const match = videoUrl.match(ytRegex);
-    let embedHtml = '';
+    let embedHtml = "";
     if (match && match[1]) {
       videoId = match[1];
       embedHtml = `<div class="video-container my-4"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
     } else {
       embedHtml = `<a href="${videoUrl}" target="_blank" rel="noopener noreferrer">${videoUrl}</a>`;
     }
-    execCommand('insertHTML', embedHtml);
-    setVideoUrl('');
+    execCommand("insertHTML", embedHtml);
+    setVideoUrl("");
     setVideoDialogOpen(false);
   };
 
   return (
     <div className="border rounded-md overflow-hidden flex flex-col">
       <div className="bg-muted p-2 border-b flex flex-wrap gap-1 sticky top-0 z-10">
-        <Button 
-          type="button" 
-          variant={isFormatActive('bold') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => toggleFormat('bold')} 
+        <Button
+          type="button"
+          variant={isFormatActive("bold") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => toggleFormat("bold")}
           title="Paryškintas"
         >
           <Bold className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isFormatActive('italic') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => toggleFormat('italic')} 
+        <Button
+          type="button"
+          variant={isFormatActive("italic") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => toggleFormat("italic")}
           title="Kursyvas"
         >
           <Italic className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isFormatActive('underline') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => toggleFormat('underline')} 
+        <Button
+          type="button"
+          variant={isFormatActive("underline") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => toggleFormat("underline")}
           title="Pabrauktas"
         >
           <Underline className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button 
-          type="button" 
-          variant={isBlockFormatActive('h1') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => insertHeading(1)} 
+        <Button
+          type="button"
+          variant={isBlockFormatActive("h1") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => insertHeading(1)}
           title="Antraštė 1"
         >
           <Heading1 className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isBlockFormatActive('h2') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => insertHeading(2)} 
+        <Button
+          type="button"
+          variant={isBlockFormatActive("h2") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => insertHeading(2)}
           title="Antraštė 2"
         >
           <Heading2 className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isBlockFormatActive('p') ? 'default' : 'secondary'} 
-          size="sm" 
-          title="Pastraipa" 
-          onClick={() => toggleBlockFormat('<p>')}
+        <Button
+          type="button"
+          variant={isBlockFormatActive("p") ? "default" : "secondary"}
+          size="sm"
+          title="Pastraipa"
+          onClick={() => toggleBlockFormat("<p>")}
         >
           <Pilcrow className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        <Button 
-          type="button" 
-          variant="secondary" 
-          size="sm" 
-          onClick={() => toggleList('insertUnorderedList')}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => toggleList("insertUnorderedList")}
           title="Sąrašas"
         >
           <List className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant="secondary" 
-          size="sm" 
-          onClick={() => toggleList('insertOrderedList')}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => toggleList("insertOrderedList")}
           title="Numeruotas sąrašas"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isBlockFormatActive('blockquote') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => toggleBlockFormat('<blockquote>')}
+        <Button
+          type="button"
+          variant={isBlockFormatActive("blockquote") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => toggleBlockFormat("<blockquote>")}
           title="Citata"
         >
           <Quote className="h-4 w-4" />
         </Button>
-        <Button 
-          type="button" 
-          variant={isBlockFormatActive('pre') ? 'default' : 'secondary'} 
-          size="sm" 
-          onClick={() => toggleBlockFormat('<pre>')}
+        <Button
+          type="button"
+          variant={isBlockFormatActive("pre") ? "default" : "secondary"}
+          size="sm"
+          onClick={() => toggleBlockFormat("<pre>")}
           title="Kodas"
         >
           <Code className="h-4 w-4" />
         </Button>
         <span className="w-px h-6 bg-border mx-1"></span>
-        
+
         {/* Link Dialog */}
         <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti nuorodą">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={saveSelection}
+              title="Įterpti nuorodą"
+            >
               <LinkIcon className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -271,7 +286,7 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
                 <Input
                   id="linkUrl"
                   value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
+                  onChange={e => setLinkUrl(e.target.value)}
                   placeholder="https://"
                 />
               </div>
@@ -280,24 +295,34 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
                 <Input
                   id="linkText"
                   value={linkText}
-                  onChange={(e) => setLinkText(e.target.value)}
+                  onChange={e => setLinkText(e.target.value)}
                   placeholder="Nuorodos tekstas (neprivalomas)"
                 />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="outline">Atšaukti</Button>
+                <Button type="button" variant="outline">
+                  Atšaukti
+                </Button>
               </DialogClose>
-              <Button type="button" onClick={insertLink}>Įterpti nuorodą</Button>
+              <Button type="button" onClick={insertLink}>
+                Įterpti nuorodą
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        
+
         {/* Image Dialog */}
         <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti paveikslėlį">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={saveSelection}
+              title="Įterpti paveikslėlį"
+            >
               <Image className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -309,8 +334,8 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
               <FileUpload
                 bucket="site-images"
                 folder="articles/content"
-                onUploadComplete={(url) => {
-                  handleInsertImage(url, 'Paveikslėlis');
+                onUploadComplete={url => {
+                  handleInsertImage(url, "Paveikslėlis");
                 }}
                 acceptedFileTypes="image/jpeg, image/png, image/gif, image/webp"
                 maxFileSizeMB={5}
@@ -319,16 +344,24 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="outline">Uždaryti</Button>
+                <Button type="button" variant="outline">
+                  Uždaryti
+                </Button>
               </DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        
+
         {/* Video Dialog */}
         <Dialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen}>
           <DialogTrigger asChild>
-            <Button type="button" variant="secondary" size="sm" onClick={saveSelection} title="Įterpti vaizdo įrašą">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={saveSelection}
+              title="Įterpti vaizdo įrašą"
+            >
               <Youtube className="h-4 w-4" />
             </Button>
           </DialogTrigger>
@@ -342,32 +375,36 @@ const RichTextEditor = ({ value, onChange, placeholder = 'Įveskite turinį...' 
                 <Input
                   id="videoUrl"
                   value={videoUrl}
-                  onChange={(e) => setVideoUrl(e.target.value)}
+                  onChange={e => setVideoUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="outline">Atšaukti</Button>
+                <Button type="button" variant="outline">
+                  Atšaukti
+                </Button>
               </DialogClose>
-              <Button type="button" onClick={insertVideo}>Įterpti vaizdo įrašą</Button>
+              <Button type="button" onClick={insertVideo}>
+                Įterpti vaizdo įrašą
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-      
+
       <div
         ref={editorRef}
         contentEditable={true}
         className="bg-background p-4 min-h-[300px] focus:outline-none prose dark:prose-invert max-w-none rich-text-editor-content flex-grow overflow-y-auto"
-        style={{ direction: 'ltr', textAlign: 'left' }}
+        style={{ direction: "ltr", textAlign: "left" }}
         onInput={handleEditorChange}
         onBlur={handleEditorChange}
         data-placeholder={placeholder}
         suppressContentEditableWarning={true}
       />
-      
+
       <style>{`
         .rich-text-editor-content[contentEditable=true]:empty::before {
           content: attr(data-placeholder);

@@ -1,11 +1,16 @@
-import { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import { vi } from 'vitest';
-import { AuthProvider } from '@/context/AuthContext';
-import { LanguageProvider } from '@/context/LanguageContext';
+/* eslint-disable react-refresh/only-export-components */
+// Pastaba: Testų pagalbinėse bylose leidžiame eksportuoti ne tik komponentus.
+// Šis išjungimas taikomas tik šiai bylai, kad būtų išvengta klaidų dėl
+// react-refresh taisyklės, kuri aktuali tik vystymo per HMR scenarijus.
+import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { RenderOptions } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { HelmetProvider } from "react-helmet-async";
+import { BrowserRouter } from "react-router-dom";
+import { vi } from "vitest";
 
 // Create a custom render function that includes providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -23,9 +28,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <LanguageProvider>
-              {children}
-            </LanguageProvider>
+            <LanguageProvider>{children}</LanguageProvider>
           </AuthProvider>
         </QueryClientProvider>
       </BrowserRouter>
@@ -33,10 +36,8 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const customRender = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
-) => render(ui, { wrapper: AllTheProviders, ...options });
+const customRender = (ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) =>
+  render(ui, { wrapper: AllTheProviders, ...options });
 
 // Create authenticated version with mock setup
 const AuthenticatedProviders = ({ children }: { children: React.ReactNode }) => {
@@ -56,9 +57,7 @@ const AuthenticatedProviders = ({ children }: { children: React.ReactNode }) => 
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <LanguageProvider>
-              {children}
-            </LanguageProvider>
+            <LanguageProvider>{children}</LanguageProvider>
           </AuthProvider>
         </QueryClientProvider>
       </BrowserRouter>
@@ -66,92 +65,90 @@ const AuthenticatedProviders = ({ children }: { children: React.ReactNode }) => 
   );
 };
 
-const renderWithAuth = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
-) => render(ui, { wrapper: AuthenticatedProviders, ...options });
+const renderWithAuth = (ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) =>
+  render(ui, { wrapper: AuthenticatedProviders, ...options });
 
 // Create a query client for tests
-export const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: Infinity,
+export const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: Infinity,
+      },
+      mutations: {
+        retry: false,
+      },
     },
-    mutations: {
-      retry: false,
-    },
-  },
-});
+  });
 
 // Re-export everything
-export * from '@testing-library/react';
+export * from "@testing-library/react";
 export { customRender as render, renderWithAuth };
 
 // Common test data factories
 export const createMockArticle = (overrides = {}) => ({
-  id: 'test-article-id',
-  title: 'Test Article',
-  content: 'Test content',
-  excerpt: 'Test excerpt',
-  image_url: 'https://example.com/image.jpg',
-  author: 'Test Author',
+  id: "test-article-id",
+  title: "Test Article",
+  content: "Test content",
+  excerpt: "Test excerpt",
+  image_url: "https://example.com/image.jpg",
+  author: "Test Author",
   published_at: new Date().toISOString(),
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
-  category: 'Test Category',
-  tags: ['test', 'article'],
-  slug: 'test-article',
-  meta_description: 'Test meta description',
-  ...overrides
+  category: "Test Category",
+  tags: ["test", "article"],
+  slug: "test-article",
+  meta_description: "Test meta description",
+  ...overrides,
 });
 
 export const createMockTool = (overrides = {}) => ({
-  id: 'test-tool-id',
-  name: 'Test Tool',
-  description: 'Test tool description',
-  url: 'https://example.com',
-  category: 'Test Category',
-  image_url: 'https://example.com/tool.jpg',
-  pricing: 'Free',
+  id: "test-tool-id",
+  name: "Test Tool",
+  description: "Test tool description",
+  url: "https://example.com",
+  category: "Test Category",
+  image_url: "https://example.com/tool.jpg",
+  pricing: "Free",
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
-  tags: ['test', 'tool'],
-  ...overrides
+  tags: ["test", "tool"],
+  ...overrides,
 });
 
 export const createMockCourse = (overrides = {}) => ({
-  id: 'test-course-id',
-  title: 'Test Course',
-  description: 'Test course description',
-  content: 'Test course content',
-  image_url: 'https://example.com/course.jpg',
-  duration: '2 hours',
-  difficulty: 'Beginner',
+  id: "test-course-id",
+  title: "Test Course",
+  description: "Test course description",
+  content: "Test course content",
+  image_url: "https://example.com/course.jpg",
+  duration: "2 hours",
+  difficulty: "Beginner",
   price: 0,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   published: true,
-  category: 'Test Category',
-  ...overrides
+  category: "Test Category",
+  ...overrides,
 });
 
 export const createMockUser = (overrides = {}) => ({
-  id: 'test-user-id',
-  email: 'test@example.com',
+  id: "test-user-id",
+  email: "test@example.com",
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   email_confirmed_at: new Date().toISOString(),
   last_sign_in_at: new Date().toISOString(),
-  role: 'authenticated',
+  role: "authenticated",
   user_metadata: {},
   app_metadata: {},
-  ...overrides
+  ...overrides,
 });
 
 // Test utilities for async operations
-export const waitForLoadingToFinish = () =>
-  new Promise(resolve => setTimeout(resolve, 0));
+export const waitForLoadingToFinish = () => new Promise(resolve => setTimeout(resolve, 0));
 
 // Mock intersection observer for lazy loading tests
 export const mockIntersectionObserver = () => {

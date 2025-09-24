@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { generateSrcSet, calculateSizes, getOptimalImageFormat } from '@/utils/imageOptimization';
-import { useImageLoading } from '@/providers/ImageLoadingProvider';
+import { ImageComponentErrorBoundary, ImageErrorFallback } from "@/components/error-boundaries";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { useImageLoading } from "@/providers/useImageLoading";
+import { calculateSizes, generateSrcSet, getOptimalImageFormat } from "@/utils/imageOptimization";
+import React, { useEffect, useRef, useState } from "react";
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -11,9 +13,14 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   threshold?: number;
   blurEffect?: boolean;
   priority?: boolean;
+  // Error handling props
+  showErrorFallback?: boolean;
+  errorFallbackClassName?: string;
+  onImageError?: (error: Error) => void;
+  retryOnError?: boolean;
 }
 
-const LazyImage: React.FC<LazyImageProps> = ({
+const LazyImageInner: React.FC<LazyImageProps> = ({
   src,
   alt,
   placeholderSrc,
@@ -22,27 +29,41 @@ const LazyImage: React.FC<LazyImageProps> = ({
   threshold = 0.1,
   blurEffect = true,
   priority = false,
-  className = '',
+  className = "",
+  showErrorFallback = true,
+  errorFallbackClassName = "",
+  onImageError,
+  retryOnError = true,
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [, setErrorMessage] = useState<string>("");
   const imageRef = useRef<HTMLImageElement>(null);
-  const { 
-    addPriorityImage, 
-    removePriorityImage, 
-    isImageLoaded, 
-    markImageAsLoaded 
-  } = useImageLoading();
-  
+
+  const { addPriorityImage, removePriorityImage, isImageLoaded, markImageAsLoaded } =
+    useImageLoading();
+
+  const { handleError } = useErrorHandler({
+    defaultErrorType: "image",
+    showToast: false, // Don't show toast for image errors
+    enableRetry: retryOnError,
+    componentName: "LazyImage",
+    additionalContext: {
+      src,
+      alt,
+      priority,
+    },
+  });
+
   // Generate optimized image sources
   const optimizedSrc = getOptimalImageFormat(src);
   const srcset = generateSrcSet(optimizedSrc, srcSizes);
-  const sizesAttr = sizes || calculateSizes('100vw', [
-    { 'max-width: 640px': '100vw' },
-    { 'max-width: 1024px': '50vw' }
-  ]);
-  
+  const sizesAttr =
+    sizes ||
+    calculateSizes("100vw", [{ "max-width: 640px": "100vw" }, { "max-width: 1024px": "50vw" }]);
+
   // Default low quality placeholder if not provided
   const defaultPlaceholder = `${src}?width=20&quality=30`;
   const lowQualitySrc = placeholderSrc || defaultPlaceholder;
@@ -65,41 +86,61 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
   useEffect(() => {
     if (!imageRef.current) return;
-    
+
     const currentImageRef = imageRef.current;
-    
+
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         const [entry] = entries;
         setIsInView(entry.isIntersecting);
       },
       {
         root: null,
-        rootMargin: '50px',
-        threshold
+        rootMargin: "50px",
+        threshold,
       }
     );
-    
+
     observer.observe(currentImageRef);
-    
+
     return () => {
       if (currentImageRef) {
         observer.unobserve(currentImageRef);
       }
     };
   }, [threshold]);
-  
+
   const handleImageLoad = () => {
     setIsLoaded(true);
+    setHasError(false);
+    setErrorMessage("");
     markImageAsLoaded(optimizedSrc);
   };
-  
+
+  const handleImageError = (_event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const error = new Error(`Image failed to load: ${src}`);
+    handleError(error);
+
+    setHasError(true);
+    setErrorMessage(`Nepavyko įkelti paveikslėlio: ${alt}`);
+
+    // Call custom error handler if provided
+    onImageError?.(error);
+  };
+
   const imageClasses = [
     className,
-    blurEffect && !isLoaded ? 'filter blur-sm scale-105' : '',
-    blurEffect && isLoaded ? 'filter blur-0 scale-100' : '',
-    blurEffect ? 'transition-all duration-500' : ''
-  ].filter(Boolean).join(' ');
+    blurEffect && !isLoaded ? "filter blur-sm scale-105" : "",
+    blurEffect && isLoaded ? "filter blur-0 scale-100" : "",
+    blurEffect ? "transition-all duration-500" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  // Show error fallback if image failed to load and error fallback is enabled
+  if (hasError && showErrorFallback) {
+    return <ImageErrorFallback className={errorFallbackClassName || className} alt={alt} />;
+  }
 
   return (
     <img
@@ -108,11 +149,33 @@ const LazyImage: React.FC<LazyImageProps> = ({
       srcSet={isInView || priority ? srcset : undefined}
       sizes={isInView || priority ? sizesAttr : undefined}
       alt={alt}
-      loading={priority ? 'eager' : 'lazy'}
+      loading={priority ? "eager" : "lazy"}
       onLoad={handleImageLoad}
+      onError={handleImageError}
       className={imageClasses}
       {...props}
     />
+  );
+};
+
+/**
+ * LazyImage component with integrated error boundary
+ */
+const LazyImage: React.FC<LazyImageProps> = props => {
+  return (
+    <ImageComponentErrorBoundary
+      componentName="LazyImage"
+      isolate={true}
+      showRetry={props.retryOnError !== false}
+      fallback={() => (
+        <ImageErrorFallback
+          className={props.errorFallbackClassName || props.className}
+          alt={props.alt}
+        />
+      )}
+    >
+      <LazyImageInner {...props} />
+    </ImageComponentErrorBoundary>
   );
 };
 

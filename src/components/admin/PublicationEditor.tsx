@@ -1,25 +1,44 @@
-import { useState, useEffect, useCallback } from 'react';
-import { generateSlug } from '@/utils/stringUtils';
-import { useForm } from 'react-hook-form';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from '@/hooks/use-toast';
-import RichTextEditor from './RichTextEditor';
-import { supabase } from '@/integrations/supabase/client';
-import FileUpload from './FileUpload';
-import LazyImage from '@/components/ui/lazy-image';
-import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import LazyImage from "@/components/ui/lazy-image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import { createErrorReport, reportError } from "@/utils/errorReporting";
+import { generateSlug } from "@/utils/stringUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import FileUpload from "./FileUpload";
+import RichTextEditor from "./RichTextEditor";
 
 const publicationSchema = z.object({
   title: z.string().min(1, { message: "Pavadinimas yra privalomas" }),
-  slug: z.string().min(1, { message: "URL identifikatorius yra privalomas" })
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Netinkamas URL formato pavyzdys: naudoja-mazasias-raides-ir-bruksnelius" }),
+  slug: z
+    .string()
+    .min(1, { message: "URL identifikatorius yra privalomas" })
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+      message: "Netinkamas URL formato pavyzdys: naudoja-mazasias-raides-ir-bruksnelius",
+    }),
   description: z.string().min(1, { message: "Aprašymas yra privalomas" }),
   category: z.string().min(1, { message: "Kategorija yra privaloma" }),
   read_time: z.string().min(1, { message: "Skaitymo laikas yra privalomas" }),
@@ -27,8 +46,12 @@ const publicationSchema = z.object({
   date: z.string().min(1, { message: "Data yra privaloma" }),
   featured: z.boolean().optional(),
   published: z.boolean().optional(),
-  image_url: z.string().url({ message: "Netinkamas paveikslėlio URL formatas" }).nullable().or(z.literal('')),
-  content_type: z.enum(['Straipsnis', 'Naujiena'], {
+  image_url: z
+    .string()
+    .url({ message: "Netinkamas paveikslėlio URL formatas" })
+    .nullable()
+    .or(z.literal("")),
+  content_type: z.enum(["Straipsnis", "Naujiena"], {
     required_error: "Turinio tipas yra privalomas",
     invalid_type_error: "Netinkamas turinio tipas",
   }),
@@ -46,22 +69,24 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [readTimeManuallyEdited, setReadTimeManuallyEdited] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
-  const [customCategory, setCustomCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState("");
   const [isCustomCategory, setIsCustomCategory] = useState(false);
-  
+
   // Gauti unikalias kategorijas iš Supabase
   const fetchCategories = useCallback(async () => {
     const { data, error } = await supabase
-      .from('articles')
-      .select('category')
-      .neq('category', '')
-      .neq('category', null);
+      .from("articles")
+      .select("category")
+      .neq("category", "")
+      .neq("category", null);
     if (!error && data) {
-      const unique = Array.from(new Set(data.map((a: { category: string }) => a.category).filter(Boolean)));
+      const unique = Array.from(
+        new Set(data.map((a: { category: string }) => a.category).filter(Boolean))
+      );
       setCategories(unique);
     }
   }, []);
@@ -73,45 +98,41 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   const form = useForm<PublicationFormData>({
     resolver: zodResolver(publicationSchema),
     defaultValues: {
-      title: '',
-      slug: '',
-      description: '',
-      category: '',
-      read_time: '',
-      author: 'ponas Obuolys',
-      date: new Date().toISOString().split('T')[0],
+      title: "",
+      slug: "",
+      description: "",
+      category: "",
+      read_time: "",
+      author: "ponas Obuolys",
+      date: new Date().toISOString().split("T")[0],
       featured: false,
       published: false,
-      image_url: '',
-      content_type: 'Straipsnis',
+      image_url: "",
+      content_type: "Straipsnis",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   // Užtikrina, kad autorius visada būtų 'ponas Obuolys', jei laukas tuščias
   useEffect(() => {
-    const author = form.getValues('author');
+    const author = form.getValues("author");
     if (!author || !author.trim()) {
-      form.setValue('author', 'ponas Obuolys');
+      form.setValue("author", "ponas Obuolys");
     }
   }, [form]);
 
   const fetchPublication = useCallback(async () => {
-    if (!id || id === 'new') {
+    if (!id || id === "new") {
       setInitialLoading(false);
       return;
     }
-    
+
     setInitialLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('id', id)
-        .single();
-        
+      const { data, error } = await supabase.from("articles").select("*").eq("id", id).single();
+
       if (error) throw error;
-      
+
       if (data) {
         form.reset({
           title: data.title,
@@ -119,18 +140,23 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
           description: data.description,
           category: data.category,
           read_time: data.read_time,
-          author: data.author && data.author.trim() ? data.author : 'ponas Obuolys',
-          date: new Date(data.date).toISOString().split('T')[0],
+          author: data.author && data.author.trim() ? data.author : "ponas Obuolys",
+          date: new Date(data.date).toISOString().split("T")[0],
           featured: data.featured,
           published: data.published,
-          image_url: data.image_url || '',
-          content_type: data.content_type as 'Straipsnis' | 'Naujiena' || 'Straipsnis',
+          image_url: data.image_url || "",
+          content_type: (data.content_type as "Straipsnis" | "Naujiena") || "Straipsnis",
         });
         setContent(data.content);
         setImageUrl(data.image_url || null);
       }
     } catch (error) {
-      console.error('Error fetching publication:', error);
+      // Struktūrizuota klaidos registracija vietoje console.error
+      reportError(
+        createErrorReport(error as Error, {
+          additionalData: { source: "PublicationEditor.fetchPublication", id },
+        })
+      );
       toast({
         title: "Klaida",
         description: "Nepavyko gauti publikacijos duomenų.",
@@ -149,34 +175,32 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   useEffect(() => {
     if (readTimeManuallyEdited) return;
     // Ištrauk žodžius iš content (be HTML žymų)
-    const text = content.replace(/<[^>]+>/g, ' ');
+    const text = content.replace(/<[^>]+>/g, " ");
     const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(1, Math.round(wordCount / 200));
-    if (form.getValues('read_time') !== `${minutes} min`) {
-      form.setValue('read_time', `${minutes} min`, { shouldValidate: true });
+    if (form.getValues("read_time") !== `${minutes} min`) {
+      form.setValue("read_time", `${minutes} min`, { shouldValidate: true });
     }
   }, [content, readTimeManuallyEdited, form]);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
-    form.setValue('title', title);
-    
-    if (!form.getValues('slug') || id === null) {
-      form.setValue('slug', generateSlug(title));
+    form.setValue("title", title);
+
+    if (!form.getValues("slug") || id === null) {
+      form.setValue("slug", generateSlug(title));
     }
   };
 
   const handleImageUpload = (url: string) => {
-    console.log("PublicationEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
-    
+
     if (url) {
-      form.setValue('image_url', url, { 
+      form.setValue("image_url", url, {
         shouldValidate: true,
         shouldDirty: true,
-        shouldTouch: true
+        shouldTouch: true,
       });
-      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
     }
   };
 
@@ -189,7 +213,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
       });
       return;
     }
-    
+
     setLoading(true);
     try {
       const publicationDataForSupabase: TablesInsert<"articles"> = {
@@ -206,31 +230,39 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
         content: content,
         image_url: imageUrl,
       };
-      
+
       let response;
-      
-      if (id && id !== 'new') {
-        const { id: _, created_at, ...updateData } = publicationDataForSupabase;
+
+      if (id && id !== "new") {
+        // Pašaliname laukus, kurių negalima atnaujinti (id, created_at)
+        const {
+          id: _omitId,
+          created_at: _omitCreatedAt,
+          ...updateData
+        } = publicationDataForSupabase;
         response = await supabase
-          .from('articles')
+          .from("articles")
           .update(updateData as TablesUpdate<"articles">)
-          .eq('id', id);
+          .eq("id", id);
       } else {
-        response = await supabase
-          .from('articles')
-          .insert([publicationDataForSupabase]);
+        response = await supabase.from("articles").insert([publicationDataForSupabase]);
       }
-      
+
       if (response.error) throw response.error;
-      
+
       toast({
         title: "Sėkmingai išsaugota",
         description: id ? "Publikacija atnaujinta." : "Nauja publikacija sukurta.",
       });
-      
+
       onSave();
     } catch (error) {
-      console.error('Error saving publication:', error);
+      // Struktūrizuota klaidos registracija vietoje console.error
+      reportError(
+        createErrorReport(error as Error, {
+          additionalData: { source: "PublicationEditor.onSubmit", id },
+        })
+      );
       toast({
         title: "Klaida",
         description: "Nepavyko išsaugoti publikacijos.",
@@ -257,7 +289,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{id ? 'Redaguoti publikaciją' : 'Nauja publikacija'}</CardTitle>
+        <CardTitle>{id ? "Redaguoti publikaciją" : "Nauja publikacija"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -270,8 +302,8 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   <FormItem>
                     <FormLabel>Pavadinimas</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Publikacijos pavadinimas" 
+                      <Input
+                        placeholder="Publikacijos pavadinimas"
                         {...field}
                         onChange={onTitleChange}
                       />
@@ -280,7 +312,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="slug"
@@ -344,15 +376,15 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                     <FormControl>
                       <>
                         <Select
-                          value={isCustomCategory ? 'custom' : field.value}
+                          value={isCustomCategory ? "custom" : field.value}
                           onValueChange={val => {
-                            if (val === 'custom') {
+                            if (val === "custom") {
                               setIsCustomCategory(true);
-                              setCustomCategory('');
-                              form.setValue('category', '');
+                              setCustomCategory("");
+                              form.setValue("category", "");
                             } else {
                               setIsCustomCategory(false);
-                              form.setValue('category', val, { shouldValidate: true });
+                              form.setValue("category", val, { shouldValidate: true });
                             }
                           }}
                         >
@@ -361,9 +393,13 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                           </SelectTrigger>
                           <SelectContent>
                             {categories.map(cat => (
-                              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                              <SelectItem key={cat} value={cat}>
+                                {cat}
+                              </SelectItem>
                             ))}
-                            <SelectItem value="custom"><em>Įvesti naują...</em></SelectItem>
+                            <SelectItem value="custom">
+                              <em>Įvesti naują...</em>
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         {isCustomCategory && (
@@ -373,7 +409,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                             value={customCategory}
                             onChange={e => {
                               setCustomCategory(e.target.value);
-                              form.setValue('category', e.target.value, { shouldValidate: true });
+                              form.setValue("category", e.target.value, { shouldValidate: true });
                             }}
                           />
                         )}
@@ -386,7 +422,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="read_time"
@@ -408,7 +444,8 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                       />
                     </FormControl>
                     <FormDescription>
-                      Šis laukas pildomas automatiškai pagal teksto kiekį, bet galite jį pakeisti ranka.
+                      Šis laukas pildomas automatiškai pagal teksto kiekį, bet galite jį pakeisti
+                      ranka.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -433,7 +470,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="date"
@@ -452,19 +489,16 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
             <FormItem>
               <FormLabel>Turinys</FormLabel>
               <FormControl>
-                <RichTextEditor 
-                  value={content} 
-                  onChange={setContent} 
-                />
+                <RichTextEditor value={content} onChange={setContent} />
               </FormControl>
             </FormItem>
 
             <FormItem>
               <FormLabel>Pagrindinis paveikslėlis</FormLabel>
               <FormControl>
-                <FileUpload 
+                <FileUpload
                   bucket="site-images"
-                  folder={`articles/covers/${form.getValues('slug') || 'new-publication'}`}
+                  folder={`articles/covers/${form.getValues("slug") || "new-publication"}`}
                   acceptedFileTypes="image/jpeg,image/png,image/webp"
                   maxFileSizeMB={2}
                   onUploadComplete={handleImageUpload}
@@ -473,7 +507,11 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
               {imageUrl && (
                 <div className="mt-4">
                   <p className="text-sm font-medium mb-2">Esamas paveikslėlis:</p>
-                  <LazyImage src={imageUrl} alt="Esamas paveikslėlis" className="max-w-xs rounded-md" />
+                  <LazyImage
+                    src={imageUrl}
+                    alt="Esamas paveikslėlis"
+                    className="max-w-xs rounded-md"
+                  />
                 </div>
               )}
               <FormMessage>{form.formState.errors.image_url?.message}</FormMessage>
@@ -486,10 +524,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel className="text-sm font-medium">Rekomenduojamas</FormLabel>
@@ -506,10 +541,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel className="text-sm font-medium">Publikuoti</FormLabel>
@@ -527,7 +559,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
                 Atšaukti
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Išsaugoma...' : (id ? 'Atnaujinti' : 'Sukurti')}
+                {loading ? "Išsaugoma..." : id ? "Atnaujinti" : "Sukurti"}
               </Button>
             </CardFooter>
           </form>

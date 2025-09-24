@@ -1,9 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Ban, CheckCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import { Ban, CheckCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UserManagerProps {
   onUpdate: () => void;
@@ -36,43 +44,48 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Use user_profiles view to get email data from auth.users
       const { data: profilesData, error: profilesError } = await supabase
-        .from('user_profiles')
-        .select('*');
-        
+        .from("user_profiles")
+        .select("*");
+
       if (profilesError) {
-        console.error('Error fetching from user_profiles:', profilesError);
         // Fallback to profiles table if user_profiles view is not accessible
         const { data: fallbackData, error: fallbackError } = await supabase
-          .from('profiles')
-          .select('*');
-          
+          .from("profiles")
+          .select("*");
+
         if (fallbackError) throw fallbackError;
-        
-        const transformedData = fallbackData?.map((profile: Profile) => ({
-          ...profile,
-          email: 'Nėra prieigos', // We can't access auth.users directly
-          created_at_auth: profile.created_at,
-        })) || [];
-        
+
+        const transformedData =
+          fallbackData?.map((profile: Profile) => ({
+            ...profile,
+            email: "Nėra prieigos", // We can't access auth.users directly
+            created_at_auth: profile.created_at,
+          })) || [];
+
         setUsers(transformedData);
         return;
       }
-      
+
       // Transform the data using user_profiles view
-      const transformedData = profilesData?.map((profile: Record<string, unknown>) => ({
-        id: profile.id,
-        username: profile.username,
-        email: profile.email || 'Nenurodytas',
-        created_at_auth: profile.auth_created_at || profile.created_at,
-        is_admin: profile.is_admin,
-      })) || [];
-      
+      type UserProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
+        email?: string;
+        auth_created_at?: string;
+      };
+
+      const transformedData =
+        profilesData?.map((profile: UserProfile) => ({
+          id: profile.id,
+          username: profile.username,
+          email: profile.email || "Nenurodytas",
+          created_at_auth: profile.auth_created_at || profile.created_at,
+          is_admin: profile.is_admin,
+        })) || [];
+
       setUsers(transformedData);
-    } catch (error) {
-      console.error('Error fetching users:', error);
+    } catch {
       toast({
         title: "Klaida",
         description: "Nepavyko gauti vartotojų sąrašo.",
@@ -90,21 +103,20 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .update({ is_admin: !currentStatus })
-        .eq('id', userId);
-        
+        .eq("id", userId);
+
       if (error) throw error;
-      
+
       toast({
         title: "Sėkmingai atnaujinta",
-        description: `Administratoriaus statusas ${!currentStatus ? 'suteiktas' : 'panaikintas'}.`,
+        description: `Administratoriaus statusas ${!currentStatus ? "suteiktas" : "panaikintas"}.`,
       });
-      
+
       fetchUsers();
       onUpdate();
-    } catch (error) {
-      console.error('Error updating admin status:', error);
+    } catch {
       toast({
         title: "Klaida",
         description: "Nepavyko atnaujinti administratoriaus statuso.",
@@ -115,10 +127,11 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
 
   // Since we can't directly delete auth users without admin access to Supabase dashboard,
   // we'll just indicate how it would be done
-  const suspendUser = (userId: string) => {
+  const suspendUser = (_userId: string) => {
     toast({
       title: "Pranešimas",
-      description: "Vartotojų šalinimui reikalingas tiesioginis prisijungimas prie Supabase valdymo skydelio.",
+      description:
+        "Vartotojų šalinimui reikalingas tiesioginis prisijungimas prie Supabase valdymo skydelio.",
     });
   };
 
@@ -142,19 +155,15 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
+        {users.map(user => (
           <TableRow key={user.id}>
             <TableCell className="font-medium text-left">
               <div className="flex items-center space-x-3">
                 {user.avatar_url && (
-                  <img 
-                    src={user.avatar_url} 
-                    alt="Avatar" 
-                    className="w-8 h-8 rounded-full"
-                  />
+                  <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full" />
                 )}
                 <div>
-                  <div className="font-medium">{user.username || 'Nenurodytas'}</div>
+                  <div className="font-medium">{user.username || "Nenurodytas"}</div>
                   <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
                 </div>
               </div>
@@ -164,23 +173,23 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
             </TableCell>
             <TableCell className="text-left whitespace-nowrap">
               <span className="text-sm">
-                {new Date(user.created_at_auth).toLocaleDateString('lt-LT')}
+                {new Date(user.created_at_auth).toLocaleDateString("lt-LT")}
               </span>
             </TableCell>
             <TableCell className="text-left">
-              <span className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                user.is_admin 
-                  ? 'bg-red-100 text-red-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {user.is_admin ? 'Taip' : 'Ne'}
+              <span
+                className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                  user.is_admin ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {user.is_admin ? "Taip" : "Ne"}
               </span>
             </TableCell>
             <TableCell className="text-right">
               <div className="flex justify-end space-x-2">
-                <Button 
+                <Button
                   variant={user.is_admin ? "destructive" : "outline"}
-                  size="sm" 
+                  size="sm"
                   onClick={() => toggleAdminStatus(user.id, user.is_admin)}
                 >
                   {user.is_admin ? (
@@ -193,12 +202,7 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
                     </>
                   )}
                 </Button>
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={() => suspendUser(user.id)}
-                  disabled
-                >
+                <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
                   <Ban className="h-4 w-4 mr-1" /> Suspenduoti
                 </Button>
               </div>

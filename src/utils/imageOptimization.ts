@@ -9,19 +9,19 @@
  * @param sizes Array of sizes in pixels for the srcset
  * @returns Formatted srcset string
  */
-export const generateSrcSet = (src: string, sizes: number[] = [320, 640, 960, 1280, 1920]): string => {
+export const generateSrcSet = (
+  src: string,
+  sizes: number[] = [320, 640, 960, 1280, 1920]
+): string => {
   // Skip srcset generation for external URLs that might not support resizing
-  if (src.startsWith('http') && !src.includes('ponasobuolys.lt')) {
+  if (src.startsWith("http") && !src.includes("ponasobuolys.lt")) {
     return src;
   }
 
   // For local images or images on our domain
-  const baseUrl = src.split('?')[0];
-  const extension = baseUrl.split('.').pop() || '';
-  
-  return sizes
-    .map(size => `${baseUrl}?width=${size} ${size}w`)
-    .join(', ');
+  const baseUrl = src.split("?")[0];
+
+  return sizes.map(size => `${baseUrl}?width=${size} ${size}w`).join(", ");
 };
 
 /**
@@ -31,7 +31,7 @@ export const generateSrcSet = (src: string, sizes: number[] = [320, 640, 960, 12
  * @returns Formatted sizes attribute string
  */
 export const calculateSizes = (
-  defaultSize: string = '100vw',
+  defaultSize = "100vw",
   breakpoints: { [key: string]: string }[] = []
 ): string => {
   if (breakpoints.length === 0) {
@@ -43,7 +43,7 @@ export const calculateSizes = (
     return `(${query}) ${size}`;
   });
 
-  return [...breakpointStrings, defaultSize].join(', ');
+  return [...breakpointStrings, defaultSize].join(", ");
 };
 
 /**
@@ -54,40 +54,47 @@ export const calculateSizes = (
  */
 export const getOptimalImageFormat = (src: string): string => {
   // Check if browser supports webp
-  const supportsWebp = typeof document !== 'undefined' && 
-    document.createElement('canvas')
-      .toDataURL('image/webp')
-      .indexOf('data:image/webp') === 0;
-  
+  const supportsWebp =
+    typeof document !== "undefined" &&
+    document.createElement("canvas").toDataURL("image/webp").indexOf("data:image/webp") === 0;
+
   if (supportsWebp) {
     // Convert to webp if supported
-    if (src.includes('?')) {
+    if (src.includes("?")) {
       return `${src}&format=webp`;
     }
     return `${src}?format=webp`;
   }
-  
+
   return src;
 };
 
 /**
- * Detect if an image is in the viewport and should be loaded
- * @param element DOM element to check
- * @param threshold How much of the element should be visible (0-1)
- * @returns Boolean indicating if element is in viewport
+ * Nustato, ar elementas yra matomas rodinyje pagal nurodytą slenkstį
+ * @param element DOM elementas, kurį tikriname
+ * @param threshold Kokia elemento dalis turi būti matoma (0–1)
+ * @returns Ar elementas pakankamai matomas, kad būtų laikomas rodinyje
  */
-export const isInViewport = (element: HTMLElement, threshold: number = 0.1): boolean => {
-  if (!element || typeof window === 'undefined') return false;
-  
+export const isInViewport = (element: HTMLElement, threshold = 0.1): boolean => {
+  if (!element || typeof window === "undefined") return false;
+
   const rect = element.getBoundingClientRect();
   const windowHeight = window.innerHeight || document.documentElement.clientHeight;
   const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-  
-  // Calculate how much of the element is visible
-  const vertInView = (rect.top <= windowHeight) && ((rect.top + rect.height) >= 0);
-  const horInView = (rect.left <= windowWidth) && ((rect.left + rect.width) >= 0);
-  
-  return vertInView && horInView;
+
+  // Apskaičiuojame matomos dalies plotą
+  const intersectionWidth = Math.min(rect.right, windowWidth) - Math.max(rect.left, 0);
+  const intersectionHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+
+  const visibleWidth = Math.max(0, intersectionWidth);
+  const visibleHeight = Math.max(0, intersectionHeight);
+
+  const visibleArea = visibleWidth * visibleHeight;
+  const elementArea = Math.max(1, rect.width * rect.height);
+
+  const visibilityRatio = visibleArea / elementArea;
+
+  return visibilityRatio >= threshold;
 };
 
 /**
@@ -99,20 +106,20 @@ export const isInViewport = (element: HTMLElement, threshold: number = 0.1): boo
 export const applyLQIP = (
   imageElement: HTMLImageElement,
   src: string,
-  lowQualitySrc: string = `${src}?width=20&quality=30`
+  lowQualitySrc = `${src}?width=20&quality=30`
 ): void => {
   if (!imageElement) return;
-  
+
   // Set initial low quality image
   imageElement.src = lowQualitySrc;
-  
+
   // Load high quality image
   const highQualityImage = new Image();
   highQualityImage.src = src;
-  
+
   highQualityImage.onload = () => {
     // Replace with high quality image when loaded
     imageElement.src = src;
-    imageElement.classList.add('loaded');
+    imageElement.classList.add("loaded");
   };
 };

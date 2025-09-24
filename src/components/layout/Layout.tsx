@@ -1,9 +1,9 @@
-
-import { ReactNode, useState, useEffect } from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import { useScrollToTop } from '@/hooks/useScrollToTop';
-import { ChevronUp } from 'lucide-react';
+import type { ReactNode } from "react";
+import { useState, useEffect } from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { ChevronUp } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,42 +12,40 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   // Naudojame hooką, kad peršoktų į viršų pakeitus puslapį
   useScrollToTop();
-  
+
   // "Back to Top" mygtuko būsenos
   const [showButton, setShowButton] = useState(false);
-  
+
   // Stebėti slinkimą ir rodyti/slėpti mygtuką
   useEffect(() => {
     const handleScroll = () => {
       // Rodyti mygtuką, kai nuslenka žemiau nei 300px
       setShowButton(window.scrollY > 300);
     };
-    
+
     // Pridėti event listener
-    window.addEventListener('scroll', handleScroll);
-    
+    window.addEventListener("scroll", handleScroll);
+
     // Išvalyti event listener
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
+
   // Slinkti į viršų paspaudus mygtuką
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
-  
+
   return (
     <div className="flex flex-col min-h-screen relative">
       <Header />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
       <Footer />
-      
+
       {/* Back to Top mygtukas */}
       {showButton && (
         <button

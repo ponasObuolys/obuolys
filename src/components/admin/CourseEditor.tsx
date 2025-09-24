@@ -1,18 +1,54 @@
-import { useState, useEffect } from 'react';
-import { generateSlug } from '@/utils/stringUtils';
-import { useForm } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
-import RichTextEditor from './RichTextEditor';
-import { supabase } from '@/integrations/supabase/client';
-import { X, Plus } from 'lucide-react';
-import FileUpload from './FileUpload';
-import LazyImage from '@/components/ui/lazy-image';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import LazyImage from "@/components/ui/lazy-image";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import { log } from "@/utils/logger";
+import { generateSlug } from "@/utils/stringUtils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import FileUpload from "./FileUpload";
+import RichTextEditor from "./RichTextEditor";
+
+// Validacijos schema: formoje pildomi tik baziniai laukai, turinys ir ypatybės (highlights)
+// valdomi atskirai
+const courseSchema = z.object({
+  title: z.string().min(1, { message: "Pavadinimas yra privalomas" }),
+  slug: z
+    .string()
+    .min(1, { message: "URL identifikatorius yra privalomas" })
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+      message: "Netinkamas URL formato pavyzdys: naudoja-mazasias-raides-ir-bruksnelius",
+    }),
+  description: z.string().min(1, { message: "Aprašymas yra privalomas" }),
+  price: z.string().min(1, { message: "Kaina yra privaloma" }),
+  duration: z.string().min(1, { message: "Trukmė yra privaloma" }),
+  level: z.string().min(1, { message: "Lygis yra privalomas" }),
+  published: z.boolean().optional(),
+  image_url: z
+    .string()
+    .url({ message: "Netinkamas paveikslėlio URL formatas" })
+    .nullable()
+    .or(z.literal("")),
+});
+
+type CourseFormValues = z.infer<typeof courseSchema>;
 
 interface CourseEditorProps {
   id: string | null;
@@ -24,37 +60,35 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [highlights, setHighlights] = useState<string[]>([]);
-  const [newHighlight, setNewHighlight] = useState('');
+  const [newHighlight, setNewHighlight] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  
-  const form = useForm({
+
+  const form = useForm<CourseFormValues>({
+    resolver: zodResolver(courseSchema),
     defaultValues: {
-      title: '',
-      slug: '',
-      description: '',
-      price: '',
-      duration: '',
-      level: '',
+      title: "",
+      slug: "",
+      description: "",
+      price: "",
+      duration: "",
+      level: "",
       published: false,
-      image_url: '',
-    }
+      image_url: "",
+    },
+    mode: "onChange",
   });
 
   useEffect(() => {
     const fetchCourse = async () => {
-      if (!id || id === 'new') return;
-      
+      if (!id || id === "new") return;
+
       try {
-        const { data, error } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('id', id)
-          .single();
-          
+        const { data, error } = await supabase.from("courses").select("*").eq("id", id).single();
+
         if (error) throw error;
-        
+
         if (data) {
           form.reset({
             title: data.title,
@@ -64,14 +98,14 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
             duration: data.duration,
             level: data.level,
             published: data.published,
-            image_url: data.image_url || '',
+            image_url: data.image_url || "",
           });
           setContent(data.content);
           setHighlights(data.highlights || []);
           setImageUrl(data.image_url || null);
         }
       } catch (error) {
-        console.error('Error fetching course:', error);
+        log.error("Error fetching course:", error);
         toast({
           title: "Klaida",
           description: "Nepavyko gauti kurso duomenų.",
@@ -81,7 +115,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
         setInitialLoading(false);
       }
     };
-    
+
     fetchCourse();
   }, [id, form, toast]);
 
@@ -89,18 +123,18 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
-    form.setValue('title', title);
-    
+    form.setValue("title", title);
+
     // Only auto-generate slug if it's empty or if this is a new course
-    if (!form.getValues('slug') || id === null) {
-      form.setValue('slug', generateSlug(title));
+    if (!form.getValues("slug") || id === null) {
+      form.setValue("slug", generateSlug(title));
     }
   };
 
   const addHighlight = () => {
-    if (newHighlight.trim() !== '') {
+    if (newHighlight.trim() !== "") {
       setHighlights([...highlights, newHighlight.trim()]);
-      setNewHighlight('');
+      setNewHighlight("");
     }
   };
 
@@ -109,21 +143,21 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
   };
 
   const handleImageUpload = (url: string) => {
-    console.log("CourseEditor handleImageUpload gavo URL:", url);
+    log.info("CourseEditor handleImageUpload gavo URL:", { url });
     setImageUrl(url);
-    
+
     // Eksplicitiškai nustatyti form.setValue su gautu URL
     if (url) {
-      form.setValue('image_url', url, { 
+      form.setValue("image_url", url, {
         shouldValidate: true,
         shouldDirty: true,
-        shouldTouch: true
+        shouldTouch: true,
       });
-      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
+      log.debug("Nustatytas image_url formoje", { image_url: form.getValues("image_url") });
     }
   };
 
-  const onSubmit = async (values: Record<string, unknown>) => {
+  const onSubmit = async (values: CourseFormValues) => {
     if (!content.trim()) {
       toast({
         title: "Klaida",
@@ -132,44 +166,57 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
       });
       return;
     }
-    
+
     try {
       setLoading(true);
-      
-      const courseData = {
-        ...values,
-        content,
-        highlights,
+
+      const courseDataForSupabase: TablesInsert<"courses"> = {
+        title: values.title,
+        slug: values.slug,
+        description: values.description,
+        price: values.price,
+        duration: values.duration,
+        level: values.level,
+        published: values.published || false,
         image_url: imageUrl,
+        content: content,
+        highlights: highlights,
       };
-      
-      console.log("Siunčiami kurso duomenys:", courseData);
-      
+
+      log.info("Siunčiami kurso duomenys", { course: courseDataForSupabase });
+
       let response;
-      
-      if (id && id !== 'new') {
-        // Update existing course
-        response = await supabase
-          .from('courses')
-          .update(courseData)
-          .eq('id', id);
+
+      if (id && id !== "new") {
+        // Atnaujinimas: paruošti duomenis pagal Update tipą
+        const updateData: TablesUpdate<"courses"> = {
+          title: courseDataForSupabase.title,
+          slug: courseDataForSupabase.slug,
+          description: courseDataForSupabase.description,
+          price: courseDataForSupabase.price,
+          duration: courseDataForSupabase.duration,
+          level: courseDataForSupabase.level,
+          published: courseDataForSupabase.published,
+          image_url: courseDataForSupabase.image_url ?? null,
+          content: courseDataForSupabase.content,
+          highlights: courseDataForSupabase.highlights,
+        };
+        response = await supabase.from("courses").update(updateData).eq("id", id);
       } else {
-        // Create new course
-        response = await supabase
-          .from('courses')
-          .insert([courseData]);
+        // Naujo įrašo kūrimas
+        response = await supabase.from("courses").insert([courseDataForSupabase]);
       }
-      
+
       if (response.error) throw response.error;
-      
+
       toast({
         title: "Sėkmingai išsaugota",
         description: id ? "Kursas atnaujintas." : "Naujas kursas sukurtas.",
       });
-      
+
       onSave();
     } catch (error) {
-      console.error('Error saving course:', error);
+      log.error("Error saving course:", error);
       toast({
         title: "Klaida",
         description: "Nepavyko išsaugoti kurso.",
@@ -196,7 +243,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{id ? 'Redaguoti kursą' : 'Naujas kursas'}</CardTitle>
+        <CardTitle>{id ? "Redaguoti kursą" : "Naujas kursas"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -209,17 +256,13 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                   <FormItem>
                     <FormLabel>Pavadinimas</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Kurso pavadinimas" 
-                        {...field}
-                        onChange={onTitleChange}
-                      />
+                      <Input placeholder="Kurso pavadinimas" {...field} onChange={onTitleChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="slug"
@@ -245,10 +288,10 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                 <FormItem>
                   <FormLabel>Aprašymas</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Trumpas kurso aprašymas" 
+                    <Textarea
+                      placeholder="Trumpas kurso aprašymas"
                       className="min-h-[100px]"
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -270,7 +313,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="duration"
@@ -284,7 +327,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="level"
@@ -306,9 +349,9 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                 {highlights.map((highlight, index) => (
                   <div key={index} className="flex items-center">
                     <span className="flex-grow">{highlight}</span>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
+                    <Button
+                      type="button"
+                      variant="ghost"
                       size="sm"
                       onClick={() => removeHighlight(index)}
                     >
@@ -321,9 +364,9 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                 <Input
                   placeholder="Pridėti naują ypatybę..."
                   value={newHighlight}
-                  onChange={(e) => setNewHighlight(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                  onChange={e => setNewHighlight(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
                       e.preventDefault();
                       addHighlight();
                     }
@@ -337,10 +380,10 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
 
             <div className="border rounded-md p-4">
               <h3 className="text-lg font-medium mb-4">Kurso turinys</h3>
-              <RichTextEditor 
-                value={content} 
-                onChange={setContent} 
-                placeholder="Įveskite kurso turinį..." 
+              <RichTextEditor
+                value={content}
+                onChange={setContent}
+                placeholder="Įveskite kurso turinį..."
               />
             </div>
 
@@ -371,12 +414,12 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => {
                           setImageUrl(null);
-                          form.setValue('image_url', '');
+                          form.setValue("image_url", "");
                         }}
                       >
                         Pašalinti nuotrauką
@@ -384,9 +427,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                     </div>
                   ) : (
                     <div className="border rounded-md p-4 h-full flex items-center justify-center bg-muted">
-                      <p className="text-muted-foreground text-center">
-                        Nuotrauka nepasirinkta
-                      </p>
+                      <p className="text-muted-foreground text-center">Nuotrauka nepasirinkta</p>
                     </div>
                   )}
                 </div>
@@ -399,18 +440,11 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel className="text-sm font-medium">
-                      Publikuotas
-                    </FormLabel>
-                    <FormDescription className="text-xs">
-                      Matomas viešai
-                    </FormDescription>
+                    <FormLabel className="text-sm font-medium">Publikuotas</FormLabel>
+                    <FormDescription className="text-xs">Matomas viešai</FormDescription>
                   </div>
                 </FormItem>
               )}
@@ -421,7 +455,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
                 Atšaukti
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saugoma...' : 'Išsaugoti'}
+                {loading ? "Saugoma..." : "Išsaugoti"}
               </Button>
             </div>
           </form>

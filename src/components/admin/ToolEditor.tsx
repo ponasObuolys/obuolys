@@ -1,16 +1,27 @@
-import { useState, useEffect } from 'react';
-import { generateSlug } from '@/utils/stringUtils';
-import { useForm } from 'react-hook-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import FileUpload from './FileUpload';
-import LazyImage from '@/components/ui/lazy-image';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import LazyImage from "@/components/ui/lazy-image";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import { generateSlug } from "@/utils/stringUtils";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import FileUpload from "./FileUpload";
+
+type ToolFormData = Database["public"]["Tables"]["tools"]["Insert"];
 
 interface ToolEditorProps {
   id: string | null;
@@ -23,48 +34,43 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const { toast } = useToast();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  
+
   const form = useForm({
     defaultValues: {
-      name: '',
-      slug: '',
-      description: '',
-      url: '',
-      image_url: '',
-      category: '',
+      name: "",
+      slug: "",
+      description: "",
+      url: "",
+      image_url: "",
+      category: "",
       featured: false,
       published: false,
-    }
+    },
   });
 
   useEffect(() => {
     const fetchTool = async () => {
-      if (!id || id === 'new') return;
-      
+      if (!id || id === "new") return;
+
       try {
-        const { data, error } = await supabase
-          .from('tools')
-          .select('*')
-          .eq('id', id)
-          .single();
-          
+        const { data, error } = await supabase.from("tools").select("*").eq("id", id).single();
+
         if (error) throw error;
-        
+
         if (data) {
           form.reset({
             name: data.name,
             slug: data.slug,
             description: data.description,
             url: data.url,
-            image_url: data.image_url || '',
+            image_url: data.image_url || "",
             category: data.category,
             featured: data.featured,
             published: data.published,
           });
           setImageUrl(data.image_url || null);
         }
-      } catch (error) {
-        console.error('Error fetching tool:', error);
+      } catch {
         toast({
           title: "Klaida",
           description: "Nepavyko gauti įrankio duomenų.",
@@ -74,7 +80,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
         setInitialLoading(false);
       }
     };
-    
+
     fetchTool();
   }, [id, form, toast]);
 
@@ -82,51 +88,43 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
-    form.setValue('name', name);
-    
+    form.setValue("name", name);
+
     // Only auto-generate slug if it's empty or if this is a new tool
-    if (!form.getValues('slug') || id === null) {
-      form.setValue('slug', generateSlug(name));
+    if (!form.getValues("slug") || id === null) {
+      form.setValue("slug", generateSlug(name));
     }
   };
 
-  const onSubmit = async (values: Record<string, unknown>) => {
+  const onSubmit = async (values: ToolFormData) => {
     try {
       setLoading(true);
-      
+
       // Užtikrinti, kad image_url būtų įtrauktas
       const toolData = {
         ...values,
         image_url: imageUrl, // Eksplicitiškai nurodome image_url reikšmę
       };
-      
-      console.log("Siunčiami įrankio duomenys:", toolData); // Pridėta diagnostinė informacija
-      
+
       let response;
-      
-      if (id && id !== 'new') {
+
+      if (id && id !== "new") {
         // Update existing tool
-        response = await supabase
-          .from('tools')
-          .update(toolData)
-          .eq('id', id);
+        response = await supabase.from("tools").update(toolData).eq("id", id);
       } else {
         // Create new tool
-        response = await supabase
-          .from('tools')
-          .insert([toolData]);
+        response = await supabase.from("tools").insert([toolData]);
       }
-      
+
       if (response.error) throw response.error;
-      
+
       toast({
         title: "Sėkmingai išsaugota",
         description: id ? "Įrankis atnaujintas." : "Naujas įrankis sukurtas.",
       });
-      
+
       onSave();
-    } catch (error: unknown) {
-      console.error('Error saving tool:', error);
+    } catch {
       toast({
         title: "Klaida",
         description: "Nepavyko išsaugoti įrankio.",
@@ -138,17 +136,15 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   };
 
   const handleImageUpload = (url: string) => {
-    console.log("ToolEditor handleImageUpload gavo URL:", url);
     setImageUrl(url);
-    
+
     // Eksplicitiškai nustatyti form.setValue su gautu URL
     if (url) {
-      form.setValue('image_url', url, { 
+      form.setValue("image_url", url, {
         shouldValidate: true,
         shouldDirty: true,
-        shouldTouch: true
+        shouldTouch: true,
       });
-      console.log("Nustatytas image_url formoje:", form.getValues('image_url'));
     }
   };
 
@@ -168,7 +164,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{id ? 'Redaguoti įrankį' : 'Naujas įrankis'}</CardTitle>
+        <CardTitle>{id ? "Redaguoti įrankį" : "Naujas įrankis"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -181,17 +177,13 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                   <FormItem>
                     <FormLabel>Pavadinimas</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="Įrankio pavadinimas" 
-                        {...field}
-                        onChange={onNameChange}
-                      />
+                      <Input placeholder="Įrankio pavadinimas" {...field} onChange={onNameChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="slug"
@@ -217,10 +209,10 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                 <FormItem>
                   <FormLabel>Aprašymas</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Įrankio aprašymas" 
+                    <Textarea
+                      placeholder="Įrankio aprašymas"
                       className="min-h-[100px]"
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -245,11 +237,11 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="image_url"
-                render={({ field }) => (
+                render={({ field: _field }) => (
                   <FormItem>
                     <FormLabel>Įrankio nuotrauka</FormLabel>
                     <FormControl>
@@ -270,12 +262,12 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
+                            <Button
+                              variant="outline"
+                              size="sm"
                               onClick={() => {
                                 setImageUrl(null);
-                                form.setValue('image_url', '');
+                                form.setValue("image_url", "");
                               }}
                             >
                               Pašalinti nuotrauką
@@ -284,9 +276,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                         )}
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      Įrankio nuotrauka (rekomenduojama)
-                    </FormDescription>
+                    <FormDescription>Įrankio nuotrauka (rekomenduojama)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -314,15 +304,10 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm font-medium">
-                        Rekomenduojamas
-                      </FormLabel>
+                      <FormLabel className="text-sm font-medium">Rekomenduojamas</FormLabel>
                       <FormDescription className="text-xs">
                         Rodomas pagrindiniame puslapyje
                       </FormDescription>
@@ -330,25 +315,18 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="published"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm font-medium">
-                        Publikuotas
-                      </FormLabel>
-                      <FormDescription className="text-xs">
-                        Matomas viešai
-                      </FormDescription>
+                      <FormLabel className="text-sm font-medium">Publikuotas</FormLabel>
+                      <FormDescription className="text-xs">Matomas viešai</FormDescription>
                     </div>
                   </FormItem>
                 )}
@@ -360,7 +338,7 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
                 Atšaukti
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saugoma...' : 'Išsaugoti'}
+                {loading ? "Saugoma..." : "Išsaugoti"}
               </Button>
             </div>
           </form>

@@ -30,3 +30,8 @@ dist-ssr
 .env.development
 .env.production
 .env.test
+
+# Development tools data
+.dev-health.json
+.dev-performance.json
+.dev-insights.json

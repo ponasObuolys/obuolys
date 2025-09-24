@@ -1,78 +1,82 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useParams } from "react-router-dom";
 
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, Calendar } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { SafeRichText } from "@/components/ui/SafeHtml";
-import { secureLogger } from '@/utils/browserLogger';
-import { addLazyLoadingToImages } from '@/utils/lazyLoadImages';
-import useLazyImages from '@/hooks/useLazyImages';
-import { extractImagesFromHTML, preloadImagesWhenIdle } from '@/utils/imagePreloader';
-import LazyImage from '@/components/ui/lazy-image';
 import { Badge } from "@/components/ui/badge";
-import { Tables } from "@/integrations/supabase/types";
+import { Button } from "@/components/ui/button";
+import LazyImage from "@/components/ui/lazy-image";
+import { SafeRichText } from "@/components/ui/SafeHtml";
+import { useToast } from "@/components/ui/use-toast";
+import useLazyImages from "@/hooks/useLazyImages";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
+import { secureLogger } from "@/utils/browserLogger";
+import { extractImagesFromHTML, preloadImagesWhenIdle } from "@/utils/imagePreloader";
+import { addLazyLoadingToImages } from "@/utils/lazyLoadImages";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 type Publication = Tables<"articles">;
 
 const PublicationDetail = () => {
   // Helmet žymoms
-  const getMetaTitle = () => publication?.title ? `${publication.title} | Ponas Obuolys` : 'Publikacija | Ponas Obuolys';
-  const getMetaDescription = () => publication?.description || 'AI straipsnis, dirbtinio intelekto naujienos ir analizė lietuvių kalba. Sužinokite daugiau apie AI Lietuvoje.';
-  const getMetaImage = () => publication?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
+  const getMetaTitle = () =>
+    publication?.title ? `${publication.title} | Ponas Obuolys` : "Publikacija | Ponas Obuolys";
+  const getMetaDescription = () =>
+    publication?.description ||
+    "AI straipsnis, dirbtinio intelekto naujienos ir analizė lietuvių kalba. Sužinokite daugiau apie AI Lietuvoje.";
+  const getMetaImage = () => publication?.image_url || "https://ponasobuolys.lt/og-cover.jpg";
   const { slug } = useParams<{ slug: string }>();
   const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const contentRef = useRef<HTMLDivElement>(null);
-  
+
   useLazyImages(contentRef);
-  
+
   useEffect(() => {
     const fetchPublication = async () => {
       try {
         setLoading(true);
-        
+
         if (!slug) return;
-        
+
         const { data, error } = await supabase
-          .from('articles')
-          .select('*')
-          .eq('slug', slug)
-          .eq('published', true)
+          .from("articles")
+          .select("*")
+          .eq("slug", slug)
+          .eq("published", true)
           .single();
-          
+
         if (error) {
           throw error;
         }
-        
+
         if (data) {
           setPublication(data as Publication);
-          
+
           if (data.content) {
             const imageUrls = extractImagesFromHTML(data.content);
             preloadImagesWhenIdle(imageUrls);
           }
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti publikacijos informacijos";
+        const errorMessage =
+          error instanceof Error ? error.message : "Nepavyko gauti publikacijos informacijos";
         toast({
           title: "Klaida",
           description: "Nepavyko gauti publikacijos informacijos. Bandykite vėliau.",
-          variant: "destructive"
+          variant: "destructive",
         });
         secureLogger.error("Error fetching publication", { error: errorMessage, slug });
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchPublication();
     window.scrollTo(0, 0);
   }, [slug, toast]);
-  
+
   if (loading) {
     return (
       <>
@@ -82,7 +86,7 @@ const PublicationDetail = () => {
       </>
     );
   }
-  
+
   if (!publication) {
     return (
       <>
@@ -96,7 +100,7 @@ const PublicationDetail = () => {
       </>
     );
   }
-  
+
   const getArticleUrl = () => {
     return `https://ponasobuolys.lt/publikacijos/${slug}`;
   };
@@ -104,83 +108,88 @@ const PublicationDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{publication.title} | ponas Obuolys</title>
-        <meta name="description" content={publication.description || ''} />
-        
+        <title>{getMetaTitle()}</title>
+        <meta name="description" content={getMetaDescription()} />
+
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="article" />
         <meta property="og:url" content={getArticleUrl()} />
-        <meta property="og:title" content={publication.title} />
-        <meta property="og:description" content={publication.description || ''} />
-        {publication.image_url && <meta property="og:image" content={publication.image_url} />}
+        <meta property="og:title" content={getMetaTitle()} />
+        <meta property="og:description" content={getMetaDescription()} />
+        <meta property="og:image" content={getMetaImage()} />
         <meta property="og:site_name" content="ponas Obuolys" />
         <meta property="article:published_time" content={publication.date} />
         {publication.category && <meta property="article:section" content={publication.category} />}
-        
+
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={getArticleUrl()} />
-        <meta name="twitter:title" content={publication.title} />
-        <meta name="twitter:description" content={publication.description || ''} />
-        {publication.image_url && <meta name="twitter:image" content={publication.image_url} />}
+        <meta name="twitter:title" content={getMetaTitle()} />
+        <meta name="twitter:description" content={getMetaDescription()} />
+        <meta name="twitter:image" content={getMetaImage()} />
 
         {/* Schema.org Article struktūrizuoti duomenys */}
         <script type="application/ld+json">
           {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Article',
-            'mainEntityOfPage': {
-              '@type': 'WebPage',
-              '@id': getArticleUrl()
+            "@context": "https://schema.org",
+            "@type": "Article",
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": getArticleUrl(),
             },
-            'headline': publication.title,
-            'description': publication.description || '',
-            'image': publication.image_url ? [publication.image_url] : ['https://ponasobuolys.lt/og-cover.jpg'],
-            'author': {
-              '@type': 'Person',
-              'name': publication.author || 'Ponas Obuolys'
+            headline: publication.title,
+            description: publication.description || "",
+            image: publication.image_url
+              ? [publication.image_url]
+              : ["https://ponasobuolys.lt/og-cover.jpg"],
+            author: {
+              "@type": "Person",
+              name: publication.author || "Ponas Obuolys",
             },
-            'publisher': {
-              '@type': 'Organization',
-              'name': 'Ponas Obuolys',
-              'logo': {
-                '@type': 'ImageObject',
-                'url': 'https://ponasobuolys.lt/apple-logo.png'
-              }
+            publisher: {
+              "@type": "Organization",
+              name: "Ponas Obuolys",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://ponasobuolys.lt/apple-logo.png",
+              },
             },
-            'datePublished': publication.date,
-            'dateModified': publication.updated_at || publication.date,
-            'articleSection': publication.category || undefined,
-            'inLanguage': 'lt'
+            datePublished: publication.date,
+            dateModified: publication.updated_at || publication.date,
+            articleSection: publication.category || undefined,
+            inLanguage: "lt",
           })}
         </script>
       </Helmet>
 
       <article className="container mx-auto px-4 py-12">
-        <Link to="/publikacijos" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
+        <Link
+          to="/publikacijos"
+          className="inline-flex items-center text-primary hover:text-primary/80 mb-6"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           <span>Grįžti į publikacijų sąrašą</span>
         </Link>
-        
+
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               {publication.content_type && (
-                <Badge 
-                  variant={publication.content_type === 'Naujiena' ? "destructive" : "secondary"}
+                <Badge
+                  variant={publication.content_type === "Naujiena" ? "destructive" : "secondary"}
                 >
                   {publication.content_type}
                 </Badge>
               )}
               <Badge variant="outline">{publication.category}</Badge>
             </div>
-            
+
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{publication.title}</h1>
-            
+
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-600">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
-                <span>{new Date(publication.date).toLocaleDateString('lt-LT')}</span>
+                <span>{new Date(publication.date).toLocaleDateString("lt-LT")}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="mr-1 h-4 w-4" />
@@ -190,12 +199,12 @@ const PublicationDetail = () => {
                 Autorius: <span className="font-medium">{publication.author}</span>
               </div>
             </div>
-            
+
             {publication.image_url ? (
               <div className="mb-8 rounded-md overflow-hidden">
-                <LazyImage 
-                  src={publication.image_url} 
-                  alt={publication.title} 
+                <LazyImage
+                  src={publication.image_url}
+                  alt={publication.title}
                   className="w-full h-auto"
                 />
               </div>
@@ -204,15 +213,13 @@ const PublicationDetail = () => {
                 Publikacijos nuotrauka
               </div>
             )}
-            
+
             <div ref={contentRef}>
               <SafeRichText
-                content={addLazyLoadingToImages(publication.content || '')}
+                content={addLazyLoadingToImages(publication.content || "")}
                 className="prose max-w-none mb-8 text-left"
               />
             </div>
-            
-
           </div>
         </div>
       </article>

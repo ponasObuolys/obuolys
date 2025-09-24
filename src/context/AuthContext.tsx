@@ -1,8 +1,8 @@
-
-import { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import type { Session, User } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState } from "react";
 
 // Profilio atnaujinimo tipas
 export interface ProfileUpdateData {
@@ -35,26 +35,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          setTimeout(() => {
-            checkAdminStatus(session.user.id);
-          }, 0);
-        } else {
-          setIsAdmin(false);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        setTimeout(() => {
+          checkAdminStatus(session.user.id);
+        }, 0);
+      } else {
+        setIsAdmin(false);
       }
-    );
+    });
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         checkAdminStatus(session.user.id);
       }
@@ -67,43 +67,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkAdminStatus = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', userId)
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", userId)
         .single();
-      
+
       if (error) throw error;
       setIsAdmin(data?.is_admin || false);
-    } catch (error) {
-      console.error('Error checking admin status:', error);
+    } catch {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko patikrinti administratoriaus statuso.",
+        variant: "destructive",
+      });
       setIsAdmin(false);
     }
   };
-  
+
   // Gauti vartotojo profilio duomenis
   const getUserProfile = async () => {
     try {
       if (!user) return null;
-      
+
       const { data, error } = await supabase
-        .from('profiles')
-        .select('username, avatar_url')
-        .eq('id', user.id)
+        .from("profiles")
+        .select("username, avatar_url")
+        .eq("id", user.id)
         .single();
-      
+
       if (error) throw error;
-      
+
       return {
         username: data?.username || null,
-        avatarUrl: data?.avatar_url || null
+        avatarUrl: data?.avatar_url || null,
       };
-    } catch (error) {
-      console.error('Klaida gaunant vartotojo profilį:', error);
+    } catch {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti vartotojo profilio.",
+        variant: "destructive",
+      });
       return null;
     }
   };
-
-
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -172,30 +178,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-
-
   // Atnaujinti vartotojo profilį
   const updateUserProfile = async (data: ProfileUpdateData) => {
     try {
-      if (!user) throw new Error('Vartotojas neprisijungęs');
+      if (!user) throw new Error("Vartotojas neprisijungęs");
 
       // Paruošiame atnaujinimo objektą
-      const updates: Record<string, unknown> = {};
+      type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+      const updates: ProfileUpdate = {};
       if (data.username) updates.username = data.username;
       if (data.avatarUrl) updates.avatar_url = data.avatarUrl;
 
       // Atnaujinti profilio lentelėje
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
+      const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
 
       if (error) throw error;
 
       // Atnaujinti el. paštą, jei jis pakeistas
       if (data.email && data.email !== user.email) {
         const { error: emailError } = await supabase.auth.updateUser({
-          email: data.email
+          email: data.email,
         });
         if (emailError) throw emailError;
       }
@@ -205,7 +207,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "Jūsų profilis buvo sėkmingai atnaujintas.",
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida atnaujinant profilį";
+      const errorMessage =
+        error instanceof Error ? error.message : "Įvyko klaida atnaujinant profilį";
       toast({
         title: "Klaida",
         description: errorMessage,
@@ -219,7 +222,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updatePassword = async (currentPassword: string, newPassword: string) => {
     try {
       const { error } = await supabase.auth.updateUser({
-        password: newPassword
+        password: newPassword,
       });
 
       if (error) throw error;
@@ -229,7 +232,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "Jūsų slaptažodis buvo sėkmingai pakeistas.",
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida keičiant slaptažodį";
+      const errorMessage =
+        error instanceof Error ? error.message : "Įvyko klaida keičiant slaptažodį";
       toast({
         title: "Klaida",
         description: errorMessage,
@@ -242,27 +246,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Įkelti profilio nuotrauką
   const uploadProfileImage = async (imageFile: File): Promise<string> => {
     try {
-      if (!user) throw new Error('Vartotojas neprisijungęs');
+      if (!user) throw new Error("Vartotojas neprisijungęs");
 
       // Sukurti unikalų failo pavadinimą
-      const fileExt = imageFile.name.split('.').pop();
+      const fileExt = imageFile.name.split(".").pop();
       const fileName = `${user.id}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
 
       // Įkelti failą į storage
       const { error: uploadError } = await supabase.storage
-        .from('site-images')
+        .from("site-images")
         .upload(filePath, imageFile, {
-          cacheControl: '3600',
-          upsert: true
+          cacheControl: "3600",
+          upsert: true,
         });
 
       if (uploadError) throw uploadError;
 
       // Gauti viešą URL
-      const { data } = supabase.storage
-        .from('site-images')
-        .getPublicUrl(filePath);
+      const { data } = supabase.storage.from("site-images").getPublicUrl(filePath);
 
       const avatarUrl = data.publicUrl;
 
@@ -271,7 +273,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return avatarUrl;
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
+      const errorMessage =
+        error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
       toast({
         title: "Klaida",
         description: errorMessage,
@@ -294,7 +297,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUserProfile,
         updatePassword,
         uploadProfileImage,
-        getUserProfile
+        getUserProfile,
       }}
     >
       {children}
@@ -302,10 +305,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

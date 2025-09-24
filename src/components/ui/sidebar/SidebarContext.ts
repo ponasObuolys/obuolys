@@ -1,0 +1,24 @@
+import * as React from "react";
+
+// Sidebar konteksto tipas ir hook'as (be komponentų)
+export type SidebarContextValue = {
+  state: "expanded" | "collapsed";
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  openMobile: boolean;
+  setOpenMobile: (open: boolean) => void;
+  isMobile: boolean;
+  toggleSidebar: () => void;
+};
+
+const SidebarContext = React.createContext<SidebarContextValue | null>(null);
+
+function useSidebar() {
+  const context = React.useContext(SidebarContext);
+  if (!context) {
+    throw new Error("useSidebar turi būti naudojamas SidebarProvider viduje.");
+  }
+  return context;
+}
+
+export { SidebarContext, useSidebar };

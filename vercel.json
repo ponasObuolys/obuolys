@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/(js|css|images|fonts|assets)/(.*)", "destination": "/$1/$2" },
+    { "source": "/(favicon|robots).(.*)", "destination": "/$0" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
-} 
+}

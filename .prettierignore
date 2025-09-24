@@ -1,0 +1,42 @@
+# Build outputs
+dist
+build
+coverage
+
+# Dependencies
+node_modules
+
+# Generated files
+*.min.js
+*.min.css
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode
+.idea
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Supabase
+supabase/migrations/*
+
+# Other
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico

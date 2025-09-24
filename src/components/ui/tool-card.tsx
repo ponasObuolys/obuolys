@@ -1,21 +1,14 @@
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Tag, Star, Eye } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import LazyImage from "@/components/ui/lazy-image";
-import { Link } from 'react-router-dom';
+import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
+import { ExternalLink, Eye, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
-interface Tool {
-  id: string;
-  name: string;
-  slug: string;
-  short_description: string;
-  description?: string;
-  image_url?: string;
-  category: string;
-  url: string;
-  featured?: boolean;
-}
+type Tool = Database["public"]["Tables"]["tools"]["Row"] & {
+  short_description?: string;
+};
 
 interface ToolCardProps {
   tool: Tool;
@@ -23,12 +16,19 @@ interface ToolCardProps {
 }
 
 const ToolCard = ({ tool, className }: ToolCardProps) => {
-  const truncatedDescription = tool.description 
-    ? (tool.description.length > 100 ? tool.description.substring(0, 100) + '...' : tool.description)
+  const truncatedDescription = tool.description
+    ? tool.description.length > 100
+      ? tool.description.substring(0, 100) + "..."
+      : tool.description
     : tool.short_description;
 
   return (
-    <Card className={cn("tool-card flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg", className)}>
+    <Card
+      className={cn(
+        "tool-card flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg",
+        className
+      )}
+    >
       <Link to={`/irankiai/${tool.slug}`} className="flex flex-col h-full">
         <div className="card-image-container relative">
           {tool.category && (
@@ -43,9 +43,9 @@ const ToolCard = ({ tool, className }: ToolCardProps) => {
           )}
           <div className="aspect-video overflow-hidden">
             {tool.image_url ? (
-              <LazyImage 
-                src={tool.image_url} 
-                alt={tool.name} 
+              <LazyImage
+                src={tool.image_url}
+                alt={tool.name}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
@@ -55,22 +55,24 @@ const ToolCard = ({ tool, className }: ToolCardProps) => {
             )}
           </div>
         </div>
-        
+
         <div className="card-content flex flex-col flex-grow p-4">
           <h3 className="card-title text-lg font-semibold mb-2 line-clamp-2">{tool.name}</h3>
-          <p className="card-description text-sm text-muted-foreground mb-4 flex-grow line-clamp-3">{truncatedDescription}</p>
-          
+          <p className="card-description text-sm text-muted-foreground mb-4 flex-grow line-clamp-3">
+            {truncatedDescription}
+          </p>
+
           <div className="flex justify-between items-center mt-auto pt-4 border-t border-border">
             <div className="flex items-center text-sm text-primary hover:underline">
               <Eye className="w-4 h-4 mr-1" /> Peržiūrėti detales
             </div>
-            
-            <Button 
-              size="sm" 
+
+            <Button
+              size="sm"
               variant="secondary"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
-                window.open(tool.url, '_blank', 'noopener,noreferrer');
+                window.open(tool.url, "_blank", "noopener,noreferrer");
               }}
               className="flex items-center gap-1"
             >
