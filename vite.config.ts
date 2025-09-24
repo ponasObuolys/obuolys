@@ -121,10 +121,8 @@ export default defineConfig(({ mode, command }) => ({
             return 'shared-components';
           }
 
-          // Node modules that don't fit other categories
-          if (id.includes('node_modules')) {
-            return 'vendor-misc';
-          }
+          // Nebegrupuojame viso likusio turinio į vieną "vendor-misc" chunko,
+          // nes tai gali keisti inicializacijos tvarką ir sukelti TDZ klaidas.
         },
         // Optimized chunk and asset naming
         chunkFileNames: (chunkInfo) => {
