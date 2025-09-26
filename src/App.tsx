@@ -23,7 +23,6 @@ import {
 } from "@/utils/lazyLoad";
 import { reportWebVitals } from "@/utils/webVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Analytics } from "@vercel/analytics/react";
 import { Suspense, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
@@ -403,7 +402,6 @@ const App = () => {
                       </Route>
                     </Routes>
                   </BrowserRouter>
-                  {import.meta.env.PROD && <Analytics />}
                 </TooltipProvider>
               </ImageLoadingProvider>
             </LanguageProvider>

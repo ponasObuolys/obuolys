@@ -11,7 +11,9 @@
       "Bash(npm run:*)",
       "Bash(chmod:*)",
       "Bash(node scripts/dev-assistant.js quickstart)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(del \"vercel.json\")"
     ],
     "deny": [],
     "ask": []
