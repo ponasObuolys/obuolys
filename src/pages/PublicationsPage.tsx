@@ -84,21 +84,21 @@ const PublicationsPage = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="dark-card mb-8">
-              <div className="flex justify-between items-start">
-                <div>
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div className="flex-1">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
                     <span className="text-sm text-foreground/60">AI Naujienos</span>
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                    Mano darbai
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-left">
+                    AI Naujienos ir Publikacijos
                   </h1>
-                  <p className="text-xl text-foreground/80 max-w-2xl">
+                  <p className="text-xl text-foreground/80 max-w-2xl text-left">
                     Svarbiausios AI naujienos, analizės ir straipsniai apie dirbtinio intelekto tendencijas Lietuvoje ir pasaulyje.
                   </p>
                 </div>
-                <Link to="/kontaktai">
-                  <Button className="button-primary flex items-center gap-2">
+                <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
+                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
                     <Plus className="w-4 h-4" />
                     Pasiūlyti naujieną
                   </Button>
@@ -109,20 +109,23 @@ const PublicationsPage = () => {
             {/* Search and filters */}
             <div className="mb-8">
               <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="relative flex-grow">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground/60 h-5 w-5" />
-                  <Input
-                    placeholder="Ieškoti AI naujienų..."
-                    className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                  />
+                <div className="relative flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/60 h-4 w-4 pointer-events-none z-10" />
+                    <Input
+                      placeholder="Ieškoti AI naujienų..."
+                      className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50 h-10"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="inline-flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2">
                   {categories.map(category => (
                     <Button
                       key={category}
                       variant="outline"
+                      size="sm"
                       className={`${
                         selectedCategory === category
                           ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
@@ -183,8 +186,8 @@ const PublicationsPage = () => {
                 <p className="text-xl text-foreground/80 mb-8 max-w-2xl mx-auto">
                   Pasidalinkite su lietuvių AI bendruomene! Siųskite savo pasiūlymus ir padėkite formuoti AI diskursą Lietuvoje.
                 </p>
-                <Link to="/kontaktai">
-                  <Button className="button-primary flex items-center gap-2 mx-auto">
+                <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
+                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto mx-auto">
                     <Plus className="w-5 h-5" />
                     Pasiūlyti AI naujieną
                   </Button>

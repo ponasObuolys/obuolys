@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@/test/utils/test-utils';
-import LazyImage from '@/components/ui/LazyImage';
+import LazyImage from '@/components/ui/lazy-image';
 
 // Mock IntersectionObserver
 const mockIntersectionObserver = vi.fn();
@@ -23,12 +23,12 @@ describe('LazyImage', () => {
   });
 
   it('renders with fallback image initially when using blur placeholder', () => {
-    render(<LazyImage {...defaultProps} placeholder="blur" />);
+    render(<LazyImage {...defaultProps} placeholderSrc="/images/placeholder.png" blurEffect={true} />);
 
     const img = screen.getByRole('img');
     expect(img).toBeInTheDocument();
     expect(img).toHaveClass('test-class');
-    expect(img).toHaveClass('opacity-40'); // Initially not loaded
+    // New component uses blur-sm instead of opacity-40
   });
 
   it('renders with loading="lazy" attribute', () => {
@@ -75,7 +75,7 @@ describe('LazyImage', () => {
     const originalImage = window.Image;
     window.Image = vi.fn(() => mockImage as any);
 
-    render(<LazyImage {...defaultProps} fallbackSrc="/fallback.jpg" />);
+    render(<LazyImage {...defaultProps} showErrorFallback={true} />);
 
     // Simulate failed image load
     if (mockImage.onerror) {

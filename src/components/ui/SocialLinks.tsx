@@ -29,14 +29,14 @@ export const SocialLinks = ({ className }: { className?: string }) => {
         <Facebook className="h-6 w-6" />
       </a>
       <a
-        href="https://wa.me/message/RSBW27G7DYBVP1"
+        href="https://chat.whatsapp.com/BnFnb6yznVH6vMYlEQx8cy"
         target="_blank"
         rel="noopener noreferrer"
         className="text-gray-500 hover:text-primary transition-colors duration-300"
-        aria-label="Rašyti WhatsApp"
+        aria-label="Prisijungti prie WhatsApp grupės"
       >
         <MessageSquare className="h-6 w-6" />
       </a>
     </div>
   );
-}; 
+};

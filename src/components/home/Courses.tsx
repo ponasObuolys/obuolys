@@ -41,13 +41,13 @@ const Courses = () => {
   }, [handleError]);
 
   return (
-    <section className="py-16">
+    <section className="py-12 md:py-16">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="mb-4">
+        <div className="mb-8 md:mb-12 text-center">
+          <h2 className="mb-3">
             Mokykitės <span className="gradient-text">uždirbti</span> su AI
           </h2>
-          <p className="max-w-2xl mx-auto">
+          <p>
             Mūsų praktiniai kursai padės jums efektyviai panaudoti dirbtinį intelektą ir paversti jį
             pajamų šaltiniu
           </p>
@@ -59,7 +59,7 @@ const Courses = () => {
           <div className="courses-grid">
             {courses.length > 0 ? (
               // Rodome turimus kursus
-              courses.map(course => <CourseCard key={course.id} course={course} />)
+              courses.map(course => <CourseCard key={course.id} course={{...course, image_url: course.image_url ?? undefined}} />)
             ) : (
               // Jei nėra kursų, rodome pranešimą
               <div className="col-span-4 text-center">
@@ -80,9 +80,9 @@ const Courses = () => {
           </div>
         )}
 
-        <div className="text-center mt-12">
-          <Link to="/kursai">
-            <Button className="button-outline">Visi kursai</Button>
+        <div className="mt-8 md:mt-12">
+          <Link to="/kursai" className="block w-full sm:w-auto">
+            <Button className="button-outline w-full sm:w-auto">Visi kursai</Button>
           </Link>
         </div>
       </div>

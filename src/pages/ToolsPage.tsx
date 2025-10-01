@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-// import { Button } from "@/components/ui/button"; // Komentuojama, nes bus perkelta
-// import { Input } from "@/components/ui/input"; // Komentuojama, nes bus perkelta
-// import { Search } from "lucide-react"; // Komentuojama, nes bus perkelta
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import ToolCard from "@/components/ui/tool-card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -99,34 +99,44 @@ const ToolsPage = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="dark-card mb-8">
-              <div className="text-center">
-                <div className="flex items-center gap-3 mb-8 justify-center">
-                  <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
-                  <span className="text-sm text-foreground/60">AI Įrankiai</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
+                    <span className="text-sm text-foreground/60">AI Įrankiai</span>
+                  </div>
+
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-left">
+                    Atrinkti AI sprendimai
+                  </h1>
+
+                  <p className="text-xl text-foreground/80 max-w-2xl text-left">
+                    Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai,
+                    kurie padės padidinti produktyvumą ir efektyvumą jūsų veikloje.
+                  </p>
                 </div>
-
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                  Atrinkti AI sprendimai
-                </h1>
-
-                <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
-                  Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai,
-                  kurie padės padidinti produktyvumą ir efektyvumą jūsų veikloje.
-                </p>
+                <Link to="/kontaktai?type=AI_IRANKIS" className="w-full sm:w-auto">
+                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <Plus className="w-4 h-4" />
+                    Pasiūlyti įrankį
+                  </Button>
+                </Link>
               </div>
             </div>
 
             {/* Paieškos ir kategorijų sekcija */}
-            <div className="mb-12 max-w-3xl mx-auto space-y-6">
+            <div className="mb-8">
               {/* Paieškos komponentas */}
               <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
               {/* Kategorijų komponentas */}
-              <ToolCategories
-                categories={categories}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-              />
+              <div className="mt-4">
+                <ToolCategories
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              </div>
             </div>
 
             {/* Įrankių sąrašas */}

@@ -65,19 +65,21 @@
 .articles-grid,
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 12px;
 }
 
 @media (min-width: 640px) {
   .courses-grid,
   .articles-grid,
   .tools-grid {
-    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 16px;
   }
 }
 
@@ -85,7 +87,8 @@
   .courses-grid,
   .articles-grid,
   .tools-grid {
-    grid-template-columns: repeat(3, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
   }
 }
 

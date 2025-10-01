@@ -55,13 +55,13 @@ const FeaturedArticles = () => {
   }, [handleError]);
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-12 md:py-16 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="mb-4">
+        <div className="mb-8 md:mb-12 text-center">
+          <h2 className="mb-3">
             Populiariausios <span className="gradient-text">AI naujienos</span>
           </h2>
-          <p className="max-w-2xl mx-auto text-foreground/80">
+          <p className="text-foreground/80">
             Naujausios ir populiariausios publikacijos apie dirbtinį intelektą ir jo pritaikymą
           </p>
         </div>
@@ -73,10 +73,7 @@ const FeaturedArticles = () => {
             {articles.map(article => (
               <ArticleCard 
                 key={article.id} 
-                article={{
-                  ...article,
-                  image_url: article.image_url ?? undefined
-                }} 
+                article={article} 
               />
             ))}
           </div>
@@ -86,9 +83,9 @@ const FeaturedArticles = () => {
           </div>
         )}
 
-        <div className="text-center mt-12">
-          <Link to="/publikacijos">
-            <Button className="button-outline">Visos publikacijos</Button>
+        <div className="mt-8 md:mt-12">
+          <Link to="/publikacijos" className="block w-full sm:w-auto">
+            <Button className="button-outline w-full sm:w-auto">Visos publikacijos</Button>
           </Link>
         </div>
       </div>

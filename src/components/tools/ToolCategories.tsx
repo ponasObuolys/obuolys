@@ -10,15 +10,15 @@ interface ToolCategoriesProps {
 
 const ToolCategories: React.FC<ToolCategoriesProps> = ({ categories, selectedCategory, setSelectedCategory }) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3">
+    <div className="flex flex-wrap gap-2">
       <Button
-        variant={selectedCategory === null ? "default" : "outline"}
+        variant="outline"
+        size="sm"
         onClick={() => setSelectedCategory(null)}
         className={cn(
-          "px-4 py-2 h-auto rounded-full transition-colors duration-200",
           selectedCategory === null 
-            ? "bg-primary text-primary-foreground hover:bg-primary/90"
-            : "border-border hover:bg-accent hover:text-accent-foreground"
+            ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+            : "button-outline"
         )}
       >
         Visi
@@ -26,13 +26,13 @@ const ToolCategories: React.FC<ToolCategoriesProps> = ({ categories, selectedCat
       {categories.map(category => (
         <Button
           key={category}
-          variant={selectedCategory === category ? "default" : "outline"}
+          variant="outline"
+          size="sm"
           onClick={() => setSelectedCategory(category)}
           className={cn(
-            "px-4 py-2 h-auto rounded-full transition-colors duration-200",
             selectedCategory === category 
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "border-border hover:bg-accent hover:text-accent-foreground"
+              ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+              : "button-outline"
           )}
         >
           {category}
@@ -42,4 +42,4 @@ const ToolCategories: React.FC<ToolCategoriesProps> = ({ categories, selectedCat
   );
 };
 
-export default ToolCategories; 
+export default ToolCategories;

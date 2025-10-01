@@ -32,17 +32,17 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
     <Link to={`/publikacijos/${article.slug}`} className="block">
       <div className="project-card h-full">
         {/* Header with icon and title */}
-        <div className="flex items-start gap-3 mb-4">
-          <div className={`w-12 h-12 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}>
-            <span className="text-white font-bold text-lg">
+        <div className="flex items-start gap-3 mb-3">
+          <div className={`w-10 h-10 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}>
+            <span className="text-white font-bold text-base">
               {article.category ? article.category.charAt(0) : "AI"}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground line-clamp-2 mb-1">
+            <h3 className="font-semibold text-foreground line-clamp-2 mb-1 text-left">
               {article.title}
             </h3>
-            <p className="text-sm text-foreground/60">
+            <p className="text-sm text-foreground/60 text-left">
               {article.category || "AI Naujienos"}
             </p>
           </div>
@@ -53,7 +53,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
 
         {/* Image section */}
         {article.image_url && (
-          <div className="aspect-video rounded-lg overflow-hidden bg-muted mb-4">
+          <div className="aspect-video rounded-lg overflow-hidden bg-muted mb-3">
             <LazyImage
               src={article.image_url}
               alt={article.title}
@@ -63,18 +63,18 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         )}
 
         {/* Description */}
-        <p className="text-sm text-foreground/70 line-clamp-3 mb-4">
+        <p className="text-sm text-foreground/70 line-clamp-3 mb-3 text-left">
           {article.description}
         </p>
 
         {/* Metadata */}
         <div className="flex items-center gap-4 text-xs text-foreground/50 mt-auto">
           <div className="flex items-center gap-1">
-            <CalendarDays size={12} />
+            <CalendarDays size={14} />
             <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock size={12} />
+            <Clock size={14} />
             <span>{article.read_time} skaitymo</span>
           </div>
         </div>

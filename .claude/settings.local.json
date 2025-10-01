@@ -31,7 +31,8 @@
       "Bash(for file in src/components/admin/*.tsx src/pages/*.tsx src/context/*.tsx)",
       "Bash(do if [ -f \"$file\" ])",
       "Bash(fi)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

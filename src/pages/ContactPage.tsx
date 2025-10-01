@@ -1,11 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Youtube, MessageSquare, Instagram, Facebook } from 'lucide-react';
+import { Youtube, MessageSquare, Facebook, Mail } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { secureLogger } from '@/utils/browserLogger';
@@ -15,6 +16,7 @@ import { SITE_CONFIG } from '@/utils/seo';
 
 const ContactPage = () => {
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,6 +25,14 @@ const ContactPage = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Set message type from URL parameter
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      setFormData(prev => ({ ...prev, messageType: typeParam }));
+    }
+  }, [searchParams]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -91,21 +101,23 @@ const ContactPage = () => {
       />
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <div className="dark-card text-center mb-8">
-              <div className="flex items-center gap-3 mb-8 justify-center">
-                <span className="w-2 h-2 rounded-full bg-accent"></span>
-                <span className="text-sm text-foreground/60">Konsultacijos</span>
+            <div className="dark-card mb-8">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
+                  <span className="text-sm text-foreground/60">Konsultacijos</span>
+                </div>
+
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-left">
+                  Susisiekite su manimi
+                </h1>
+
+                <p className="text-xl text-foreground/80 max-w-2xl text-left">
+                  Turite idėją ir reikia dizaino pagalbos? Susisiekite dabar
+                </p>
               </div>
-
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Susisiekite su manimi
-              </h1>
-
-              <p className="text-xl text-foreground/80 max-w-2xl mx-auto">
-                Turite idėją ir reikalinga dizaino pagalba? Susisiekite dabar
-              </p>
             </div>
           
             {/* Contact Form */}
@@ -115,7 +127,7 @@ const ContactPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-foreground/80 mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
                       Vardas
                     </label>
                     <Input
@@ -130,7 +142,7 @@ const ContactPage = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
                       El. paštas
                     </label>
                     <Input
@@ -147,16 +159,17 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="messageType" className="block text-sm font-medium text-foreground/80 mb-2">
+                  <label htmlFor="messageType" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
                     Žinutės tipas
                   </label>
-                  <Select value={formData.messageType} onValueChange={handleSelectChange}>
+                  <Select value={formData.messageType || undefined} onValueChange={handleSelectChange}>
                     <SelectTrigger className="bg-background border-border text-foreground">
                       <SelectValue placeholder="Pasirinkite žinutės tipą" />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border">
                       <SelectItem value="KONSULTACIJA">💼 AI Konsultacija</SelectItem>
                       <SelectItem value="AI_NAUJIENA">📰 Pasiūlyti AI naujieną</SelectItem>
+                      <SelectItem value="AI_IRANKIS">🔧 Pasiūlyti AI įrankį</SelectItem>
                       <SelectItem value="BENDRADARBIAVIMAS">🤝 Bendradarbiavimas</SelectItem>
                       <SelectItem value="KITA">💬 Kita</SelectItem>
                     </SelectContent>
@@ -164,7 +177,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground/80 mb-2">
+                  <label htmlFor="message" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
                     Žinutė
                   </label>
                   <Textarea
@@ -205,45 +218,46 @@ const ContactPage = () => {
 
                 <div className="flex justify-center gap-4 mb-8">
                   <a
-                    href="https://www.youtube.com/@ponasObuolys"
+                    href="mailto:labas@ponasobuolys.lt"
+                    className="social-icon"
+                    aria-label="Siųsti el. laišką"
+                  >
+                    <Mail className="w-5 h-5" />
+                  </a>
+
+                  <a
+                    href="https://www.youtube.com/@ponasobuolys"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
+                    aria-label="Apsilankyti YouTube"
                   >
                     <Youtube className="w-5 h-5" />
                   </a>
 
                   <a
-                    href="https://www.facebook.com/ponasObuolys"
+                    href="https://www.facebook.com/ponasObuolys.youtube"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
+                    aria-label="Apsilankyti Facebook"
                   >
                     <Facebook className="w-5 h-5" />
                   </a>
 
                   <a
-                    href="https://www.instagram.com/ponasObuolys"
+                    href="https://chat.whatsapp.com/BnFnb6yznVH6vMYlEQx8cy"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon"
-                  >
-                    <Instagram className="w-5 h-5" />
-                  </a>
-
-                  <a
-                    href="https://wa.me/37060000000"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-icon"
+                    aria-label="Prisijungti prie WhatsApp grupės"
                   >
                     <MessageSquare className="w-5 h-5" />
                   </a>
                 </div>
 
                 <div className="text-sm text-foreground/50">
-                  <p>© 2023 Ponas Obuolys – AI specialistas Lietuvoje</p>
-                  <p className="mt-1">Aš esu šiandien šiandien Lietuvoje</p>
+                  <p>© {new Date().getFullYear()} Ponas Obuolys – AI specialistas</p>
                 </div>
               </div>
             </div>

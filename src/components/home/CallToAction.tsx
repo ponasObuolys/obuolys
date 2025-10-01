@@ -16,13 +16,13 @@ const CallToAction = () => {
                 dirbtinį intelektą savo asmeniniame ar profesiniame gyvenime.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link to="/kursai">
-                  <Button className="w-full sm:w-auto bg-white text-primary hover:bg-white/90">
+                <Link to="/kursai" className="w-full sm:w-auto">
+                  <Button className="w-full bg-white text-primary hover:bg-white/90">
                     Pradėti mokytis
                   </Button>
                 </Link>
-                <Link to="/kontaktai">
-                  <Button className="w-full sm:w-auto border border-white bg-transparent hover:bg-white/10">
+                <Link to="/kontaktai" className="w-full sm:w-auto">
+                  <Button className="w-full border border-white bg-transparent hover:bg-white/10 text-white">
                     Susisiekti
                   </Button>
                 </Link>

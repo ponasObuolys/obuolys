@@ -70,23 +70,24 @@ const CoursesPage = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="dark-card mb-8">
-              <div className="text-center">
-                <div className="flex items-center gap-3 mb-8 justify-center">
-                  <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
-                  <span className="text-sm text-foreground/60">Mokymai ir konsultacijos</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
+                    <span className="text-sm text-foreground/60">Mokymai ir konsultacijos</span>
+                  </div>
+
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-left">
+                    Personalizuoti AI mokymai
+                  </h1>
+
+                  <p className="text-xl text-foreground/80 max-w-2xl text-left">
+                    Individualūs mokymai, praktiniai sprendimai ir konsultacijos dirbtinio intelekto srityje.
+                    Pritaikyta jūsų verslo poreikiams ir tikslams.
+                  </p>
                 </div>
-
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                  Personalizuoti AI mokymai
-                </h1>
-
-                <p className="text-xl text-foreground/80 max-w-3xl mx-auto mb-8">
-                  Individualūs mokymai, praktiniai sprendimai ir konsultacijos dirbtinio intelekto srityje.
-                  Pritaikyta jūsų verslo poreikiams ir tikslams.
-                </p>
-
-                <Link to="/kontaktai">
-                  <Button className="button-primary">
+                <Link to="/kontaktai?type=KONSULTACIJA" className="w-full sm:w-auto">
+                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
                     Registruotis konsultacijai
                   </Button>
                 </Link>
@@ -167,7 +168,7 @@ const CoursesPage = () => {
                   </div>
                 </div>
                 <p className="text-sm text-foreground/70 mb-4">
-                  Intensyvios praktinės dirbtuvės su konkretiais projektais.
+                  Intensyvios praktinės dirbtuvės su konkrečiais projektais.
                   Nuo AI įrankių iki sprendimų integracijos jūsų veikloje.
                 </p>
                 <div className="flex items-center gap-4 text-xs text-foreground/50">
@@ -195,7 +196,13 @@ const CoursesPage = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {courses.map(course => (
-                        <CourseCard key={course.id} course={course} />
+                        <CourseCard 
+                          key={course.id} 
+                          course={{
+                            ...course,
+                            image_url: course.image_url ?? undefined
+                          }} 
+                        />
                       ))}
                     </div>
                   )}
