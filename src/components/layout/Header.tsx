@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { UserDropdown } from '@/components/ui/user-dropdown';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user } = useAuth();
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   // Navigacijos meniu punktai
   const navLinks = [
-    { to: '/publikacijos', label: 'Publikacijos' },
-    // { to: '/naujienos', label: 'Naujienos' },
+    { to: '/publikacijos', label: 'AI Naujienos' },
     { to: '/kursai', label: 'Kursai' },
     { to: '/irankiai', label: 'Įrankiai' },
     { to: '/kontaktai', label: 'Kontaktai' },
@@ -29,176 +28,152 @@ const Header = () => {
   const isActive = (to: string) => location.pathname === to;
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 w-full">
-      <div className="container mx-auto py-3">
+    <header className="border-b border-border sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80">
+      <div className="container mx-auto py-4 px-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-primary font-bold text-2xl">ponas Obuolys</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <span className="text-primary font-bold text-lg">🍎</span>
+            </div>
+            <span className="text-foreground font-bold text-xl">ponas Obuolys</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex space-x-6">
+          <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className={`nav-link group relative flex flex-col items-center transition-colors duration-300 px-1 ${
+                className={`nav-link transition-colors duration-300 ${
                   isActive(to)
-                    ? 'text-primary'
-                    : 'text-secondary hover:text-primary'
+                    ? 'text-foreground'
+                    : 'text-foreground/60 hover:text-foreground'
                 }`}
               >
-                <span className="relative z-10 leading-tight">{label}</span>
-                {isActive(to) ? (
-                  <span
-                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-[2px] bg-primary rounded transition-all duration-300 ease-in-out opacity-100 translate-x-0"
-                    style={{ minWidth: '100%' }}
-                  />
-                ) : (
-                  <span
-                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-[2px] bg-primary rounded transition-all duration-300 ease-in-out opacity-0 -translate-x-full group-hover:opacity-100 group-hover:translate-x-0"
-                    style={{ minWidth: '100%' }}
-                  />
-                )}
+                {label}
               </Link>
             ))}
           </nav>
-          
-          <div className="hidden lg:flex items-center space-x-4">
-            {/* Support Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="nav-link flex items-center">
-                  Paremk <Heart className="ml-1 h-4 w-4 text-red-500" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <a href="https://patreon.com/ponasObuolys" target="_blank" rel="noopener noreferrer">
-                    Patreon
-                  </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a href="https://www.youtube.com/@ponasObuolys/join" target="_blank" rel="noopener noreferrer">
-                    YouTube Narystė
-                  </a>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
+          <div className="hidden lg:flex items-center space-x-4">
             {user ? (
-              <UserDropdown />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2">
+                    <User className="h-4 w-4" />
+                    <span>Profilis</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/profilis" className="flex items-center space-x-2">
+                      <Settings className="h-4 w-4" />
+                      <span>Nustatymai</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center space-x-2">
+                        <Settings className="h-4 w-4" />
+                        <span>Administravimas</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="flex items-center space-x-2">
+                    <LogOut className="h-4 w-4" />
+                    <span>Atsijungti</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <Link to="/auth">
-                <Button className="button-primary">Prisijungti</Button>
-              </Link>
+              <>
+                <Button asChild variant="ghost">
+                  <Link to="/auth">Prisijungti</Link>
+                </Button>
+                <Button className="button-primary">Konsultuotis</Button>
+              </>
             )}
           </div>
           
           {/* Mobile menu button */}
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-secondary hover:text-primary transition-colors duration-300"
+            className="lg:hidden text-foreground/60 hover:text-foreground transition-colors duration-300"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
-      
+
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white shadow-md w-full">
-          <div className="container mx-auto py-3 space-y-2">
-            <Link 
-              to="/" 
-              className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Pagrindinis
-            </Link>
-            <Link
-              to="/publikacijos"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Publikacijos
-            </Link>
-            {/* <Link
-              to="/naujienos"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Naujienos
-            </Link> */}
-            <Link
-              to="/kursai"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Kursai
-            </Link>
-            <Link
-              to="/irankiai"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Įrankiai
-            </Link>
-            <Link 
-              to="/kontaktai" 
-              className="block px-4 py-2 text-secondary hover:bg-primary/10 rounded-md"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Kontaktai
-            </Link>
-            
-            {/* Mobile Support Links */}
-            <div className="border-t border-gray-100 pt-2 mt-2">
-              <a 
-                href="https://patreon.com/ponasObuolys" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        <div className="lg:hidden bg-background border-t border-border">
+          <div className="container mx-auto py-4 px-4 space-y-2">
+            {navLinks.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Paremk per Patreon
-              </a>
-              <a 
-                href="https://www.youtube.com/@ponasObuolys/join" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Tapk YouTube Nariu
-              </a>
-            </div>
+                {label}
+              </Link>
+            ))}
 
-            <div className="px-4 py-2">
+            <div className="border-t border-border pt-4 mt-4 space-y-2">
               {user ? (
-                <Link 
-                  to="/auth" 
-                  className="block w-full"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <Button variant="outline" className="w-full justify-start">
-                    Mano paskyra
-                  </Button>
-                </Link>
+                <>
+                  <Link
+                    to="/profilis"
+                    className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Settings className="h-4 w-4" />
+                      <span>Profilio nustatymai</span>
+                    </div>
+                  </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Settings className="h-4 w-4" />
+                        <span>Administravimas</span>
+                      </div>
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <LogOut className="h-4 w-4" />
+                      <span>Atsijungti</span>
+                    </div>
+                  </button>
+                </>
               ) : (
-                <Link 
-                  to="/auth" 
-                  className="block w-full"
+                <Link
+                  to="/auth"
+                  className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Button className="w-full button-primary">Prisijungti</Button>
+                  <div className="flex items-center space-x-2">
+                    <User className="h-4 w-4" />
+                    <span>Prisijungti</span>
+                  </div>
                 </Link>
               )}
-            </div>
-            <div className="px-4 py-2 flex justify-center">
-
+              <Button className="w-full button-primary" onClick={() => setMobileMenuOpen(false)}>
+                Konsultuotis
+              </Button>
             </div>
           </div>
         </div>

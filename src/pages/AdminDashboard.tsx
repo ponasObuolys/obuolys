@@ -114,9 +114,9 @@ const AdminDashboard = () => {
     }
   }, [loading, user, isAdmin, toast, fetchDashboardStats]);
 
-  // If user is not admin, redirect to home
+  // If user is not admin, redirect to admin info page
   if (!loading && (!user || !isAdmin)) {
-    return <Navigate to="/" />;
+    return <Navigate to="/admin/info" />;
   }
 
   // Display loading state

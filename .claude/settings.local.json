@@ -13,7 +13,10 @@
       "Bash(node scripts/dev-assistant.js quickstart)",
       "Bash(node:*)",
       "Bash(rm:*)",
-      "Bash(del \"vercel.json\")"
+      "Bash(del \"vercel.json\")",
+      "mcp__ide__getDiagnostics",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__list_tables"
     ],
     "deny": [],
     "ask": []

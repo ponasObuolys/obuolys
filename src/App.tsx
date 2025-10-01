@@ -70,6 +70,14 @@ const AdminUserCleanup = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/AdminUserCleanup")
 );
+const AdminSetup = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./components/admin/AdminSetup")
+);
+const AdminInfo = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./components/admin/AdminInfo")
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -387,6 +395,40 @@ const App = () => {
                                 <AdminUserCleanup />
                               </SuspenseWithChunkError>
                             </AdminRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/admin/setup"
+                          element={
+                            <ContentRouteErrorBoundary
+                              routePath="/admin/setup"
+                              routeName="AdminSetup"
+                            >
+                              <SuspenseWithChunkError
+                                fallback={
+                                  <LoadingSpinner text="Kraunamas admin setup..." />
+                                }
+                              >
+                                <AdminSetup />
+                              </SuspenseWithChunkError>
+                            </ContentRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/admin/info"
+                          element={
+                            <ContentRouteErrorBoundary
+                              routePath="/admin/info"
+                              routeName="AdminInfo"
+                            >
+                              <SuspenseWithChunkError
+                                fallback={
+                                  <LoadingSpinner text="Kraunama admin informacija..." />
+                                }
+                              >
+                                <AdminInfo />
+                              </SuspenseWithChunkError>
+                            </ContentRouteErrorBoundary>
                           }
                         />
 

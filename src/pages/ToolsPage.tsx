@@ -89,12 +89,12 @@ const ToolsPage = () => {
         <title>AI Įrankiai | Ponas Obuolys</title>
         <meta
           name="description"
-          content="Išbandykite geriausius dirbtinio intelekto įrankius, skirtus produktyvumui, kūrybai ir verslui. Atraskite AI įrankius lietuvių kalba!"
+          content="Atrinkti ir išbandyti AI įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos dirbtinio intelekto srityje."
         />
         <meta property="og:title" content="AI Įrankiai | Ponas Obuolys" />
         <meta
           property="og:description"
-          content="Išbandykite geriausius dirbtinio intelekto įrankius, skirtus produktyvumui, kūrybai ir verslui. Atraskite AI įrankius lietuvių kalba!"
+          content="Atrinkti ir išbandyti AI įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos dirbtinio intelekto srityje."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://ponasobuolys.lt/irankiai" />
@@ -102,54 +102,76 @@ const ToolsPage = () => {
       </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="mb-4">
-              <span className="gradient-text">AI Įrankiai</span>
-            </h1>
-            <p className="max-w-2xl mx-auto">
-              Išbandykite šiuos dirbtinio intelekto įrankius ir padidinkite savo produktyvumą
-            </p>
-          </div>
+          <div className="max-w-6xl mx-auto">
+            {/* Header */}
+            <div className="dark-card mb-8">
+              <div className="text-center">
+                <div className="flex items-center gap-3 mb-8 justify-center">
+                  <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
+                  <span className="text-sm text-foreground/60">AI Įrankiai</span>
+                </div>
 
-          {/* Paieškos ir kategorijų sekcija */}
-          <div className="mb-12 max-w-3xl mx-auto space-y-6">
-            {/* Paieškos komponentas */}
-            <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                  Atrinkti AI sprendimai
+                </h1>
 
-            {/* Kategorijų komponentas */}
-            <ToolCategories
-              categories={categories}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-          </div>
-
-          {/* Įrankių sąrašas */}
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Kraunami įrankiai...</p>
+                <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
+                  Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai,
+                  kurie padės padidinti produktyvumą ir efektyvumą jūsų veikloje.
+                </p>
+              </div>
             </div>
-          ) : filteredTools.length > 0 ? (
-            <div className="tools-grid">
-              {filteredTools.map(tool => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Pagal paieškos kriterijus įrankių nerasta</p>
-            </div>
-          )}
 
-          {/* Apie rekomendacijas sekcija */}
-          <div className="mt-16 bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow">
-            <h2 className="text-2xl font-bold mb-4">Apie įrankių rekomendacijas</h2>
-            <p className="mb-6 text-muted-foreground">
-              Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų naudingumą,
-              kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti partnerinės, už kurias
-              gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį ar paslaugą. Tačiau tai
-              neturi įtakos mūsų rekomendacijoms ir nuomonei apie įrankius.
-            </p>
+            {/* Paieškos ir kategorijų sekcija */}
+            <div className="mb-12 max-w-3xl mx-auto space-y-6">
+              {/* Paieškos komponentas */}
+              <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+              {/* Kategorijų komponentas */}
+              <ToolCategories
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+            </div>
+
+            {/* Įrankių sąrašas */}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="dark-card">
+                  <p className="text-xl text-foreground/60">Kraunami įrankiai...</p>
+                </div>
+              </div>
+            ) : filteredTools.length > 0 ? (
+              <div className="tools-grid">
+                {filteredTools.map(tool => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="dark-card">
+                  <p className="text-xl text-foreground/60 mb-4">Pagal paieškos kriterijus įrankių nerasta</p>
+                  <p className="text-foreground/50">Pabandykite pakeisti paieškos žodžius arba kategoriją</p>
+                </div>
+              </div>
+            )}
+
+            {/* Apie rekomendacijas sekcija */}
+            <div className="mt-16">
+              <div className="dark-card">
+                <h2 className="text-3xl font-bold text-foreground mb-4">Apie įrankių rekomendacijas</h2>
+                <p className="text-foreground/80 mb-6 leading-relaxed">
+                  Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų naudingumą,
+                  kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti partnerinės, už kurias
+                  gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį ar paslaugą.
+                </p>
+                <p className="text-foreground/70">
+                  Tačiau tai neturi įtakos mūsų rekomendacijoms ir nuomonei apie įrankius.
+                  Visada stengiuosi pateikti objektyvią ir naudingą informaciją apie AI sprendimus.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

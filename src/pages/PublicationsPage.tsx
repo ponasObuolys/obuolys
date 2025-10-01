@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 
 type Publication = Tables<"articles">;
 
@@ -71,15 +72,15 @@ const PublicationsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Publikacijos | Ponas Obuolys</title>
+        <title>AI Naujienos | Ponas Obuolys</title>
         <meta
           name="description"
-          content="Visos dirbtinio intelekto publikacijos, naujienos ir AI straipsniai lietuvių kalba. Skaitykite naujausius Ponas Obuolys straipsnius!"
+          content="Naujausios dirbtinio intelekto naujienos ir publikacijos lietuvių kalba. Pasiūlyk AI naujieną arba skaityk paskutines tendencijas."
         />
-        <meta property="og:title" content="Publikacijos | Ponas Obuolys" />
+        <meta property="og:title" content="AI Naujienos | Ponas Obuolys" />
         <meta
           property="og:description"
-          content="Visos dirbtinio intelekto publikacijos, naujienos ir AI straipsniai lietuvių kalba. Skaitykite naujausius Ponas Obuolys straipsnius!"
+          content="Naujausios dirbtinio intelekto naujienos ir publikacijos lietuvių kalba. Pasiūlyk AI naujieną arba skaityk paskutines tendencijas."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://ponasobuolys.lt/publikacijos" />
@@ -87,70 +88,117 @@ const PublicationsPage = () => {
       </Helmet>
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h1 className="mb-4">
-              <span className="gradient-text">Publikacijos</span>
-            </h1>
-            <p className="max-w-2xl mx-auto">
-              Išsamūs straipsniai ir naujienos apie dirbtinį intelektą, jo pritaikymą ir naujas
-              technologijas
-            </p>
-          </div>
-
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-grow">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  placeholder="Ieškoti publikacijų..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div className="inline-flex flex-wrap gap-2">
-                {categories.map(category => (
-                  <Button
-                    key={category}
-                    variant="outline"
-                    className={`${
-                      selectedCategory === category
-                        ? "bg-primary text-white hover:bg-primary/90"
-                        : "bg-white text-secondary hover:bg-gray-100"
-                    }`}
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
+          <div className="max-w-6xl mx-auto">
+            {/* Header */}
+            <div className="dark-card mb-8">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
+                    <span className="text-sm text-foreground/60">AI Naujienos</span>
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                    Mano darbai
+                  </h1>
+                  <p className="text-xl text-foreground/80 max-w-2xl">
+                    Svarbiausios AI naujienos, analizės ir straipsniai apie dirbtinio intelekto tendencijas Lietuvoje ir pasaulyje.
+                  </p>
+                </div>
+                <Link to="/kontaktai">
+                  <Button className="button-primary flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Pasiūlyti naujieną
                   </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Search and filters */}
+            <div className="mb-8">
+              <div className="flex flex-col md:flex-row gap-4 mb-6">
+                <div className="relative flex-grow">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground/60 h-5 w-5" />
+                  <Input
+                    placeholder="Ieškoti AI naujienų..."
+                    className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <div className="inline-flex flex-wrap gap-2">
+                  {categories.map(category => (
+                    <Button
+                      key={category}
+                      variant="outline"
+                      className={`${
+                        selectedCategory === category
+                          ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                          : "button-outline"
+                      }`}
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="dark-card">
+                  <p className="text-xl text-foreground/60">Kraunamos AI naujienos...</p>
+                </div>
+              </div>
+            ) : filteredPublications.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPublications.map(item => (
+                  <ArticleCard key={item.id} article={item} />
                 ))}
               </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="dark-card">
+                  <p className="text-xl text-foreground/60 mb-4">Pagal jūsų paiešką AI naujienų nerasta</p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button
+                      className="button-outline"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSelectedCategory("Visos kategorijos");
+                      }}
+                    >
+                      Išvalyti paiešką
+                    </Button>
+                    <Link to="/kontaktai">
+                      <Button className="button-primary flex items-center gap-2">
+                        <Plus className="w-4 h-4" />
+                        Pasiūlyti naujieną
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Call to action section */}
+            <div className="mt-16">
+              <div className="dark-card text-center">
+                <h2 className="text-3xl font-bold text-foreground mb-4">
+                  Turite įdomią AI naujieną?
+                </h2>
+                <p className="text-xl text-foreground/80 mb-8 max-w-2xl mx-auto">
+                  Pasidalinkite su lietuvių AI bendruomene! Siųskite savo pasiūlymus ir padėkite formuoti AI diskursą Lietuvoje.
+                </p>
+                <Link to="/kontaktai">
+                  <Button className="button-primary flex items-center gap-2 mx-auto">
+                    <Plus className="w-5 h-5" />
+                    Pasiūlyti AI naujieną
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Kraunamos publikacijos...</p>
-            </div>
-          ) : filteredPublications.length > 0 ? (
-            <div className="articles-grid">
-              {filteredPublications.map(item => (
-                <ArticleCard key={item.id} article={item} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-500">Pagal jūsų paiešką publikacijų nerasta</p>
-              <Button
-                className="mt-4 button-outline"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("Visos kategorijos");
-                }}
-              >
-                Išvalyti paiešką
-              </Button>
-            </div>
-          )}
         </div>
       </section>
     </>
