@@ -1,7 +1,13 @@
+/* eslint-disable no-console */
 /**
  * Browser-compatible secure logger
  * Simplified version of Winston logger for client-side use
+ * Integrates with Sentry for external error tracking when enabled
+ * 
+ * Note: console statements are intentionally used in this logging utility
  */
+
+import { captureException, captureMessage, addBreadcrumb } from './sentry';
 
 // Security patterns for sensitive data detection
 const SENSITIVE_PATTERNS = [
@@ -118,10 +124,14 @@ export const secureLogger = {
       const formattedMessage = formatMessage("error", message, meta);
       console.error(formattedMessage);
 
-      // In production, could send to external logging service
+      // Send to Sentry in production if enabled
       if (isProduction) {
-        // TODO: Send to external logging service (e.g., Sentry, LogRocket)
-        // sendToLoggingService('error', formattedMessage);
+        if (meta instanceof Error) {
+          captureException(meta, { message });
+        } else {
+          captureMessage(message, 'error', meta as Record<string, unknown>);
+        }
+        addBreadcrumb(message, 'error', meta as Record<string, unknown>);
       }
     }
   },

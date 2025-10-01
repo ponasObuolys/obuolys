@@ -55,13 +55,13 @@ const FeaturedArticles = () => {
   }, [handleError]);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="mb-4">
-            Populiariausios <span className="gradient-text">publikacijos</span>
+            Populiariausios <span className="gradient-text">AI naujienos</span>
           </h2>
-          <p className="max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto text-foreground/80">
             Naujausios ir populiariausios publikacijos apie dirbtinį intelektą ir jo pritaikymą
           </p>
         </div>
@@ -71,7 +71,13 @@ const FeaturedArticles = () => {
         ) : articles.length > 0 ? (
           <div className="articles-grid">
             {articles.map(article => (
-              <ArticleCard key={article.id} article={article} />
+              <ArticleCard 
+                key={article.id} 
+                article={{
+                  ...article,
+                  image_url: article.image_url ?? undefined
+                }} 
+              />
             ))}
           </div>
         ) : (

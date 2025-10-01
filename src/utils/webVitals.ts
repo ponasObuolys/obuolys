@@ -1,4 +1,5 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
+import { log } from '@/utils/browserLogger';
 
 interface PerformanceMetric {
   name: string;
@@ -51,7 +52,7 @@ function sendToAnalytics(metric: PerformanceMetric) {
 
   // Log to console in development
   if (process.env.NODE_ENV === 'development') {
-    console.log('Performance metric:', metric);
+    log.info('Performance metric:', metric);
   }
 
   // Store in localStorage for dashboard display
@@ -67,7 +68,7 @@ function sendToAnalytics(metric: PerformanceMetric) {
 
     localStorage.setItem('performance-metrics', JSON.stringify(metrics));
   } catch (error) {
-    console.warn('Failed to store performance metric:', error);
+    log.warn('Failed to store performance metric:', error);
   }
 }
 

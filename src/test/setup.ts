@@ -4,7 +4,7 @@ import { vi, beforeAll, afterAll, afterEach } from 'vitest';
 
 // Polyfill'ai jsdom aplinkai
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder as typeof global.TextDecoder;
 
 // Imituojame IntersectionObserver (naudojama LazyImage testuose)
 global.IntersectionObserver = vi.fn().mockImplementation((_callback) => ({
@@ -128,6 +128,7 @@ Object.assign(navigator, {
 });
 
 // Nutildome console.error testų metu (išskyrus realias klaidas)
+/* eslint-disable no-console */
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
@@ -144,6 +145,7 @@ beforeAll(() => {
 afterAll(() => {
   console.error = originalError;
 });
+/* eslint-enable no-console */
 
 // Create a more robust Supabase mock that works across different test scenarios
 const createGlobalSupabaseMock = () => {

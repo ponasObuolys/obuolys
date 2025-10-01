@@ -16,7 +16,17 @@
       "Bash(del \"vercel.json\")",
       "mcp__ide__getDiagnostics",
       "mcp__supabase__execute_sql",
-      "mcp__supabase__list_tables"
+      "mcp__supabase__list_tables",
+      "Bash(while read f)",
+      "Bash(do wc:*)",
+      "Bash(done)",
+      "Bash(cat:*)",
+      "Bash(npx supabase migration:*)",
+      "Bash(npx supabase:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm outdated)",
+      "Bash(npm test:*)",
+      "Bash(npm update)"
     ],
     "deny": [],
     "ask": []

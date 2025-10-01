@@ -1,8 +1,30 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import LazyImage from '@/components/ui/lazy-image';
+import { useToast } from '@/hooks/use-toast';
+import { Copy } from 'lucide-react';
 
 const Hero = () => {
+  const { toast } = useToast();
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText('labas@ponasobuolys.lt');
+      toast({
+        title: "El. paštas nukopijuotas!",
+        description: "labas@ponasobuolys.lt",
+        duration: 3000,
+      });
+    } catch {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko nukopijuoti el. pašto",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
   return (
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
@@ -37,7 +59,11 @@ const Hero = () => {
                       Konsultuotis
                     </Button>
                   </Link>
-                  <Button className="button-outline w-full sm:w-auto">
+                  <Button 
+                    onClick={handleCopyEmail}
+                    className="button-outline w-full sm:w-auto flex items-center gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
                     Kopijuoti El. paštą
                   </Button>
                 </div>
@@ -60,23 +86,10 @@ const Hero = () => {
 
           {/* Projects section preview */}
           <div className="mt-16">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
-                <h2 className="text-2xl font-bold text-foreground">Projektai</h2>
-              </div>
-              <Link to="/publikacijos" className="text-foreground/60 hover:text-foreground transition-colors duration-300 flex items-center gap-2">
-                Peržiūrėti visus
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-
             {/* Project preview cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* AI Naujienos */}
-              <div className="project-card">
+              <Link to="/publikacijos" className="project-card">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-purple-600 flex items-center justify-center">
                     <span className="text-white font-bold">AN</span>
@@ -89,10 +102,10 @@ const Hero = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
-              </div>
+              </Link>
 
               {/* Kursai */}
-              <div className="project-card">
+              <Link to="/kursai" className="project-card">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
                     <span className="text-white font-bold">K</span>
@@ -105,10 +118,10 @@ const Hero = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
-              </div>
+              </Link>
 
               {/* Įrankiai */}
-              <div className="project-card">
+              <Link to="/irankiai" className="project-card">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center">
                     <span className="text-white font-bold">Į</span>
@@ -121,7 +134,7 @@ const Hero = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

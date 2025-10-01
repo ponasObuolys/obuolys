@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Save, Plus, Eye, EyeOff } from 'lucide-react';
 import type { TablesInsert } from '@/integrations/supabase/types';
+import { log } from '@/utils/browserLogger';
 
 const ctaSectionSchema = z.object({
   title: z.string().min(1, 'Pavadinimas yra privalomas'),
@@ -58,7 +59,7 @@ const CTASectionEditor = () => {
       if (error) throw error;
       setCTASections(data || []);
     } catch (error) {
-      console.error('Error fetching CTA sections:', error);
+      log.error('Error fetching CTA sections:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko gauti CTA sekcijų.',
@@ -115,7 +116,7 @@ const CTASectionEditor = () => {
       await fetchCTASections();
       handleCancelEdit();
     } catch (error) {
-      console.error('Error saving CTA section:', error);
+      log.error('Error saving CTA section:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko išsaugoti CTA sekcijos.',
@@ -171,7 +172,7 @@ const CTASectionEditor = () => {
 
       await fetchCTASections();
     } catch (error) {
-      console.error('Error deleting CTA section:', error);
+      log.error('Error deleting CTA section:', error);
       toast({
         title: 'Klaida',
         description: `Nepavyko ištrinti CTA sekcijos: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
@@ -198,7 +199,7 @@ const CTASectionEditor = () => {
 
       await fetchCTASections();
     } catch (error) {
-      console.error('Error toggling CTA section:', error);
+      log.error('Error toggling CTA section:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko pakeisti CTA sekcijos būklės.',

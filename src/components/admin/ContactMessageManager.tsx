@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, MailOpen, Trash2, Eye, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { lt } from 'date-fns/locale';
+import { log } from '@/utils/browserLogger';
 
 interface ContactMessage {
   id: string;
@@ -49,7 +50,7 @@ const ContactMessageManager = () => {
       }));
       setMessages(normalized);
     } catch (error) {
-      console.error('Error fetching contact messages:', error);
+      log.error('Error fetching contact messages:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko gauti kontaktų pranešimų.',
@@ -82,7 +83,7 @@ const ContactMessageManager = () => {
         description: 'Pranešimas pažymėtas kaip perskaitytas.',
       });
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      log.error('Error marking message as read:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko pažymėti pranešimo.',
@@ -109,7 +110,7 @@ const ContactMessageManager = () => {
         description: 'Pranešimas pažymėtas kaip neperskaitytas.',
       });
     } catch (error) {
-      console.error('Error marking message as unread:', error);
+      log.error('Error marking message as unread:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko pažymėti pranešimo.',
@@ -138,7 +139,7 @@ const ContactMessageManager = () => {
         description: 'Pranešimas sėkmingai ištrintas.',
       });
     } catch (error) {
-      console.error('Error deleting message:', error);
+      log.error('Error deleting message:', error);
       toast({
         title: 'Klaida',
         description: `Nepavyko ištrinti pranešimo: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
@@ -229,23 +230,27 @@ const ContactMessageManager = () => {
                 {filteredMessages.map((message) => (
                   <TableRow 
                     key={message.id} 
-                    className={message.status === 'unread' ? 'bg-blue-50 dark:bg-blue-950/20' : ''}
+                    className={message.status === 'unread' ? 'bg-blue-100 dark:bg-blue-950/30' : ''}
                   >
                     <TableCell>
                       {message.status === 'unread' ? (
-                        <Mail className="h-4 w-4 text-blue-600" />
+                        <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       ) : (
                         <MailOpen className="h-4 w-4 text-gray-400" />
                       )}
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{message.name}</div>
-                        <div className="text-sm text-muted-foreground">{message.email}</div>
+                        <div className={`font-medium ${message.status === 'unread' ? 'text-gray-900 dark:text-gray-100' : ''}`}>
+                          {message.name}
+                        </div>
+                        <div className={`text-sm ${message.status === 'unread' ? 'text-gray-700 dark:text-gray-300' : 'text-muted-foreground'}`}>
+                          {message.email}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell className="max-w-xs">
-                      <div className="truncate" title={message.subject}>
+                      <div className={`truncate ${message.status === 'unread' ? 'text-gray-900 dark:text-gray-100 font-medium' : ''}`} title={message.subject}>
                         {message.subject}
                       </div>
                     </TableCell>

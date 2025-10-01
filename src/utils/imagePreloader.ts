@@ -4,6 +4,8 @@
  * but only when the browser isn't busy with other tasks
  */
 
+import { log } from '@/utils/browserLogger';
+
 /**
  * Preload a single image
  * @param src Image source URL
@@ -34,7 +36,7 @@ export const preloadImagesWhenIdle = (imageSources: string[]): void => {
       // Only preload if the image is not already in the cache
       if (!isImageCached(src)) {
         preloadImage(src).catch(err => {
-          console.warn(`Failed to preload image: ${src}`, err);
+          log.warn(`Failed to preload image: ${src}`, err);
         });
       }
     });

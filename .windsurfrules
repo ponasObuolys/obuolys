@@ -1,25 +1,364 @@
-# Ponas Obuolys Project Rules
+# 🚀 Rules for React + TypeScript + Vite + Supabase
 
-## Language Requirements
-- All code, comments, and documentation must be in Lithuanian, except for technical terms and variable names
-- Use proper Lithuanian grammar and spelling in all user-facing content
-- Maintain consistent terminology across the project
+```markdown
+## 🎯 CORE PRINCIPLES
+- **Maximum file length: 400 lines** - Split files BEFORE reaching this limit
+- **Vibe-friendly coding**: Make smart architectural decisions automatically
+- **Clean code first**: Prioritize readability and maintainability over cleverness
+- **Fix at the source**: Address root causes, not symptoms
 
-## Code Style
-- Follow the React TypeScript style guide
-- Use camelCase for variables and functions
-- Use PascalCase for components and interfaces
-- Use kebab-case for file names
-- Maximum line length: 100 characters
-- Use 2 spaces for indentation
-- Always use semicolons
-- Use single quotes for strings
-- Always use explicit type annotations
+## 🚫 CRITICAL RESTRICTIONS
+- **NEVER make Git commits or pushes**
+- **NEVER create or modify .env* files** - These are managed manually
+- **NEVER create files longer than 300 lines** (leave buffer before 400 limit)
+- **On Windows PowerShell**: Use `;` instead of `&&` for command chaining
+- **Always check for running dev servers** before starting new ones
 
-## Project Constraints
-- Mobile-first responsive design
-- Support for modern browsers only (Chrome, Firefox, Safari, Edge)
-- Accessibility compliance (WCAG 2.1 AA)
-- Performance optimization for fast loading times
-- SEO-friendly content structure
-- Secure coding practices
+## 📁 FILE STRUCTURE & NAMING
+
+### File Organization Strategy
+When creating new features, automatically structure files as:
+```
+src/
+  components/
+    feature-name/
+      index.tsx (main component, max 200 lines)
+      feature-name.types.ts (TypeScript interfaces)
+      feature-name.hooks.ts (custom hooks if needed)
+      feature-name.utils.ts (helper functions if needed)
+      components/ (sub-components if main > 150 lines)
+        sub-component-name.tsx
+```
+
+### Naming Conventions
+- **Files**: Always use `kebab-case.tsx` for all files
+- **Folders**: Use `kebab-case` for all folders
+- **Components**: PascalCase for component names in code
+- **Hooks**: `use-hook-name.ts` files, `useHookName` in code
+- **Types**: `interface ComponentNameProps`, `type ComponentNameState`
+
+## 🔄 AUTOMATIC REFACTORING TRIGGERS
+
+### When to Split Components (DO THIS AUTOMATICALLY)
+Split when ANY of these occur:
+1. **File reaches 250 lines** - Start splitting proactively
+2. **Component has 3+ useState hooks** - Extract to custom hook
+3. **JSX return is >100 lines** - Split into sub-components
+4. **5+ props being passed** - Consider composition pattern
+5. **Nested ternaries (? :)** - Extract to separate components
+6. **map() with >30 lines of JSX** - Extract list item component
+
+### How to Split Components
+```typescript
+// BEFORE (approaching limits)
+// main-component.tsx (250+ lines)
+
+// AFTER (auto-refactored)
+// main-component/
+//   index.tsx (100 lines - orchestration)
+//   main-component-header.tsx (50 lines)
+//   main-component-body.tsx (75 lines)
+//   main-component.hooks.ts (25 lines)
+//   main-component.types.ts (15 lines)
+```
+
+## 🏗️ COMPONENT PATTERNS
+
+### Default Component Structure (use this template)
+```typescript
+// component-name.tsx (max 200 lines)
+import { useState, useEffect } from 'react';
+import { ComponentNameProps } from './component-name.types';
+import { useComponentLogic } from './component-name.hooks';
+
+export function ComponentName({ prop1, prop2 }: ComponentNameProps) {
+  // 1. Hooks (if <3, otherwise extract to custom hook)
+  const { data, handlers } = useComponentLogic();
+  
+  // 2. Early returns for loading/error states
+  if (!data) return <LoadingSpinner />;
+  
+  // 3. Main render (if >100 lines, split into sub-components)
+  return (
+    <div className="space-y-4">
+      {/* If this section >30 lines, extract to sub-component */}
+      <ComponentHeader />
+      <ComponentBody />
+    </div>
+  );
+}
+```
+
+### State Management Rules
+1. **1-2 useState**: Keep in component
+2. **3-5 useState**: Extract to custom hook in same file
+3. **6+ useState**: Create separate `.hooks.ts` file
+4. **Shared across 2+ components**: Use Context API
+5. **Server state**: Always use React Query/Tanstack Query
+
+### Type Definition Strategy
+```typescript
+// component-name.types.ts
+export interface ComponentNameProps {
+  // Props interface
+}
+
+export interface ComponentNameState {
+  // State types if complex
+}
+
+export type ComponentNameAction = 
+  | { type: 'ACTION_ONE'; payload: string }
+  | { type: 'ACTION_TWO'; payload: number };
+```
+
+## 🗂️ IMPORT ORGANIZATION
+Always organize imports in this order (auto-format):
+```typescript
+// 1. React/core imports
+import { useState, useEffect } from 'react';
+
+// 2. Third-party libraries
+import { useQuery } from '@tanstack/react-query';
+import { z } from 'zod';
+
+// 3. Absolute imports (if configured)
+import { Button } from '@/components/ui/button';
+
+// 4. Relative imports - types
+import { ComponentNameProps } from './component-name.types';
+
+// 5. Relative imports - hooks
+import { useComponentLogic } from './component-name.hooks';
+
+// 6. Relative imports - components
+import { SubComponent } from './components/sub-component';
+
+// 7. Relative imports - utils/constants
+import { formatDate } from './component-name.utils';
+
+// 8. Assets/styles
+import './styles.css';
+```
+
+## 🔧 SUPABASE INTEGRATION
+
+### Database Operation Pattern
+```typescript
+// Always create dedicated service files for Supabase operations
+// services/table-name.service.ts (max 150 lines per service file)
+
+import { supabase } from '@/lib/supabase';
+import { z } from 'zod';
+
+// Define schemas for validation
+const ItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  // ... other fields
+});
+
+export const tableNameService = {
+  async getAll() {
+    const { data, error } = await supabase
+      .from('table_name')
+      .select('*');
+    
+    if (error) throw error;
+    return ItemSchema.array().parse(data);
+  },
+  
+  async create(item: z.infer<typeof ItemSchema>) {
+    // If this service file >150 lines, split by operation type
+    // create separate files: table-name-queries.ts, table-name-mutations.ts
+  }
+};
+```
+
+### React Query Integration
+```typescript
+// hooks/use-table-name.ts
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { tableNameService } from '@/services/table-name.service';
+
+export function useTableName() {
+  return useQuery({
+    queryKey: ['table-name'],
+    queryFn: tableNameService.getAll,
+  });
+}
+```
+
+## 🧪 TESTING STRUCTURE
+```typescript
+// component-name.test.tsx (when using Vitest)
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { ComponentName } from './component-name';
+
+describe('ComponentName', () => {
+  it('should render correctly', () => {
+    // Keep test files under 200 lines
+    // Split into multiple test files if needed
+  });
+});
+```
+
+## 🔌 MCP SERVER UTILIZATION
+
+### Sequential-thinking MCP
+- **Use before complex refactoring**: Ask to plan the refactoring steps
+- **Use for algorithm design**: Break down complex logic before implementing
+- **Command**: "Use sequential-thinking to plan this feature implementation"
+
+### Context7 MCP
+- **Always check context** before major changes
+- **Update context** after creating new components
+- **Command**: "Check Context7 for existing patterns before implementing"
+
+### Supabase MCP
+- **Use for all database operations**
+- **Check schema before creating queries**
+- **Command**: "Use Supabase MCP to verify table structure"
+
+### Playwright MCP
+- **Create E2E tests** for critical user flows
+- **Test files**: `e2e/feature-name.spec.ts`
+- **Command**: "Generate Playwright test for this user flow"
+
+## 📊 PERFORMANCE PATTERNS
+
+### Image Optimization
+```typescript
+// Always use LazyImage component
+import { LazyImage } from '@/components/ui/lazy-image';
+
+// NEVER use regular img tags
+<LazyImage src={imageUrl} alt="Description" />
+```
+
+### Code Splitting
+```typescript
+// For large features, use lazy loading
+const AdminPanel = lazy(() => import('./admin-panel'));
+
+// Wrap with Suspense
+<Suspense fallback={<LoadingSpinner />}>
+  <AdminPanel />
+</Suspense>
+```
+
+## 🎨 STYLING GUIDELINES
+
+### Tailwind CSS Usage
+```typescript
+// Group related styles, max 8 classes per line
+<div 
+  className="flex flex-col items-center justify-center
+             p-4 space-y-4 bg-white rounded-lg
+             shadow-md hover:shadow-lg transition-shadow"
+>
+```
+
+### Component-specific styles
+- If Tailwind classes exceed 15 per element, extract to CSS
+- Create `component-name.module.css` for complex styles
+- Use CSS modules for component-specific animations
+
+## 🔒 ERROR HANDLING PATTERN
+```typescript
+// Always wrap async operations
+try {
+  const data = await fetchData();
+  toast.success('Duomenys gauti sėkmingai'); // Lithuanian
+} catch (error) {
+  console.error('Error details:', error);
+  toast.error('Klaida gaunant duomenis'); // User-friendly Lithuanian message
+}
+```
+
+## 📝 DOCUMENTATION REQUIREMENTS
+- **Every file header**: Brief Lithuanian comment explaining purpose
+- **Complex functions**: Lithuanian comment explaining logic
+- **Type definitions**: English property names, Lithuanian comments
+- **Example**:
+```typescript
+/**
+ * Komponentas vartotojo profilio redagavimui
+ * Naudoja Supabase duomenų bazę
+ */
+export function UserProfile() {
+  // Gauti vartotojo duomenis
+  const user = useUser();
+  
+  /**
+   * Išsaugoti profilio pakeitimus
+   * @param data - formos duomenys
+   */
+  const handleSave = async (data: ProfileData) => {
+    // implementation
+  };
+}
+```
+
+## 🚀 VITE CONFIGURATION
+```typescript
+// vite.config.ts - Keep optimized
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': '/src',
+      '@components': '/src/components',
+      '@hooks': '/src/hooks',
+      '@services': '/src/services',
+      '@utils': '/src/utils',
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          supabase: ['@supabase/supabase-js'],
+        },
+      },
+    },
+  },
+});
+```
+
+## ✅ AUTOMATIC CHECKS BEFORE SAVING
+
+Before saving any file, automatically verify:
+1. ✅ File is under 300 lines (max 400)
+2. ✅ No component has more than 100 lines of JSX
+3. ✅ No function exceeds 50 lines
+4. ✅ Imports are organized correctly
+5. ✅ All async operations have error handling
+6. ✅ Lithuanian comments for complex logic
+7. ✅ No unused imports or variables
+8. ✅ Props are properly typed
+9. ✅ Files follow kebab-case naming
+10. ✅ Extracted sub-components if main component >200 lines
+
+## 🎯 PROACTIVE REFACTORING
+When file reaches 200 lines, automatically:
+1. Analyze component structure
+2. Identify logical boundaries
+3. Create folder structure
+4. Split into multiple files
+5. Update imports
+6. Verify everything still works
+
+## 📋 COMMIT MESSAGE TEMPLATE (for reference only - DO NOT auto-commit)
+```
+tipo: trumpas aprašymas
+
+- Detalus pakeitimas 1
+- Detalus pakeitimas 2
+
+Tipai: feat, fix, refactor, style, test, docs
+```
+```

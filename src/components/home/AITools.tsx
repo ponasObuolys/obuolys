@@ -53,11 +53,11 @@ const AITools = () => {
   }, []);
 
   return (
-    <section id="tools" className="py-16 bg-slate-50 dark:bg-slate-950">
+    <section id="tools" className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="gradient-text">Rekomenduojami įrankiai</h2>
-          <p className="max-w-2xl mx-auto mt-4">
+          <p className="max-w-2xl mx-auto mt-4 text-foreground/80">
             Šie dirbtinio intelekto įrankiai padės jums efektyviau dirbti ir kurti
           </p>
         </div>

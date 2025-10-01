@@ -14,9 +14,11 @@ import ToolEditor from "@/components/admin/ToolEditor";
 import ToolsList from "@/components/admin/ToolsList";
 import UserManager from "@/components/admin/UserManager";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useUnreadMessages } from "@/hooks/use-unread-messages";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
 
@@ -34,6 +36,7 @@ const AdminDashboard = () => {
     contactMessagesCount: 0,
   });
   const { toast } = useToast();
+  const unreadCount = useUnreadMessages();
 
   const fetchDashboardStats = useCallback(async () => {
     try {
@@ -149,7 +152,14 @@ const AdminDashboard = () => {
             <TabsTrigger value="courses">Kursai</TabsTrigger>
             <TabsTrigger value="hero-sections">Hero sekcijos</TabsTrigger>
             <TabsTrigger value="cta-sections">CTA sekcijos</TabsTrigger>
-            <TabsTrigger value="contact-messages">Kontaktai</TabsTrigger>
+            <TabsTrigger value="contact-messages" className="relative">
+              Kontaktai
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
+                  {unreadCount}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
           </TabsList>
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getLocalImage } from './file-upload';
+import { log } from '@/utils/browserLogger';
 
 interface LazyImageProps {
   src: string;
@@ -33,7 +34,7 @@ const LazyImage = ({
         setImageSrc(localImage);
         setLoaded(true);
       } else {
-        console.error('Nepavyko rasti vietinio paveikslėlio:', src);
+        log.error('Nepavyko rasti vietinio paveikslėlio:', src);
         setError(true);
       }
     } else {
@@ -47,7 +48,7 @@ const LazyImage = ({
       };
       
       img.onerror = () => {
-        console.error('Klaida kraunant paveikslėlį:', src);
+        log.error('Klaida kraunant paveikslėlį:', src);
         setError(true);
       };
     }

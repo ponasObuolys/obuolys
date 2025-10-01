@@ -171,7 +171,9 @@ describe('useLazyImages', () => {
     newImage.src = 'https://example.com/dynamic.jpg';
 
     act(() => {
-      containerRef.current!.appendChild(newImage);
+      if (containerRef.current) {
+        containerRef.current.appendChild(newImage);
+      }
       // Trigger MutationObserver callback manually
       // In real environment, MutationObserver would detect this
     });

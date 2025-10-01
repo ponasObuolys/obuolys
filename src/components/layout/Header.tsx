@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
+import { useUnreadMessages } from '@/hooks/use-unread-messages';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +18,7 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin, signOut } = useAuth();
+  const unreadCount = useUnreadMessages();
 
   // Navigacijos meniu punktai
   const navLinks = [
@@ -44,13 +47,18 @@ const Header = () => {
               <Link
                 key={to}
                 to={to}
-                className={`nav-link transition-colors duration-300 ${
+                className={`nav-link transition-colors duration-300 flex items-center gap-2 ${
                   isActive(to)
                     ? 'text-foreground'
                     : 'text-foreground/60 hover:text-foreground'
                 }`}
               >
                 {label}
+                {to === '/kontaktai' && isAdmin && unreadCount > 0 && (
+                  <Badge variant="destructive" className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
+                    {unreadCount}
+                  </Badge>
+                )}
               </Link>
             ))}
           </nav>
@@ -73,9 +81,16 @@ const Header = () => {
                   </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center space-x-2">
-                        <Settings className="h-4 w-4" />
-                        <span>Administravimas</span>
+                      <Link to="/admin" className="flex items-center justify-between w-full">
+                        <div className="flex items-center space-x-2">
+                          <Settings className="h-4 w-4" />
+                          <span>Administravimas</span>
+                        </div>
+                        {unreadCount > 0 && (
+                          <Badge variant="destructive" className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5">
+                            {unreadCount}
+                          </Badge>
+                        )}
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -117,7 +132,14 @@ const Header = () => {
                 className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {label}
+                <div className="flex items-center justify-between">
+                  <span>{label}</span>
+                  {to === '/kontaktai' && isAdmin && unreadCount > 0 && (
+                    <Badge variant="destructive" className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </div>
               </Link>
             ))}
 
@@ -140,9 +162,16 @@ const Header = () => {
                       className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <div className="flex items-center space-x-2">
-                        <Settings className="h-4 w-4" />
-                        <span>Administravimas</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Settings className="h-4 w-4" />
+                          <span>Administravimas</span>
+                        </div>
+                        {unreadCount > 0 && (
+                          <Badge variant="destructive" className="h-5 min-w-5 flex items-center justify-center px-1.5">
+                            {unreadCount}
+                          </Badge>
+                        )}
                       </div>
                     </Link>
                   )}

@@ -1,6 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { createErrorReport, reportError } from "@/utils/errorReporting";
+import { isFeatureEnabled } from "@/utils/featureFlags";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -93,27 +94,25 @@ export const useProfileManagement = () => {
 
   // Fetch saved publications
   const fetchSavedPublications = useCallback(async () => {
+    if (!isFeatureEnabled('savedPublications')) {
+      toast({
+        title: "Funkcija neprieinama",
+        description: "Išsaugotų publikacijų funkcija dar neįdiegta.",
+        variant: "default",
+      });
+      setSavedPublications([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // API call for saved publications
-      // TODO: Replace with actual API call
-      setTimeout(() => {
-        setSavedPublications([
-          {
-            id: "1",
-            title: "Mokslinė publikacija 1",
-            date: "2025-03-01",
-            image: "/images/publication1.jpg",
-          },
-          {
-            id: "2",
-            title: "Straipsnis apie biologiją",
-            date: "2025-02-15",
-            image: "/images/publication2.jpg",
-          },
-        ]);
-        setIsLoading(false);
-      }, 500);
+      // TODO: Implement actual Supabase query when user_saved_publications table is created
+      // const { data, error } = await supabase
+      //   .from('user_saved_publications')
+      //   .select('*, publication:publications(*)')
+      //   .eq('user_id', user?.id);
+      throw new Error('Not implemented');
     } catch (error) {
       const err =
         error instanceof Error ? error : new Error("Klaida gaunant išsaugotas publikacijas");
@@ -127,28 +126,32 @@ export const useProfileManagement = () => {
         description: "Nepavyko gauti išsaugotų publikacijų.",
         variant: "destructive",
       });
+      setSavedPublications([]);
       setIsLoading(false);
     }
   }, [toast]);
 
   // Fetch enrolled courses
   const fetchEnrolledCourses = useCallback(async () => {
+    if (!isFeatureEnabled('enrolledCourses')) {
+      toast({
+        title: "Funkcija neprieinama",
+        description: "Prenumeruojamų kursų funkcija dar neįdiegta.",
+        variant: "default",
+      });
+      setEnrolledCourses([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // API call for enrolled courses
-      // TODO: Replace with actual API call
-      setTimeout(() => {
-        setEnrolledCourses([
-          {
-            id: "1",
-            title: "Biologija pradedantiesiems",
-            progress: 60,
-            image: "/images/course1.jpg",
-          },
-          { id: "2", title: "Genomikos pagrindai", progress: 25, image: "/images/course2.jpg" },
-        ]);
-        setIsLoading(false);
-      }, 500);
+      // TODO: Implement actual Supabase query when user_enrolled_courses table is created
+      // const { data, error } = await supabase
+      //   .from('user_enrolled_courses')
+      //   .select('*, course:courses(*)')
+      //   .eq('user_id', user?.id);
+      throw new Error('Not implemented');
     } catch (error) {
       const err =
         error instanceof Error ? error : new Error("Klaida gaunant prenumeruojamus kursus");
@@ -162,6 +165,7 @@ export const useProfileManagement = () => {
         description: "Nepavyko gauti prenumeruojamų kursų.",
         variant: "destructive",
       });
+      setEnrolledCourses([]);
       setIsLoading(false);
     }
   }, [toast]);

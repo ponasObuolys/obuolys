@@ -13,6 +13,7 @@ import type { TablesInsert } from '@/integrations/supabase/types';
 import { useToast } from '@/hooks/use-toast';
 import FileUpload from './FileUpload';
 import { Save, Plus, Eye, EyeOff } from 'lucide-react';
+import { log } from '@/utils/browserLogger';
 
 const heroSectionSchema = z.object({
   title: z.string().min(1, 'Pavadinimas yra privalomas'),
@@ -45,7 +46,6 @@ const HeroSectionEditor = () => {
       subtitle: '',
       button_text: '',
       button_url: '',
-      image_url: '',
       active: false,
     },
   });
@@ -59,9 +59,14 @@ const HeroSectionEditor = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setHeroSections(data || []);
+      setHeroSections((data || []).map(section => ({
+        ...section,
+        button_text: section.button_text || '',
+        button_url: section.button_url || '',
+        image_url: section.image_url || undefined,
+      })));
     } catch (error) {
-      console.error('Error fetching hero sections:', error);
+      log.error('Error fetching hero sections:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko gauti hero sekcijų.',
@@ -119,7 +124,7 @@ const HeroSectionEditor = () => {
       await fetchHeroSections();
       handleCancelEdit();
     } catch (error) {
-      console.error('Error saving hero section:', error);
+      log.error('Error saving hero section:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko išsaugoti hero sekcijos.',
@@ -177,7 +182,7 @@ const HeroSectionEditor = () => {
 
       await fetchHeroSections();
     } catch (error) {
-      console.error('Error deleting hero section:', error);
+      log.error('Error deleting hero section:', error);
       toast({
         title: 'Klaida',
         description: `Nepavyko ištrinti hero sekcijos: ${error instanceof Error ? error.message : typeof error === 'string' ? error : 'nežinoma klaida'}`,
@@ -204,7 +209,7 @@ const HeroSectionEditor = () => {
 
       await fetchHeroSections();
     } catch (error) {
-      console.error('Error toggling hero section:', error);
+      log.error('Error toggling hero section:', error);
       toast({
         title: 'Klaida',
         description: 'Nepavyko pakeisti hero sekcijos būklės.',

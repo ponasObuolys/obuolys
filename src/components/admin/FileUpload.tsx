@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { log } from '@/utils/browserLogger';
 
 // Image optimization function
 const optimizeImage = (file: File, maxWidth = 1200, maxHeight = 800, quality = 0.8): Promise<File> => {
@@ -132,7 +133,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         try {
           fileToUpload = await optimizeImage(file);
         } catch (optimizeError) {
-          console.warn('Image optimization failed, using original:', optimizeError);
+          log.warn('Image optimization failed, using original:', optimizeError);
           fileToUpload = file;
         }
       }

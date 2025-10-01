@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // Importuojama detalės kortelė
-import ToolDetailCard from '@/components/ui/tool-detail-card'; 
+import ToolDetailCard from '@/components/ui/tool-detail-card';
+import { log } from '@/utils/browserLogger'; 
+
 // Definuojame Tool tipą čia, kad atitiktų ToolDetailCard
 interface Tool {
   id: string;
@@ -46,7 +48,7 @@ const ToolDetailPage = () => {
           
         if (error) {
           // Jei .single() grąžina klaidą (pvz., nerasta arba daugiau nei vienas)
-          console.error("Error fetching tool (or not found):", error.message);
+          log.error("Error fetching tool (or not found):", error.message);
           throw new Error("Įrankis nerastas arba įvyko klaida.");
         }
         
@@ -65,7 +67,7 @@ const ToolDetailPage = () => {
           variant: "destructive"
         });
         setTool(null); // Nustatome į null klaidos atveju
-        console.error("Error fetching tool details:", errorMessage);
+        log.error("Error fetching tool details:", errorMessage);
       } finally {
         setLoading(false);
       }

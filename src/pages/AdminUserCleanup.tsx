@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trash2, RefreshCw, Users, Database } from 'lucide-react';
 import { toast } from 'sonner';
+import { log } from '@/utils/browserLogger';
 
 interface TestUser {
   id: string;
@@ -36,7 +37,7 @@ export default function AdminUserCleanup() {
         .order('created_at', { ascending: false });
 
       if (authError) {
-        console.error('Auth users error:', authError);
+        log.error('Auth users error:', authError);
         toast.error(`Klaida kraunant autentifikuotus vartotojus: ${authError.message}`);
       } else {
         setAuthUsers(authData || []);
@@ -50,7 +51,7 @@ export default function AdminUserCleanup() {
         .order('created_at', { ascending: false });
 
       if (profileError) {
-        console.error('User profiles error:', profileError);
+        log.error('User profiles error:', profileError);
         toast.error(`Klaida kraunant naudotojų profilius: ${profileError.message}`);
       } else {
         setUserProfiles(profileData || []);
@@ -63,14 +64,14 @@ export default function AdminUserCleanup() {
         .order('created_at', { ascending: false });
 
       if (allProfilesError) {
-        console.error('Profiles error:', allProfilesError);
+        log.error('Profiles error:', allProfilesError);
         toast.error(`Klaida kraunant profilius: ${allProfilesError.message}`);
       } else {
         setProfiles(allProfiles || []);
       }
 
     } catch (error) {
-      console.error('Load error:', error);
+      log.error('Load error:', error);
       toast.error('Klaida kraunant duomenis');
     } finally {
       setLoading(false);
@@ -98,7 +99,7 @@ export default function AdminUserCleanup() {
       await loadData(); // Refresh data
 
     } catch (error) {
-      console.error('Delete error:', error);
+      log.error('Delete error:', error);
       toast.error(`Nepavyko pašalinti ${email}: ${error instanceof Error ? error.message : 'Nežinoma klaida'}`);
     } finally {
       setDeleting(prev => prev.filter(id => id !== userId));
@@ -127,13 +128,13 @@ export default function AdminUserCleanup() {
           .eq('id', user.id);
 
         if (error) {
-          console.error(`Nepavyko pašalinti ${user.email}:`, error);
+          log.error(`Nepavyko pašalinti ${user.email}:`, error);
           failed++;
         } else {
           deleted++;
         }
       } catch (error) {
-        console.error(`Klaida šalinant ${user.email}:`, error);
+        log.error(`Klaida šalinant ${user.email}:`, error);
         failed++;
       }
     }

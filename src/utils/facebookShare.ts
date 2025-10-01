@@ -2,6 +2,8 @@
  * Facebook sharing utility functions
  */
 
+import { log } from '@/utils/browserLogger';
+
 // Declare the FB global object from the Facebook SDK
 declare global {
   interface Window {
@@ -39,7 +41,7 @@ export const initFacebookSDK = (): Promise<void> => {
  * Share content to Facebook using the FB SDK
  * This is the most reliable method for sharing to Facebook
  */
-export const shareFacebookWithSDK = (options: {
+export const shareFacebookWithSDK = async (options: {
   url: string;
   title?: string;
   description?: string;
@@ -47,9 +49,11 @@ export const shareFacebookWithSDK = (options: {
   hashtag?: string;
 }): Promise<void> => {
   const { url, quote, hashtag } = options;
-  
-  return new Promise((resolve, reject) => {
-    initFacebookSDK().then(() => {
+
+  try {
+    await initFacebookSDK();
+
+    return new Promise((resolve, reject) => {
       try {
         window.FB.ui({
           method: 'share',
@@ -66,16 +70,16 @@ export const shareFacebookWithSDK = (options: {
           }
         });
       } catch (error) {
-        console.error('Error sharing to Facebook:', error);
+        log.error('Error sharing to Facebook:', error);
         fallbackToUrlShare(options);
         reject(error);
       }
-    }).catch((error) => {
-      console.error('Error initializing Facebook SDK:', error);
-      fallbackToUrlShare(options);
-      reject(error);
     });
-  });
+  } catch (error) {
+    log.error('Error initializing Facebook SDK:', error);
+    fallbackToUrlShare(options);
+    throw error;
+  }
 };
 
 /**
@@ -100,11 +104,11 @@ export const fallbackToUrlShare = ({ url }: {
     
     // Check if popup was blocked
     if (!shareWindow || shareWindow.closed || typeof shareWindow.closed === 'undefined') {
-      console.log('Facebook share window may have been blocked. Redirecting...');
+      log.info('Facebook share window may have been blocked. Redirecting...');
       window.location.href = shareUrl.toString();
     }
   } catch (error) {
-    console.error('Error with fallback Facebook share:', error);
+    log.error('Error with fallback Facebook share:', error);
     // Last resort fallback
     window.location.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   }
@@ -125,7 +129,7 @@ export const shareToFacebook = async (options: {
     // First try the SDK method
     await shareFacebookWithSDK(options);
   } catch (error) {
-    console.error('Facebook SDK sharing failed, using fallback:', error);
+    log.error('Facebook SDK sharing failed, using fallback:', error);
     // Fall back to URL method
     fallbackToUrlShare(options);
   }

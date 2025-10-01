@@ -80,7 +80,7 @@ describe('AuthContext', () => {
     const mockSession = createMockSession(mockUser);
 
     let authStateChangeCallback: (event: any, session: any) => void;
-    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((_callback) => {
+    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
       authStateChangeCallback = callback;
       return {
         data: { subscription: { unsubscribe: vi.fn() } }
@@ -180,7 +180,7 @@ describe('AuthContext', () => {
     const mockUser = createMockUser();
     let authStateChangeCallback: (event: any, session: any) => void;
 
-    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((_callback) => {
+    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
       authStateChangeCallback = callback;
       return {
         data: { subscription: { unsubscribe: vi.fn() } }
@@ -271,7 +271,7 @@ describe('AuthContext', () => {
   it('handles auth state changes', async () => {
     let authStateChangeCallback: (event: any, session: any) => void;
 
-    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((_callback) => {
+    mockSupabaseClient.auth.onAuthStateChange.mockImplementation((callback) => {
       authStateChangeCallback = callback;
       return {
         data: { subscription: { unsubscribe: vi.fn() } }

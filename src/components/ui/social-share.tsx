@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { log } from '@/utils/browserLogger';
 
 interface SocialShareProps {
   url: string;
@@ -43,16 +44,14 @@ export function SocialShare({
     );
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(url).then(
-      () => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      },
-      (err) => {
-        console.error("Could not copy text: ", err);
-      }
-    );
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      log.error("Could not copy text: ", err);
+    }
   };
 
   return (

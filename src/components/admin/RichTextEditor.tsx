@@ -25,6 +25,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 import FileUpload from "./FileUpload";
 
 interface RichTextEditorProps {
@@ -50,8 +51,22 @@ const RichTextEditor = ({
   // Sync the editor content with the value prop
   useEffect(() => {
     if (editorRef.current) {
-      if (value !== editorRef.current.innerHTML) {
-        editorRef.current.innerHTML = value;
+      // Sanitize incoming value to prevent XSS attacks
+      const sanitizedValue = DOMPurify.sanitize(value, {
+        ALLOWED_TAGS: [
+          'p', 'br', 'strong', 'em', 'b', 'i', 'u', 's', 'ul', 'ol', 'li',
+          'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
+          'a', 'img', 'div', 'span', 'iframe'
+        ],
+        ALLOWED_ATTR: [
+          'href', 'target', 'rel', 'src', 'alt', 'class', 'width', 'height',
+          'frameborder', 'allow', 'allowfullscreen', 'loading'
+        ],
+        ALLOW_DATA_ATTR: false,
+      });
+
+      if (sanitizedValue !== editorRef.current.innerHTML) {
+        editorRef.current.innerHTML = sanitizedValue;
       }
     }
   }, [value]);
@@ -59,14 +74,31 @@ const RichTextEditor = ({
   // Update the value when the editor content changes
   const handleEditorChange = () => {
     if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+      // Sanitize output to prevent XSS attacks
+      const sanitizedContent = DOMPurify.sanitize(editorRef.current.innerHTML, {
+        ALLOWED_TAGS: [
+          'p', 'br', 'strong', 'em', 'b', 'i', 'u', 's', 'ul', 'ol', 'li',
+          'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
+          'a', 'img', 'div', 'span', 'iframe'
+        ],
+        ALLOWED_ATTR: [
+          'href', 'target', 'rel', 'src', 'alt', 'class', 'width', 'height',
+          'frameborder', 'allow', 'allowfullscreen', 'loading'
+        ],
+        ALLOW_DATA_ATTR: false,
+      });
+      onChange(sanitizedContent);
     }
   };
 
   // Helper to save selection
   const saveSelection = () => {
-    if (window.getSelection && window.getSelection()?.rangeCount > 0) {
-      setSavedRange(window.getSelection()?.getRangeAt(0) || null);
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      if (range) {
+        setSavedRange(range.cloneRange());
+      }
     }
   };
 
@@ -76,19 +108,24 @@ const RichTextEditor = ({
       const selection = window.getSelection();
       selection?.removeAllRanges();
       selection?.addRange(savedRange);
-      setSavedRange(null); // Clear saved range after restoring
+      editorRef.current?.focus();
     }
   };
 
   // Format actions
   const execCommand = (command: string, value: string | null = null) => {
-    editorRef.current?.focus(); // Ensure focus before command
-    if (command === "insertHTML") {
-      restoreSelection(); // Restore selection specifically for insertHTML
+    // Restore selection if we have a saved range
+    if (savedRange) {
+      restoreSelection();
+    } else {
+      editorRef.current?.focus();
     }
-    document.execCommand(command, false, value);
+    
+    document.execCommand(command, false, value || undefined);
     handleEditorChange();
-    // No need to refocus here usually, focus should remain
+    
+    // Clear saved range after use
+    setSavedRange(null);
   };
 
   // Check if format is currently active
@@ -98,18 +135,20 @@ const RichTextEditor = ({
 
   // Check if block format is currently active
   const isBlockFormatActive = (blockType: string) => {
-    return document.queryCommandValue("formatBlock").toLowerCase() === blockType.toLowerCase();
+    const currentBlock = document.queryCommandValue("formatBlock").toLowerCase();
+    // Remove < > from blockType for comparison
+    const cleanBlockType = blockType.replace(/[<>]/g, "").toLowerCase();
+    return currentBlock === cleanBlockType;
   };
 
   const toggleFormat = (format: string) => {
+    editorRef.current?.focus();
     execCommand(format);
   };
 
   const insertHeading = (level: number) => {
-    // First make sure we have a selection or cursor positioned
-    const selection = window.getSelection();
-    if (!selection || !editorRef.current) return;
-
+    editorRef.current?.focus();
+    
     // Check if heading is already applied, if so, remove it
     const currentBlock = document.queryCommandValue("formatBlock");
     if (currentBlock.toLowerCase() === `h${level}`) {
@@ -120,22 +159,44 @@ const RichTextEditor = ({
   };
 
   const toggleBlockFormat = (blockTag: string) => {
-    const currentBlock = document.queryCommandValue("formatBlock");
-    if (currentBlock.toLowerCase() === blockTag.toLowerCase()) {
-      execCommand("formatBlock", "<p>");
+    editorRef.current?.focus();
+    
+    // Remove < > from blockTag for comparison
+    const cleanTag = blockTag.replace(/[<>]/g, "").toLowerCase();
+    const currentBlock = document.queryCommandValue("formatBlock").toLowerCase();
+    
+    // Special handling for paragraph - it should toggle between p and div
+    if (cleanTag === "p") {
+      if (currentBlock === "p" || currentBlock === "") {
+        // If already p or empty, convert to div (removes paragraph)
+        execCommand("formatBlock", "<div>");
+      } else {
+        // Convert to paragraph
+        execCommand("formatBlock", "<p>");
+      }
     } else {
-      execCommand("formatBlock", blockTag);
+      // For other formats (blockquote, pre, etc.)
+      if (currentBlock === cleanTag) {
+        // If already applied, convert to paragraph
+        execCommand("formatBlock", "<p>");
+      } else {
+        // Apply the block format
+        execCommand("formatBlock", blockTag);
+      }
     }
   };
 
   const toggleList = (listType: "insertUnorderedList" | "insertOrderedList") => {
+    editorRef.current?.focus();
     execCommand(listType);
   };
 
   const insertLink = () => {
     if (!linkUrl.trim()) return;
+    
     const linkHtml = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText || linkUrl}</a>`;
     execCommand("insertHTML", linkHtml);
+    
     setLinkUrl("");
     setLinkText("");
     setLinkDialogOpen(false);
@@ -143,24 +204,29 @@ const RichTextEditor = ({
 
   const handleInsertImage = (uploadedUrl: string, altText = "") => {
     if (!uploadedUrl.trim()) return;
+    
     const imgHtml = `<img src="${uploadedUrl}" alt="${altText}" class="my-4 rounded max-w-full h-auto" loading="lazy" />`;
     execCommand("insertHTML", imgHtml);
+    
     setImageDialogOpen(false);
   };
 
   const insertVideo = () => {
     if (!videoUrl.trim()) return;
+    
     let videoId = "";
     const ytRegex =
       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i;
     const match = videoUrl.match(ytRegex);
     let embedHtml = "";
+    
     if (match && match[1]) {
       videoId = match[1];
       embedHtml = `<div class="video-container my-4"><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
     } else {
       embedHtml = `<a href="${videoUrl}" target="_blank" rel="noopener noreferrer">${videoUrl}</a>`;
     }
+    
     execCommand("insertHTML", embedHtml);
     setVideoUrl("");
     setVideoDialogOpen(false);
@@ -173,7 +239,10 @@ const RichTextEditor = ({
           type="button"
           variant={isFormatActive("bold") ? "default" : "secondary"}
           size="sm"
-          onClick={() => toggleFormat("bold")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleFormat("bold");
+          }}
           title="Paryškintas"
         >
           <Bold className="h-4 w-4" />
@@ -182,7 +251,10 @@ const RichTextEditor = ({
           type="button"
           variant={isFormatActive("italic") ? "default" : "secondary"}
           size="sm"
-          onClick={() => toggleFormat("italic")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleFormat("italic");
+          }}
           title="Kursyvas"
         >
           <Italic className="h-4 w-4" />
@@ -191,7 +263,10 @@ const RichTextEditor = ({
           type="button"
           variant={isFormatActive("underline") ? "default" : "secondary"}
           size="sm"
-          onClick={() => toggleFormat("underline")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleFormat("underline");
+          }}
           title="Pabrauktas"
         >
           <Underline className="h-4 w-4" />
@@ -201,7 +276,10 @@ const RichTextEditor = ({
           type="button"
           variant={isBlockFormatActive("h1") ? "default" : "secondary"}
           size="sm"
-          onClick={() => insertHeading(1)}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            insertHeading(1);
+          }}
           title="Antraštė 1"
         >
           <Heading1 className="h-4 w-4" />
@@ -210,17 +288,23 @@ const RichTextEditor = ({
           type="button"
           variant={isBlockFormatActive("h2") ? "default" : "secondary"}
           size="sm"
-          onClick={() => insertHeading(2)}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            insertHeading(2);
+          }}
           title="Antraštė 2"
         >
           <Heading2 className="h-4 w-4" />
         </Button>
         <Button
           type="button"
-          variant={isBlockFormatActive("p") ? "default" : "secondary"}
+          variant={isBlockFormatActive("p") || isBlockFormatActive("div") ? "default" : "secondary"}
           size="sm"
-          title="Pastraipa"
-          onClick={() => toggleBlockFormat("<p>")}
+          title="Pastraipa (normalus tekstas)"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleBlockFormat("<p>");
+          }}
         >
           <Pilcrow className="h-4 w-4" />
         </Button>
@@ -229,7 +313,10 @@ const RichTextEditor = ({
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => toggleList("insertUnorderedList")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleList("insertUnorderedList");
+          }}
           title="Sąrašas"
         >
           <List className="h-4 w-4" />
@@ -238,7 +325,10 @@ const RichTextEditor = ({
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => toggleList("insertOrderedList")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleList("insertOrderedList");
+          }}
           title="Numeruotas sąrašas"
         >
           <ListOrdered className="h-4 w-4" />
@@ -247,7 +337,10 @@ const RichTextEditor = ({
           type="button"
           variant={isBlockFormatActive("blockquote") ? "default" : "secondary"}
           size="sm"
-          onClick={() => toggleBlockFormat("<blockquote>")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleBlockFormat("<blockquote>");
+          }}
           title="Citata"
         >
           <Quote className="h-4 w-4" />
@@ -256,7 +349,10 @@ const RichTextEditor = ({
           type="button"
           variant={isBlockFormatActive("pre") ? "default" : "secondary"}
           size="sm"
-          onClick={() => toggleBlockFormat("<pre>")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            toggleBlockFormat("<pre>");
+          }}
           title="Kodas"
         >
           <Code className="h-4 w-4" />
@@ -270,7 +366,10 @@ const RichTextEditor = ({
               type="button"
               variant="secondary"
               size="sm"
-              onClick={saveSelection}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+              }}
               title="Įterpti nuorodą"
             >
               <LinkIcon className="h-4 w-4" />
@@ -320,7 +419,10 @@ const RichTextEditor = ({
               type="button"
               variant="secondary"
               size="sm"
-              onClick={saveSelection}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+              }}
               title="Įterpti paveikslėlį"
             >
               <Image className="h-4 w-4" />
@@ -359,7 +461,10 @@ const RichTextEditor = ({
               type="button"
               variant="secondary"
               size="sm"
-              onClick={saveSelection}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+              }}
               title="Įterpti vaizdo įrašą"
             >
               <Youtube className="h-4 w-4" />

@@ -1,4 +1,5 @@
 import { createElement, lazy, type ComponentType, type LazyExoticComponent } from "react";
+import { log } from '@/utils/browserLogger';
 
 // Cache for storing preloaded components
 const componentCache = new Map<string, Promise<LazyModule<ComponentType<unknown>>>>();
@@ -88,7 +89,7 @@ export const createLazyComponent = <T extends ComponentType<unknown>>(
       return moduleExports;
     } catch (error) {
       if (attempt < retryCount) {
-        console.warn(`Retrying component load (attempt ${attempt + 1}/${retryCount}):`, error);
+        log.warn(`Retrying component load (attempt ${attempt + 1}/${retryCount}):`, error);
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
         return loadComponent(attempt + 1);
       }
@@ -101,7 +102,7 @@ export const createLazyComponent = <T extends ComponentType<unknown>>(
   if (preload && cacheKey && !preloadedComponents.has(cacheKey)) {
     preloadedComponents.add(cacheKey);
     loadComponent().catch(error => {
-      console.warn(`Failed to preload component ${cacheKey}:`, error);
+      log.warn(`Failed to preload component ${cacheKey}:`, error);
       preloadedComponents.delete(cacheKey);
     });
   }
@@ -253,7 +254,7 @@ export const createErrorFallback = (chunkName: string) => {
       createElement(
         "p",
         { className: "text-gray-600 mb-4 text-sm" },
-        `Komponentas "${chunkName}" negali buti ikeltas. Patikrinkite interneto ryši.`
+        `Komponentas "${chunkName}" negali buti ikeltas. Patikrinkite interneto ryï¿½i.`
       ),
       createElement(
         "div",
@@ -274,7 +275,7 @@ export const createErrorFallback = (chunkName: string) => {
             className:
               "px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors",
           },
-          "Grižti atgal"
+          "Griï¿½ti atgal"
         )
       )
     );
