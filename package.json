@@ -46,6 +46,7 @@
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
     "supabase:types": "supabase gen types typescript --local > src/integrations/supabase/types.ts",
+    "sitemap:generate": "node scripts/generate-sitemap.js",
     "dev:debug": "node scripts/dev-debug.js",
     "dev:debug:quick": "node scripts/dev-debug.js --quick",
     "performance:analyze": "node scripts/performance-monitor.js",
