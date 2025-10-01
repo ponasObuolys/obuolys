@@ -10,7 +10,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { secureLogger } from '@/utils/browserLogger';
 
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/SEO';
+import { SITE_CONFIG } from '@/utils/seo';
 
 const ContactPage = () => {
   const { toast } = useToast();
@@ -81,15 +82,13 @@ const ContactPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Kontaktai | Ponas Obuolys</title>
-        <meta name="description" content="Susisiekite su Ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar pasiūlykite AI naujieną bendruomenei." />
-        <meta property="og:title" content="Kontaktai | Ponas Obuolys" />
-        <meta property="og:description" content="Susisiekite su Ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar pasiūlykite AI naujieną bendruomenei." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ponasobuolys.lt/kontaktai" />
-        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
-      </Helmet>
+      <SEOHead
+        title="Kontaktai"
+        description="Susisiekite su ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar pasiūlykite dirbtinio intelekto naujieną bendruomenei."
+        canonical={`${SITE_CONFIG.domain}/kontaktai`}
+        keywords={['AI konsultacijos', 'AI bendradarbiavimas', 'susisiekti AI ekspertas']}
+        type="website"
+      />
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">

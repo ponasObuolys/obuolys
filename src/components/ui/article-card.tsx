@@ -8,7 +8,7 @@ interface ArticleCardProps {
     slug: string;
     title: string;
     description: string;
-    image_url?: string;
+    image_url: string | null;
     date: string;
     read_time: string;
     category?: string;

@@ -6,7 +6,10 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // Importuojama detalės kortelė
 import ToolDetailCard from '@/components/ui/tool-detail-card';
-import { log } from '@/utils/browserLogger'; 
+import { log } from '@/utils/browserLogger';
+
+import SEOHead from '@/components/SEO';
+import { generateToolSEO, generateBreadcrumbStructuredData } from '@/utils/seo';
 
 // Definuojame Tool tipą čia, kad atitiktų ToolDetailCard
 interface Tool {
@@ -22,15 +25,9 @@ interface Tool {
   usage_examples?: string[];
 }
 
-import { Helmet } from 'react-helmet-async';
-
 const ToolDetailPage = () => {
-  // Helmet žymoms
-  const getMetaTitle = () => tool?.name ? `${tool.name} | AI Įrankis | Ponas Obuolys` : 'AI Įrankis | Ponas Obuolys';
-  const getMetaDescription = () => tool?.description || 'Rekomenduojamas AI įrankis lietuvių kalba. Sužinokite, kaip šis dirbtinio intelekto sprendimas gali padėti jūsų veikloje.';
-  const getMetaImage = () => tool?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
-  const [tool, setTool] = useState<Tool | null>(null); // Naudojamas Tool tipas
+  const [tool, setTool] = useState<Tool | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -99,47 +96,56 @@ const ToolDetailPage = () => {
     );
   }
 
+  // Generate SEO data
+  const seoData = tool
+    ? generateToolSEO({
+        title: tool.name,
+        description: tool.description,
+        slug: slug || '',
+        image: tool.image_url,
+        category: tool.category,
+      })
+    : null;
+
+  const structuredData = tool
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: tool.name,
+          description: tool.description,
+          applicationCategory: tool.category,
+          operatingSystem: 'All',
+          image: tool.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
+          url: `https://ponasobuolys.lt/irankiai/${tool.slug}`,
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'EUR',
+            availability: 'https://schema.org/InStock',
+            url: tool.url,
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Ponas Obuolys',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://ponasobuolys.lt/logo.png',
+            },
+          },
+          inLanguage: 'lt',
+        },
+        generateBreadcrumbStructuredData([
+          { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
+          { name: 'AI Įrankiai', url: 'https://ponasobuolys.lt/irankiai' },
+          { name: tool.name, url: `https://ponasobuolys.lt/irankiai/${slug}` },
+        ]),
+      ]
+    : null;
+
   return (
     <>
-      <Helmet>
-        <title>{getMetaTitle()}</title>
-        <meta name="description" content={getMetaDescription()} />
-        <meta property="og:title" content={getMetaTitle()} />
-        <meta property="og:description" content={getMetaDescription()} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://ponasobuolys.lt/irankiai/${tool?.slug || ''}`} />
-        <meta property="og:image" content={getMetaImage()} />
-
-        {/* Schema.org SoftwareApplication struktūrizuoti duomenys */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            'name': tool.name,
-            'description': tool.description,
-            'applicationCategory': tool.category,
-            'operatingSystem': 'All',
-            'image': tool.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
-            'url': `https://ponasobuolys.lt/irankiai/${tool?.slug || ''}`,
-            'offers': {
-              '@type': 'Offer',
-              'price': '0',
-              'priceCurrency': 'EUR',
-              'availability': 'https://schema.org/InStock',
-              'url': tool.url
-            },
-            'publisher': {
-              '@type': 'Organization',
-              'name': 'Ponas Obuolys',
-              'logo': {
-                '@type': 'ImageObject',
-                'url': 'https://ponasobuolys.lt/apple-logo.png'
-              }
-            },
-            'inLanguage': 'lt'
-          })}
-        </script>
-      </Helmet>
+      {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 py-8 max-w-3xl"> 
           <div className="mb-8">

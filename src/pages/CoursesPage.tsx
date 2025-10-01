@@ -8,9 +8,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Users, Star, MessageCircle } from "lucide-react";
 
-type Course = Database["public"]["Tables"]["courses"]["Row"];
+import SEOHead from "@/components/SEO";
+import { SITE_CONFIG } from "@/utils/seo";
 
-import { Helmet } from "react-helmet-async";
+type Course = Database["public"]["Tables"]["courses"]["Row"];
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -57,21 +58,13 @@ const CoursesPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Kursai | Ponas Obuolys</title>
-        <meta
-          name="description"
-          content="AI mokymai ir konsultacijos lietuvių kalba. Personalizuoti sprendimai ir praktiniai patarimai dirbtinio intelekto srityje."
-        />
-        <meta property="og:title" content="Kursai | Ponas Obuolys" />
-        <meta
-          property="og:description"
-          content="AI mokymai ir konsultacijos lietuvių kalba. Personalizuoti sprendimai ir praktiniai patarimai dirbtinio intelekto srityje."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ponasobuolys.lt/kursai" />
-        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
-      </Helmet>
+      <SEOHead
+        title="AI Kursai ir Mokymai"
+        description="Dirbtinio intelekto mokymai ir konsultacijos lietuvių kalba. Personalizuoti sprendimai ir praktiniai AI patarimai - ponas Obuolys"
+        canonical={`${SITE_CONFIG.domain}/kursai`}
+        keywords={['AI kursai', 'AI mokymai lietuviškai', 'dirbtinio intelekto kursai', 'ChatGPT mokymai', 'AI konsultacijos']}
+        type="website"
+      />
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

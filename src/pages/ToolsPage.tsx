@@ -7,13 +7,15 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
+import SEOHead from "@/components/SEO";
+import { SITE_CONFIG } from "@/utils/seo";
+
 type Tool = Database["public"]["Tables"]["tools"]["Row"];
 // Importuojame naujus komponentus
 import ToolCategories from "@/components/tools/ToolCategories";
 import ToolSearch from "@/components/tools/ToolSearch";
 
 import { createErrorReport, reportError } from "@/utils/errorReporting";
-import { Helmet } from "react-helmet-async";
 
 const ToolsPage = () => {
   const [tools, setTools] = useState<Tool[]>([]);
@@ -85,21 +87,13 @@ const ToolsPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AI Įrankiai | Ponas Obuolys</title>
-        <meta
-          name="description"
-          content="Atrinkti ir išbandyti AI įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos dirbtinio intelekto srityje."
-        />
-        <meta property="og:title" content="AI Įrankiai | Ponas Obuolys" />
-        <meta
-          property="og:description"
-          content="Atrinkti ir išbandyti AI įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos dirbtinio intelekto srityje."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ponasobuolys.lt/irankiai" />
-        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
-      </Helmet>
+      <SEOHead
+        title="AI Įrankiai"
+        description="Atrinkti ir išbandyti dirbtinio intelekto įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos ir apžvalgos - ponas Obuolys"
+        canonical={`${SITE_CONFIG.domain}/irankiai`}
+        keywords={['AI įrankiai', 'dirbtinio intelekto įrankiai', 'ChatGPT įrankiai', 'AI produktyvumui', 'AI verslui']}
+        type="website"
+      />
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

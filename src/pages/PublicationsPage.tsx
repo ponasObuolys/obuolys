@@ -9,9 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Search, Plus } from "lucide-react";
 
-type Publication = Tables<"articles">;
+import SEOHead from "@/components/SEO";
+import { SITE_CONFIG } from "@/utils/seo";
 
-import { Helmet } from "react-helmet-async";
+type Publication = Tables<"articles">;
 
 const PublicationsPage = () => {
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -71,21 +72,13 @@ const PublicationsPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AI Naujienos | Ponas Obuolys</title>
-        <meta
-          name="description"
-          content="Naujausios dirbtinio intelekto naujienos ir publikacijos lietuvių kalba. Pasiūlyk AI naujieną arba skaityk paskutines tendencijas."
-        />
-        <meta property="og:title" content="AI Naujienos | Ponas Obuolys" />
-        <meta
-          property="og:description"
-          content="Naujausios dirbtinio intelekto naujienos ir publikacijos lietuvių kalba. Pasiūlyk AI naujieną arba skaityk paskutines tendencijas."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ponasobuolys.lt/publikacijos" />
-        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
-      </Helmet>
+      <SEOHead
+        title="AI Naujienos ir Publikacijos"
+        description="Naujausios dirbtinio intelekto naujienos ir straipsniai lietuvių kalba. Sužinokite paskutines AI tendencijas, naujoves ir analizę - ponas Obuolys"
+        canonical={`${SITE_CONFIG.domain}/publikacijos`}
+        keywords={['AI naujienos Lietuva', 'dirbtinio intelekto naujienos', 'AI straipsniai lietuviškai', 'ChatGPT naujienos', 'machine learning naujienos']}
+        type="website"
+      />
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">

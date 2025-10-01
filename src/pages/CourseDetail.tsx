@@ -9,6 +9,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 
+import SEOHead from '@/components/SEO';
+import { generateCourseSEO, generateCourseStructuredData, generateBreadcrumbStructuredData } from '@/utils/seo';
+
 interface Course {
   id: string;
   title: string;
@@ -33,26 +36,20 @@ const getPatreonLink = (slug: string): string => {
   return patreonLinks[slug] || '#';
 };
 
-import { Helmet } from 'react-helmet-async';
-
 const CourseDetail: FC = () => {
-  // Helmet žymoms
-  const getMetaTitle = () => course?.title ? `${course.title} | AI Kursas | Ponas Obuolys` : 'AI Kursas | Ponas Obuolys';
-  const getMetaDescription = () => course?.description || 'AI kursas pradedantiesiems ir pažengusiems, nuotoliniai mokymai apie dirbtinį intelektą lietuvių kalba.';
-  const getMetaImage = () => course?.image_url || 'https://ponasobuolys.lt/og-cover.jpg';
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchCourse = async (courseSlug: string) => {
       try {
-        secureLogger.info('Fetching course with slug', { slug });
+        secureLogger.info('Fetching course with slug', { slug: courseSlug });
         // Fetch as an array, limit to 1 result
         const { data, error } = await supabase
           .from('courses')
           .select('*')
-          .eq('slug', slug)
+          .eq('slug', courseSlug)
           .eq('published', true)
           .limit(1); 
 
@@ -66,11 +63,11 @@ const CourseDetail: FC = () => {
         if (data && data.length > 0) {
           setCourse(data[0]); // Set the first element
         } else {
-          secureLogger.warn('No course data found', { slug });
+          secureLogger.warn('No course data found', { slug: courseSlug });
           setCourse(null); // Explicitly set to null if no data
         }
       } catch (error) {
-        secureLogger.error('Error fetching course', { error, slug });
+        secureLogger.error('Error fetching course', { error, slug: courseSlug });
         toast({
           title: "Klaida",
           description: "Nepavyko gauti kurso informacijos. Bandykite vėliau.",
@@ -82,7 +79,7 @@ const CourseDetail: FC = () => {
     };
 
     if (slug) {
-      fetchCourse();
+      fetchCourse(slug);
     }
 
     // Scroll to top when component mounts
@@ -109,67 +106,53 @@ const CourseDetail: FC = () => {
     );
   }
 
+  // Generate SEO data
+  const seoData = generateCourseSEO({
+    title: course.title,
+    description: course.description,
+    slug: slug || '',
+    image: course.image_url || undefined,
+    level: course.level,
+  });
+
+  const structuredData = [
+    generateCourseStructuredData({
+      title: course.title,
+      description: course.description,
+      slug: slug || '',
+      image: course.image_url || undefined,
+      level: course.level,
+      duration: course.duration,
+      price: course.price ? parseFloat(course.price) : undefined,
+    }),
+    generateBreadcrumbStructuredData([
+      { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
+      { name: 'AI Kursai', url: 'https://ponasobuolys.lt/kursai' },
+      { name: course.title, url: `https://ponasobuolys.lt/kursai/${slug}` },
+    ]),
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-12">
-      <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        <span>Grįžti į kursų sąrašą</span>
-      </Link>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
-            <p className="text-lg mb-6">{course.description}</p>
-            
-            <div className="flex flex-wrap gap-4 mb-6">
-              <div className="flex items-center">
-                <Clock className="mr-2 h-5 w-5 text-primary" />
-                <span>{course.duration}</span>
+    <>
+      <SEOHead {...seoData} structuredData={structuredData} />
+      <div className="container mx-auto px-4 py-12">
+        <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          <span>Grįžti į kursų sąrašą</span>
+        </Link>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+              <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
+              <p className="text-lg mb-6">{course.description}</p>
+
+              <div className="flex flex-wrap gap-4 mb-6">
+                <div className="flex items-center">
+                  <Clock className="mr-2 h-5 w-5 text-primary" />
+                  <span>{course.duration}</span>
+                </div>
               </div>
-            </div>
-
-            <Helmet>
-              <title>{getMetaTitle()}</title>
-              <meta name="description" content={getMetaDescription()} />
-              <meta property="og:title" content={getMetaTitle()} />
-              <meta property="og:description" content={getMetaDescription()} />
-              <meta property="og:type" content="article" />
-              <meta property="og:url" content={`https://ponasobuolys.lt/kursai/${course?.slug || ''}`} />
-              <meta property="og:image" content={getMetaImage()} />
-
-              {/* Schema.org Course struktūrizuoti duomenys */}
-              <script type="application/ld+json">
-                {JSON.stringify({
-                  '@context': 'https://schema.org',
-                  '@type': 'Course',
-                  'name': course.title,
-                  'description': course.description,
-                  'provider': {
-                    '@type': 'Organization',
-                    'name': 'Ponas Obuolys',
-                    'sameAs': 'https://ponasobuolys.lt',
-                    'logo': {
-                      '@type': 'ImageObject',
-                      'url': 'https://ponasobuolys.lt/apple-logo.png'
-                    }
-                  },
-                  'inLanguage': 'lt',
-                  'url': `https://ponasobuolys.lt/kursai/${course?.slug || ''}`,
-                  'image': course.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
-                  'datePublished': course.created_at,
-                  'dateModified': course.updated_at,
-                  'courseMode': course.level,
-                  'offers': course.price ? {
-                    '@type': 'Offer',
-                    'price': course.price,
-                    'priceCurrency': 'EUR',
-                    'availability': 'https://schema.org/InStock',
-                    'url': `https://ponasobuolys.lt/kursai/${course?.slug || ''}`
-                  } : undefined
-                })}
-              </script>
-            </Helmet>
 
             <Tabs defaultValue="aprasymas" className="mb-8">
               <TabsList>
@@ -215,7 +198,8 @@ const CourseDetail: FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
