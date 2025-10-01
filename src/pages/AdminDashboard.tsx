@@ -3,14 +3,15 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
-import CTASectionEditor from "@/components/admin/CTASectionEditor";
-import ContactMessageManager from "@/components/admin/ContactMessageManager";
-import CourseEditor from "@/components/admin/CourseEditor";
+import CTASectionEditor from "@/components/admin/cta-section-editor";
+import ContactMessageManager from "@/components/admin/contact-message-manager";
+import CourseEditor from "@/components/admin/course-editor";
 import CoursesList from "@/components/admin/CoursesList";
-import HeroSectionEditor from "@/components/admin/HeroSectionEditor";
-import PublicationEditor from "@/components/admin/PublicationEditor";
+import HeroSectionEditor from "@/components/admin/hero-section-editor";
+import { PerformanceMonitor } from "@/components/admin/performance-monitor";
+import PublicationEditor from "@/components/admin/publication-editor";
 import PublicationsList from "@/components/admin/PublicationsList";
-import ToolEditor from "@/components/admin/ToolEditor";
+import ToolEditor from "@/components/admin/tool-editor";
 import ToolsList from "@/components/admin/ToolsList";
 import UserManager from "@/components/admin/UserManager";
 import { Button } from "@/components/ui/button";
@@ -161,6 +162,7 @@ const AdminDashboard = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
+            <TabsTrigger value="performance">Našumas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -309,6 +311,10 @@ const AdminDashboard = () => {
                 <UserManager onUpdate={fetchDashboardStats} />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="performance">
+            <PerformanceMonitor />
           </TabsContent>
         </Tabs>
       </div>

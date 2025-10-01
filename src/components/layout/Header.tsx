@@ -35,9 +35,11 @@ const Header = () => {
       <div className="container mx-auto py-4 px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="text-primary font-bold text-lg">🍎</span>
-            </div>
+            <img 
+              src="/obuolys-logo.png" 
+              alt="ponas Obuolys logo" 
+              className="w-10 h-10 object-contain"
+            />
             <span className="text-foreground font-bold text-xl">ponas Obuolys</span>
           </Link>
 

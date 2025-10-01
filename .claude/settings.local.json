@@ -17,6 +17,7 @@
       "mcp__ide__getDiagnostics",
       "mcp__supabase__execute_sql",
       "mcp__supabase__list_tables",
+      "mcp__sequential-thinking__sequentialthinking",
       "Bash(while read f)",
       "Bash(do wc:*)",
       "Bash(done)",
@@ -26,7 +27,11 @@
       "Bash(npm audit:*)",
       "Bash(npm outdated)",
       "Bash(npm test:*)",
-      "Bash(npm update)"
+      "Bash(npm update)",
+      "Bash(for file in src/components/admin/*.tsx src/pages/*.tsx src/context/*.tsx)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(fi)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
