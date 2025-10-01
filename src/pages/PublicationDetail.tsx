@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,16 +14,16 @@ import { extractImagesFromHTML, preloadImagesWhenIdle } from "@/utils/imagePrelo
 import { addLazyLoadingToImages } from "@/utils/lazyLoadImages";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
+import SEOHead from "@/components/SEO";
+import {
+  generateArticleSEO,
+  generateArticleStructuredData,
+  generateBreadcrumbStructuredData,
+} from "@/utils/seo";
+
 type Publication = Tables<"articles">;
 
 const PublicationDetail = () => {
-  // Helmet žymoms
-  const getMetaTitle = () =>
-    publication?.title ? `${publication.title} | Ponas Obuolys` : "Publikacija | Ponas Obuolys";
-  const getMetaDescription = () =>
-    publication?.description ||
-    "AI straipsnis, dirbtinio intelekto naujienos ir analizė lietuvių kalba. Sužinokite daugiau apie AI Lietuvoje.";
-  const getMetaImage = () => publication?.image_url || "https://ponasobuolys.lt/og-cover.jpg";
   const { slug } = useParams<{ slug: string }>();
   const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,66 +100,42 @@ const PublicationDetail = () => {
     );
   }
 
-  const getArticleUrl = () => {
-    return `https://ponasobuolys.lt/publikacijos/${slug}`;
-  };
+  // Generate SEO data
+  const seoData = publication
+    ? generateArticleSEO({
+        title: publication.title,
+        description: publication.description || undefined,
+        content: publication.content || undefined,
+        slug: slug || '',
+        image: publication.image_url || undefined,
+        published_at: publication.date,
+        updated_at: publication.updated_at || undefined,
+        tags: publication.category ? [publication.category] : [],
+      })
+    : null;
+
+  const structuredData = publication
+    ? [
+        generateArticleStructuredData({
+          title: publication.title,
+          description: publication.description || seoData?.description || '',
+          slug: slug || '',
+          image: publication.image_url || undefined,
+          published_at: publication.date,
+          updated_at: publication.updated_at || undefined,
+          author: publication.author || undefined,
+        }),
+        generateBreadcrumbStructuredData([
+          { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
+          { name: 'Publikacijos', url: 'https://ponasobuolys.lt/publikacijos' },
+          { name: publication.title, url: `https://ponasobuolys.lt/publikacijos/${slug}` },
+        ]),
+      ]
+    : null;
 
   return (
     <>
-      <Helmet>
-        <title>{getMetaTitle()}</title>
-        <meta name="description" content={getMetaDescription()} />
-
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={getArticleUrl()} />
-        <meta property="og:title" content={getMetaTitle()} />
-        <meta property="og:description" content={getMetaDescription()} />
-        <meta property="og:image" content={getMetaImage()} />
-        <meta property="og:site_name" content="ponas Obuolys" />
-        <meta property="article:published_time" content={publication.date} />
-        {publication.category && <meta property="article:section" content={publication.category} />}
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content={getArticleUrl()} />
-        <meta name="twitter:title" content={getMetaTitle()} />
-        <meta name="twitter:description" content={getMetaDescription()} />
-        <meta name="twitter:image" content={getMetaImage()} />
-
-        {/* Schema.org Article struktūrizuoti duomenys */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            mainEntityOfPage: {
-              "@type": "WebPage",
-              "@id": getArticleUrl(),
-            },
-            headline: publication.title,
-            description: publication.description || "",
-            image: publication.image_url
-              ? [publication.image_url]
-              : ["https://ponasobuolys.lt/og-cover.jpg"],
-            author: {
-              "@type": "Person",
-              name: publication.author || "Ponas Obuolys",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "Ponas Obuolys",
-              logo: {
-                "@type": "ImageObject",
-                url: "https://ponasobuolys.lt/apple-logo.png",
-              },
-            },
-            datePublished: publication.date,
-            dateModified: publication.updated_at || publication.date,
-            articleSection: publication.category || undefined,
-            inLanguage: "lt",
-          })}
-        </script>
-      </Helmet>
+      {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
 
       <article className="container mx-auto px-4 py-12">
         <Link

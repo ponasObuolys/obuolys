@@ -7,20 +7,36 @@ import Courses from '@/components/home/Courses';
 import CallToAction from '@/components/home/CallToAction';
 // Removed CoursesPreview, CtaSection, ToolsSection, FeaturesSection imports
 
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/SEO';
+import {
+  generateOrganizationStructuredData,
+  generateWebSiteStructuredData,
+  SITE_CONFIG,
+} from '@/utils/seo';
 
 const Index = () => {
+  const structuredData = [
+    generateOrganizationStructuredData(),
+    generateWebSiteStructuredData(),
+  ];
+
   return (
     <>
-      <Helmet>
-        <title>Ponas Obuolys – Dirbtinio intelekto naujienos, AI įrankiai, kursai ir straipsniai lietuvių kalba</title>
-        <meta name="description" content="Atraskite įdomiausias AI naujienas, dirbtinio intelekto įrankius, kursus ir straipsnius lietuvių kalba. Nemokamos rekomendacijos ir patarimai apie AI Lietuvoje." />
-        <meta property="og:title" content="Ponas Obuolys – Dirbtinio intelekto naujienos, įrankiai ir kursai" />
-        <meta property="og:description" content="Naujausios AI naujienos, įrankiai, kursai ir straipsniai lietuvių kalba. Atraskite dirbtinio intelekto galimybes su Ponas Obuolys!" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ponasobuolys.lt/" />
-        <meta property="og:image" content="https://ponasobuolys.lt/og-cover.jpg" />
-      </Helmet>
+      <SEOHead
+        title="AI naujienos, įrankiai ir kursai Lietuvoje"
+        description="Atraskite naujausias dirbtinio intelekto naujienas, AI įrankius, kursus ir straipsnius lietuvių kalba. Nemokamos rekomendacijos ir patarimai apie AI Lietuvoje - ponas Obuolys"
+        canonical={SITE_CONFIG.domain}
+        keywords={[
+          'AI naujienos Lietuva',
+          'dirbtinis intelektas',
+          'AI įrankiai',
+          'AI kursai lietuviškai',
+          'ChatGPT Lietuva',
+          'machine learning',
+        ]}
+        type="website"
+        structuredData={structuredData}
+      />
       <Hero />
       <FeaturedArticles />
       {/* <AINews /> */}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
@@ -66,6 +66,44 @@ const Header = () => {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
+            {/* Paremti mygtukas */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="default" className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+                  <Heart className="h-4 w-4" />
+                  <span>Paremti</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <a 
+                    href="https://www.youtube.com/@ponasObuolys/join" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    <span>YouTube Members</span>
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a 
+                    href="https://www.patreon.com/ponasObuolys" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003"/>
+                    </svg>
+                    <span>Patreon</span>
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -145,7 +183,33 @@ const Header = () => {
               </Link>
             ))}
 
+            {/* Paremti mygtukas mobile */}
             <div className="border-t border-border pt-4 mt-4 space-y-2">
+              <a
+                href="https://www.youtube.com/@ponasObuolys/join"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-2">
+                  <Heart className="h-4 w-4" />
+                  <span>Paremti per YouTube</span>
+                </div>
+              </a>
+              <a
+                href="https://www.patreon.com/ponasObuolys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="flex items-center space-x-2">
+                  <Heart className="h-4 w-4" />
+                  <span>Paremti per Patreon</span>
+                </div>
+              </a>
+
               {user ? (
                 <>
                   <Link
