@@ -36,8 +36,8 @@ const ToolCard = ({ tool }: ToolCardProps) => {
 
   return (
     <Link to={`/irankiai/${tool.slug}`} className="block group">
-      <div className="project-card h-full">
-        {/* Header with icon and title */}
+      <div className={`project-card h-full flex flex-col ${tool.featured ? 'border-2 border-yellow-500/50 hover:border-yellow-500' : ''}`}>
+        {/* Header with icon and title - fixed */}
         <div className="flex items-start gap-3 mb-4">
           <div className={`w-12 h-12 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}>
             <span className="text-white font-bold text-lg">
@@ -45,27 +45,26 @@ const ToolCard = ({ tool }: ToolCardProps) => {
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground line-clamp-2 mb-1">
+            <h3 className="font-semibold text-foreground line-clamp-1 mb-1 text-left truncate" title={tool.name}>
               {tool.name}
             </h3>
-            <p className="text-sm text-foreground/60">
+            <p className="text-sm text-foreground/60 text-left">
               {tool.category || "AI Įrankis"}
             </p>
-            {tool.featured && (
-              <div className="flex items-center gap-1 mt-1">
-                <Star className="w-3 h-3 text-yellow-500" />
-                <span className="text-xs text-yellow-600 font-medium">Rekomenduojama</span>
-              </div>
-            )}
           </div>
-          <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {tool.featured && (
+              <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+            )}
+            <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
         </div>
 
-        {/* Image section */}
+        {/* Image section - fixed height */}
         {tool.image_url && (
-          <div className="aspect-video rounded-lg overflow-hidden bg-muted mb-4">
+          <div className="h-[180px] rounded-lg overflow-hidden bg-muted mb-4">
             <LazyImage
               src={tool.image_url}
               alt={tool.name}
@@ -74,13 +73,15 @@ const ToolCard = ({ tool }: ToolCardProps) => {
           </div>
         )}
 
-        {/* Description */}
-        <p className="text-sm text-foreground/70 line-clamp-3 mb-4">
-          {truncatedDescription}
-        </p>
+        {/* Description - flexible, takes remaining space */}
+        <div className="flex-1 mb-4">
+          <p className="text-sm text-foreground/70 line-clamp-3 text-left">
+            {truncatedDescription}
+          </p>
+        </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-3 mt-auto">
+        {/* Action buttons - fixed at bottom */}
+        <div className="flex items-center gap-3 pt-4 border-t border-border">
           <div className="flex items-center text-xs text-foreground/50">
             <Eye className="w-4 h-4 mr-1" />
             <span>Detaliau</span>

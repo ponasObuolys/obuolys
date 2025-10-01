@@ -97,23 +97,30 @@ const CoursesPage = () => {
             {/* Services Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
               {/* Individual Consultation */}
-              <div className="project-card">
-                <div className="flex items-start gap-3 mb-4">
+              <div className="project-card flex flex-col h-full">
+                {/* Header section - fixed */}
+                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
                   <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
                     <MessageCircle className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">
+                    <h3 className="font-semibold text-foreground mb-1 text-left">
                       Individuali konsultacija
                     </h3>
-                    <p className="text-sm text-foreground/60">1-1 pokalbis, pritaikyti sprendimai</p>
+                    <p className="text-sm text-foreground/60 text-left">1-1 pokalbis, pritaikyti sprendimai</p>
                   </div>
                 </div>
-                <p className="text-sm text-foreground/70 mb-4">
-                  60 minučių asmeninis pokalbis apie jūsų verslo poreikius ir AI galimybes.
-                  Gausite konkrečius rekomendacijas ir veiksmų planą.
-                </p>
-                <div className="flex items-center gap-4 text-xs text-foreground/50">
+                
+                {/* Description section - flexible */}
+                <div className="flex-1 mb-4">
+                  <p className="text-sm text-foreground/70 text-left">
+                    60 minučių asmeninis pokalbis apie jūsų verslo poreikius ir AI galimybes.
+                    Gausite konkrečius rekomendacijas ir veiksmų planą.
+                  </p>
+                </div>
+                
+                {/* Metadata section - fixed at bottom */}
+                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
                     <Clock size={12} />
                     <span>60 min</span>
@@ -126,23 +133,30 @@ const CoursesPage = () => {
               </div>
 
               {/* Group Training */}
-              <div className="project-card">
-                <div className="flex items-start gap-3 mb-4">
+              <div className="project-card flex flex-col h-full">
+                {/* Header section - fixed */}
+                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
                   <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">
+                    <h3 className="font-semibold text-foreground mb-1 text-left">
                       Grupės mokymai
                     </h3>
-                    <p className="text-sm text-foreground/60">Komandos, darbuotojai</p>
+                    <p className="text-sm text-foreground/60 text-left">Komandos, darbuotojai</p>
                   </div>
                 </div>
-                <p className="text-sm text-foreground/70 mb-4">
-                  Specializuoti mokymai jūsų komandai arba organizacijai.
-                  Praktiniai užsiėmimai su realiais pavyzdžiais ir įrankiais.
-                </p>
-                <div className="flex items-center gap-4 text-xs text-foreground/50">
+                
+                {/* Description section - flexible */}
+                <div className="flex-1 mb-4">
+                  <p className="text-sm text-foreground/70 text-left">
+                    Specializuoti mokymai jūsų komandai arba organizacijai.
+                    Praktiniai užsiėmimai su realiais pavyzdžiais ir įrankiais.
+                  </p>
+                </div>
+                
+                {/* Metadata section - fixed at bottom */}
+                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
                     <Clock size={12} />
                     <span>2-4 val</span>
@@ -155,23 +169,30 @@ const CoursesPage = () => {
               </div>
 
               {/* Workshop */}
-              <div className="project-card">
-                <div className="flex items-start gap-3 mb-4">
+              <div className="project-card flex flex-col h-full">
+                {/* Header section - fixed */}
+                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
                   <div className="w-12 h-12 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0">
                     <Star className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">
+                    <h3 className="font-semibold text-foreground mb-1 text-left">
                       AI dirbtuvės
                     </h3>
-                    <p className="text-sm text-foreground/60">Intensyvūs praktiniai užsiėmimai</p>
+                    <p className="text-sm text-foreground/60 text-left">Intensyvūs praktiniai užsiėmimai</p>
                   </div>
                 </div>
-                <p className="text-sm text-foreground/70 mb-4">
-                  Intensyvios praktinės dirbtuvės su konkrečiais projektais.
-                  Nuo AI įrankių iki sprendimų integracijos jūsų veikloje.
-                </p>
-                <div className="flex items-center gap-4 text-xs text-foreground/50">
+                
+                {/* Description section - flexible */}
+                <div className="flex-1 mb-4">
+                  <p className="text-sm text-foreground/70 text-left">
+                    Intensyvios praktinės dirbtuvės su konkrečiais projektais.
+                    Nuo AI įrankių iki sprendimų integracijos jūsų veikloje.
+                  </p>
+                </div>
+                
+                {/* Metadata section - fixed at bottom */}
+                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
                     <Clock size={12} />
                     <span>1-2 dienos</span>
@@ -188,7 +209,7 @@ const CoursesPage = () => {
             {courses.length > 0 && (
               <div className="mb-16">
                 <div className="dark-card">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">Aktualūs kursai</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6 text-left">Aktualūs kursai</h2>
                   {loading ? (
                     <div className="text-center py-8">
                       <p className="text-foreground/60">Kraunami kursai...</p>
