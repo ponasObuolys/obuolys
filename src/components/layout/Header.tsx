@@ -146,7 +146,9 @@ const Header = () => {
                 <Button asChild variant="ghost">
                   <Link to="/auth">Prisijungti</Link>
                 </Button>
-                <Button className="button-primary">Konsultuotis</Button>
+                <Button asChild className="button-primary">
+                  <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
+                </Button>
               </>
             )}
           </div>
@@ -266,8 +268,10 @@ const Header = () => {
                   </div>
                 </Link>
               )}
-              <Button className="w-full button-primary" onClick={() => setMobileMenuOpen(false)}>
-                Konsultuotis
+              <Button asChild className="w-full button-primary">
+                <Link to="/kontaktai?type=KONSULTACIJA" onClick={() => setMobileMenuOpen(false)}>
+                  Konsultuotis
+                </Link>
               </Button>
             </div>
           </div>
