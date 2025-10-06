@@ -22,7 +22,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
     highlights,
     setHighlights
   );
-  const { loading, onSubmit } = useCourseSubmit(id, content, highlights, imageUrl, onSave);
+  const { loading, onSubmit } = useCourseSubmit(id, content, highlights, onSave);
   const { onTitleChange } = useTitleSlugSync(form, id);
 
   if (initialLoading) {

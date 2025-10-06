@@ -18,7 +18,7 @@ const PublicationEditor = ({ id, onCancel, onSave }: PublicationEditorProps) => 
     form
   );
   const { setReadTimeManuallyEdited } = useReadTimeCalculation(content, form);
-  const { loading, onSubmit } = usePublicationSubmit(id, content, imageUrl, onSave);
+  const { loading, onSubmit } = usePublicationSubmit(id, content, onSave);
   const { onTitleChange } = useTitleSlugSync(form, id);
 
   if (initialLoading) {

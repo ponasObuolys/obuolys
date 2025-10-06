@@ -101,7 +101,6 @@ export const useCourseSubmit = (
   id: string | null,
   content: string,
   highlights: string[],
-  imageUrl: string | null,
   onSave: () => void
 ) => {
   const [loading, setLoading] = useState(false);
@@ -128,7 +127,7 @@ export const useCourseSubmit = (
         duration: values.duration,
         level: values.level,
         published: values.published || false,
-        image_url: imageUrl,
+        image_url: values.image_url || null,
         content: content,
         highlights: highlights,
       };
@@ -146,7 +145,7 @@ export const useCourseSubmit = (
           duration: courseDataForSupabase.duration,
           level: courseDataForSupabase.level,
           published: courseDataForSupabase.published,
-          image_url: courseDataForSupabase.image_url ?? null,
+          image_url: values.image_url || null,
           content: courseDataForSupabase.content,
           highlights: courseDataForSupabase.highlights,
         };

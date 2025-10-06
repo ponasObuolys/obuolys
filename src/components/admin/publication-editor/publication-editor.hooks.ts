@@ -145,7 +145,6 @@ export const useReadTimeCalculation = (
 export const usePublicationSubmit = (
   id: string | null,
   content: string,
-  imageUrl: string | null,
   onSave: () => void
 ) => {
   const [loading, setLoading] = useState(false);
@@ -175,7 +174,7 @@ export const usePublicationSubmit = (
         published: values.published || false,
         content_type: values.content_type,
         content: content,
-        image_url: imageUrl,
+        image_url: values.image_url || null,
       };
 
       let response;

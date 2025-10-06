@@ -13,7 +13,7 @@ import type { ToolEditorProps } from "./tool-editor.types";
 const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   const form = useToolForm();
   const { initialLoading, imageUrl, setImageUrl } = useToolData(id, form);
-  const { loading, onSubmit } = useToolSubmit(id, imageUrl, onSave);
+  const { loading, onSubmit } = useToolSubmit(id, onSave);
   const { onNameChange } = useNameSlugSync(form, id);
 
   if (initialLoading) {

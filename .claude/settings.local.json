@@ -32,7 +32,8 @@
       "Bash(do if [ -f \"$file\" ])",
       "Bash(fi)",
       "Bash(grep:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npx.cmd tsc:*)"
     ],
     "deny": [],
     "ask": []

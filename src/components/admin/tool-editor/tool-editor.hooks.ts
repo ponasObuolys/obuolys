@@ -67,7 +67,7 @@ export const useToolData = (id: string | null, form: UseFormReturn<ToolFormData>
   return { initialLoading, imageUrl, setImageUrl };
 };
 
-export const useToolSubmit = (id: string | null, imageUrl: string | null, onSave: () => void) => {
+export const useToolSubmit = (id: string | null, onSave: () => void) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -77,7 +77,7 @@ export const useToolSubmit = (id: string | null, imageUrl: string | null, onSave
 
       const toolData = {
         ...values,
-        image_url: imageUrl,
+        image_url: values.image_url || null,
       };
 
       let response;
