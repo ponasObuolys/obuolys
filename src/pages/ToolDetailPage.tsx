@@ -77,7 +77,7 @@ const ToolDetailPage = () => {
     return (
       <div className="container mx-auto py-16 text-center">
         {/* Galima pridėti spinnerį */}
-        <p className="text-xl text-muted-foreground">Kraunama įrankio informacija...</p>
+        <p className="text-xl text-gray-200">Kraunama įrankio informacija...</p>
       </div>
     );
   }
@@ -86,7 +86,7 @@ const ToolDetailPage = () => {
     return (
       <div className="container mx-auto py-16 text-center">
         <h1 className="text-3xl font-semibold mb-6">Įrankis nerastas</h1>
-        <p className="text-muted-foreground mb-8">Atsiprašome, bet įrankis, kurio ieškote, neegzistuoja.</p>
+        <p className="text-gray-200 mb-8">Atsiprašome, bet įrankis, kurio ieškote, neegzistuoja.</p>
         <Link to="/irankiai">
           <Button variant="default">
             <ArrowLeft className="mr-2 h-4 w-4" /> Grįžti į įrankių sąrašą

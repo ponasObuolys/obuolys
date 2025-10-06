@@ -169,7 +169,7 @@ const CourseDetail: FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
             <div className="text-center mb-6">
               <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
-              <div className="text-sm mb-4 text-gray-500">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
+              <div className="text-sm mb-4 text-gray-200">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
               <Button 
                 className="w-full button-primary text-lg py-6"
                 onClick={() => window.location.href = getPatreonLink(course.slug)}

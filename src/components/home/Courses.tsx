@@ -72,9 +72,9 @@ const Courses = () => {
               Array.from({ length: 4 - courses.length }).map((_, index) => (
                 <div
                   key={`empty-${index}`}
-                  className="course-card-placeholder rounded-lg border border-dashed border-gray-300 h-[300px] flex items-center justify-center"
+                  className="course-card-placeholder rounded-lg border border-dashed border-gray-600 h-[300px] flex items-center justify-center"
                 >
-                  <p className="text-gray-400">Netrukus bus daugiau kursų</p>
+                  <p className="text-gray-200">Netrukus bus daugiau kursų</p>
                 </div>
               ))}
           </div>

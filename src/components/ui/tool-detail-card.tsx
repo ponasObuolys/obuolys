@@ -46,7 +46,7 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
           <Badge variant="secondary" className="text-sm py-1 px-3 w-fit">{tool.category}</Badge>
         </div>
         
-        <CardDescription className="text-lg text-muted-foreground mb-6">
+        <CardDescription className="text-lg text-gray-200 mb-6">
           {tool.description}
         </CardDescription>
 
@@ -58,7 +58,7 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
                 <h3 className="text-xl font-semibold flex items-center text-green-600">
                   <CheckCircle className="mr-2 h-5 w-5" /> Privalumai
                 </h3>
-                <ul className="list-none space-y-1 text-muted-foreground">
+                <ul className="list-none space-y-1 text-gray-200">
                   {tool.pros.map((pro, index) => (
                     <li key={`pro-${index}`} className="flex items-start">
                       <CheckCircle className="w-4 h-4 mr-2 mt-1 text-green-500 flex-shrink-0" />
@@ -73,7 +73,7 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
                 <h3 className="text-xl font-semibold flex items-center text-red-600">
                   <XCircle className="mr-2 h-5 w-5" /> Trūkumai
                 </h3>
-                <ul className="list-none space-y-1 text-muted-foreground">
+                <ul className="list-none space-y-1 text-gray-200">
                   {tool.cons.map((con, index) => (
                     <li key={`con-${index}`} className="flex items-start">
                       <XCircle className="w-4 h-4 mr-2 mt-1 text-red-500 flex-shrink-0" />
@@ -90,7 +90,7 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
         {tool.usage_examples && tool.usage_examples.length > 0 && (
           <div className="mb-8">
             <h3 className="text-xl font-semibold mb-3">Naudojimo pavyzdžiai</h3>
-            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+            <ul className="list-disc list-inside space-y-1 text-gray-200">
               {tool.usage_examples.map((example, index) => (
                 <li key={`example-${index}`}>{example}</li>
               ))}

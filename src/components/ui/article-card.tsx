@@ -39,10 +39,10 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground line-clamp-2 mb-1 text-left">
+            <h3 className="font-semibold line-clamp-2 mb-1 text-left">
               {article.title}
             </h3>
-            <p className="text-sm text-foreground/60 text-left">
+            <p className="text-sm text-gray-200 text-left">
               {article.category || "AI Naujienos"}
             </p>
           </div>
@@ -63,12 +63,12 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         )}
 
         {/* Description */}
-        <p className="text-sm text-foreground/70 line-clamp-3 mb-3 text-left">
+        <p className="text-sm text-gray-200 line-clamp-3 mb-3 text-left">
           {article.description}
         </p>
 
         {/* Metadata */}
-        <div className="flex items-center gap-4 text-xs text-foreground/50 mt-auto">
+        <div className="flex items-center gap-4 text-xs text-gray-200 mt-auto">
           <div className="flex items-center gap-1">
             <CalendarDays size={14} />
             <span>{new Date(article.date).toLocaleDateString('lt-LT')}</span>

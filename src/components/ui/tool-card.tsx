@@ -45,10 +45,10 @@ const ToolCard = ({ tool }: ToolCardProps) => {
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground line-clamp-1 mb-1 text-left truncate" title={tool.name}>
+            <h3 className="font-semibold line-clamp-1 mb-1 text-left truncate" title={tool.name}>
               {tool.name}
             </h3>
-            <p className="text-sm text-foreground/60 text-left">
+            <p className="text-sm text-gray-200 text-left">
               {tool.category || "AI Įrankis"}
             </p>
           </div>
@@ -75,14 +75,14 @@ const ToolCard = ({ tool }: ToolCardProps) => {
 
         {/* Description - flexible, takes remaining space */}
         <div className="flex-1 mb-4">
-          <p className="text-sm text-foreground/70 line-clamp-3 text-left">
+          <p className="text-sm text-gray-200 line-clamp-3 text-left">
             {truncatedDescription}
           </p>
         </div>
 
         {/* Action buttons - fixed at bottom */}
         <div className="flex items-center gap-3 pt-4 border-t border-border">
-          <div className="flex items-center text-xs text-foreground/50">
+          <div className="flex items-center text-xs text-gray-200">
             <Eye className="w-4 h-4 mr-1" />
             <span>Detaliau</span>
           </div>

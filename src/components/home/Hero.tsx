@@ -34,13 +34,13 @@ const Hero = () => {
               {/* Left side - Text content */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-sm text-foreground/60">AI Specialistas</span>
+                  <span className="text-sm text-gray-200">AI Specialistas</span>
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground text-left">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-left">
                   Aš esu <span className="text-primary">ponas Obuolys</span>
                 </h1>
 
-                <p className="text-xl text-foreground/80 leading-relaxed text-left">
+                <p className="text-xl text-gray-200 leading-relaxed text-left">
                   Dirbtinio intelekto specialistas iš Lietuvos.
                   Šiuo metu kuriu AI sprendimus ir konsultuoju verslo įmones apie dirbtinio intelekto galimybes.
                 </p>
@@ -93,8 +93,8 @@ const Hero = () => {
                     <span className="text-white font-bold">AN</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground text-left">AI Naujienos</h3>
-                    <p className="text-sm text-foreground/60 text-left">Publikacijos, Straipsniai</p>
+                    <h3 className="font-semibold text-left">AI Naujienos</h3>
+                    <p className="text-sm text-gray-200 text-left">Publikacijos, Straipsniai</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -109,8 +109,8 @@ const Hero = () => {
                     <span className="text-white font-bold">K</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground text-left">Kursai</h3>
-                    <p className="text-sm text-foreground/60 text-left">Mokymai, Konsultacijos</p>
+                    <h3 className="font-semibold text-left">Kursai</h3>
+                    <p className="text-sm text-gray-200 text-left">Mokymai, Konsultacijos</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -125,8 +125,8 @@ const Hero = () => {
                     <span className="text-white font-bold">Į</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground text-left">Įrankiai</h3>
-                    <p className="text-sm text-foreground/60 text-left">AI sprendimai</p>
+                    <h3 className="font-semibold text-left">Įrankiai</h3>
+                    <p className="text-sm text-gray-200 text-left">AI sprendimai</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

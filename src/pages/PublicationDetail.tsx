@@ -161,7 +161,7 @@ const PublicationDetail = () => {
 
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{publication.title}</h1>
 
-            <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-200">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
                 <span>{new Date(publication.date).toLocaleDateString("lt-LT")}</span>
@@ -184,7 +184,7 @@ const PublicationDetail = () => {
                 />
               </div>
             ) : (
-              <div className="h-64 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 mb-8">
+              <div className="h-64 bg-gray-800 rounded-md flex items-center justify-center text-gray-200 mb-8">
                 Publikacijos nuotrauka
               </div>
             )}

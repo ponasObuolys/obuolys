@@ -61,7 +61,7 @@ const FeaturedArticles = () => {
           <h2 className="mb-3">
             Populiariausios <span className="gradient-text">AI naujienos</span>
           </h2>
-          <p className="text-foreground/80">
+          <p className="text-gray-200">
             Naujausios ir populiariausios publikacijos apie dirbtinį intelektą ir jo pritaikymą
           </p>
         </div>
