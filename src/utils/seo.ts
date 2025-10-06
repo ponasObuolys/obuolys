@@ -26,11 +26,11 @@ export interface BreadcrumbItem {
 
 const SITE_CONFIG = {
   name: 'ponas Obuolys',
-  domain: 'https://ponasobuolys.lt',
+  domain: 'https://www.ponasobuolys.lt',
   defaultTitle: 'ponas Obuolys - AI naujienos, įrankiai ir kursai Lietuvoje',
   defaultDescription:
     'Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba. AI ekspertas Lietuvoje - ponas Obuolys',
-  defaultImage: 'https://ponasobuolys.lt/opengraph-image.png',
+  defaultImage: 'https://www.ponasobuolys.lt/opengraph-image.png',
   twitterHandle: '@ponasobuolys',
   facebookAppId: 'your-app-id',
   locale: 'lt_LT',
