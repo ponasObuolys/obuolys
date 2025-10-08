@@ -143,11 +143,11 @@ const CourseDetail: FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
-              <p className="text-lg mb-6">{course.description}</p>
+            <div className="dark-card mb-8 text-left">
+              <h1 className="text-3xl font-bold mb-4 text-foreground">{course.title}</h1>
+              <p className="text-lg mb-6 text-foreground/80">{course.description}</p>
 
-              <div className="flex flex-wrap gap-4 mb-6">
+              <div className="flex flex-wrap gap-4 mb-6 text-foreground/70">
                 <div className="flex items-center">
                   <Clock className="mr-2 h-5 w-5 text-primary" />
                   <span>{course.duration}</span>
@@ -155,32 +155,32 @@ const CourseDetail: FC = () => {
               </div>
 
             <Tabs defaultValue="aprasymas" className="mb-8">
-              <TabsList>
+              <TabsList className="w-full justify-start">
                 <TabsTrigger value="aprasymas">Aprašymas</TabsTrigger>
               </TabsList>
-              <TabsContent value="aprasymas">
-                <SafeRichText content={course.content} className="prose max-w-none" />
+              <TabsContent value="aprasymas" className="text-left">
+                <SafeRichText content={course.content} className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left" />
               </TabsContent>
             </Tabs>
           </div>
         </div>
-        
+
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
+          <div className="dark-card sticky top-24">
             <div className="text-center mb-6">
               <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
-              <div className="text-sm mb-4 text-gray-200">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
-              <Button 
+              <div className="text-sm mb-4 text-foreground/60">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
+              <Button
                 className="w-full button-primary text-lg py-6"
                 onClick={() => window.location.href = getPatreonLink(course.slug)}
               >
                 Įsigyti kursą
               </Button>
             </div>
-            
-            <div className="border-t border-gray-200 pt-6">
-              <h4 className="font-bold mb-4">Kursas apima:</h4>
-              <ul className="space-y-3">
+
+            <div className="border-t border-border pt-6">
+              <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+              <ul className="space-y-3 text-left text-foreground/80">
                 <li className="flex items-start">
                   <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <span>Neribota prieiga prie kurso medžiagos</span>
