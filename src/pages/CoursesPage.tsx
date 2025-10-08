@@ -228,10 +228,10 @@ const CoursesPage = () => {
 
   return (
     <>
-      {/* Custom cursor-following tooltip */}
+      {/* Custom cursor-following tooltip - only on desktop */}
       {showTooltip && (
         <div
-          className="fixed z-[100] pointer-events-none bg-primary text-white font-medium text-sm px-4 py-2 rounded-lg shadow-lg"
+          className="hidden md:block fixed z-[100] pointer-events-none bg-primary text-white font-medium text-sm px-4 py-2 rounded-lg shadow-lg"
           style={{
             left: `${tooltipPosition.x + 15}px`,
             top: `${tooltipPosition.y + 15}px`,

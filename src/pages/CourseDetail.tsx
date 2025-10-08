@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { secureLogger } from '@/utils/browserLogger';
 import { useEffect, useState } from 'react';
@@ -154,18 +153,14 @@ const CourseDetail: FC = () => {
                 </div>
               </div>
 
-            <Tabs defaultValue="aprasymas" className="mb-8">
-              <TabsList className="w-full justify-start">
-                <TabsTrigger value="aprasymas">Aprašymas</TabsTrigger>
-              </TabsList>
-              <TabsContent value="aprasymas" className="text-left">
-                <SafeRichText content={course.content} className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left" />
-              </TabsContent>
-            </Tabs>
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-6 text-foreground text-left">Aprašymas</h2>
+              <SafeRichText content={course.content} className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left" />
+            </div>
+            </div>
           </div>
-        </div>
 
-        <div className="lg:col-span-1">
+          <div className="lg:col-span-1">
           <div className="dark-card sticky top-24">
             <div className="text-center mb-6">
               <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
