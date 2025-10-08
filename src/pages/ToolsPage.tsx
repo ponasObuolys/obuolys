@@ -125,7 +125,7 @@ const ToolsPage = () => {
             </div>
 
             {/* Paieškos ir kategorijų sekcija */}
-            <div className="mb-8">
+            <div className="mb-12">
               {/* Paieškos komponentas */}
               <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
@@ -162,7 +162,7 @@ const ToolsPage = () => {
             )}
 
             {/* Apie rekomendacijas sekcija */}
-            <div className="mt-16">
+            <div className="mt-12">
               <div className="dark-card">
                 <h2 className="text-3xl font-bold text-foreground mb-4">Apie įrankių rekomendacijas</h2>
                 <p className="text-foreground/80 mb-6 leading-relaxed">

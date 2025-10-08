@@ -338,7 +338,7 @@ const CoursesPage = () => {
             </div>
 
             {/* Services Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {/* Individual Consultation */}
               <div
                 className="project-card flex flex-col h-full"
@@ -477,7 +477,7 @@ const CoursesPage = () => {
 
             {/* Available Courses */}
             {courses.length > 0 && (
-              <div className="mb-16">
+              <div className="mb-12">
                 <div className="dark-card">
                   <h2 className="text-2xl font-bold text-foreground mb-6 text-left">Aktualūs kursai</h2>
                   {loading ? (
@@ -514,7 +514,7 @@ const CoursesPage = () => {
             )}
 
             {/* Process Section */}
-            <div className="dark-card mb-16">
+            <div className="dark-card mb-12">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-foreground mb-4">
                   Kaip vyksta konsultacijos?

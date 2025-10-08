@@ -101,7 +101,7 @@ const PublicationsPage = () => {
                 Visi naujausi AI straipsniai ir publikacijos iš Ponas Obuolys komandos.
               </p>
             </div>
-          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-200 h-5 w-5" />
               <Input
