@@ -162,6 +162,7 @@ const AdminDashboard = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
+            <TabsTrigger value="inquiries">Verslo užklausos</TabsTrigger>
             <TabsTrigger value="performance">Našumas</TabsTrigger>
           </TabsList>
 
@@ -309,6 +310,25 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <UserManager onUpdate={fetchDashboardStats} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="inquiries">
+            <Card>
+              <CardHeader>
+                <CardTitle>Verslo Sprendimų Užklausos</CardTitle>
+                <CardDescription>
+                  Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={() => window.location.href = '/admin/inquiries'}
+                  className="button-primary"
+                >
+                  Atidaryti užklausų valdymo puslapį
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>

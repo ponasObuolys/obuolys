@@ -25,6 +25,7 @@ const Header = () => {
     { to: '/publikacijos', label: 'AI Naujienos' },
     { to: '/kursai', label: 'Kursai' },
     { to: '/irankiai', label: 'Įrankiai' },
+    { to: '/verslo-sprendimai', label: 'Verslo Sprendimai' },
     { to: '/kontaktai', label: 'Kontaktai' },
   ];
 

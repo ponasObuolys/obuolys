@@ -58,6 +58,9 @@ const ContactPage = createLazyComponent(() => import("./pages/ContactPage"), {
 const SupportPage = createLazyComponent(() => import("./pages/SupportPage"), {
   cacheKey: "support",
 });
+const CustomSolutionsPage = createLazyComponent(() => import("./pages/CustomSolutionsPage"), {
+  cacheKey: "custom-solutions",
+});
 
 // Authentication and admin pages with separate chunking
 const Auth = createNamedLazyComponent("auth-pages", () => import("./pages/Auth"));
@@ -77,6 +80,10 @@ const AdminSetup = createNamedLazyComponent(
 const AdminInfo = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./components/admin/AdminInfo")
+);
+const AdminInquiriesPage = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./pages/admin/InquiriesPage")
 );
 
 const queryClient = new QueryClient({
@@ -156,6 +163,11 @@ const App = () => {
         path: "support",
         importFn: () => import("./pages/SupportPage"),
         priority: "low",
+      },
+      {
+        path: "custom-solutions",
+        importFn: () => import("./pages/CustomSolutionsPage"),
+        priority: "medium",
       },
       {
         path: "publication-detail",
@@ -343,6 +355,18 @@ const App = () => {
                             </ContentRouteErrorBoundary>
                           }
                         />
+                        <Route
+                          path="/verslo-sprendimai"
+                          element={
+                            <ContentRouteErrorBoundary routePath="/verslo-sprendimai" routeName="CustomSolutionsPage">
+                              <SuspenseWithChunkError
+                                fallback={<LoadingSpinner text="Kraunami verslo sprendimai..." />}
+                              >
+                                <CustomSolutionsPage />
+                              </SuspenseWithChunkError>
+                            </ContentRouteErrorBoundary>
+                          }
+                        />
 
                         {/* Authentication routes with auth error boundaries */}
                         <Route
@@ -434,6 +458,23 @@ const App = () => {
                                 <AdminInfo />
                               </SuspenseWithChunkError>
                             </ContentRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/admin/inquiries"
+                          element={
+                            <AdminRouteErrorBoundary
+                              routePath="/admin/inquiries"
+                              routeName="AdminInquiriesPage"
+                            >
+                              <SuspenseWithChunkError
+                                fallback={
+                                  <LoadingSpinner text="Kraunamos užklausos..." />
+                                }
+                              >
+                                <AdminInquiriesPage />
+                              </SuspenseWithChunkError>
+                            </AdminRouteErrorBoundary>
                           }
                         />
 

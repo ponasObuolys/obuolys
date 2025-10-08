@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
@@ -35,7 +34,7 @@ const getPatreonLink = (slug: string): string => {
   return patreonLinks[slug] || '#';
 };
 
-const CourseDetail: FC = () => {
+const CourseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);

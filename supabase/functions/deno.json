@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": false
+  },
+  "lint": {
+    "include": ["**/*.ts"],
+    "exclude": ["**/node_modules"]
+  }
+}

@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import LazyImage from '@/components/ui/lazy-image';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Heart } from 'lucide-react';
 
 import { Helmet } from 'react-helmet-async';
 
-const SupportPage: FC = () => {
+const SupportPage = () => {
   return (
     <>
       <Helmet>
