@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 
 import SEOHead from '@/components/SEO';
 import { generateCourseSEO, generateCourseStructuredData, generateBreadcrumbStructuredData } from '@/utils/seo';
+import { ShareButton } from '@/components/ui/share-button';
 
 interface Course {
   id: string;
@@ -142,7 +143,17 @@ const CourseDetail = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="dark-card mb-8 text-left">
-              <h1 className="text-3xl font-bold mb-4 text-foreground">{course.title}</h1>
+              <div className="flex items-start justify-between mb-4">
+                <h1 className="text-3xl font-bold text-foreground flex-1">{course.title}</h1>
+                <ShareButton
+                  title={course.title}
+                  description={course.description}
+                  url={`https://ponasobuolys.lt/kursai/${slug}`}
+                  imageUrl={course.image_url || undefined}
+                  variant="outline"
+                  size="default"
+                />
+              </div>
               <p className="text-lg mb-6 text-foreground/80">{course.description}</p>
 
               <div className="flex flex-wrap gap-4 mb-6 text-foreground/70">

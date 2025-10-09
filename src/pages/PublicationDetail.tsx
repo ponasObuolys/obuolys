@@ -20,6 +20,7 @@ import {
   generateArticleStructuredData,
   generateBreadcrumbStructuredData,
 } from "@/utils/seo";
+import { ShareButton } from "@/components/ui/share-button";
 
 type Publication = Tables<"articles">;
 
@@ -159,7 +160,17 @@ const PublicationDetail = () => {
               <Badge variant="outline">{publication.category}</Badge>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{publication.title}</h1>
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold flex-1">{publication.title}</h1>
+              <ShareButton
+                title={publication.title}
+                description={publication.description || publication.content?.substring(0, 200) || ''}
+                url={`https://ponasobuolys.lt/publikacijos/${slug}`}
+                imageUrl={publication.image_url || undefined}
+                variant="outline"
+                size="default"
+              />
+            </div>
 
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-200">
               <div className="flex items-center">

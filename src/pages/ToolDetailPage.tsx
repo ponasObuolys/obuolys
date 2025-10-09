@@ -10,6 +10,7 @@ import { log } from '@/utils/browserLogger';
 
 import SEOHead from '@/components/SEO';
 import { generateToolSEO, generateBreadcrumbStructuredData } from '@/utils/seo';
+import { ShareButton } from '@/components/ui/share-button';
 
 // Definuojame Tool tipą čia, kad atitiktų ToolDetailCard
 interface Tool {
@@ -147,17 +148,26 @@ const ToolDetailPage = () => {
     <>
       {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
       <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4 py-8 max-w-3xl"> 
-          <div className="mb-8">
+        <div className="container mx-auto px-4 py-8 max-w-3xl">
+          <div className="mb-8 flex items-center justify-between">
             <Link to="/irankiai">
-              <Button variant="outline" className="mb-8 group flex items-center">
-                <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" /> 
+              <Button variant="outline" className="group flex items-center">
+                <ArrowLeft className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
                 <span>Grįžti į įrankių sąrašą</span>
               </Button>
             </Link>
+
+            <ShareButton
+              title={tool.name}
+              description={tool.description}
+              url={`https://ponasobuolys.lt/irankiai/${slug}`}
+              imageUrl={tool.image_url}
+              variant="outline"
+              size="default"
+            />
           </div>
 
-          {/* Naudojamas ToolDetailCard komponentas */} 
+          {/* Naudojamas ToolDetailCard komponentas */}
           <ToolDetailCard tool={tool} />
         </div>
       </section>
