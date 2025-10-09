@@ -139,10 +139,10 @@ const CustomSolutionsPage = () => {
       duration: '2-4 savaitės',
       features: [
         'Pagrindinį funkcionalumą (1-3 funkcijos)',
-        '1-3 vartotojų roles',
-        'Responsive design (desktop + mobile)',
-        'Bazinį deployment ir dokumentaciją',
-        '1 mėnuo nemokamo support',
+        '1-3 vartotojų vaidmenis',
+        'Responsive dizainą (kompiuteriui ir mobiliam)',
+        'Bazinį paleidimą ir dokumentaciją',
+        '1 mėnesį nemokamos pagalbos',
         'Mokymus, kaip naudotis sistema'
       ],
       bestFor: 'Norite greitai išbandyti idėją, minimali investicija, planuojate plėsti vėliau',
@@ -154,13 +154,13 @@ const CustomSolutionsPage = () => {
       duration: '4-8 savaitės',
       features: [
         'Pilną funkcionalumą (5-10 funkcijų)',
-        'Multi-user sistemą su skirtingomis rolėmis',
+        'Kelių vartotojų sistemą su skirtingais vaidmenimis',
         'Integracijas su trečiųjų šalių sistemomis (2-3)',
-        'Advanced features (reporting, notifications)',
-        'Professional design su custom branding',
-        'Deployment į production aplinką',
+        'Papildomas galimybes (ataskaitos, pranešimai)',
+        'Profesionalų dizainą su individualiu prekės ženklu',
+        'Paleidimą į veikiančią aplinką',
         'Pilną dokumentaciją',
-        '2 mėnesiai nemokamo support',
+        '2 mėnesius nemokamos pagalbos',
         'Išsamius mokymus komandai'
       ],
       bestFor: 'Norite pilnai funkcionuojančios sistemos, kuri sprendžia visas pagrindines problemas',
@@ -171,16 +171,16 @@ const CustomSolutionsPage = () => {
       priceRange: '€12,000 - €25,000+',
       duration: '2-3+ mėnesiai',
       features: [
-        'Enterprise level funkcionalumą',
-        'Sudėtingas integracijas (API, legacy systems)',
-        'Advanced analytics ir reporting',
-        'Custom API kitiems sistemoms',
-        'Skalę iki 100+ vartotojų',
-        'High availability ir disaster recovery',
+        'Įmonės lygio funkcionalumą',
+        'Sudėtingas integracijas (API, senosios sistemos)',
+        'Išplėstinę analitiką ir ataskaitas',
+        'Individualų API kitoms sistemoms',
+        'Galimybę mąstelį iki 100+ vartotojų',
+        'Aukštą prieinamumą ir atsigavimą po gedimų',
         'Nuodugnią dokumentaciją',
-        '3 mėnesiai nemokamo support',
-        'Priority support',
-        'Išsamius mokymus ir onboarding'
+        '3 mėnesius nemokamos pagalbos',
+        'Pirmenybinę pagalbą',
+        'Išsamius mokymus ir įdiegimą'
       ],
       bestFor: 'Didelės apimties projektas, kritiškas verslui, enterprise reikalavimai',
       popular: false
@@ -209,16 +209,16 @@ const CustomSolutionsPage = () => {
       title: 'Kūrimas ir Testavimas',
       duration: '2-12 savaičių',
       icon: '⚙️',
-      description: 'Iteratyvus kūrimas (kas 1-2 savaitės demo), reguliarūs progress update\'ai, testavimas kiekviename etape, jūsų feedback įtraukimas procese.',
-      output: 'Veikianti sistema, pilna dokumentacija, test rezultatai'
+      description: 'Iteratyvus kūrimas (kas 1-2 savaitės demonstracija), reguliarūs pažangos pranešimai, testavimas kiekviename etape, jūsų atsiliepimų įtraukimas į procesą.',
+      output: 'Veikianti sistema, pilna dokumentacija, testavimo rezultatai'
     },
     {
       number: 4,
       title: 'Paleidimas ir Palaikymas',
-      duration: '1 savaitė + ongoing',
+      duration: '1 savaitė + nuolatinis',
       icon: '🚀',
-      description: 'Deployment į production aplinką, duomenų migracija (jei reikia), komandos apmokymai, soft launch su realiais vartotojais, official launch.',
-      output: 'Live sistema, apmokyti vartotojai, support sutartis'
+      description: 'Paleidimas į veikiančią aplinką, duomenų perkėlimas (jei reikia), komandos apmokymai, bandomasis paleidimas su realiais vartotojais, oficialus paleidimas.',
+      output: 'Veikianti sistema, apmokyti vartotojai, pagalbos sutartis'
     }
   ];
 
@@ -226,7 +226,7 @@ const CustomSolutionsPage = () => {
     {
       icon: '❤️',
       title: 'Entuziazmas, o ne tik darbas',
-      description: 'Man tai ne darbas - tai aiškė. Kiekvienas projektas man asmeniškas iššūkis. Kuriu sistemą taip, tarsi sau - su atidumu detalėms ir aiškė kokybei.'
+      description: 'Man tai ne darbas - tai aistra. Kiekvienas projektas man asmeniškas iššūkis. Kuriu sistemą taip, tarsi sau - su atidumu detalėms ir dėmesiu kokybei.'
     },
     {
       icon: '⚡',
@@ -241,7 +241,7 @@ const CustomSolutionsPage = () => {
     {
       icon: '🌐',
       title: 'Modernios technologijos',
-      description: 'Naudoju naujausias debesų technologijas (Supabase, Vercel), užtikrinančias greitį ir sklandumą, 99.9% uptime, automatinį backup, lengvą scalability, saugumą ir GDPR compliance.'
+      description: 'Naudoju naujausias debesijos technologijas (Supabase, Vercel), užtikrinančias greitį ir sklandumą, 99.9% veikimo laiką, automatines atsargines kopijas, lengvą mastelio keitimą, saugumą ir BDAR atitiktį.'
     },
     {
       icon: '👤',
@@ -311,8 +311,8 @@ const CustomSolutionsPage = () => {
                 <span className="gradient-text">Jūsų Unikalias Problemas</span>
               </h1>
               <p className="text-xl md:text-2xl text-foreground/80 max-w-4xl mx-auto mb-8">
-                Pirmiausia išklausau jūsų iššūkius, tada kuriu sprendimą, kurį mylėsite naudoti kasdien.
-                Specializuojuosi logistikos srityje, bet nekuriu ribų verslo automatizacijai.
+                Pirmiausia išklausau jūsų iššūkius, tada kuriu įrankį, kuris taps kasdienės veiklos dalimi.
+                Specializuojuosi logistikos srityje, bet nebijau sudėtingų verslo automatizacijos iššūkių.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <button
@@ -469,7 +469,7 @@ const CustomSolutionsPage = () => {
             </h2>
             <p className="text-center text-foreground/70 mb-12 max-w-3xl mx-auto">
               Kainos priklauso nuo projekto sudėtingumo, funkcionalumo ir trukmės.
-              Siūlau trims lygiam atitinkančius rėžius:
+              Siūlau tris skirtingus paketus:
             </p>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
               {pricingPlans.map((plan, idx) => (
@@ -486,23 +486,23 @@ const CustomSolutionsPage = () => {
               <h3 className="text-2xl font-bold mb-6 text-foreground">Papildomos Paslaugos:</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <h4 className="font-bold text-foreground mb-2">Hosting & Infrastruktūra</h4>
+                  <h4 className="font-bold text-foreground mb-2">Talpinimas ir Infrastruktūra</h4>
                   <p className="text-primary font-bold mb-2">€50 - €200/mėn</p>
                   <ul className="text-sm text-foreground/70 space-y-1">
-                    <li>• Modernus cloud hosting</li>
-                    <li>• Automatiniai backup'ai</li>
+                    <li>• Modernus debesijos talpinimas</li>
+                    <li>• Automatinės atsarginės kopijos</li>
                     <li>• SSL sertifikatai</li>
-                    <li>• 99.9% uptime garantija</li>
+                    <li>• 99.9% veikimo laiko garantija</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-foreground mb-2">Maintenance & Support</h4>
+                  <h4 className="font-bold text-foreground mb-2">Priežiūra ir Pagalba</h4>
                   <p className="text-primary font-bold mb-2">€200 - €500/mėn</p>
                   <ul className="text-sm text-foreground/70 space-y-1">
-                    <li>• Bug fixes ir techninė pagalba</li>
-                    <li>• Mažos funkcijos ir patobulinimai</li>
+                    <li>• Klaidų taisymas ir techninė pagalba</li>
+                    <li>• Nedidelės funkcijos ir patobulinimai</li>
                     <li>• Saugumo atnaujinimai</li>
-                    <li>• Priority support</li>
+                    <li>• Pirmenybinė pagalba</li>
                   </ul>
                 </div>
                 <div>
@@ -575,8 +575,8 @@ const CustomSolutionsPage = () => {
             </h2>
             <p className="text-xl text-foreground/80 mb-8">
               Užpildykite trumpą formą ir per 24 valandas susisieksiu su jumis.
-              Pirma 30-60 minučių konsultacija nemokama - aptarsime jūsų poreikius,
-              įvertinsime galimybes ir suformuosime preliminarų planą.
+              Pirmoji 30-60 minučių konsultacija nemokama - aptarsime jūsų poreikius,
+              įvertinsime galimybes ir sudarysime preliminarų planą.
             </p>
             <button
               onClick={() => setShowForm(true)}
@@ -586,7 +586,7 @@ const CustomSolutionsPage = () => {
               Užsiregistruoti konsultacijai
             </button>
             <p className="text-sm text-foreground/60 mt-6">
-              Jūsų duomenys saugūs. Nesidalinsiu su trečiosiomis šalimis. Susisieksiu per 24 val darbo dienomis.
+              Jūsų duomenys saugūs. Nesidalinsiu su trečiosiomis šalimis. Susisieksiu per 24 val. darbo dienomis.
             </p>
           </div>
         </div>
