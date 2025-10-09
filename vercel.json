@@ -1,5 +1,44 @@
 {
+  "functions": {
+    "api/_prerender.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
+    {
+      "source": "/publikacijos/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot).*"
+        }
+      ],
+      "destination": "/api/_prerender?url=/publikacijos/:slug"
+    },
+    {
+      "source": "/kursai/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot).*"
+        }
+      ],
+      "destination": "/api/_prerender?url=/kursai/:slug"
+    },
+    {
+      "source": "/irankiai/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot).*"
+        }
+      ],
+      "destination": "/api/_prerender?url=/irankiai/:slug"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
