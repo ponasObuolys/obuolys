@@ -30,6 +30,7 @@ npm run preview
 - The project uses Vite for fast development and building
 - ESLint is configured for code quality checks
 - No explicit typecheck command configured - run TypeScript compiler directly: `npx tsc --noEmit`
+- NEVER make Git commits or pushes
 
 ## Architecture Overview
 
