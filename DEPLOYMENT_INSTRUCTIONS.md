@@ -2,7 +2,7 @@
 
 ## ✅ Kas buvo sukurta
 
-1. **api/_prerender.js** - Vercel Serverless Function, kuri fetches pre-rendered content iš Prerender.io
+1. **api/prerender.js** - Vercel Serverless Function, kuri fetches pre-rendered content iš Prerender.io
 2. **vercel.json** - Atnaujintas su conditional rewrites botams
 3. **PRERENDER_SETUP.md** - Pilnos setup instrukcijos
 4. **FACEBOOK_SHARING_FIX.md** - Problemų sprendimo dokumentacija
@@ -65,7 +65,7 @@ vercel --prod
 npm run dev
 
 # In another terminal, test API:
-curl "http://localhost:5173/api/_prerender?url=/publikacijos/dirbtinio-intelekto-dalgis-pjauna-darbo-vietas"
+curl "http://localhost:5173/api/prerender?url=/publikacijos/dirbtinio-intelekto-dalgis-pjauna-darbo-vietas"
 ```
 
 **Expected**: Should return pre-rendered HTML with correct OG tags
@@ -146,7 +146,7 @@ Check that:
 
 4. **Check Vercel Function Logs**:
    - Go to Vercel Dashboard → Functions
-   - Check `api/_prerender.js` logs
+   - Check `api/prerender.js` logs
    - Look for errors
 
 ---
