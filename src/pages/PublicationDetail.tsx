@@ -23,6 +23,10 @@ import {
 import { ShareButton } from "@/components/ui/share-button";
 import { RelatedArticles } from "@/components/publications/related-articles";
 import { useRelatedArticles } from "@/hooks/use-related-articles";
+import { BookmarkButton } from "@/components/publications/bookmark-button";
+import { ReadingProgressBar } from "@/components/reading/reading-progress-bar";
+import { useReadingProgress } from "@/hooks/use-reading-progress";
+import { CommentsSection } from "@/components/comments/comments-section";
 
 type Publication = Tables<"articles">;
 
@@ -32,6 +36,8 @@ const PublicationDetail = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const contentRef = useRef<HTMLDivElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useLazyImages(contentRef);
 
@@ -41,6 +47,43 @@ const PublicationDetail = () => {
     categories: publication?.category || [],
     limit: 3,
   });
+
+  // Track reading progress
+  useReadingProgress({
+    articleId: publication?.id || "",
+    progress: scrollProgress,
+  });
+
+  // Calculate scroll progress
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!articleRef.current) return;
+      
+      const element = articleRef.current;
+      const rect = element.getBoundingClientRect();
+      const elementHeight = element.offsetHeight;
+      const viewportHeight = window.innerHeight;
+      const scrolled = -rect.top;
+      const total = elementHeight - viewportHeight;
+      
+      if (total <= 0) {
+        setScrollProgress(100);
+        return;
+      }
+      
+      const percentage = Math.min(100, Math.max(0, (scrolled / total) * 100));
+      setScrollProgress(percentage);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [publication]);
 
   useEffect(() => {
     const fetchPublication = async () => {
@@ -146,8 +189,16 @@ const PublicationDetail = () => {
   return (
     <>
       {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
+      
+      {/* Reading progress bar */}
+      {publication && (
+        <ReadingProgressBar
+          targetRef={articleRef}
+          estimatedReadTime={publication.read_time}
+        />
+      )}
 
-      <article className="container mx-auto px-4 py-12">
+      <article ref={articleRef} className="container mx-auto px-4 py-12">
         <Link
           to="/publikacijos"
           className="inline-flex items-center text-primary hover:text-primary/80 mb-6"
@@ -177,14 +228,17 @@ const PublicationDetail = () => {
 
             <div className="flex items-start justify-between gap-4 mb-4">
               <h1 className="text-3xl md:text-4xl font-bold flex-1">{publication.title}</h1>
-              <ShareButton
-                title={publication.title}
-                description={publication.description || publication.content?.substring(0, 200) || ''}
-                url={`https://ponasobuolys.lt/publikacijos/${slug}`}
-                imageUrl={publication.image_url || undefined}
-                variant="outline"
-                size="default"
-              />
+              <div className="flex gap-2">
+                <BookmarkButton articleId={publication.id} />
+                <ShareButton
+                  title={publication.title}
+                  description={publication.description || publication.content?.substring(0, 200) || ''}
+                  url={`https://ponasobuolys.lt/publikacijos/${slug}`}
+                  imageUrl={publication.image_url || undefined}
+                  variant="outline"
+                  size="default"
+                />
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-200">
@@ -223,6 +277,9 @@ const PublicationDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Comments Section */}
+        <CommentsSection articleId={publication.id} />
 
         {/* Related Articles Section */}
         <RelatedArticles articles={relatedArticles} loading={relatedLoading} />

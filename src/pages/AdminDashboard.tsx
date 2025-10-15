@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
 import CTASectionEditor from "@/components/admin/cta-section-editor";
 import ContactMessageManager from "@/components/admin/contact-message-manager";
+import AdminCommentsModeration from "@/pages/AdminCommentsModeration";
 import CourseEditor from "@/components/admin/course-editor";
 import CoursesList from "@/components/admin/CoursesList";
 import HeroSectionEditor from "@/components/admin/hero-section-editor";
@@ -20,6 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useUnreadMessages } from "@/hooks/use-unread-messages";
+import { usePendingCommentsCount } from "@/hooks/use-pending-comments-count";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
 
@@ -38,6 +40,7 @@ const AdminDashboard = () => {
   });
   const { toast } = useToast();
   const unreadCount = useUnreadMessages();
+  const { count: pendingCommentsCount } = usePendingCommentsCount();
 
   const fetchDashboardStats = useCallback(async () => {
     try {
@@ -158,6 +161,14 @@ const AdminDashboard = () => {
               {unreadCount > 0 && (
                 <Badge variant="destructive" className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
                   {unreadCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="comments" className="relative">
+              Komentarai
+              {pendingCommentsCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs">
+                  {pendingCommentsCount}
                 </Badge>
               )}
             </TabsTrigger>
@@ -300,6 +311,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="contact-messages">
             <ContactMessageManager />
+          </TabsContent>
+
+          <TabsContent value="comments">
+            <AdminCommentsModeration />
           </TabsContent>
 
           <TabsContent value="users">

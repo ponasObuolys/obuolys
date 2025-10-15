@@ -46,8 +46,8 @@ const Layout = ({ children }: LayoutProps) => {
       <main className="flex-grow">{children}</main>
       <Footer />
 
-      {/* Back to Top mygtukas */}
-      {showButton && (
+      {/* Back to Top mygtukas - rodomas tik jei nėra reading progress bar */}
+      {showButton && !document.querySelector('[data-reading-progress]') && (
         <button
           onClick={scrollToTop}
           className="fixed bottom-6 right-6 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all duration-300 z-50"

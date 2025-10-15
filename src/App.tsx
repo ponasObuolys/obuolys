@@ -65,6 +65,7 @@ const CustomSolutionsPage = createLazyComponent(() => import("./pages/CustomSolu
 // Authentication and admin pages with separate chunking
 const Auth = createNamedLazyComponent("auth-pages", () => import("./pages/Auth"));
 const ProfilePage = createNamedLazyComponent("auth-pages", () => import("./pages/ProfilePage"));
+const MyBookmarksPage = createNamedLazyComponent("auth-pages", () => import("./pages/MyBookmarksPage"));
 const AdminDashboard = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/AdminDashboard")
@@ -389,6 +390,18 @@ const App = () => {
                                 fallback={<LoadingSpinner text="Kraunamas profilis..." />}
                               >
                                 <ProfilePage />
+                              </SuspenseWithChunkError>
+                            </AuthRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/mano-sarasas"
+                          element={
+                            <AuthRouteErrorBoundary routePath="/mano-sarasas" routeName="MyBookmarksPage">
+                              <SuspenseWithChunkError
+                                fallback={<LoadingSpinner text="Kraunamas sąrašas..." />}
+                              >
+                                <MyBookmarksPage />
                               </SuspenseWithChunkError>
                             </AuthRouteErrorBoundary>
                           }
