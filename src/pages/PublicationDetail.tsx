@@ -226,22 +226,9 @@ const PublicationDetail = () => {
               )}
             </div>
 
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <h1 className="text-3xl md:text-4xl font-bold flex-1">{publication.title}</h1>
-              <div className="flex gap-2">
-                <BookmarkButton articleId={publication.id} />
-                <ShareButton
-                  title={publication.title}
-                  description={publication.description || publication.content?.substring(0, 200) || ''}
-                  url={`https://ponasobuolys.lt/publikacijos/${slug}`}
-                  imageUrl={publication.image_url || undefined}
-                  variant="outline"
-                  size="default"
-                />
-              </div>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-left">{publication.title}</h1>
 
-            <div className="flex flex-wrap gap-4 mb-8 text-sm text-gray-200">
+            <div className="flex flex-wrap items-center gap-3 mb-8 text-sm text-gray-200">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
                 <span>{new Date(publication.date).toLocaleDateString("lt-LT")}</span>
@@ -252,6 +239,17 @@ const PublicationDetail = () => {
               </div>
               <div>
                 Autorius: <span className="font-medium">{publication.author}</span>
+              </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <BookmarkButton articleId={publication.id} size="sm" showText={false} />
+                <ShareButton
+                  title={publication.title}
+                  description={publication.description || publication.content?.substring(0, 200) || ''}
+                  url={`https://ponasobuolys.lt/publikacijos/${slug}`}
+                  imageUrl={publication.image_url || undefined}
+                  variant="outline"
+                  size="sm"
+                />
               </div>
             </div>
 
