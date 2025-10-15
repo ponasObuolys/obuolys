@@ -13,6 +13,7 @@ import {
   generateWebSiteStructuredData,
   SITE_CONFIG,
 } from '@/utils/seo';
+import { BusinessSolutionsCTA } from '@/components/cta/business-solutions-cta';
 
 const Index = () => {
   const structuredData = [
@@ -42,6 +43,14 @@ const Index = () => {
       {/* <AINews /> */}
       <AITools />
       <Courses />
+      
+      {/* Business Solutions CTA */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <BusinessSolutionsCTA context="publications" centered />
+        </div>
+      </section>
+      
       <CallToAction />
       {/* Removed FeaturesSection, CoursesPreview, ToolsSection, CtaSection components */}
     </>

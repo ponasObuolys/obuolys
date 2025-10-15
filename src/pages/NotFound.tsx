@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import LazyImage from '@/components/ui/lazy-image';
+import { BusinessSolutionsCTA } from '@/components/cta/business-solutions-cta';
 
 const NotFound = () => {
   return (
@@ -117,6 +118,11 @@ const NotFound = () => {
               <div className="mt-8 text-sm text-foreground/50">
                 <p>© {new Date().getFullYear()} Ponas Obuolys – AI specialistas Lietuvoje</p>
               </div>
+            </div>
+
+            {/* CTA - Puslapis nerastas, bet AI sprendimai - taip! */}
+            <div className="mt-12">
+              <BusinessSolutionsCTA variant="compact" context="article" />
             </div>
           </div>
         </div>

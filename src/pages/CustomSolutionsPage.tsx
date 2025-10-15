@@ -8,6 +8,8 @@ import PricingCard from '@/components/custom-solutions/PricingCard';
 import ProcessStep from '@/components/custom-solutions/ProcessStep';
 import FAQ from '@/components/custom-solutions/FAQ';
 import Testimonials from '@/components/custom-solutions/Testimonials';
+import { BusinessSolutionsCTA } from '@/components/cta/business-solutions-cta';
+import { StickyCtaSidebar } from '@/components/cta/sticky-cta-sidebar';
 
 const CustomSolutionsPage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -370,6 +372,11 @@ const CustomSolutionsPage = () => {
         </div>
       </section>
 
+      {/* CTA #1 - Po problemų */}
+      <div className="container mx-auto px-4 my-12">
+        <BusinessSolutionsCTA variant="inline" context="publications" />
+      </div>
+
       {/* Solution Section */}
       <section className="py-16 md:py-20 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -440,6 +447,11 @@ const CustomSolutionsPage = () => {
         </div>
       </section>
 
+      {/* CTA #2 - Po paslaugų */}
+      <div className="container mx-auto px-4 my-12">
+        <BusinessSolutionsCTA variant="compact" context="publications" />
+      </div>
+
       {/* Portfolio Section */}
       <section id="portfolio" className="py-16 md:py-20 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -459,6 +471,11 @@ const CustomSolutionsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* CTA #3 - Po portfolio */}
+      <div className="container mx-auto px-4 my-12">
+        <BusinessSolutionsCTA variant="inline" context="publications" />
+      </div>
 
       {/* Pricing Section */}
       <section className="py-16 md:py-20">
@@ -560,6 +577,11 @@ const CustomSolutionsPage = () => {
         </div>
       </section>
 
+      {/* CTA #4 - Didelis CTA po USP */}
+      <div className="container mx-auto px-4 my-16">
+        <BusinessSolutionsCTA variant="default" context="publications" centered />
+      </div>
+
       {/* Testimonials */}
       <Testimonials />
 
@@ -596,6 +618,9 @@ const CustomSolutionsPage = () => {
       {showForm && (
         <InquiryForm onClose={() => setShowForm(false)} />
       )}
+
+      {/* Sticky CTA Sidebar - visada matomas */}
+      <StickyCtaSidebar />
     </>
   );
 };

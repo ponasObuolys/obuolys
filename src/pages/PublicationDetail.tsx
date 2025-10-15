@@ -27,6 +27,7 @@ import { BookmarkButton } from "@/components/publications/bookmark-button";
 import { ReadingProgressBar } from "@/components/reading/reading-progress-bar";
 import { useReadingProgress } from "@/hooks/use-reading-progress";
 import { CommentsSection } from "@/components/comments/comments-section";
+import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 
 type Publication = Tables<"articles">;
 
@@ -274,6 +275,11 @@ const PublicationDetail = () => {
               />
             </div>
           </div>
+        </div>
+
+        {/* Business Solutions CTA */}
+        <div className="mt-16">
+          <BusinessSolutionsCTA variant="compact" context="article" />
         </div>
 
         {/* Comments Section */}

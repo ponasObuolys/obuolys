@@ -86,6 +86,10 @@ const AdminInquiriesPage = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/admin/InquiriesPage")
 );
+const AdminCTAManagementPage = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./pages/admin/CTAManagementPage")
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -486,6 +490,23 @@ const App = () => {
                                 }
                               >
                                 <AdminInquiriesPage />
+                              </SuspenseWithChunkError>
+                            </AdminRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/admin/cta"
+                          element={
+                            <AdminRouteErrorBoundary
+                              routePath="/admin/cta"
+                              routeName="AdminCTAManagementPage"
+                            >
+                              <SuspenseWithChunkError
+                                fallback={
+                                  <LoadingSpinner text="Kraunamas CTA valdymas..." />
+                                }
+                              >
+                                <AdminCTAManagementPage />
                               </SuspenseWithChunkError>
                             </AdminRouteErrorBoundary>
                           }

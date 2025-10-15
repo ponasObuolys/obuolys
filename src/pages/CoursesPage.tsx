@@ -17,6 +17,7 @@ import {
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
+import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 
 type Course = Database["public"]["Tables"]["courses"]["Row"];
 
@@ -512,6 +513,11 @@ const CoursesPage = () => {
                 </div>
               </div>
             )}
+
+            {/* CTA - Po kursų sąrašo */}
+            <div className="my-12">
+              <BusinessSolutionsCTA variant="compact" context="publications" />
+            </div>
 
             {/* Process Section */}
             <div className="dark-card mb-12">

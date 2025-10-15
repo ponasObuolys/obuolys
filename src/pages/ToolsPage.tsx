@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import ToolCard from "@/components/ui/tool-card";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { Plus } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
@@ -16,6 +16,7 @@ import ToolCategories from "@/components/tools/ToolCategories";
 import ToolSearch from "@/components/tools/ToolSearch";
 
 import { createErrorReport, reportError } from "@/utils/errorReporting";
+import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 
 const ToolsPage = () => {
   const [tools, setTools] = useState<Tool[]>([]);
@@ -126,16 +127,22 @@ const ToolsPage = () => {
 
             {/* Paieškos ir kategorijų sekcija */}
             <div className="mb-12">
-              {/* Paieškos komponentas */}
-              <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+              {/* Paieška ir kategorijos */}
+              <div className="mb-8">
+                <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                
+                {/* Inline CTA viršuje */}
+                <div className="mt-4">
+                  <BusinessSolutionsCTA variant="inline" context="tools" />
+                </div>
 
-              {/* Kategorijų komponentas */}
-              <div className="mt-4">
-                <ToolCategories
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
-                />
+                <div className="mt-4">
+                  <ToolCategories
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                  />
+                </div>
               </div>
             </div>
 
@@ -148,8 +155,16 @@ const ToolsPage = () => {
               </div>
             ) : filteredTools.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredTools.map(tool => (
-                  <ToolCard key={tool.id} tool={tool} />
+                {filteredTools.map((tool, index) => (
+                  <Fragment key={tool.id}>
+                    <ToolCard tool={tool} />
+                    {/* CTA kas 6 įrankiai */}
+                    {(index + 1) % 6 === 0 && index !== filteredTools.length - 1 && (
+                      <div className="md:col-span-2 lg:col-span-3">
+                        <BusinessSolutionsCTA variant="inline" context="tools" />
+                      </div>
+                    )}
+                  </Fragment>
                 ))}
               </div>
             ) : (
@@ -160,6 +175,11 @@ const ToolsPage = () => {
                 </div>
               </div>
             )}
+
+            {/* Business Solutions CTA */}
+            <div className="mt-16">
+              <BusinessSolutionsCTA context="tools" centered />
+            </div>
 
             {/* Apie rekomendacijas sekcija */}
             <div className="mt-12">

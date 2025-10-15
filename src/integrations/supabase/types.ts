@@ -240,31 +240,46 @@ export type Database = {
           active: boolean
           button_text: string
           button_url: string
+          context: string
           created_at: string
           description: string
+          icon: string
           id: string
+          is_sticky: boolean
+          priority: number
           title: string
           updated_at: string
+          variant: string
         }
         Insert: {
           active?: boolean
           button_text: string
           button_url: string
+          context?: string
           created_at?: string
           description: string
+          icon?: string
           id?: string
+          is_sticky?: boolean
+          priority?: number
           title: string
           updated_at?: string
+          variant?: string
         }
         Update: {
           active?: boolean
           button_text?: string
           button_url?: string
+          context?: string
           created_at?: string
           description?: string
+          icon?: string
           id?: string
+          is_sticky?: boolean
+          priority?: number
           title?: string
           updated_at?: string
+          variant?: string
         }
         Relationships: []
       }
@@ -340,33 +355,48 @@ export type Database = {
       hero_sections: {
         Row: {
           active: boolean
+          badge_text: string | null
           button_text: string | null
           button_url: string | null
           created_at: string
           id: string
           image_url: string | null
+          priority: number
+          secondary_button_text: string | null
+          secondary_button_url: string | null
+          show_stats: boolean
           subtitle: string
           title: string
           updated_at: string
         }
         Insert: {
           active?: boolean
+          badge_text?: string | null
           button_text?: string | null
           button_url?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          priority?: number
+          secondary_button_text?: string | null
+          secondary_button_url?: string | null
+          show_stats?: boolean
           subtitle: string
           title: string
           updated_at?: string
         }
         Update: {
           active?: boolean
+          badge_text?: string | null
           button_text?: string | null
           button_url?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          priority?: number
+          secondary_button_text?: string | null
+          secondary_button_url?: string | null
+          show_stats?: boolean
           subtitle?: string
           title?: string
           updated_at?: string
@@ -452,6 +482,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sticky_cta_messages: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta: string
+          description: string
+          emoji: string
+          id: string
+          priority: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta: string
+          description: string
+          emoji?: string
+          id?: string
+          priority?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta?: string
+          description?: string
+          emoji?: string
+          id?: string
+          priority?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       reading_progress: {
         Row: {

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
-
 import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import { Search, Plus } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
+import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 
 type Publication = Tables<"articles">;
 
@@ -109,35 +109,39 @@ const PublicationsPage = () => {
 
             {/* Search and filters */}
             <div className="mb-8">
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="relative flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/60 h-4 w-4 pointer-events-none z-10" />
-                    <Input
-                      placeholder="Ieškoti AI naujienų..."
-                      className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50 h-10"
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map(category => (
-                    <Button
-                      key={category}
-                      variant="outline"
-                      size="sm"
-                      className={`${
-                        selectedCategory === category
-                          ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-                          : "button-outline"
-                      }`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
+              {/* Paieškos laukelis */}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/60 h-4 w-4 pointer-events-none z-10" />
+                <Input
+                  placeholder="Ieškoti AI naujienų..."
+                  className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50 h-10"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              {/* Inline CTA viršuje */}
+              <div className="mb-4">
+                <BusinessSolutionsCTA variant="inline" context="publications" />
+              </div>
+              
+              {/* Kategorijų filtrai */}
+              <div className="flex flex-wrap gap-2">
+                {categories.map(category => (
+                  <Button
+                    key={category}
+                    variant="outline"
+                    size="sm"
+                    className={`${
+                      selectedCategory === category
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                        : "button-outline"
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
               </div>
             </div>
 
@@ -149,8 +153,16 @@ const PublicationsPage = () => {
               </div>
             ) : filteredPublications.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPublications.map(item => (
-                  <ArticleCard key={item.id} article={item} />
+                {filteredPublications.map((item, index) => (
+                  <Fragment key={item.id}>
+                    <ArticleCard article={item} />
+                    {/* CTA kas 6 straipsniai */}
+                    {(index + 1) % 6 === 0 && index !== filteredPublications.length - 1 && (
+                      <div className="md:col-span-2 lg:col-span-3">
+                        <BusinessSolutionsCTA variant="inline" context="publications" />
+                      </div>
+                    )}
+                  </Fragment>
                 ))}
               </div>
             ) : (
@@ -178,8 +190,13 @@ const PublicationsPage = () => {
               </div>
             )}
 
-            {/* Call to action section */}
+            {/* Business Solutions CTA */}
             <div className="mt-16">
+              <BusinessSolutionsCTA context="publications" centered />
+            </div>
+
+            {/* Call to action section */}
+            <div className="mt-12">
               <div className="dark-card text-center">
                 <h2 className="text-3xl font-bold text-foreground mb-4">
                   Turite įdomią AI naujieną?
