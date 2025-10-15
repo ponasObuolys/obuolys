@@ -15,12 +15,11 @@ export const useCategories = () => {
     const { data, error } = await supabase
       .from("articles")
       .select("category")
-      .not("category", "is", null)
-      .neq("category", "");
+      .not("category", "is", null);
     if (!error && data) {
-      const unique = Array.from(
-        new Set(data.map((a: { category: string }) => a.category).filter(Boolean))
-      );
+      // Flatten all categories from all articles (since category is now an array)
+      const allCategories = data.flatMap((a: { category: string[] | null }) => a.category || []);
+      const unique = Array.from(new Set(allCategories.filter(Boolean)));
       setCategories(unique);
     }
   }, []);
@@ -39,7 +38,7 @@ export const usePublicationForm = () => {
       title: "",
       slug: "",
       description: "",
-      category: "",
+      category: [],
       read_time: "",
       author: "ponas Obuolys",
       date: new Date().toISOString().split("T")[0],
@@ -88,7 +87,7 @@ export const usePublicationData = (
           title: data.title,
           slug: data.slug,
           description: data.description,
-          category: data.category,
+          category: Array.isArray(data.category) ? data.category : data.category ? [data.category] : [],
           read_time: data.read_time,
           author: data.author && data.author.trim() ? data.author : "ponas Obuolys",
           date: new Date(data.date).toISOString().split("T")[0],

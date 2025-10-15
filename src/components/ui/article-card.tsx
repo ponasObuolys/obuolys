@@ -11,7 +11,7 @@ interface ArticleCardProps {
     image_url: string | null;
     date: string;
     read_time: string;
-    category?: string;
+    category?: string[];
   };
 }
 
@@ -26,7 +26,8 @@ const categoryColors: { [key: string]: string } = {
 };
 
 const ArticleCard = ({ article }: ArticleCardProps) => {
-  const categoryColor = categoryColors[article.category || "default"] || categoryColors.default;
+  const primaryCategory = article.category?.[0] || "default";
+  const categoryColor = categoryColors[primaryCategory] || categoryColors.default;
 
   return (
     <Link to={`/publikacijos/${article.slug}`} className="block">
@@ -35,7 +36,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         <div className="flex items-start gap-3 mb-3">
           <div className={`w-10 h-10 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}>
             <span className="text-white font-bold text-base">
-              {article.category ? article.category.charAt(0) : "AI"}
+              {primaryCategory.charAt(0)}
             </span>
           </div>
           <div className="flex-1 min-w-0">
@@ -43,7 +44,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
               {article.title}
             </h3>
             <p className="text-sm text-gray-200 text-left">
-              {article.category || "AI Naujienos"}
+              {article.category?.join(", ") || "AI Naujienos"}
             </p>
           </div>
           <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

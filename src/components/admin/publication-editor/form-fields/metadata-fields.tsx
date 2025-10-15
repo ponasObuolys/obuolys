@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -14,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import type { PublicationFormData } from "../publication-editor.types";
 
@@ -29,9 +29,6 @@ export const MetadataFields = ({
   categories,
   setReadTimeManuallyEdited,
 }: MetadataFieldsProps) => {
-  const [customCategory, setCustomCategory] = useState("");
-  const [isCustomCategory, setIsCustomCategory] = useState(false);
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <FormField
@@ -60,51 +57,18 @@ export const MetadataFields = ({
         name="category"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Kategorija</FormLabel>
+            <FormLabel>Kategorijos</FormLabel>
             <FormControl>
-              <>
-                <Select
-                  value={isCustomCategory ? "custom" : field.value}
-                  onValueChange={val => {
-                    if (val === "custom") {
-                      setIsCustomCategory(true);
-                      setCustomCategory("");
-                      form.setValue("category", "");
-                    } else {
-                      setIsCustomCategory(false);
-                      form.setValue("category", val, { shouldValidate: true });
-                    }
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pasirinkite kategoriją" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map(cat => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <em>Įvesti naują...</em>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                {isCustomCategory && (
-                  <Input
-                    className="mt-2"
-                    placeholder="Nauja kategorija"
-                    value={customCategory}
-                    onChange={e => {
-                      setCustomCategory(e.target.value);
-                      form.setValue("category", e.target.value, { shouldValidate: true });
-                    }}
-                  />
-                )}
-              </>
+              <MultiSelect
+                options={categories}
+                selected={field.value || []}
+                onChange={field.onChange}
+                placeholder="Pasirinkite kategorijas"
+                allowCustom={true}
+              />
             </FormControl>
             <FormDescription>
-              Galite pasirinkti iš sąrašo arba sukurti naują kategoriją.
+              Galite pasirinkti kelias kategorijas arba sukurti naujas.
             </FormDescription>
             <FormMessage />
           </FormItem>

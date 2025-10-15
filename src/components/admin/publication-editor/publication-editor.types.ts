@@ -9,7 +9,7 @@ export const publicationSchema = z.object({
       message: "Netinkamas URL formato pavyzdys: naudoja-mazasias-raides-ir-bruksnelius",
     }),
   description: z.string().min(1, { message: "Aprašymas yra privalomas" }),
-  category: z.string().min(1, { message: "Kategorija yra privaloma" }),
+  category: z.array(z.string()).min(1, { message: "Bent viena kategorija yra privaloma" }),
   read_time: z.string().min(1, { message: "Skaitymo laikas yra privalomas" }),
   author: z.string().min(1, { message: "Autorius yra privalomas" }),
   date: z.string().min(1, { message: "Data yra privaloma" }),

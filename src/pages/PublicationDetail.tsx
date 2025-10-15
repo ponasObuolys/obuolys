@@ -21,6 +21,8 @@ import {
   generateBreadcrumbStructuredData,
 } from "@/utils/seo";
 import { ShareButton } from "@/components/ui/share-button";
+import { RelatedArticles } from "@/components/publications/related-articles";
+import { useRelatedArticles } from "@/hooks/use-related-articles";
 
 type Publication = Tables<"articles">;
 
@@ -32,6 +34,13 @@ const PublicationDetail = () => {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useLazyImages(contentRef);
+
+  // Fetch related articles based on current publication's categories
+  const { relatedArticles, loading: relatedLoading } = useRelatedArticles({
+    currentArticleId: publication?.id || "",
+    categories: publication?.category || [],
+    limit: 3,
+  });
 
   useEffect(() => {
     const fetchPublication = async () => {
@@ -111,7 +120,7 @@ const PublicationDetail = () => {
         image: publication.image_url || undefined,
         published_at: publication.date,
         updated_at: publication.updated_at || undefined,
-        tags: publication.category ? [publication.category] : [],
+        tags: publication.category || [],
       })
     : null;
 
@@ -157,7 +166,13 @@ const PublicationDetail = () => {
                   {publication.content_type}
                 </Badge>
               )}
-              <Badge variant="outline">{publication.category}</Badge>
+              {publication.category && publication.category.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {publication.category.map((cat) => (
+                    <Badge key={cat} variant="outline">{cat}</Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex items-start justify-between gap-4 mb-4">
@@ -208,6 +223,9 @@ const PublicationDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Related Articles Section */}
+        <RelatedArticles articles={relatedArticles} loading={relatedLoading} />
       </article>
     </>
   );

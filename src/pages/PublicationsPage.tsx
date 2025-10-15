@@ -21,10 +21,10 @@ const PublicationsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
   const { toast } = useToast();
 
-  // Get unique categories from publications
+  // Get unique categories from publications (flatten arrays)
   const categories = [
     "Visos kategorijos",
-    ...Array.from(new Set(publications.map(item => item.category).filter(Boolean))),
+    ...Array.from(new Set(publications.flatMap(item => item.category || []))),
   ];
 
   useEffect(() => {
@@ -65,7 +65,8 @@ const PublicationsPage = () => {
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory =
-      selectedCategory === "Visos kategorijos" || item.category === selectedCategory;
+      selectedCategory === "Visos kategorijos" || 
+      (item.category && item.category.includes(selectedCategory));
 
     return matchesSearch && matchesCategory;
   });
