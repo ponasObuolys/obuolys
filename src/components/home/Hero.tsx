@@ -33,9 +33,6 @@ const Hero = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Left side - Text content */}
               <div className="space-y-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-sm text-gray-200">AI Specialistas</span>
-                </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-left">
                   Aš esu <span className="text-primary">ponas Obuolys</span>
                 </h1>
