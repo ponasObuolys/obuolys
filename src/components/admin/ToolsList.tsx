@@ -1,14 +1,8 @@
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useAdminList } from "@/hooks/useAdminList";
-import { FilePenLine, Trash2 } from "lucide-react";
+import { FilePenLine, Trash2, ExternalLink } from "lucide-react";
 
 interface ToolsListProps {
   onEdit: (id: string) => void;
@@ -44,75 +38,75 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-left">Pavadinimas</TableHead>
-          <TableHead className="text-left w-32">Kategorija</TableHead>
-          <TableHead className="text-left w-32">Rekomenduojamas</TableHead>
-          <TableHead className="text-left w-28">Publikuota</TableHead>
-          <TableHead className="text-left w-20">URL</TableHead>
-          <TableHead className="text-right w-48">Veiksmai</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {tools.map(tool => (
-          <TableRow key={tool.id}>
-            <TableCell className="font-medium text-left">
-              <div className="max-w-xs">
-                <div className="truncate">{tool.name}</div>
-                {tool.description && (
-                  <div className="text-sm text-gray-500 truncate">{tool.description}</div>
+    <div className="space-y-3">
+      {tools.map(tool => (
+        <Card key={tool.id}>
+          <CardContent className="p-3 md:p-4">
+            <div className="space-y-3">
+              {/* Title ir badges */}
+              <div className="flex items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-sm md:text-base break-words">{tool.name}</h3>
+                  {tool.description && (
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2">
+                      {tool.description}
+                    </p>
+                  )}
+                </div>
+                <Badge variant={tool.published ? "default" : "secondary"} className="text-xs flex-shrink-0">
+                  {tool.published ? "Publikuota" : "Juodraštis"}
+                </Badge>
+              </div>
+
+              {/* Info */}
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <div>Kategorija: <span className="font-medium">{tool.category || "Nenurodyta"}</span></div>
+                {tool.featured && (
+                  <Badge variant="outline" className="text-xs h-5">
+                    ⭐ Rekomenduojamas
+                  </Badge>
                 )}
               </div>
-            </TableCell>
-            <TableCell className="text-left">
-              <span className="text-sm whitespace-nowrap">{tool.category || "Nenurodyta"}</span>
-            </TableCell>
-            <TableCell className="text-left">
-              <span
-                className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                  tool.featured ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {tool.featured ? "Taip" : "Ne"}
-              </span>
-            </TableCell>
-            <TableCell className="text-left">
-              <span
-                className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                  tool.published ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                }`}
-              >
-                {tool.published ? "Taip" : "Ne"}
-              </span>
-            </TableCell>
-            <TableCell className="text-left">
+
+              {/* URL */}
               {tool.url && (
-                <a
-                  href={tool.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 text-xs truncate max-w-20 block"
-                >
-                  Lankytis
-                </a>
+                <div className="text-xs">
+                  <a
+                    href={tool.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline inline-flex items-center gap-1 truncate max-w-full"
+                  >
+                    <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{tool.url}</span>
+                  </a>
+                </div>
               )}
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" size="sm" onClick={() => onEdit(tool.id)}>
+
+              {/* Actions */}
+              <div className="flex flex-wrap gap-2 pt-2 border-t">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => onEdit(tool.id)}
+                  className="text-xs h-8"
+                >
                   <FilePenLine className="h-4 w-4 mr-1" /> Redaguoti
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(tool.id)}>
-                  <Trash2 className="h-4 w-4 mr-1" /> Ištrinti
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={() => handleDelete(tool.id)}
+                  className="text-xs h-8"
+                >
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 };
 

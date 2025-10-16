@@ -7,10 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
-import { Ban, CheckCircle } from "lucide-react";
+import { Ban, CheckCircle, User as UserIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 interface UserManagerProps {
@@ -70,7 +71,7 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
       }
 
       // Transform the data using user_profiles view
-      type UserProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
+      type UserProfile = Profile & {
         email?: string;
         auth_created_at?: string;
       };
@@ -144,73 +145,134 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-left">Vartotojo vardas</TableHead>
-          <TableHead className="text-left">El. paštas</TableHead>
-          <TableHead className="text-left w-32">Registracijos data</TableHead>
-          <TableHead className="text-left w-28">Administratorius</TableHead>
-          <TableHead className="text-right w-48">Veiksmai</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      {/* Desktop lentelė */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-left">Vartotojo vardas</TableHead>
+              <TableHead className="text-left">El. paštas</TableHead>
+              <TableHead className="text-left w-32">Registracijos data</TableHead>
+              <TableHead className="text-left w-28">Administratorius</TableHead>
+              <TableHead className="text-right w-48">Veiksmai</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users.map(user => (
+              <TableRow key={user.id}>
+                <TableCell className="font-medium text-left">
+                  <div className="flex items-center space-x-3">
+                    {user.avatar_url && (
+                      <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full" />
+                    )}
+                    <div>
+                      <div className="font-medium">{user.username || "Nenurodytas"}</div>
+                      <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="text-left">
+                  <span className="text-sm">{user.email}</span>
+                </TableCell>
+                <TableCell className="text-left whitespace-nowrap">
+                  <span className="text-sm">
+                    {new Date(user.created_at_auth).toLocaleDateString("lt-LT")}
+                  </span>
+                </TableCell>
+                <TableCell className="text-left">
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                      user.is_admin ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {user.is_admin ? "Taip" : "Ne"}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end space-x-2">
+                    <Button
+                      variant={user.is_admin ? "destructive" : "outline"}
+                      size="sm"
+                      onClick={() => toggleAdminStatus(user.id, user.is_admin)}
+                    >
+                      {user.is_admin ? (
+                        <>
+                          <Ban className="h-4 w-4 mr-1" /> Atimti teises
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-4 w-4 mr-1" /> Suteikti teises
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
+                      <Ban className="h-4 w-4 mr-1" /> Suspenduoti
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile kortelės */}
+      <div className="md:hidden grid gap-3">
         {users.map(user => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium text-left">
-              <div className="flex items-center space-x-3">
-                {user.avatar_url && (
-                  <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full" />
+          <Card key={user.id}>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3 mb-3">
+                {user.avatar_url ? (
+                  <img src={user.avatar_url} alt="Avatar" className="w-12 h-12 rounded-full flex-shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                    <UserIcon className="h-6 w-6 text-gray-500" />
+                  </div>
                 )}
-                <div>
-                  <div className="font-medium">{user.username || "Nenurodytas"}</div>
-                  <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">{user.username || "Nenurodytas"}</div>
+                  <div className="text-sm text-muted-foreground truncate">{user.email}</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    ID: {user.id.slice(0, 8)}...
+                  </div>
+                </div>
+                <Badge variant={user.is_admin ? "destructive" : "secondary"} className="flex-shrink-0">
+                  {user.is_admin ? "Admin" : "Vartotojas"}
+                </Badge>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-3 border-t">
+                <div className="text-xs text-muted-foreground">
+                  Registracija: {new Date(user.created_at_auth).toLocaleDateString("lt-LT")}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant={user.is_admin ? "destructive" : "outline"}
+                    size="sm"
+                    onClick={() => toggleAdminStatus(user.id, user.is_admin)}
+                    className="flex-1"
+                  >
+                    {user.is_admin ? (
+                      <>
+                        <Ban className="h-4 w-4 mr-1" /> Atimti
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-1" /> Suteikti
+                      </>
+                    )}
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
+                    <Ban className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-            </TableCell>
-            <TableCell className="text-left">
-              <span className="text-sm">{user.email}</span>
-            </TableCell>
-            <TableCell className="text-left whitespace-nowrap">
-              <span className="text-sm">
-                {new Date(user.created_at_auth).toLocaleDateString("lt-LT")}
-              </span>
-            </TableCell>
-            <TableCell className="text-left">
-              <span
-                className={`inline-flex px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                  user.is_admin ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {user.is_admin ? "Taip" : "Ne"}
-              </span>
-            </TableCell>
-            <TableCell className="text-right">
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant={user.is_admin ? "destructive" : "outline"}
-                  size="sm"
-                  onClick={() => toggleAdminStatus(user.id, user.is_admin)}
-                >
-                  {user.is_admin ? (
-                    <>
-                      <Ban className="h-4 w-4 mr-1" /> Atimti teises
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="h-4 w-4 mr-1" /> Suteikti teises
-                    </>
-                  )}
-                </Button>
-                <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
-                  <Ban className="h-4 w-4 mr-1" /> Suspenduoti
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
+            </CardContent>
+          </Card>
         ))}
-      </TableBody>
-    </Table>
+      </div>
+    </>
   );
 };
 

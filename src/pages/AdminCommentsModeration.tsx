@@ -8,12 +8,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, X, Trash2, MessageCircle, ExternalLink, Loader2 } from "lucide-react";
 import { secureLogger } from "@/utils/browserLogger";
-import type { Tables } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
 import { lt } from "date-fns/locale";
 import { Link } from "react-router-dom";
 
-type Comment = Tables<"article_comments"> & {
+interface ArticleComment {
+  id: string;
+  article_id: string;
+  user_id: string;
+  content: string;
+  parent_id: string | null;
+  is_approved: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+type Comment = ArticleComment & {
   user?: {
     username: string | null;
     avatar_url: string | null;
@@ -216,18 +227,18 @@ const AdminCommentsModeration = () => {
 
   const CommentCard = ({ comment, isPending }: { comment: Comment; isPending: boolean }) => (
     <Card key={comment.id} className="mb-4">
-      <CardContent className="pt-6">
-        <div className="flex gap-4">
-          <Avatar className="h-10 w-10">
+      <CardContent className="p-4 md:pt-6">
+        <div className="flex gap-3 md:gap-4">
+          <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0">
             <AvatarImage src={comment.user?.avatar_url || undefined} />
             <AvatarFallback>{getInitials(comment.user?.username || null)}</AvatarFallback>
           </Avatar>
-          <div className="flex-1">
-            <div className="flex items-start justify-between mb-2">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold">{comment.user?.username || "Vartotojas"}</span>
-                  <span className="text-sm text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2 gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mb-1">
+                  <span className="font-semibold truncate">{comment.user?.username || "Vartotojas"}</span>
+                  <span className="text-xs md:text-sm text-muted-foreground">
                     {formatDistanceToNow(new Date(comment.created_at), {
                       addSuffix: true,
                       locale: lt,
@@ -237,30 +248,30 @@ const AdminCommentsModeration = () => {
                 {comment.article && (
                   <Link
                     to={`/publikacijos/${comment.article.slug}`}
-                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                    className="text-xs md:text-sm text-primary hover:underline flex items-center gap-1 truncate"
                   >
-                    {comment.article.title}
-                    <ExternalLink className="h-3 w-3" />
+                    <span className="truncate">{comment.article.title}</span>
+                    <ExternalLink className="h-3 w-3 flex-shrink-0" />
                   </Link>
                 )}
               </div>
               {comment.parent_id && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs self-start md:self-auto flex-shrink-0">
                   Atsakymas
                 </Badge>
               )}
             </div>
-            <p className="text-sm whitespace-pre-wrap mb-4 bg-muted p-3 rounded-md">
+            <p className="text-sm whitespace-pre-wrap mb-3 md:mb-4 bg-muted p-2 md:p-3 rounded-md break-words">
               {comment.content}
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               {isPending ? (
                 <>
                   <Button
                     size="sm"
                     onClick={() => handleApprove(comment.id)}
                     disabled={actionLoading === comment.id}
-                    className="gap-2"
+                    className="gap-2 w-full md:w-auto"
                   >
                     {actionLoading === comment.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -274,7 +285,7 @@ const AdminCommentsModeration = () => {
                     variant="destructive"
                     onClick={() => handleReject(comment.id)}
                     disabled={actionLoading === comment.id}
-                    className="gap-2"
+                    className="gap-2 w-full md:w-auto"
                   >
                     <X className="h-4 w-4" />
                     Atmesti
@@ -286,7 +297,7 @@ const AdminCommentsModeration = () => {
                   variant="destructive"
                   onClick={() => handleDelete(comment.id)}
                   disabled={actionLoading === comment.id}
-                  className="gap-2"
+                  className="gap-2 w-full md:w-auto"
                 >
                   <Trash2 className="h-4 w-4" />
                   Ištrinti
@@ -323,15 +334,16 @@ const AdminCommentsModeration = () => {
 
       <Tabs defaultValue="pending" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="pending" className="gap-2">
-            Laukiantys patvirtinimo
+          <TabsTrigger value="pending" className="gap-1 md:gap-2 text-xs md:text-sm">
+            <span className="hidden sm:inline">Laukiantys patvirtinimo</span>
+            <span className="sm:hidden">Laukiantys</span>
             {pendingComments.length > 0 && (
-              <Badge variant="destructive" className="ml-2">
+              <Badge variant="destructive" className="ml-1 md:ml-2 text-xs">
                 {pendingComments.length}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="approved">Patvirtinti</TabsTrigger>
+          <TabsTrigger value="approved" className="text-xs md:text-sm">Patvirtinti</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">

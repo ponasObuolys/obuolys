@@ -29,29 +29,39 @@ export const CTASectionList = ({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="space-y-3">
       {ctaSections.map((section) => (
         <Card key={section.id} className={!section.active ? "opacity-60" : ""}>
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-xl font-semibold">{section.title}</h3>
-                  {section.active ? (
-                    <Eye className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  )}
-                </div>
-                <p className="text-gray-600 mb-3">{section.description}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span>Mygtukas: {section.button_text}</span>
-                  <span>•</span>
-                  <span>Nuoroda: {section.button_url}</span>
+          <CardContent className="p-3 md:p-4">
+            <div className="space-y-3">
+              {/* Title ir status */}
+              <div className="flex items-start gap-2">
+                {section.active ? (
+                  <Eye className="h-4 w-4 text-green-600 flex-shrink-0 mt-1" />
+                ) : (
+                  <EyeOff className="h-4 w-4 text-gray-400 flex-shrink-0 mt-1" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-sm md:text-base break-words">{section.title}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2">{section.description}</p>
                 </div>
               </div>
-              <div className="flex space-x-2 ml-4">
-                <Button variant="outline" size="sm" onClick={() => onEdit(section)} disabled={loading}>
+
+              {/* Info */}
+              <div className="flex flex-col gap-1 text-xs text-muted-foreground pl-6">
+                <div className="truncate">Mygtukas: {section.button_text}</div>
+                <div className="truncate">URL: {section.button_url}</div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap gap-2 pt-2 border-t">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => onEdit(section)} 
+                  disabled={loading}
+                  className="text-xs h-8"
+                >
                   Redaguoti
                 </Button>
                 <Button
@@ -59,6 +69,7 @@ export const CTASectionList = ({
                   size="sm"
                   onClick={() => onToggleActive(section)}
                   disabled={loading}
+                  className="text-xs h-8"
                 >
                   {section.active ? "Deaktyvuoti" : "Aktyvuoti"}
                 </Button>
@@ -67,6 +78,7 @@ export const CTASectionList = ({
                   size="sm"
                   onClick={() => onDelete(section.id)}
                   disabled={loading}
+                  className="text-xs h-8"
                 >
                   Ištrinti
                 </Button>

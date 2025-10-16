@@ -112,7 +112,7 @@ export function HeroManagement() {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Pagrindinis mygtukas</Label>
           <Input
@@ -131,7 +131,7 @@ export function HeroManagement() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Antrinis mygtukas (optional)</Label>
           <Input
@@ -159,7 +159,7 @@ export function HeroManagement() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label>Prioritetas</Label>
           <Input
@@ -168,14 +168,14 @@ export function HeroManagement() {
             onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
           />
         </div>
-        <div className="flex items-center space-x-2 pt-8">
+        <div className="flex items-center space-x-2 md:pt-8">
           <Switch
             checked={formData.show_stats}
             onCheckedChange={(checked) => setFormData({ ...formData, show_stats: checked })}
           />
           <Label>Rodyti statistiką</Label>
         </div>
-        <div className="flex items-center space-x-2 pt-8">
+        <div className="flex items-center space-x-2 md:pt-8">
           <Switch
             checked={formData.active}
             onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
@@ -188,7 +188,7 @@ export function HeroManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold">Hero sekcijų valdymas</h2>
           <p className="text-muted-foreground">Valdykite pagrindinio puslapio hero sekcijas</p>
@@ -241,7 +241,7 @@ export function HeroManagement() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-start justify-between">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       {section.badge_text && (
@@ -270,7 +270,7 @@ export function HeroManagement() {
                       <span>Stats: {section.show_stats ? 'Taip' : 'Ne'}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Button onClick={() => startEdit(section)} variant="outline" size="sm" className="gap-2">
                       <Pencil className="h-4 w-4" />
                       Redaguoti

@@ -59,9 +59,9 @@ const HeroSectionEditor = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Hero sekcijų valdymas</h2>
-        <Button onClick={() => setIsEditing(true)} disabled={loading}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 className="text-xl md:text-2xl font-bold">Hero sekcijų valdymas</h2>
+        <Button onClick={() => setIsEditing(true)} disabled={loading} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Nauja hero sekcija
         </Button>

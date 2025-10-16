@@ -39,9 +39,9 @@ export default function CTAAnalyticsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">CTA Analytics Dashboard</h1>
-          <p className="text-muted-foreground">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">CTA Analytics Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Stebėkite CTA efektyvumą ir optimizuokite konversiją
           </p>
         </div>
@@ -107,10 +107,13 @@ export default function CTAAnalyticsPage() {
 
         {/* Main Content */}
         <Tabs defaultValue="performance" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="performance">Performance</TabsTrigger>
-            <TabsTrigger value="recommendations">Rekomendacijos</TabsTrigger>
-            <TabsTrigger value="sticky">Sticky Messages</TabsTrigger>
+          <TabsList className="flex-wrap h-auto gap-1 md:gap-0">
+            <TabsTrigger value="performance" className="text-xs md:text-sm">Performance</TabsTrigger>
+            <TabsTrigger value="recommendations" className="text-xs md:text-sm">
+              <span className="hidden sm:inline">Rekomendacijos</span>
+              <span className="sm:hidden">Rekom.</span>
+            </TabsTrigger>
+            <TabsTrigger value="sticky" className="text-xs md:text-sm">Sticky Messages</TabsTrigger>
           </TabsList>
 
           {/* Performance Tab */}

@@ -24,10 +24,19 @@ export function PerformanceMonitor() {
       <PerformanceScoreCard performanceScore={performanceScore} />
 
       <Tabs defaultValue="vitals" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="vitals">Core Web Vitals</TabsTrigger>
-          <TabsTrigger value="components">Komponentų kraunymas</TabsTrigger>
-          <TabsTrigger value="bundle">Bundle informacija</TabsTrigger>
+        <TabsList className="flex-wrap h-auto gap-1 md:gap-0">
+          <TabsTrigger value="vitals" className="text-xs md:text-sm">
+            <span className="hidden sm:inline">Core Web Vitals</span>
+            <span className="sm:hidden">Vitals</span>
+          </TabsTrigger>
+          <TabsTrigger value="components" className="text-xs md:text-sm">
+            <span className="hidden sm:inline">Komponentų kraunymas</span>
+            <span className="sm:hidden">Komponentai</span>
+          </TabsTrigger>
+          <TabsTrigger value="bundle" className="text-xs md:text-sm">
+            <span className="hidden sm:inline">Bundle informacija</span>
+            <span className="sm:hidden">Bundle</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="vitals">

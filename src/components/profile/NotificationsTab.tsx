@@ -25,67 +25,30 @@ export const NotificationsTab = ({
         <CardTitle>El. pašto pranešimai</CardTitle>
         <CardDescription>Valdykite, kokius el. pašto pranešimus norite gauti</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="newsletter" className="flex flex-col space-y-1">
-            <span>Naujienlaiškiai</span>
-            <span className="font-normal text-sm text-muted-foreground">
-              Gaukite reguliarius naujienlaiškius apie naujas publikacijas
-            </span>
-          </Label>
-          <Switch
-            id="newsletter"
-            checked={emailNotifications.newsletter}
-            onCheckedChange={checked => updateNotificationSetting("newsletter", checked)}
-          />
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="comments" className="flex flex-col space-y-1">
-            <span>Komentarų pranešimai</span>
-            <span className="font-normal text-sm text-muted-foreground">
+      <CardContent className="space-y-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 space-y-1 text-left">
+            <Label htmlFor="comments" className="text-base font-medium cursor-pointer">
+              Komentarų pranešimai
+            </Label>
+            <p className="text-sm text-muted-foreground">
               Gaukite pranešimus, kai kas nors pakomentuoja jūsų turinį ar atsako į jūsų komentarus
-            </span>
-          </Label>
+            </p>
+          </div>
           <Switch
             id="comments"
             checked={emailNotifications.comments}
             onCheckedChange={checked => updateNotificationSetting("comments", checked)}
+            className="shrink-0"
           />
         </div>
 
         <Separator />
 
-        <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="courseUpdates" className="flex flex-col space-y-1">
-            <span>Kursų atnaujinimai</span>
-            <span className="font-normal text-sm text-muted-foreground">
-              Gaukite pranešimus apie jūsų prenumeruojamų kursų atnaujinimus
-            </span>
-          </Label>
-          <Switch
-            id="courseUpdates"
-            checked={emailNotifications.courseUpdates}
-            onCheckedChange={checked => updateNotificationSetting("courseUpdates", checked)}
-          />
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between space-x-2">
-          <Label htmlFor="publicationUpdates" className="flex flex-col space-y-1">
-            <span>Publikacijų atnaujinimai</span>
-            <span className="font-normal text-sm text-muted-foreground">
-              Gaukite pranešimus apie naujus straipsnius ir publikacijas
-            </span>
-          </Label>
-          <Switch
-            id="publicationUpdates"
-            checked={emailNotifications.publicationUpdates}
-            onCheckedChange={checked => updateNotificationSetting("publicationUpdates", checked)}
-          />
+        <div className="rounded-lg bg-muted/50 p-4 text-left">
+          <p className="text-sm text-muted-foreground">
+            <strong>Pastaba:</strong> Kitos pranešimų funkcijos šiuo metu yra kuriamos ir netrukus bus prieinamos.
+          </p>
         </div>
       </CardContent>
     </Card>

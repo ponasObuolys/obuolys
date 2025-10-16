@@ -57,12 +57,12 @@ export const useProfileManagement = () => {
   });
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
 
-  // Notification settings
+  // Notification settings (only implemented features)
   const [emailNotifications, setEmailNotifications] = useState({
-    newsletter: true,
-    comments: true,
-    courseUpdates: true,
-    publicationUpdates: true,
+    newsletter: false, // Not implemented yet
+    comments: true, // Only this is functional
+    courseUpdates: false, // Not implemented yet
+    publicationUpdates: false, // Not implemented yet
   });
 
   // Activity data

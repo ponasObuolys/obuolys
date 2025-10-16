@@ -74,7 +74,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 cursor-pointer group"
+          className="fixed bottom-32 sm:bottom-6 right-4 sm:right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 cursor-pointer group"
           aria-label={progress >= 100 ? "Grįžti į viršų" : `Perskaitytas ${Math.round(progress)}%`}
         >
           <div className="relative w-16 h-16 flex items-center justify-center">
