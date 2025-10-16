@@ -4,6 +4,7 @@ import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_SNOOZE_DURATION = 2 * 60 * 1000; // 2 minutes in milliseconds
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -13,6 +14,7 @@ type ToasterToast = ToastProps & {
 };
 
 let count = 0;
+let toastSnoozedUntil: number | null = null;
 
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER;
@@ -76,6 +78,9 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
+      // Set snooze timer when user manually dismisses a toast
+      toastSnoozedUntil = Date.now() + TOAST_SNOOZE_DURATION;
+
       // ! Side effects ! - This could be extracted into a dismissToast() action,
       // but I'll keep it here for simplicity
       if (toastId) {
@@ -126,6 +131,16 @@ function dispatch(action: Action) {
 type Toast = Omit<ToasterToast, "id">;
 
 function toast({ ...props }: Toast) {
+  // Check if toasts are snoozed
+  if (toastSnoozedUntil && Date.now() < toastSnoozedUntil) {
+    // Silently ignore toast creation during snooze period
+    return {
+      id: "",
+      dismiss: () => {},
+      update: () => {},
+    };
+  }
+
   const id = genId();
 
   const update = (props: ToasterToast) =>

@@ -26,6 +26,18 @@ const ContactPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Decode phone number (obfuscated from bots)
+  const getPhoneNumber = () => {
+    const parts = ['370', '671', '68860'];
+    return parts.join('');
+  };
+
+  const handleWhatsApp = () => {
+    // WhatsApp link works on all devices - opens app on mobile, web.whatsapp.com on desktop
+    const phoneNumber = getPhoneNumber();
+    window.open(`https://wa.me/${phoneNumber}`, '_blank');
+  };
+
   // Set message type from URL parameter
   useEffect(() => {
     const typeParam = searchParams.get('type');
@@ -206,6 +218,20 @@ const ContactPage = () => {
                   {isSubmitting ? 'Siunčiama...' : 'Pateikti užklausą'}
                 </Button>
               </form>
+
+              {/* Alternative contact method */}
+              <div className="mt-6 pt-6 border-t border-border">
+                <p className="text-sm text-foreground/60 text-center mb-4">
+                  Arba susisiekite tiesiogiai per WhatsApp
+                </p>
+                <Button
+                  onClick={handleWhatsApp}
+                  className="button-outline w-full flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Rašyti WhatsApp
+                </Button>
+              </div>
             </div>
 
             {/* Social Links Section */}

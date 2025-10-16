@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import LazyImage from '@/components/ui/lazy-image';
 import { useToast } from '@/hooks/use-toast';
-import { Copy } from 'lucide-react';
+import { Copy, MessageCircle } from 'lucide-react';
 
 const Hero = () => {
   const { toast } = useToast();
@@ -23,6 +23,18 @@ const Hero = () => {
         duration: 3000,
       });
     }
+  };
+
+  // Decode phone number (obfuscated from bots)
+  const getPhoneNumber = () => {
+    const parts = ['370', '671', '68860'];
+    return parts.join('');
+  };
+
+  const handleWhatsApp = () => {
+    // WhatsApp link works on all devices - opens app on mobile, web.whatsapp.com on desktop
+    const phoneNumber = getPhoneNumber();
+    window.open(`https://wa.me/${phoneNumber}`, '_blank');
   };
 
   return (
@@ -55,6 +67,14 @@ const Hero = () => {
                   >
                     <Copy className="h-4 w-4" />
                     Kopijuoti El. paštą
+                  </Button>
+                  {/* WhatsApp button - works on all devices */}
+                  <Button 
+                    onClick={handleWhatsApp}
+                    className="button-outline w-full sm:w-auto flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
                   </Button>
                 </div>
               </div>
