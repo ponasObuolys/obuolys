@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Target, Rocket, TrendingUp, Brain } from "lucide-react";
 import { useMemo } from "react";
 import type { CTAContext, CTAVariant } from "@/types/cta";
+import { useRandomCTA } from "@/hooks/use-cta";
+import { ctaAnalyticsService } from "@/services/cta.service";
 
 interface BusinessSolutionsCTAProps {
   variant?: CTAVariant;
@@ -380,13 +382,44 @@ export function BusinessSolutionsCTA({
   centered = false
 }: BusinessSolutionsCTAProps) {
   
-  // Atsitiktinai pasirenka vieną variantą kiekvienam render'ui
-  const content = useMemo(() => {
+  // Bandome gauti iš DB
+  const { data: dbCTA } = useRandomCTA(context);
+  
+  // Fallback į hardcoded tekstus
+  const fallbackContent = useMemo(() => {
     const variants = contentVariants[context];
     return variants[Math.floor(Math.random() * variants.length)];
   }, [context]);
 
+  // Helper funkcija ikonoms iš DB
+  const getIconComponent = (iconName: string) => {
+    const icons: Record<string, typeof Target> = {
+      Target, Rocket, Sparkles, Brain, Zap, TrendingUp
+    };
+    return icons[iconName] || Target;
+  };
+
+  // Naudojame DB duomenis arba fallback
+  const content = useMemo(() => {
+    if (dbCTA) {
+      return {
+        title: dbCTA.title,
+        description: dbCTA.description,
+        cta: dbCTA.button_text,
+        icon: getIconComponent(dbCTA.icon)
+      };
+    }
+    return fallbackContent;
+  }, [dbCTA, fallbackContent]);
+
   const IconComponent = content.icon;
+
+  // Click tracking handler
+  const handleClick = () => {
+    if (dbCTA?.id) {
+      ctaAnalyticsService.trackClick(dbCTA.id, 'cta_section', context);
+    }
+  };
 
   if (variant === "compact") {
     return (
@@ -400,7 +433,7 @@ export function BusinessSolutionsCTA({
           <div className="flex-1">
             <h3 className="text-lg font-semibold mb-2">{content.title}</h3>
             <p className="text-sm text-muted-foreground mb-4">{content.description}</p>
-            <Link to="/verslo-sprendimai" className="inline-block w-full sm:w-auto">
+            <Link to="/verslo-sprendimai" className="inline-block w-full sm:w-auto" onClick={handleClick}>
               <Button className="gap-2 w-full sm:w-auto">
                 {content.cta}
                 <ArrowRight className="h-4 w-4" />

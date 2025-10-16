@@ -90,6 +90,10 @@ const AdminCTAManagementPage = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/admin/CTAManagementPage")
 );
+const AdminCTAAnalyticsPage = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./pages/admin/CTAAnalyticsPage")
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -507,6 +511,23 @@ const App = () => {
                                 }
                               >
                                 <AdminCTAManagementPage />
+                              </SuspenseWithChunkError>
+                            </AdminRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/admin/analytics"
+                          element={
+                            <AdminRouteErrorBoundary
+                              routePath="/admin/analytics"
+                              routeName="AdminCTAAnalyticsPage"
+                            >
+                              <SuspenseWithChunkError
+                                fallback={
+                                  <LoadingSpinner text="Kraunama analytics..." />
+                                }
+                              >
+                                <AdminCTAAnalyticsPage />
                               </SuspenseWithChunkError>
                             </AdminRouteErrorBoundary>
                           }

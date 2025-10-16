@@ -15,6 +15,7 @@ import PublicationsList from "@/components/admin/PublicationsList";
 import ToolEditor from "@/components/admin/tool-editor";
 import ToolsList from "@/components/admin/ToolsList";
 import UserManager from "@/components/admin/UserManager";
+import CTAAnalyticsPage from "@/pages/admin/CTAAnalyticsPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -174,6 +175,7 @@ const AdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="users">Vartotojai</TabsTrigger>
             <TabsTrigger value="inquiries">Verslo užklausos</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="performance">Našumas</TabsTrigger>
           </TabsList>
 
@@ -346,6 +348,10 @@ const AdminDashboard = () => {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <CTAAnalyticsPage />
           </TabsContent>
 
           <TabsContent value="performance">

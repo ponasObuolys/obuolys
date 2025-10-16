@@ -2,6 +2,98 @@ import { supabase } from '@/integrations/supabase/client';
 import type { CTASection, StickyMessage, HeroSection, CTAContext } from '@/types/cta';
 
 // ============================================
+// ANALYTICS & TRACKING
+// ============================================
+
+export const ctaAnalyticsService = {
+  // Track CTA click
+  async trackClick(
+    ctaId: string, 
+    ctaType: 'cta_section' | 'sticky_message',
+    context?: string,
+    pageUrl?: string
+  ) {
+    try {
+      // Generate session ID jei nėra
+      let sessionId = sessionStorage.getItem('cta_session_id');
+      if (!sessionId) {
+        sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        sessionStorage.setItem('cta_session_id', sessionId);
+      }
+
+      const { error } = await supabase
+        .from('cta_clicks')
+        .insert({
+          cta_id: ctaId,
+          cta_type: ctaType,
+          clicked_at: new Date().toISOString(),
+          user_session_id: sessionId,
+          page_url: pageUrl || window.location.pathname,
+          context: context
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      // Silent fail - analytics neturi trukdyti UX
+      // eslint-disable-next-line no-console
+      console.error('Failed to track CTA click:', error);
+    }
+  },
+
+  // Get CTA performance stats
+  async getPerformanceStats() {
+    const { data, error } = await supabase
+      .from('cta_performance')
+      .select('*')
+      .order('total_clicks', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get sticky messages performance
+  async getStickyPerformance() {
+    const { data, error } = await supabase
+      .from('sticky_performance')
+      .select('*')
+      .order('total_clicks', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get daily stats
+  async getDailyStats(days = 30) {
+    const { data, error } = await supabase
+      .from('cta_daily_stats')
+      .select('*')
+      .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString())
+      .order('date', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get top performing CTAs
+  async getTopCTAs(daysBack = 30, limit = 10) {
+    const { data, error } = await supabase
+      .rpc('get_top_ctas', { days_back: daysBack, limit_count: limit });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get optimization recommendations
+  async getRecommendations() {
+    const { data, error } = await supabase
+      .rpc('get_cta_recommendations');
+    
+    if (error) throw error;
+    return data || [];
+  }
+};
+
+// ============================================
 // CTA SECTIONS
 // ============================================
 

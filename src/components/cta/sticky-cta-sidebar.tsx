@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useActiveStickyMessages } from "@/hooks/use-cta";
 
 const stickyMessages = [
   {
@@ -87,6 +88,12 @@ export function StickyCtaSidebar() {
   const [isDismissed, setIsDismissed] = useState(false);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
 
+  // Bandome gauti iš DB
+  const { data: dbMessages } = useActiveStickyMessages();
+  
+  // Naudojame DB arba fallback
+  const messages = dbMessages && dbMessages.length > 0 ? dbMessages : stickyMessages;
+
   useEffect(() => {
     // Rodo CTA po 3 sekundžių scrollinimo
     const handleScroll = () => {
@@ -105,11 +112,11 @@ export function StickyCtaSidebar() {
     // Keičia žinutę kas 10 sekundžių
     if (isVisible && !isDismissed) {
       const interval = setInterval(() => {
-        setCurrentMessageIndex((prev) => (prev + 1) % stickyMessages.length);
+        setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
       }, 10000);
       return () => clearInterval(interval);
     }
-  }, [isVisible, isDismissed]);
+  }, [isVisible, isDismissed, messages.length]);
 
   const handleDismiss = () => {
     setIsDismissed(true);
@@ -120,7 +127,7 @@ export function StickyCtaSidebar() {
     }, 120000);
   };
 
-  const currentMessage = stickyMessages[currentMessageIndex];
+  const currentMessage = messages[currentMessageIndex];
 
   return (
     <AnimatePresence>
