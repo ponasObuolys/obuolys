@@ -192,15 +192,8 @@ export const useProfileManagement = () => {
       fetchSavedPublications();
       fetchEnrolledCourses();
     }
-  }, [
-    user,
-    loading,
-    navigate,
-    getUserProfile,
-    profileForm,
-    fetchSavedPublications,
-    fetchEnrolledCourses,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]);
 
   // Profile submission handler
   const onProfileSubmit = async (data: ProfileFormValues) => {

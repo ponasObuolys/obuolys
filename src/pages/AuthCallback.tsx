@@ -9,7 +9,10 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Supabase automatically handles the OAuth callback
+        // Wait for Supabase to process the OAuth callback
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Get the session after OAuth callback
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -19,9 +22,13 @@ const AuthCallback = () => {
         }
 
         if (session) {
+          log.info('OAuth callback successful, session established');
+          // Wait a bit more to ensure user context is updated
+          await new Promise(resolve => setTimeout(resolve, 500));
           // Successful authentication - redirect to home
-          navigate('/');
+          navigate('/', { replace: true });
         } else {
+          log.warn('No session after OAuth callback');
           // No session - redirect to auth page
           navigate('/auth');
         }
