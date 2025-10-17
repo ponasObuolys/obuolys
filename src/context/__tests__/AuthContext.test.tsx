@@ -176,6 +176,47 @@ describe('AuthContext', () => {
     ).rejects.toThrow('Email already registered');
   });
 
+  it('handles Google sign in successfully', async () => {
+    mockSupabaseClient.auth.signInWithOAuth.mockResolvedValueOnce({
+      data: { provider: 'google', url: 'https://accounts.google.com/...' },
+      error: null
+    });
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await act(async () => {
+      await result.current.signInWithGoogle();
+    });
+
+    expect(mockSupabaseClient.auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+  });
+
+  it('handles Google sign in error', async () => {
+    const authError = { message: 'OAuth provider error' };
+
+    mockSupabaseClient.auth.signInWithOAuth.mockResolvedValueOnce({
+      data: { provider: null, url: null },
+      error: authError
+    });
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await expect(
+      act(async () => {
+        await result.current.signInWithGoogle();
+      })
+    ).rejects.toThrow('OAuth provider error');
+  });
+
   it('handles sign out successfully', async () => {
     const mockUser = createMockUser();
     let authStateChangeCallback: (event: any, session: any) => void;

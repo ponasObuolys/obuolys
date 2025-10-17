@@ -13,6 +13,7 @@ export interface AuthContextProps {
   isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateUserProfile: (data: ProfileUpdateData) => Promise<void>;

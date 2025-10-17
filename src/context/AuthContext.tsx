@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAdmin,
         loading,
         signIn: (email: string, password: string) => authHooks.signIn(email, password),
+        signInWithGoogle: () => authHooks.signInWithGoogle(),
         signUp: (email: string, password: string, username: string) =>
           authHooks.signUp(email, password, username),
         signOut: () => authHooks.signOut(),

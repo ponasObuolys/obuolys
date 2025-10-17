@@ -13,16 +13,16 @@ export const createMockUser = (overrides: Partial<User> = {}): User => ({
   confirmation_sent_at: new Date().toISOString(),
   recovery_sent_at: new Date().toISOString(),
   email_change_sent_at: new Date().toISOString(),
-  new_email: null,
-  new_phone: null,
-  invited_at: null,
-  action_link: null,
+  new_email: undefined,
+  new_phone: undefined,
+  invited_at: undefined,
+  action_link: undefined,
   email: 'test@example.com',
-  phone: null,
+  phone: undefined,
   created_at: new Date().toISOString(),
   confirmed_at: new Date().toISOString(),
   email_confirmed_at: new Date().toISOString(),
-  phone_confirmed_at: null,
+  phone_confirmed_at: undefined,
   last_sign_in_at: new Date().toISOString(),
   role: 'authenticated',
   updated_at: new Date().toISOString(),
@@ -153,6 +153,10 @@ export const createMockSupabaseClient = (config: {
       }),
       signInWithPassword: vi.fn().mockResolvedValue({
         data: { user, session },
+        error: authError
+      }),
+      signInWithOAuth: vi.fn().mockResolvedValue({
+        data: { provider: 'google', url: 'https://accounts.google.com/oauth' },
         error: authError
       }),
       signOut: vi.fn().mockResolvedValue({

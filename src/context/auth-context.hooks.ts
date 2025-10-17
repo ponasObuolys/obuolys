@@ -78,6 +78,31 @@ export const signIn = async (email: string, password: string) => {
   }
 };
 
+// Prisijungimas su Google
+export const signInWithGoogle = async () => {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+    if (error) throw error;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Įvyko klaida prisijungiant su Google";
+    toast({
+      title: "Klaida",
+      description: errorMessage,
+      variant: "destructive",
+    });
+    throw error;
+  }
+};
+
 // Registracija
 export const signUp = async (email: string, password: string, username: string) => {
   try {

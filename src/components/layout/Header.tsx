@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/context/AuthContext';
 import { useUnreadMessages } from '@/hooks/use-unread-messages';
 import {
@@ -16,9 +17,20 @@ import {
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileData, setProfileData] = useState<{ username?: string; avatarUrl?: string } | null>(null);
   const location = useLocation();
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut, getUserProfile } = useAuth();
   const unreadCount = useUnreadMessages();
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (user) {
+        const profile = await getUserProfile();
+        setProfileData(profile);
+      }
+    };
+    loadProfile();
+  }, [user, getUserProfile]);
 
   // Navigacijos meniu punktai
   const navLinks = [
@@ -109,7 +121,12 @@ const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={profileData?.avatarUrl || ''} alt={profileData?.username || 'User'} />
+                      <AvatarFallback>
+                        {profileData?.username?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                      </AvatarFallback>
+                    </Avatar>
                     <span>Profilis</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -221,7 +238,12 @@ const Header = () => {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <div className="flex items-center space-x-2">
-                      <Settings className="h-4 w-4" />
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage src={profileData?.avatarUrl || ''} alt={profileData?.username || 'User'} />
+                        <AvatarFallback>
+                          {profileData?.username?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                        </AvatarFallback>
+                      </Avatar>
                       <span>Profilio nustatymai</span>
                     </div>
                   </Link>
