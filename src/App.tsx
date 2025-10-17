@@ -64,6 +64,7 @@ const CustomSolutionsPage = createLazyComponent(() => import("./pages/CustomSolu
 
 // Authentication and admin pages with separate chunking
 const Auth = createNamedLazyComponent("auth-pages", () => import("./pages/Auth"));
+const AuthCallback = createNamedLazyComponent("auth-pages", () => import("./pages/AuthCallback"));
 const ProfilePage = createNamedLazyComponent("auth-pages", () => import("./pages/ProfilePage"));
 const MyBookmarksPage = createNamedLazyComponent("auth-pages", () => import("./pages/MyBookmarksPage"));
 const AdminDashboard = createNamedLazyComponent(
@@ -386,6 +387,18 @@ const App = () => {
                                 fallback={<LoadingSpinner text="Kraunama prisijungimo forma..." />}
                               >
                                 <Auth />
+                              </SuspenseWithChunkError>
+                            </AuthRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/auth/callback"
+                          element={
+                            <AuthRouteErrorBoundary routePath="/auth/callback" routeName="AuthCallback">
+                              <SuspenseWithChunkError
+                                fallback={<LoadingSpinner text="Jungiamasi..." />}
+                              >
+                                <AuthCallback />
                               </SuspenseWithChunkError>
                             </AuthRouteErrorBoundary>
                           }
