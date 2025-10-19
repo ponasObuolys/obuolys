@@ -74,57 +74,58 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-32 sm:bottom-6 right-4 sm:right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 cursor-pointer group"
+          className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 cursor-pointer group"
           aria-label={progress >= 100 ? "Grįžti į viršų" : `Perskaitytas ${Math.round(progress)}%`}
         >
           <div className="relative w-16 h-16 flex items-center justify-center">
-            {/* Background circle */}
-            <svg className="absolute inset-0 w-16 h-16 transform -rotate-90">
-              <circle
-                cx="32"
-                cy="32"
-                r="28"
-                stroke="currentColor"
-                strokeWidth="3"
+            {progress >= 100 ? (
+              // Show only arrow at 100%
+              <svg
+                className="w-6 h-6 text-primary-foreground"
                 fill="none"
-                className="text-primary-foreground/20"
-              />
-              {/* Progress circle */}
-              <circle
-                cx="32"
-                cy="32"
-                r="28"
                 stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 28}`}
-                strokeDashoffset={`${2 * Math.PI * 28 * (1 - progress / 100)}`}
-                className="text-primary-foreground transition-all duration-300"
-                strokeLinecap="round"
-              />
-            </svg>
-            {/* Icon or percentage */}
-            <div className="relative z-10 flex flex-col items-center justify-center">
-              {progress >= 100 ? (
-                <svg
-                  className="w-6 h-6 text-primary-foreground"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 10l7-7m0 0l7 7m-7-7v18"
+                />
+              </svg>
+            ) : (
+              <>
+                {/* Background circle */}
+                <svg className="absolute inset-0 w-16 h-16 transform -rotate-90">
+                  <circle
+                    cx="32"
+                    cy="32"
+                    r="28"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    className="text-primary-foreground/20"
+                  />
+                  {/* Progress circle */}
+                  <circle
+                    cx="32"
+                    cy="32"
+                    r="28"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - progress / 100)}`}
+                    className="text-primary-foreground transition-all duration-300"
                     strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 10l7-7m0 0l7 7m-7-7v18"
                   />
                 </svg>
-              ) : (
-                <span className="text-xs font-bold text-primary-foreground">
+                {/* Percentage text */}
+                <span className="relative z-10 text-xs font-bold text-primary-foreground">
                   {Math.round(progress)}%
                 </span>
-              )}
-            </div>
+              </>
+            )}
           </div>
           {/* Tooltip on hover */}
           <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
