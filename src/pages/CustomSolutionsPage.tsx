@@ -71,53 +71,40 @@ const CustomSolutionsPage = () => {
       id: 1,
       title: 'Krovinių Valdymo Sistema',
       category: 'Logistika',
-      problem: 'Transporto kompanija prarado užsakymų kontrolę, kai augdama pasiekė 50+ krovinių per dieną.',
-      solution: 'Custom sistema su real-time krovinių tracking, automatiniais pranešimais klientams, maršrutų optimizacija.',
+      problem: 'Transporto kompanija prarado užsakymų kontrolę, kai augdama pasiekė 400+ krovinių per dieną.',
+      solution: 'Individuali sistema su realiuoju laiku veikiančiu krovinių sekimu, automatiniais pranešimais klientams, maršrutų optimizavimu ir išsamia analitika.',
       results: [
         '40% sumažėjo laikas užsakymams apdoroti',
         '95% klientų pasitenkinimas',
         'Automatizuoti 80% rutininių procesų'
       ],
-      image: '/placeholder-project-1.jpg'
-    },
-    {
-      id: 2,
-      title: 'Vairuotojų Koordinavimo Platforma',
-      category: 'Logistika',
-      problem: 'Dispečeriai kasdien praleidžia 3-4 valandas koordinuodami vairuotojus telefonu.',
-      solution: 'Mobili aplikacija vairuotojams + admin dashboard su real-time lokacija, užduočių paskirstymu.',
-      results: [
-        '70% mažiau telefono skambučių',
-        'Vairuotojai per dieną atlieka 20% daugiau užsakymų',
-        'Visa komunikacija dokumentuota'
-      ],
-      image: '/placeholder-project-2.jpg'
+      image: '/verslo-sprendimai/logistics.png'
     },
     {
       id: 3,
       title: 'Sandėlio Apskaitos Sistema',
-      category: 'Logistika',
+      category: 'Autodetalės',
       problem: 'Excel failai kiekvienam sandėliui, duomenys nesinchronizuoti, daug rankinio darbo.',
-      solution: 'Centralizuota sistema su barcode scanning, automatine apskaita, low stock alerts.',
+      solution: 'Centralizuota sistema su brūkšninių kodų skenavimu, automatine apskaita, mažų atsargų įspėjimais.',
       results: [
         '0 apskaitos klaidų per 6 mėnesius',
         '3 valandos per dieną sutaupyta',
-        'Real-time inventory visibility'
+        'Atsargų matomumas realiuoju laiku'
       ],
-      image: '/placeholder-project-3.jpg'
+      image: '/verslo-sprendimai/warehouse.png'
     },
     {
       id: 4,
       title: 'Klientų Portalo Platforma',
-      category: 'Logistika',
-      problem: 'Klientai nuolat skambina dėl siuntos statuso, dispečeriai perkrauti.',
-      solution: 'Self-service klientų portalas su real-time tracking, dokumentų parsisiųstimu, pranešimais.',
+      category: 'E. komercija',
+      problem: 'Klientai nuolat skambina dėl užsakymo būsenos, aptarnavimo komanda perkrauta.',
+      solution: 'Savitarnos klientų portalas su užsakymų sekimu realiuoju laiku, dokumentų atsisiuntimu, automatiškais pranešimais ir užsakymų istorija.',
       results: [
         '60% mažiau skambučių į centrą',
         'Klientai vertina 4.8/5',
-        '24/7 prieiga prie informacijos'
+        'Prieiga prie informacijos visą parą'
       ],
-      image: '/placeholder-project-4.jpg'
+      image: '/verslo-sprendimai/clients.jpg'
     },
     {
       id: 5,
@@ -130,7 +117,7 @@ const CustomSolutionsPage = () => {
         '0 klaidų sąskaitose',
         'Greičiau apmokamos sąskaitos'
       ],
-      image: '/placeholder-project-5.jpg'
+      image: '/verslo-sprendimai/invoice.png'
     }
   ];
 
