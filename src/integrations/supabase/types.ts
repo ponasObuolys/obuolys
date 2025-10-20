@@ -584,6 +584,75 @@ export type Database = {
         }
         Relationships: []
       }
+      page_views: {
+        Row: {
+          article_id: string | null
+          id: string
+          ip_address: unknown | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+          viewed_at: string
+        }
+        Insert: {
+          article_id?: string | null
+          id?: string
+          ip_address?: unknown | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          article_id?: string | null
+          id?: string
+          ip_address?: unknown | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "page_views_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "auth_users_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_statistics: {
+        Row: {
+          id: string
+          last_updated: string
+          total_page_views: number
+          total_visitors: number
+          year: number
+        }
+        Insert: {
+          id?: string
+          last_updated?: string
+          total_page_views?: number
+          total_visitors?: number
+          year: number
+        }
+        Update: {
+          id?: string
+          last_updated?: string
+          total_page_views?: number
+          total_visitors?: number
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       auth_users_view: {
@@ -690,6 +759,21 @@ export type Database = {
           recommendation_type: string
           suggested_priority: number
           title: string
+        }[]
+      }
+      get_current_year_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_page_views: number
+          total_visitors: number
+          year: number
+        }[]
+      }
+      get_article_view_count: {
+        Args: { p_article_id: string }
+        Returns: {
+          view_count: number
+          display_count: number
         }[]
       }
       get_profiles_with_emails: {

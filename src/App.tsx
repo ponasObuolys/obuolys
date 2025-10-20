@@ -15,6 +15,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
+import { CookieConsent } from "@/components/gdpr/cookie-consent";
 import { log } from "@/utils/browserLogger";
 import {
   createLazyComponent,
@@ -60,6 +61,12 @@ const SupportPage = createLazyComponent(() => import("./pages/SupportPage"), {
 });
 const CustomSolutionsPage = createLazyComponent(() => import("./pages/CustomSolutionsPage"), {
   cacheKey: "custom-solutions",
+});
+const PrivacyPolicyPage = createLazyComponent(() => import("./pages/PrivacyPolicyPage"), {
+  cacheKey: "privacy-policy",
+});
+const CookiePolicyPage = createLazyComponent(() => import("./pages/CookiePolicyPage"), {
+  cacheKey: "cookie-policy",
 });
 
 // Authentication and admin pages with separate chunking
@@ -377,6 +384,30 @@ const App = () => {
                             </ContentRouteErrorBoundary>
                           }
                         />
+                        <Route
+                          path="/privatumas"
+                          element={
+                            <ContentRouteErrorBoundary routePath="/privatumas" routeName="PrivacyPolicyPage">
+                              <SuspenseWithChunkError
+                                fallback={<LoadingSpinner text="Kraunama privatumo politika..." />}
+                              >
+                                <PrivacyPolicyPage />
+                              </SuspenseWithChunkError>
+                            </ContentRouteErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/slapukai"
+                          element={
+                            <ContentRouteErrorBoundary routePath="/slapukai" routeName="CookiePolicyPage">
+                              <SuspenseWithChunkError
+                                fallback={<LoadingSpinner text="Kraunama slapukų politika..." />}
+                              >
+                                <CookiePolicyPage />
+                              </SuspenseWithChunkError>
+                            </ContentRouteErrorBoundary>
+                          }
+                        />
 
                         {/* Authentication routes with auth error boundaries */}
                         <Route
@@ -564,6 +595,9 @@ const App = () => {
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
+      
+      {/* GDPR Cookie Consent Banner */}
+      <CookieConsent />
     </GlobalErrorBoundary>
   );
 };

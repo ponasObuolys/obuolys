@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Clock, CalendarDays } from "lucide-react";
+import { Clock, CalendarDays, Eye } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
+import { useArticleViews } from "@/hooks/use-article-views";
 
 interface ArticleCardProps {
   article: {
@@ -28,6 +29,7 @@ const categoryColors: { [key: string]: string } = {
 const ArticleCard = ({ article }: ArticleCardProps) => {
   const primaryCategory = article.category?.[0] || "default";
   const categoryColor = categoryColors[primaryCategory] || categoryColors.default;
+  const { viewCount, loading } = useArticleViews({ articleId: article.id });
 
   return (
     <Link to={`/publikacijos/${article.slug}`} className="block">
@@ -78,6 +80,12 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
             <Clock size={14} />
             <span>{article.read_time} skaitymo</span>
           </div>
+          {!loading && viewCount > 0 && (
+            <div className="flex items-center gap-1">
+              <Eye size={14} className="text-blue-400" />
+              <span>{viewCount.toLocaleString('lt-LT')}</span>
+            </div>
+          )}
         </div>
       </div>
     </Link>

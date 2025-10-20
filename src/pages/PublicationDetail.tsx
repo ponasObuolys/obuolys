@@ -28,6 +28,8 @@ import { ReadingProgressBar } from "@/components/reading/reading-progress-bar";
 import { useReadingProgress } from "@/hooks/use-reading-progress";
 import { CommentsSection } from "@/components/comments/comments-section";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
+import { ReaderStats } from "@/components/analytics/reader-stats";
+import { analyticsService } from "@/services/analytics.service";
 
 type Publication = Tables<"articles">;
 
@@ -106,6 +108,9 @@ const PublicationDetail = () => {
 
         if (data) {
           setPublication(data as Publication);
+
+          // Track page view for analytics
+          analyticsService.trackPageView(data.id);
 
           if (data.content) {
             const imageUrls = extractImagesFromHTML(data.content);
@@ -253,6 +258,9 @@ const PublicationDetail = () => {
                 />
               </div>
             </div>
+
+            {/* Reader Statistics */}
+            <ReaderStats articleId={publication.id} variant="compact" className="mb-6" />
 
             {publication.image_url ? (
               <div className="mb-8 rounded-md overflow-hidden">
