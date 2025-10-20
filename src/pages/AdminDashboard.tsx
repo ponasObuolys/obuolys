@@ -25,6 +25,8 @@ import { useUnreadMessages } from "@/hooks/use-unread-messages";
 import { usePendingCommentsCount } from "@/hooks/use-pending-comments-count";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
+import { DeviceStats } from "@/components/widgets/device-stats";
+import { TrendingArticles } from "@/components/widgets/trending-articles";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -184,6 +186,12 @@ const AdminDashboard = () => {
 
           <TabsContent value="overview">
             <AdminDashboardStats stats={dashboardStats} />
+
+            {/* Analytics Widgets */}
+            <div className="mt-8 space-y-6">
+              <TrendingArticles days={7} limit={10} />
+              <DeviceStats days={30} />
+            </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>

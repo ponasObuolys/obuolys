@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ChevronUp } from "lucide-react";
 import { StickyCtaSidebar } from "@/components/cta/sticky-cta-sidebar";
+import { useLocation } from "react-router-dom";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,6 +14,9 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   // Naudojame hooką, kad peršoktų į viršų pakeitus puslapį
   useScrollToTop();
+  
+  const location = useLocation();
+  const isPublicationPage = location.pathname.startsWith('/publikacijos/');
 
   // "Back to Top" mygtuko būsenos
   const [showButton, setShowButton] = useState(false);
@@ -50,8 +54,8 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Sticky CTA Sidebar */}
       <StickyCtaSidebar />
 
-      {/* Back to Top mygtukas - rodomas tik jei nėra reading progress bar */}
-      {showButton && !document.querySelector('[data-reading-progress]') && (
+      {/* Back to Top mygtukas - nerodyti publikacijų puslapiuose */}
+      {showButton && !isPublicationPage && (
         <button
           onClick={scrollToTop}
           className="fixed bottom-6 right-6 p-3 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all duration-300 z-50"

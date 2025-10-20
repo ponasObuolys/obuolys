@@ -17,20 +17,15 @@ const FeaturedArticles = () => {
   });
 
   useEffect(() => {
-    // Funkcija nustatyti kiek rodyti pagal lango dydį
-    const getLimit = () => (window.matchMedia("(min-width: 1024px)").matches ? 3 : 4);
-
-    const fetchFeaturedArticles = async () => {
+    const fetchLatestArticles = async () => {
       try {
         setLoading(true);
-        const limit = getLimit();
         const { data, error } = await supabase
           .from("articles")
           .select("*")
           .eq("published", true)
-          .eq("featured", true)
           .order("date", { ascending: false })
-          .limit(limit);
+          .limit(3);
 
         if (error) {
           throw error;
@@ -46,12 +41,7 @@ const FeaturedArticles = () => {
       }
     };
 
-    fetchFeaturedArticles();
-
-    // Reaguok į lango dydžio pokytį
-    const handleResize = () => fetchFeaturedArticles();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    fetchLatestArticles();
   }, [handleError]);
 
   return (
@@ -59,10 +49,10 @@ const FeaturedArticles = () => {
       <div className="container mx-auto px-4">
         <div className="mb-8 md:mb-12 text-center">
           <h2 className="mb-3">
-            Populiariausios <span className="gradient-text">AI naujienos</span>
+            Naujausios <span className="gradient-text">AI naujienos</span>
           </h2>
           <p className="text-gray-200">
-            Naujausios ir populiariausios publikacijos apie dirbtinį intelektą ir jo pritaikymą
+            Šviežiausios publikacijos apie dirbtinį intelektą ir jo pritaikymą
           </p>
         </div>
 
@@ -79,7 +69,7 @@ const FeaturedArticles = () => {
           </div>
         ) : (
           <div className="text-center">
-            <p>Šiuo metu nėra populiarių straipsnių</p>
+            <p>Šiuo metu nėra publikuotų straipsnių</p>
           </div>
         )}
 

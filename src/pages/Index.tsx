@@ -14,6 +14,7 @@ import {
   SITE_CONFIG,
 } from '@/utils/seo';
 import { BusinessSolutionsCTA } from '@/components/cta/business-solutions-cta';
+import { TrendingArticles } from '@/components/widgets/trending-articles';
 
 const Index = () => {
   const structuredData = [
@@ -41,6 +42,14 @@ const Index = () => {
       <Hero />
       <FeaturedArticles />
       {/* <AINews /> */}
+      
+      {/* Trending Articles Widget */}
+      <section className="py-12 md:py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <TrendingArticles days={7} limit={3} />
+        </div>
+      </section>
+      
       <AITools />
       <Courses />
       

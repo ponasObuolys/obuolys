@@ -1,41 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import LazyImage from '@/components/ui/lazy-image';
-import { useToast } from '@/hooks/use-toast';
-import { Copy, MessageCircle } from 'lucide-react';
 
 const Hero = () => {
-  const { toast } = useToast();
-
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText('labas@ponasobuolys.lt');
-      toast({
-        title: "El. paštas nukopijuotas!",
-        description: "labas@ponasobuolys.lt",
-        duration: 3000,
-      });
-    } catch {
-      toast({
-        title: "Klaida",
-        description: "Nepavyko nukopijuoti el. pašto",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
-
-  // Decode phone number (obfuscated from bots)
-  const getPhoneNumber = () => {
-    const parts = ['370', '671', '68860'];
-    return parts.join('');
-  };
-
-  const handleWhatsApp = () => {
-    // WhatsApp link works on all devices - opens app on mobile, web.whatsapp.com on desktop
-    const phoneNumber = getPhoneNumber();
-    window.open(`https://wa.me/${phoneNumber}`, '_blank');
-  };
 
   return (
     <section className="py-12 md:py-16">
@@ -54,28 +21,13 @@ const Hero = () => {
                   Šiuo metu kuriu AI sprendimus ir konsultuoju verslo įmones apie dirbtinio intelekto galimybes.
                 </p>
 
-                {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <Link to="/kontaktai?type=KONSULTACIJA" className="w-full sm:w-auto">
-                    <Button className="button-primary w-full">
+                {/* Action button */}
+                <div className="flex justify-center lg:justify-start pt-4">
+                  <Link to="/kontaktai?type=KONSULTACIJA">
+                    <Button className="button-primary">
                       Konsultuotis
                     </Button>
                   </Link>
-                  <Button 
-                    onClick={handleCopyEmail}
-                    className="button-outline w-full sm:w-auto flex items-center justify-center gap-2"
-                  >
-                    <Copy className="h-4 w-4" />
-                    Kopijuoti El. paštą
-                  </Button>
-                  {/* WhatsApp button - works on all devices */}
-                  <Button 
-                    onClick={handleWhatsApp}
-                    className="button-outline w-full sm:w-auto flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    WhatsApp
-                  </Button>
                 </div>
               </div>
 

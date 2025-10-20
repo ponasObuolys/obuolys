@@ -799,6 +799,21 @@ export type Database = {
           total_clicks: number
         }[]
       }
+      get_trending_articles: {
+        Args: { since_date?: string; limit_count?: number }
+        Returns: {
+          id: string
+          title: string
+          slug: string
+          views: number
+          image_url: string
+          category: string[]
+        }[]
+      }
+      get_device_breakdown: {
+        Args: { since_date?: string }
+        Returns: Json
+      }
       is_admin: {
         Args: { user_id: string }
         Returns: boolean
