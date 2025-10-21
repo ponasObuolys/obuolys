@@ -14,6 +14,14 @@ export const optimizeSupabaseImage = (
   options: ImageTransformOptions = {}
 ): string => {
   if (!url) return '/opengraph-image.png';
+
+  // NOTE: Supabase image transformation is not enabled for this project
+  // Images are already optimized as WebP in storage
+  // Return original URL without transformation
+  return url;
+
+  // The code below is disabled until Supabase transformation is configured
+  /*
   if (!url.includes('supabase.co/storage')) return url;
 
   const { width, height, quality = 80, format = 'webp' } = options;
@@ -30,6 +38,7 @@ export const optimizeSupabaseImage = (
     // Fallback to original URL on transformation error
     return url;
   }
+  */
 };
 
 export const IMAGE_PRESETS = {
