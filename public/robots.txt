@@ -24,7 +24,7 @@ Allow: /kontaktai
 Allow: /paremti
 
 # Sitemap location
-Sitemap: https://www.ponasobuolys.lt/sitemap.xml
+Sitemap: https://ponasobuolys.lt/sitemap.xml
 
 # Crawl-delay (optional, prevents server overload)
 # Crawl-delay: 1

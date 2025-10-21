@@ -56,6 +56,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             <LazyImage
               src={course.image_url}
               alt={course.title}
+              aspectRatio="16/9"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>

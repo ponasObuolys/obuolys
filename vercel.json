@@ -102,6 +102,21 @@
       "source": "/index.html",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/mokymai/:path*",
+      "destination": "/kursai/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/collections/kursai",
+      "destination": "/kursai",
+      "permanent": true
+    },
+    {
+      "source": "/tag/:tag",
+      "destination": "/publikacijos",
+      "permanent": true
     }
   ]
 }

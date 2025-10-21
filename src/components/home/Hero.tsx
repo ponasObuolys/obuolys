@@ -39,6 +39,9 @@ const Hero = () => {
                       <LazyImage
                         src="/obuolys-logo.png"
                         alt="Ponas Obuolys Avatar"
+                        width={256}
+                        height={256}
+                        priority={true}
                         className="w-full h-full object-cover transition-transform hover:scale-110 duration-300"
                       />
                     </div>

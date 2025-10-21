@@ -60,6 +60,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
             <LazyImage
               src={article.image_url}
               alt={article.title}
+              aspectRatio="16/9"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>

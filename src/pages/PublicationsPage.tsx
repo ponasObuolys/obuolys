@@ -11,6 +11,7 @@ import { Search, Plus } from "lucide-react";
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
+import { ListSkeleton } from "@/components/ui/content-skeleton";
 
 type Publication = Tables<"articles">;
 
@@ -146,11 +147,7 @@ const PublicationsPage = () => {
             </div>
 
             {loading ? (
-              <div className="text-center py-12">
-                <div className="dark-card">
-                  <p className="text-xl text-foreground/60">Kraunamos AI naujienos...</p>
-                </div>
-              </div>
+              <ListSkeleton count={6} />
             ) : filteredPublications.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPublications.map((item, index) => (

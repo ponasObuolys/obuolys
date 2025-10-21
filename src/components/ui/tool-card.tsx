@@ -68,6 +68,7 @@ const ToolCard = ({ tool }: ToolCardProps) => {
             <LazyImage
               src={tool.image_url}
               alt={tool.name}
+              aspectRatio="16/9"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
