@@ -79,33 +79,41 @@
   }
 
   .light {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light theme - high contrast for better readability */
+    --background: 0 0% 98%;
+    --foreground: 222.2 47.4% 11.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
     --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
 
     --accent: 142 76% 36%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 262 83% 58%;
+
+    /* Project accent colors for light theme */
+    --project-purple: 262 83% 58%;
+    --project-blue: 221 83% 53%;
+    --project-orange: 25 95% 53%;
+    --project-green: 142 76% 36%;
+    --project-cyan: 198 93% 60%;
   }
 }
 
@@ -131,7 +139,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300;
+    @apply font-bold text-foreground;
   }
 
   h1 {
@@ -147,11 +155,11 @@
   }
 
   p {
-    @apply text-gray-200 leading-relaxed max-w-full;
+    @apply text-foreground/90 leading-relaxed max-w-full;
   }
 
   .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300;
+    @apply text-foreground;
   }
   
   /* Dark theme card styles */

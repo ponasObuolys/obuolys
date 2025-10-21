@@ -57,14 +57,14 @@ const AITools = () => {
       <div className="container mx-auto px-4">
         <div className="mb-8 md:mb-12 text-center">
           <h2 className="gradient-text">Rekomenduojami įrankiai</h2>
-          <p className="mt-3 text-gray-200">
+          <p className="mt-3 text-foreground/90">
             Šie dirbtinio intelekto įrankiai padės jums efektyviau dirbti ir kurti
           </p>
         </div>
 
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-xl text-gray-200">Kraunami įrankiai...</p>
+            <p className="text-xl text-foreground/90">Kraunami įrankiai...</p>
           </div>
         ) : tools.length > 0 ? (
           <div className="tools-grid">
@@ -74,7 +74,7 @@ const AITools = () => {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-xl text-gray-200">Šiuo metu rekomenduojamų įrankių nėra</p>
+            <p className="text-xl text-foreground/90">Šiuo metu rekomenduojamų įrankių nėra</p>
           </div>
         )}
 

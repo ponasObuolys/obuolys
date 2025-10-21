@@ -33,7 +33,8 @@
       "Bash(fi)",
       "Bash(grep:*)",
       "Bash(curl:*)",
-      "Bash(npx.cmd tsc:*)"
+      "Bash(npx.cmd tsc:*)",
+      "Bash(timeout 10 npm run dev:*)"
     ],
     "deny": [],
     "ask": []

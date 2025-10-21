@@ -21,21 +21,21 @@ const Footer = () => {
 
         {/* Compact social links section */}
         <div className="text-center">
-          <h2 className="text-sm font-medium text-gray-400 mb-4">Susisiekite su manimi</h2>
+          <h2 className="text-sm font-medium text-muted-foreground mb-4">Susisiekite su manimi</h2>
           <SocialLinks className="justify-center" />
         </div>
 
         {/* Legal links */}
-        <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+        <div className="border-t border-border mt-6 pt-6 text-center">
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
             <Link to="/privatumas" className="hover:text-primary transition-colors">
               Privatumo politika
             </Link>
-            <span className="text-gray-600">•</span>
+            <span className="text-muted-foreground/50">•</span>
             <Link to="/slapukai" className="hover:text-primary transition-colors">
               Slapukų politika
             </Link>
-            <span className="text-gray-600">•</span>
+            <span className="text-muted-foreground/50">•</span>
             <a href="mailto:labas@ponasobuolys.lt" className="hover:text-primary transition-colors">
               labas@ponasobuolys.lt
             </a>

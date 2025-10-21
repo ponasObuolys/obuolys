@@ -16,7 +16,7 @@ const Hero = () => {
                   Aš esu <span className="text-primary">ponas Obuolys</span>
                 </h1>
 
-                <p className="text-xl text-gray-200 leading-relaxed text-left">
+                <p className="text-xl text-foreground/90 leading-relaxed text-left">
                   Dirbtinio intelekto specialistas iš Lietuvos.
                   Šiuo metu kuriu AI sprendimus ir konsultuoju verslo įmones apie dirbtinio intelekto galimybes.
                 </p>
@@ -63,7 +63,7 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-left">AI Naujienos</h3>
-                    <p className="text-sm text-gray-200 text-left">Publikacijos, Straipsniai</p>
+                    <p className="text-sm text-foreground/90 text-left">Publikacijos, Straipsniai</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -79,7 +79,7 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-left">Kursai</h3>
-                    <p className="text-sm text-gray-200 text-left">Mokymai, Konsultacijos</p>
+                    <p className="text-sm text-foreground/90 text-left">Mokymai, Konsultacijos</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -95,7 +95,7 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-left">Įrankiai</h3>
-                    <p className="text-sm text-gray-200 text-left">AI sprendimai</p>
+                    <p className="text-sm text-foreground/90 text-left">AI sprendimai</p>
                   </div>
                   <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

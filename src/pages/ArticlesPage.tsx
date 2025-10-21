@@ -104,7 +104,7 @@ const PublicationsPage = () => {
             </div>
           <div className="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-200 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <Input
                 placeholder="Ieškoti publikacijų..."
                 className="pl-10"
@@ -120,7 +120,7 @@ const PublicationsPage = () => {
                   className={`${
                     selectedCategory === category
                       ? "bg-primary text-white hover:bg-primary/90"
-                      : "bg-white text-secondary hover:bg-gray-100"
+                      : "bg-card text-foreground hover:bg-muted"
                   }`}
                   onClick={() => setSelectedCategory(category)}
                 >
@@ -131,12 +131,12 @@ const PublicationsPage = () => {
           </div>
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-xl text-gray-200">Kraunamos publikacijos...</p>
+              <p className="text-xl text-foreground/90">Kraunamos publikacijos...</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPublications.length === 0 ? (
-                <div className="col-span-full text-center text-gray-200">
+                <div className="col-span-full text-center text-foreground/90">
                   Nerasta publikacijų pagal pasirinktus filtrus.
                 </div>
               ) : (

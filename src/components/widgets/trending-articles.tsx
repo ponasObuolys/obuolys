@@ -95,7 +95,7 @@ export function TrendingArticles({
           <Flame className="h-6 w-6 text-orange-500" />
           Populiariausia <span className="gradient-text">{timeLabel}</span>
         </h2>
-        <p className="text-gray-200">
+        <p className="text-foreground/90">
           Daugiausiai skaitomi straipsniai pagal peržiūras
         </p>
       </div>
@@ -130,7 +130,7 @@ export function TrendingArticles({
                   <h3 className="font-semibold line-clamp-2 mb-1 text-left">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-gray-200 text-left">
+                  <p className="text-sm text-foreground/90 text-left">
                     {article.category?.join(", ") || "AI Naujienos"}
                   </p>
                 </div>
@@ -142,12 +142,12 @@ export function TrendingArticles({
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-200 line-clamp-2 mb-3 text-left">
+              <p className="text-sm text-foreground/90 line-clamp-2 mb-3 text-left">
                 {article.description}
               </p>
 
               {/* Metadata - matching ArticleCard style */}
-              <div className="flex items-center gap-4 text-xs text-gray-200 mt-auto">
+              <div className="flex items-center gap-4 text-xs text-foreground/90 mt-auto">
                 <div className="flex items-center gap-1">
                   <Eye size={14} className="text-blue-400" />
                   <span>{formatViewCount(article.views)}</span>

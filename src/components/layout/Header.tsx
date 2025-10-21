@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut, Settings, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/context/AuthContext';
 import { useUnreadMessages } from '@/hooks/use-unread-messages';
 import {
@@ -79,6 +80,9 @@ const Header = () => {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-4">
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             {/* Paremti mygtukas */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -202,6 +206,16 @@ const Header = () => {
                 </div>
               </Link>
             ))}
+
+            {/* Theme toggle mobile */}
+            <div className="border-t border-border pt-4 mt-4">
+              <div className="px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-foreground/80">Tema</span>
+                  <ThemeToggle />
+                </div>
+              </div>
+            </div>
 
             {/* Paremti mygtukas mobile */}
             <div className="border-t border-border pt-4 mt-4 space-y-2">

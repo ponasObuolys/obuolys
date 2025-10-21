@@ -41,7 +41,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
             <h3 className="font-semibold line-clamp-2 mb-1 text-left">
               {course.title}
             </h3>
-            <p className="text-sm text-gray-200 text-left">
+            <p className="text-sm text-foreground/90 text-left">
               {course.level || "Kursas"}
             </p>
           </div>
@@ -63,14 +63,14 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
         {/* Description - flexible */}
         <div className="flex-1 mb-4">
-          <p className="text-sm text-gray-200 line-clamp-3 text-left">
+          <p className="text-sm text-foreground/90 line-clamp-3 text-left">
             {course.description}
           </p>
         </div>
 
         {/* Metadata and price - fixed at bottom */}
         <div className="space-y-3 pt-4 border-t border-border">
-          <div className="flex items-center gap-4 text-xs text-gray-200">
+          <div className="flex items-center gap-4 text-xs text-foreground/90">
             <div className="flex items-center gap-1">
               <Clock size={14} />
               <span>{course.duration || 'Nenurodyta'}</span>
@@ -89,7 +89,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                   ? `${course.price} €`
                   : 'Nemokamas'}
             </div>
-            <span className="text-xs text-gray-200">Sužinoti daugiau →</span>
+            <span className="text-xs text-foreground/90">Sužinoti daugiau →</span>
           </div>
         </div>
       </div>

@@ -318,14 +318,14 @@ const CoursesPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
-                    <span className="text-sm text-gray-200">Mokymai ir konsultacijos</span>
+                    <span className="text-sm text-foreground/90">Mokymai ir konsultacijos</span>
                   </div>
 
                   <h1 className="text-4xl md:text-5xl font-bold mb-4 text-left">
                     Personalizuoti AI mokymai
                   </h1>
 
-                  <p className="text-xl text-gray-200 max-w-2xl text-left">
+                  <p className="text-xl text-foreground/90 max-w-2xl text-left">
                     Individualūs mokymai, praktiniai sprendimai ir konsultacijos dirbtinio intelekto srityje.
                     Pritaikyta jūsų verslo poreikiams ir tikslams.
                   </p>
@@ -360,7 +360,7 @@ const CoursesPage = () => {
                     <h3 className="font-semibold text-foreground mb-1 text-left">
                       Individuali konsultacija
                     </h3>
-                    <p className="text-sm text-gray-200 text-left">1-1 pokalbis, pritaikyti sprendimai</p>
+                    <p className="text-sm text-foreground/90 text-left">1-1 pokalbis, pritaikyti sprendimai</p>
                   </div>
                 </div>
                 

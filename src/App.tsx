@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { ImageLoadingProvider } from "@/providers/ImageLoadingProvider";
 import { CookieConsent } from "@/components/gdpr/cookie-consent";
 import { log } from "@/utils/browserLogger";
@@ -234,8 +235,9 @@ const App = () => {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <LanguageProvider>
-              <ImageLoadingProvider>
-                <TooltipProvider>
+              <ThemeProvider>
+                <ImageLoadingProvider>
+                  <TooltipProvider>
                   <Toaster />
                   <Sonner />
                   <BrowserRouter
@@ -589,8 +591,9 @@ const App = () => {
                       </Route>
                     </Routes>
                   </BrowserRouter>
-                </TooltipProvider>
-              </ImageLoadingProvider>
+                  </TooltipProvider>
+                </ImageLoadingProvider>
+              </ThemeProvider>
             </LanguageProvider>
           </AuthProvider>
         </QueryClientProvider>
