@@ -81,7 +81,8 @@ const LazyImageInner: React.FC<LazyImageProps> = ({
       addPriorityImage(optimizedSrc);
       return () => removePriorityImage(optimizedSrc);
     }
-  }, [priority, optimizedSrc, addPriorityImage, removePriorityImage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priority, optimizedSrc]);
 
   // Check if already loaded in cache
   useEffect(() => {
