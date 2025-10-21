@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ui/tool-card";
+import { ToolCardSkeleton } from "@/components/ui/tool-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -148,10 +149,10 @@ const ToolsPage = () => {
 
             {/* Įrankių sąrašas */}
             {loading ? (
-              <div className="text-center py-12">
-                <div className="dark-card">
-                  <p className="text-xl text-foreground/60">Kraunami įrankiai...</p>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <ToolCardSkeleton key={index} />
+                ))}
               </div>
             ) : filteredTools.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

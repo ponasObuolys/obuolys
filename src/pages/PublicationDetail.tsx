@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import LazyImage from "@/components/ui/lazy-image";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { useToast } from "@/components/ui/use-toast";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import useLazyImages from "@/hooks/useLazyImages";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -205,6 +206,19 @@ const PublicationDetail = () => {
       )}
 
       <article ref={articleRef} className="container mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto">
+          <Breadcrumbs
+            items={[
+              { label: 'Straipsniai', href: '/publikacijos' },
+              {
+                label: publication?.content_type === 'Naujiena' ? 'AI Naujienos' : 'Straipsniai',
+                href: '/publikacijos'
+              },
+              { label: publication?.title || 'Kraunama...' }
+            ]}
+          />
+        </div>
+
         <Link
           to="/publikacijos"
           className="inline-flex items-center text-primary hover:text-primary/80 mb-6"

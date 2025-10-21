@@ -8,7 +8,7 @@ export interface ShareData {
   imageUrl?: string;
 }
 
-export type SharePlatform = 'facebook' | 'reddit' | 'email' | 'copy';
+export type SharePlatform = 'facebook' | 'whatsapp' | 'reddit' | 'email' | 'copy';
 
 export const useShare = () => {
   const [isSharing, setIsSharing] = useState(false);
@@ -60,6 +60,12 @@ export const useShare = () => {
     switch (platform) {
       case 'facebook': {
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(data.url)}`;
+        break;
+      }
+
+      case 'whatsapp': {
+        const message = `${data.title}\n${data.description}\n${data.url}`;
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
         break;
       }
 

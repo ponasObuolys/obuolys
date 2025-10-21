@@ -1,4 +1,5 @@
 import ArticleCard from "@/components/ui/article-card";
+import { ArticleCardSkeleton } from "@/components/ui/article-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -130,8 +131,10 @@ const PublicationsPage = () => {
             </div>
           </div>
           {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl text-foreground/90">Kraunamos publikacijos...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ArticleCardSkeleton key={index} />
+              ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

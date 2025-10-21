@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
 import { SafeRichText } from "@/components/ui/SafeHtml";
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { secureLogger } from '@/utils/browserLogger';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -135,6 +136,14 @@ const CourseDetail = () => {
     <>
       <SEOHead {...seoData} structuredData={structuredData} />
       <div className="container mx-auto px-4 py-12">
+        <Breadcrumbs
+          items={[
+            { label: 'Kursai', href: '/kursai' },
+            { label: course.level, href: '/kursai' },
+            { label: course.title }
+          ]}
+        />
+
         <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           <span>Grįžti į kursų sąrašą</span>

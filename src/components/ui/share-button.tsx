@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Share2, Facebook, Send, Mail, Link as LinkIcon } from 'lucide-react';
+import { Share2, Facebook, Send, Mail, Link as LinkIcon, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -59,6 +59,12 @@ export const ShareButton = ({
       icon: Facebook,
       action: () => shareToPlatform('facebook', shareData),
       color: 'text-[#1877F2]',
+    },
+    {
+      label: 'WhatsApp',
+      icon: MessageCircle,
+      action: () => shareToPlatform('whatsapp', shareData),
+      color: 'text-[#25D366]',
     },
     {
       label: 'Reddit',
@@ -173,6 +179,7 @@ export const ShareButtonsGroup = ({
 
   const platforms = [
     { platform: 'facebook' as const, icon: Facebook, label: 'Facebook', color: 'hover:text-[#1877F2]' },
+    { platform: 'whatsapp' as const, icon: MessageCircle, label: 'WhatsApp', color: 'hover:text-[#25D366]' },
     { platform: 'reddit' as const, icon: Send, label: 'Reddit', color: 'hover:text-[#FF4500]' },
     { platform: 'email' as const, icon: Mail, label: 'Email', color: 'hover:text-primary' },
     { platform: 'copy' as const, icon: LinkIcon, label: 'Kopijuoti', color: 'hover:text-primary' },

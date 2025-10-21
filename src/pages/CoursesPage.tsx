@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/ui/course-card";
+import { CourseCardSkeleton } from "@/components/ui/course-card-skeleton";
 import { useSupabaseErrorHandler } from "@/hooks/useErrorHandler";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -482,8 +483,10 @@ const CoursesPage = () => {
                 <div className="dark-card">
                   <h2 className="text-2xl font-bold text-foreground mb-6 text-left">Aktualūs kursai</h2>
                   {loading ? (
-                    <div className="text-center py-8">
-                      <p className="text-foreground/60">Kraunami kursai...</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <CourseCardSkeleton key={index} />
+                      ))}
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

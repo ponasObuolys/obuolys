@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 // Importuojama detalės kortelė
 import ToolDetailCard from '@/components/ui/tool-detail-card';
 import { log } from '@/utils/browserLogger';
@@ -149,6 +150,14 @@ const ToolDetailPage = () => {
       {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 py-8 max-w-3xl">
+          <Breadcrumbs
+            items={[
+              { label: 'Įrankiai', href: '/irankiai' },
+              { label: tool.category, href: '/irankiai' },
+              { label: tool.name }
+            ]}
+          />
+
           <div className="mb-8 flex items-center justify-between">
             <Link to="/irankiai">
               <Button variant="outline" className="group flex items-center">
