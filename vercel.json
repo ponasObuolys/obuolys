@@ -117,6 +117,21 @@
       "source": "/tag/:tag",
       "destination": "/publikacijos",
       "permanent": true
+    },
+    {
+      "source": "/kursai/vibe-coding-masterclass",
+      "destination": "/kursai/vibe-coding-class",
+      "permanent": true
+    },
+    {
+      "source": "/kursai/lovable-workshop-su-ponu-obuoliu",
+      "destination": "/kursai/lovable-workshop",
+      "permanent": true
+    },
+    {
+      "source": "/paremti",
+      "destination": "/kontaktai",
+      "permanent": true
     }
   ]
 }
