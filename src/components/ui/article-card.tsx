@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Clock, CalendarDays, Eye } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
 import { useArticleViews } from "@/hooks/use-article-views";
+import { getOptimizedImage } from "@/utils/imageOptimization";
 
 interface ArticleCardProps {
   article: {
@@ -58,8 +59,10 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
         {article.image_url && (
           <div className="aspect-video rounded-lg overflow-hidden bg-muted mb-3">
             <LazyImage
-              src={article.image_url}
+              src={getOptimizedImage(article.image_url, 'card')}
               alt={article.title}
+              width={600}
+              height={338}
               aspectRatio="16/9"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />

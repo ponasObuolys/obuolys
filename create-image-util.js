@@ -1,5 +1,7 @@
-/**
+const fs = require('fs');
+const content = `/**
  * Image Optimization Utilities
+ * Leverages Supabase Storage image transformations for optimal loading
  */
 
 interface ImageTransformOptions {
@@ -25,7 +27,7 @@ export const optimizeSupabaseImage = (
     if (height) params.append('height', height.toString());
     params.append('quality', quality.toString());
     params.append('format', format);
-    return `${transformUrl}?${params.toString()}`;
+    return \`\${transformUrl}?\${params.toString()}\`;
   } catch (error) {
     console.error('Image optimization error:', error);
     return url;
@@ -45,3 +47,6 @@ export const getOptimizedImage = (
 ): string => {
   return optimizeSupabaseImage(url, IMAGE_PRESETS[preset]);
 };
+`;
+fs.writeFileSync('src/utils/imageOptimization.ts', content);
+console.log('Created imageOptimization.ts');
