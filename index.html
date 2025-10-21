@@ -20,8 +20,6 @@
       upgrade-insecure-requests;
     " />
 
-    <!-- Facebook App ID -->
-    <meta property="fb:app_id" content="your-app-id" />
     <title>ponas Obuolys - Dirbtinio intelekto žinios</title>
     <meta name="description" content="Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai - ponas Obuolys" />
     <meta name="author" content="ponas Obuolys" />
@@ -39,15 +37,11 @@
     <!-- Preload critical font for LCP and CLS optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=optional" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=optional" rel="stylesheet">
   </head>
 
   <body>
-    <!-- Facebook SDK -->
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/lt_LT/sdk.js#xfbml=1&version=v19.0" nonce="random-nonce"></script>
-    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
