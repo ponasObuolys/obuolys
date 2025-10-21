@@ -59,12 +59,12 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden xl:flex items-center space-x-6">
             {navLinks.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className={`nav-link transition-colors duration-300 flex items-center gap-2 ${
+                className={`nav-link transition-colors duration-300 flex items-center gap-2 whitespace-nowrap text-sm ${
                   isActive(to)
                     ? 'text-foreground'
                     : 'text-foreground/60 hover:text-foreground'
@@ -80,7 +80,7 @@ const Header = () => {
             ))}
           </nav>
 
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden xl:flex items-center space-x-3">
             {/* Global search */}
             <GlobalSearch />
 
@@ -90,9 +90,9 @@ const Header = () => {
             {/* Paremti mygtukas */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="default" className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
-                  <Heart className="h-4 w-4" />
-                  <span>Paremti</span>
+                <Button variant="default" size="sm" className="flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+                  <Heart className="h-3.5 w-3.5" />
+                  <span className="text-sm">Paremti</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -128,14 +128,14 @@ const Header = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarImage src={profileData?.avatarUrl || ''} alt={profileData?.username || 'User'} />
                       <AvatarFallback>
                         {profileData?.username?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
-                    <span>Profilis</span>
+                    <span className="text-sm">Profilis</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
@@ -169,20 +169,20 @@ const Header = () => {
               </DropdownMenu>
             ) : (
               <>
-                <Button asChild variant="ghost">
-                  <Link to="/auth">Prisijungti</Link>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/auth" className="text-sm">Prisijungti</Link>
                 </Button>
-                <Button asChild className="button-primary">
+                <Button asChild size="sm" className="button-primary text-sm">
                   <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
                 </Button>
               </>
             )}
           </div>
-          
+
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-foreground/60 hover:text-foreground transition-colors duration-300"
+            className="xl:hidden text-foreground/60 hover:text-foreground transition-colors duration-300"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -191,7 +191,7 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-background border-t border-border">
+        <div className="xl:hidden bg-background border-t border-border">
           <div className="container mx-auto py-4 px-4 space-y-2">
             {navLinks.map(({ to, label }) => (
               <Link

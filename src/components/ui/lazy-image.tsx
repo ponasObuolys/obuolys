@@ -13,6 +13,10 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   threshold?: number;
   blurEffect?: boolean;
   priority?: boolean;
+  // CLS optimization - explicit dimensions
+  width?: number | string;
+  height?: number | string;
+  aspectRatio?: string; // e.g., "16/9", "4/3", "1/1"
   // Error handling props
   showErrorFallback?: boolean;
   errorFallbackClassName?: string;
@@ -30,6 +34,9 @@ const LazyImageInner: React.FC<LazyImageProps> = ({
   blurEffect = true,
   priority = false,
   className = "",
+  width,
+  height,
+  aspectRatio,
   showErrorFallback = true,
   errorFallbackClassName = "",
   onImageError,
@@ -137,6 +144,13 @@ const LazyImageInner: React.FC<LazyImageProps> = ({
     .filter(Boolean)
     .join(" ");
 
+  // CLS optimization: Calculate inline styles for dimensions
+  const dimensionStyles: React.CSSProperties = {
+    ...(aspectRatio && { aspectRatio }),
+    ...(width && { width: typeof width === 'number' ? `${width}px` : width }),
+    ...(height && { height: typeof height === 'number' ? `${height}px` : height }),
+  };
+
   // Show error fallback if image failed to load and error fallback is enabled
   if (hasError && showErrorFallback) {
     return <ImageErrorFallback className={errorFallbackClassName || className} alt={alt} />;
@@ -149,10 +163,13 @@ const LazyImageInner: React.FC<LazyImageProps> = ({
       srcSet={isInView || priority ? srcset : undefined}
       sizes={isInView || priority ? sizesAttr : undefined}
       alt={alt}
+      width={width}
+      height={height}
       loading={priority ? "eager" : "lazy"}
       onLoad={handleImageLoad}
       onError={handleImageError}
       className={imageClasses}
+      style={dimensionStyles}
       {...props}
     />
   );

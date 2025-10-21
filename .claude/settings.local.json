@@ -35,7 +35,9 @@
       "Bash(curl:*)",
       "Bash(npx.cmd tsc:*)",
       "Bash(timeout 10 npm run dev:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(timeout 5 npm run dev:*)",
+      "Bash(exit 0)"
     ],
     "deny": [],
     "ask": []

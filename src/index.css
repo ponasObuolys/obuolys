@@ -33,6 +33,9 @@
   }
   .animate-glow {
     animation: glow-move 5s ease-in-out infinite alternate;
+    /* CLS optimization: prevent layout shifts from animations */
+    contain: layout style paint;
+    will-change: transform, opacity, filter;
   }
 }
 
@@ -127,15 +130,21 @@
   }
 
   body {
-    @apply bg-background text-foreground min-h-screen;
+    @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     max-width: 100vw;
     overflow-x: hidden;
+    /* CLS optimization: prevent layout shifts during initial load */
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
   }
-  
+
   #root {
     width: 100%;
     max-width: 100%;
+    /* CLS optimization: ensure minimum content height */
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -169,6 +178,8 @@
 
   .project-card {
     @apply dark-card hover:translate-y-[-2px] transition-all duration-300 cursor-pointer;
+    /* CLS optimization: contain layout shifts */
+    contain: layout style paint;
   }
 
   .nav-link {
