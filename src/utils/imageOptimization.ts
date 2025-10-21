@@ -26,8 +26,8 @@ export const optimizeSupabaseImage = (
     params.append('quality', quality.toString());
     params.append('format', format);
     return `${transformUrl}?${params.toString()}`;
-  } catch (error) {
-    console.error('Image optimization error:', error);
+  } catch {
+    // Fallback to original URL on transformation error
     return url;
   }
 };
@@ -44,4 +44,58 @@ export const getOptimizedImage = (
   preset: keyof typeof IMAGE_PRESETS
 ): string => {
   return optimizeSupabaseImage(url, IMAGE_PRESETS[preset]);
+};
+
+/**
+ * Get optimal image format (WebP with fallback)
+ * Used by LazyImage for format selection
+ */
+export const getOptimalImageFormat = (url: string): string => {
+  // If already optimized or not a Supabase URL, return as-is
+  if (!url || !url.includes('supabase.co/storage')) {
+    return url;
+  }
+
+  // Use optimizeSupabaseImage with default WebP format
+  return optimizeSupabaseImage(url, { format: 'webp', quality: 80 });
+};
+
+/**
+ * Generate srcset for responsive images
+ * Used by LazyImage for responsive loading
+ */
+export const generateSrcSet = (
+  url: string,
+  sizes: number[] = [400, 800, 1200, 1600]
+): string => {
+  if (!url) return '';
+
+  return sizes
+    .map((width) => {
+      const optimizedUrl = optimizeSupabaseImage(url, { width, quality: 80 });
+      return `${optimizedUrl} ${width}w`;
+    })
+    .join(', ');
+};
+
+/**
+ * Calculate sizes attribute for responsive images
+ * Used by LazyImage for browser size hints
+ */
+export const calculateSizes = (
+  defaultSize: string,
+  breakpoints: Record<string, string>[] = []
+): string => {
+  if (breakpoints.length === 0) {
+    return defaultSize;
+  }
+
+  const mediaQueries = breakpoints
+    .map((bp) => {
+      const [media, size] = Object.entries(bp)[0];
+      return `(${media}) ${size}`;
+    })
+    .join(', ');
+
+  return `${mediaQueries}, ${defaultSize}`;
 };
