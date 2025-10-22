@@ -52,35 +52,36 @@ export function CookieConsent() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-4 pointer-events-none">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:p-4 pointer-events-none">
+      {/* Backdrop - lighter on mobile */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
+        className="absolute inset-0 bg-black/30 sm:bg-black/50 backdrop-blur-[2px] sm:backdrop-blur-sm pointer-events-auto"
         onClick={() => setShowDetails(false)}
       />
 
       {/* Cookie Banner */}
       <div
         className={cn(
-          "relative w-full max-w-2xl bg-card border-2 border-border rounded-lg shadow-2xl pointer-events-auto",
+          "relative w-full max-w-2xl bg-card border-t-2 sm:border-2 border-border sm:rounded-lg shadow-2xl pointer-events-auto",
+          "max-h-[90vh] overflow-y-auto",
           "transform transition-all duration-300 ease-out",
           isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
         )}
       >
         {/* Header */}
-        <div className="flex items-start gap-3 p-6 pb-4">
-          <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-            <Cookie className="w-5 h-5 text-primary" />
+        <div className="flex items-start gap-3 p-4 sm:p-6 pb-3 sm:pb-4">
+          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Cookie className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold mb-1">Slapukai ir privatumas</h2>
-            <p className="text-sm text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg sm:text-xl font-bold mb-1">Slapukai ir privatumas</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Gerbiame jūsų privatumą ir laikomės BDAR/GDPR reikalavimų
             </p>
           </div>
           <button
             onClick={() => setIsVisible(false)}
-            className="flex-shrink-0 p-1 hover:bg-muted rounded transition-colors"
+            className="flex-shrink-0 p-2 hover:bg-muted rounded transition-colors touch-manipulation"
             aria-label="Uždaryti"
           >
             <X className="w-5 h-5" />
@@ -88,8 +89,8 @@ export function CookieConsent() {
         </div>
 
         {/* Content */}
-        <div className="px-6 pb-4">
-          <p className="text-sm text-foreground/80 mb-4">
+        <div className="px-4 sm:px-6 pb-3 sm:pb-4">
+          <p className="text-xs sm:text-sm text-foreground/80 mb-3 sm:mb-4">
             Naudojame slapukus ir vietinę saugyklą, kad pagerintume jūsų naršymo patirtį ir
             suteiktume analitikos funkcijas. Jūsų duomenys niekada nėra perduodami trečiosioms
             šalims.
@@ -143,31 +144,38 @@ export function CookieConsent() {
           {/* Toggle Details */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-sm text-primary hover:underline mb-4"
+            className="text-xs sm:text-sm text-primary hover:underline mb-3 sm:mb-4 touch-manipulation"
           >
             {showDetails ? "Slėpti detales" : "Rodyti detales"}
           </button>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 p-6 pt-4 border-t border-border bg-muted/30">
-          <Button onClick={acceptNecessary} variant="outline" className="flex-1">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-6 pt-3 sm:pt-4 border-t border-border bg-muted/30">
+          <Button
+            onClick={acceptNecessary}
+            variant="outline"
+            className="flex-1 h-11 sm:h-10 text-sm touch-manipulation"
+          >
             Tik būtini
           </Button>
-          <Button onClick={acceptAll} className="flex-1 bg-primary hover:bg-primary/90">
+          <Button
+            onClick={acceptAll}
+            className="flex-1 h-11 sm:h-10 text-sm bg-primary hover:bg-primary/90 touch-manipulation"
+          >
             Priimti visus
           </Button>
         </div>
 
         {/* Legal Links */}
-        <div className="px-6 pb-4 text-center">
-          <p className="text-xs text-muted-foreground">
+        <div className="px-4 sm:px-6 pb-3 sm:pb-4 text-center">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             Daugiau informacijos:{" "}
-            <a href="/privatumas" className="text-primary hover:underline">
+            <a href="/privatumas" className="text-primary hover:underline touch-manipulation">
               Privatumo politika
             </a>
             {" | "}
-            <a href="/slapukai" className="text-primary hover:underline">
+            <a href="/slapukai" className="text-primary hover:underline touch-manipulation">
               Slapukų politika
             </a>
           </p>
