@@ -104,23 +104,9 @@ export default defineConfig(({ mode, command }) => ({
             return "auth-pages";
           }
 
-          // Content pages - split by feature
-          if (id.includes("PublicationsPage") || id.includes("PublicationDetail")) {
-            return "content-publications";
-          }
-
-          if (id.includes("CoursesPage") || id.includes("CourseDetail")) {
-            return "content-courses";
-          }
-
-          if (id.includes("ToolsPage") || id.includes("ToolDetailPage")) {
-            return "content-tools";
-          }
-
-          // Contact and support pages
-          if (id.includes("ContactPage") || id.includes("SupportPage")) {
-            return "content-static";
-          }
+          // Note: Removed content page chunking (content-courses, content-publications, etc.)
+          // to prevent module initialization order issues where React.forwardRef is undefined.
+          // Vite's automatic chunking handles these pages better with proper dependency resolution.
 
           // Shared components
           if (id.includes("/components/") && !id.includes("/ui/")) {
