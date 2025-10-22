@@ -35,6 +35,9 @@ export default defineConfig(({ mode, command }) => ({
     rollupOptions: {
       output: {
         manualChunks: id => {
+          // LIBRARY CHUNKS ONLY - Application code handled by Vite's automatic chunking
+          // This prevents module initialization order issues where React.Component/forwardRef is undefined
+
           // React core and essential dependencies
           if (id.includes("react") || id.includes("react-dom") || id.includes("react-router-dom")) {
             return "react-core";
@@ -94,27 +97,9 @@ export default defineConfig(({ mode, command }) => ({
             return "icons-media";
           }
 
-          // Large admin components - separate chunk
-          if (id.includes("AdminDashboard") || id.includes("admin/")) {
-            return "admin-dashboard";
-          }
-
-          // Authentication pages
-          if (id.includes("Auth.tsx") || id.includes("ProfilePage") || id.includes("AuthContext")) {
-            return "auth-pages";
-          }
-
-          // Note: Removed content page chunking (content-courses, content-publications, etc.)
-          // to prevent module initialization order issues where React.forwardRef is undefined.
-          // Vite's automatic chunking handles these pages better with proper dependency resolution.
-
-          // Shared components
-          if (id.includes("/components/") && !id.includes("/ui/")) {
-            return "shared-components";
-          }
-
-          // Nebegrupuojame viso likusio turinio į vieną "vendor-misc" chunko,
-          // nes tai gali keisti inicializacijos tvarką ir sukelti TDZ klaidas.
+          // NOTE: Removed all application code chunks (admin-dashboard, auth-pages, shared-components, content-*)
+          // Vite's automatic chunking handles application code with proper dependency resolution
+          // This prevents "Cannot read properties of undefined (reading 'Component'/'forwardRef')" errors
         },
         // Optimized chunk and asset naming
         chunkFileNames: chunkInfo => {
