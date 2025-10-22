@@ -3,6 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { AuthContextProps, ProfileUpdateData } from "./auth-context.types";
 import * as authHooks from "./auth-context.hooks";
+import { secureLogger } from "@/utils/browserLogger";
 
 export type { ProfileUpdateData } from "./auth-context.types";
 
@@ -18,14 +19,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener FIRST
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        setTimeout(() => {
-          authHooks.checkAdminStatus(session.user.id, setIsAdmin);
-        }, 0);
+        // Check admin status immediately, without setTimeout
+        await authHooks.checkAdminStatus(session.user.id, setIsAdmin);
       } else {
         setIsAdmin(false);
       }
@@ -33,16 +33,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // THEN check for existing session
     (async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
 
-      if (session?.user) {
-        authHooks.checkAdminStatus(session.user.id, setIsAdmin);
+        if (session?.user) {
+          await authHooks.checkAdminStatus(session.user.id, setIsAdmin);
+        }
+      } catch (error) {
+        secureLogger.error("Error checking session", { error });
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     })();
 
     return () => subscription.unsubscribe();

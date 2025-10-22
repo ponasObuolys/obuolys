@@ -19,12 +19,29 @@ import type {
   CustomTextKey,
 } from "./custom-types.d";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const HOTKEYS: Record<string, CustomTextKey> = {
   "mod+b": "bold",
   "mod+i": "italic",
   "mod+u": "underline",
   "mod+`": "code",
+};
+
+const TOOLTIP_LABELS: Record<string, string> = {
+  bold: "Paryškinti (Ctrl+B)",
+  italic: "Kursyvas (Ctrl+I)",
+  underline: "Pabraukti (Ctrl+U)",
+  code: "Kodas (Ctrl+`)",
+  "heading-one": "Antraštė 1",
+  "heading-two": "Antraštė 2",
+  "block-quote": "Citata",
+  "numbered-list": "Numeruotas sąrašas",
+  "bulleted-list": "Sąrašas su ženkleliais",
+  left: "Lygiuoti kairėje",
+  center: "Lygiuoti centre",
+  right: "Lygiuoti dešinėje",
+  justify: "Lygiuoti abiejose pusėse",
 };
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"] as const;
@@ -81,45 +98,48 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   );
 
   return (
-    <div className={cn("border rounded-md bg-background", className)}>
-      <Slate editor={editor} initialValue={initialValue} onChange={handleChange}>
-        <EditorToolbar>
-          <MarkButton format="bold" icon="format_bold" />
-          <MarkButton format="italic" icon="format_italic" />
-          <MarkButton format="underline" icon="format_underlined" />
-          <MarkButton format="code" icon="code" />
-          <div className="w-px h-6 bg-border mx-1" />
-          <BlockButton format="heading-one" icon="looks_one" />
-          <BlockButton format="heading-two" icon="looks_two" />
-          <BlockButton format="block-quote" icon="format_quote" />
-          <div className="w-px h-6 bg-border mx-1" />
-          <BlockButton format="numbered-list" icon="format_list_numbered" />
-          <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-          <div className="w-px h-6 bg-border mx-1" />
-          <BlockButton format="left" icon="format_align_left" />
-          <BlockButton format="center" icon="format_align_center" />
-          <BlockButton format="right" icon="format_align_right" />
-          <BlockButton format="justify" icon="format_align_justify" />
-        </EditorToolbar>
-        <Editable
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          placeholder={placeholder}
-          spellCheck
-          autoFocus
-          className="min-h-[200px] p-4 focus:outline-none prose prose-sm max-w-none"
-          onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-            for (const hotkey in HOTKEYS) {
-              if (isHotkey(hotkey, event)) {
-                event.preventDefault();
-                const mark = HOTKEYS[hotkey];
-                toggleMark(editor, mark);
+    <TooltipProvider>
+      <div className={cn("border rounded-md bg-background", className)}>
+        <Slate editor={editor} initialValue={initialValue} onChange={handleChange}>
+          <EditorToolbar>
+            <MarkButton format="bold" icon="format_bold" />
+            <MarkButton format="italic" icon="format_italic" />
+            <MarkButton format="underline" icon="format_underlined" />
+            <MarkButton format="code" icon="code" />
+            <div className="w-px h-6 bg-border mx-1" />
+            <BlockButton format="heading-one" icon="looks_one" />
+            <BlockButton format="heading-two" icon="looks_two" />
+            <BlockButton format="block-quote" icon="format_quote" />
+            <div className="w-px h-6 bg-border mx-1" />
+            <BlockButton format="numbered-list" icon="format_list_numbered" />
+            <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+            <div className="w-px h-6 bg-border mx-1" />
+            <BlockButton format="left" icon="format_align_left" />
+            <BlockButton format="center" icon="format_align_center" />
+            <BlockButton format="right" icon="format_align_right" />
+            <BlockButton format="justify" icon="format_align_justify" />
+          </EditorToolbar>
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            placeholder={placeholder}
+            spellCheck
+            autoFocus
+            className="min-h-[200px] p-4 focus:outline-none text-left"
+            onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+              for (const hotkey in HOTKEYS) {
+                if (isHotkey(hotkey, event)) {
+                  event.preventDefault();
+                  const mark = HOTKEYS[hotkey];
+                  toggleMark(editor, mark);
+                  return; // Prevent event propagation after handling
+                }
               }
-            }
-          }}
-        />
-      </Slate>
-    </div>
+            }}
+          />
+        </Slate>
+      </div>
+    </TooltipProvider>
   );
 };
 
@@ -196,7 +216,7 @@ const isMarkActive = (editor: CustomEditor, format: CustomTextKey) => {
 
 const Element = ({ attributes, children, element }: RenderElementProps) => {
   const style: React.CSSProperties = {};
-  if (isAlignElement(element)) {
+  if (isAlignElement(element) && element.align) {
     style.textAlign = element.align as AlignType;
   }
   switch (element.type) {
@@ -276,15 +296,24 @@ interface BlockButtonProps {
 
 const BlockButton = ({ format, icon }: BlockButtonProps) => {
   const editor = useSlate();
+  const tooltipLabel = TOOLTIP_LABELS[format] || format;
+
   return (
-    <EditorButton
-      active={isBlockActive(editor, format, isAlignType(format) ? "align" : "type")}
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => event.preventDefault()}
-      onClick={() => toggleBlock(editor, format)}
-      data-test-id={`block-button-${format}`}
-    >
-      <EditorIcon>{icon}</EditorIcon>
-    </EditorButton>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <EditorButton
+          active={isBlockActive(editor, format, isAlignType(format) ? "align" : "type")}
+          onPointerDown={(event: PointerEvent<HTMLButtonElement>) => event.preventDefault()}
+          onClick={() => toggleBlock(editor, format)}
+          data-test-id={`block-button-${format}`}
+        >
+          <EditorIcon>{icon}</EditorIcon>
+        </EditorButton>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{tooltipLabel}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -295,14 +324,23 @@ interface MarkButtonProps {
 
 const MarkButton = ({ format, icon }: MarkButtonProps) => {
   const editor = useSlate();
+  const tooltipLabel = TOOLTIP_LABELS[format] || format;
+
   return (
-    <EditorButton
-      active={isMarkActive(editor, format)}
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => event.preventDefault()}
-      onClick={() => toggleMark(editor, format)}
-    >
-      <EditorIcon>{icon}</EditorIcon>
-    </EditorButton>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <EditorButton
+          active={isMarkActive(editor, format)}
+          onPointerDown={(event: PointerEvent<HTMLButtonElement>) => event.preventDefault()}
+          onClick={() => toggleMark(editor, format)}
+        >
+          <EditorIcon>{icon}</EditorIcon>
+        </EditorButton>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{tooltipLabel}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
