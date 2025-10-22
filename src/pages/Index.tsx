@@ -1,7 +1,7 @@
 import Hero from "@/components/home/Hero";
 import FeaturedArticles from "@/components/home/FeaturedArticles";
 // import AINews from '@/components/home/AINews'; // Removed
-import AITools from "@/components/home/AITools";
+// import AITools from "@/components/home/AITools"; // Removed - recommended tools
 import Courses from "@/components/home/Courses";
 import CallToAction from "@/components/home/CallToAction";
 // Removed CoursesPreview, CtaSection, ToolsSection, FeaturesSection imports
@@ -46,7 +46,7 @@ const Index = () => {
         </div>
       </section>
 
-      <AITools />
+      {/* <AITools /> */}
       <Courses />
 
       {/* Business Solutions CTA */}

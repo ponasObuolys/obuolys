@@ -802,6 +802,7 @@ export type Database = {
           views: number;
           image_url: string;
           category: string[];
+          description: string;
         }[];
       };
       get_device_breakdown: {

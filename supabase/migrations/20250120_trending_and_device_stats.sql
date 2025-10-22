@@ -9,25 +9,27 @@ RETURNS TABLE (
   slug TEXT,
   views BIGINT,
   image_url TEXT,
-  category TEXT[]
-) 
+  category TEXT[],
+  description TEXT
+)
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
+  SELECT
     a.id,
     a.title,
     a.slug,
     COUNT(DISTINCT pv.session_id)::BIGINT as views,
     a.image_url,
-    a.category
+    a.category,
+    a.description
   FROM articles a
-  LEFT JOIN page_views pv ON pv.article_id = a.id 
+  LEFT JOIN page_views pv ON pv.article_id = a.id
     AND pv.viewed_at >= since_date
   WHERE a.published = true
-  GROUP BY a.id, a.title, a.slug, a.image_url, a.category
+  GROUP BY a.id, a.title, a.slug, a.image_url, a.category, a.description
   HAVING COUNT(DISTINCT pv.session_id) > 0
   ORDER BY views DESC
   LIMIT limit_count;
