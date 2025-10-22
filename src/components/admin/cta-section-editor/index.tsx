@@ -35,7 +35,11 @@ const CTASectionEditor = () => {
     handleSuccess,
     fetchCTASections
   );
-  const { loading: actionsLoading, handleDelete, toggleActive } = useCTASectionActions(fetchCTASections);
+  const {
+    loading: actionsLoading,
+    handleDelete,
+    toggleActive,
+  } = useCTASectionActions(fetchCTASections);
 
   const handleEdit = (section: CTASection) => {
     setEditingSection(section);

@@ -1,39 +1,39 @@
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote } from "lucide-react";
 
 const Testimonials = () => {
   const testimonials = [
     {
-      name: 'Tomas V.',
-      company: 'Logistikos įmonė',
-      role: 'CEO',
+      name: "Tomas V.",
+      company: "Logistikos įmonė",
+      role: "CEO",
       rating: 5,
-      text: 'Po 3 mėnesių naudojimo efektyvumas padidėjo 40%. Sistema veikia sklandžiai, o svarbiausia - darbuotojai ja naudojasi mielai, nes ji supaprastino jų darbą.',
-      project: 'Krovinių valdymo sistema'
+      text: "Po 3 mėnesių naudojimo efektyvumas padidėjo 40%. Sistema veikia sklandžiai, o svarbiausia - darbuotojai ja naudojasi mielai, nes ji supaprastino jų darbą.",
+      project: "Krovinių valdymo sistema",
     },
     {
-      name: 'Laura K.',
-      company: 'Transporto kompanija',
-      role: 'Operacijų vadovė',
+      name: "Laura K.",
+      company: "Transporto kompanija",
+      role: "Operacijų vadovė",
       rating: 5,
-      text: 'Buvau skeptiška dėl automatizacijos, bet rezultatai pranoko lūkesčius. Dabar užuot skambinusi vairuotojams, matau viską realiu laiku dashboard\'e. Sutaupau 3 valandas per dieną.',
-      project: 'Vairuotojų koordinavimo platforma'
+      text: "Buvau skeptiška dėl automatizacijos, bet rezultatai pranoko lūkesčius. Dabar užuot skambinusi vairuotojams, matau viską realiu laiku dashboard'e. Sutaupau 3 valandas per dieną.",
+      project: "Vairuotojų koordinavimo platforma",
     },
     {
-      name: 'Mindaugas P.',
-      company: 'Distribucijos įmonė',
-      role: 'Savininkas',
+      name: "Mindaugas P.",
+      company: "Distribucijos įmonė",
+      role: "Savininkas",
       rating: 5,
-      text: 'Greitas pristatymas ir asmeninis dėmesys - tai kas labiausiai įvertinau. Viskas padaryta taip, kaip reikia mūsų verslui. Po metų ROI jau pasiektas.',
-      project: 'Sandėlio apskaitos sistema'
+      text: "Greitas pristatymas ir asmeninis dėmesys - tai kas labiausiai įvertinau. Viskas padaryta taip, kaip reikia mūsų verslui. Po metų ROI jau pasiektas.",
+      project: "Sandėlio apskaitos sistema",
     },
     {
-      name: 'Rūta J.',
-      company: 'Kurjerių tarnyba',
-      role: 'Klientų aptarnavimo vadovė',
+      name: "Rūta J.",
+      company: "Kurjerių tarnyba",
+      role: "Klientų aptarnavimo vadovė",
       rating: 5,
-      text: 'Klientų portalas pakeitė žaidimo taisykles. Skambučiai sumažėjo 60%, o klientų pasitenkinimas išaugo. Galime aptarnauti daugiau klientų su ta pačia komanda.',
-      project: 'Klientų portalo platforma'
-    }
+      text: "Klientų portalas pakeitė žaidimo taisykles. Skambučiai sumažėjo 60%, o klientų pasitenkinimas išaugo. Galime aptarnauti daugiau klientų su ta pačia komanda.",
+      project: "Klientų portalo platforma",
+    },
   ];
 
   return (
@@ -57,9 +57,7 @@ const Testimonials = () => {
                         <Star key={i} className="w-4 h-4 fill-primary text-primary" />
                       ))}
                     </div>
-                    <div className="text-xs text-primary font-bold mb-1">
-                      {testimonial.project}
-                    </div>
+                    <div className="text-xs text-primary font-bold mb-1">{testimonial.project}</div>
                   </div>
                 </div>
 

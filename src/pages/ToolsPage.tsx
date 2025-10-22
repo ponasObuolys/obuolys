@@ -93,7 +93,13 @@ const ToolsPage = () => {
         title="AI Įrankiai"
         description="Atrinkti ir išbandyti dirbtinio intelekto įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos ir apžvalgos - ponas Obuolys"
         canonical={`${SITE_CONFIG.domain}/irankiai`}
-        keywords={['AI įrankiai', 'dirbtinio intelekto įrankiai', 'ChatGPT įrankiai', 'AI produktyvumui', 'AI verslui']}
+        keywords={[
+          "AI įrankiai",
+          "dirbtinio intelekto įrankiai",
+          "ChatGPT įrankiai",
+          "AI produktyvumui",
+          "AI verslui",
+        ]}
         type="website"
       />
       <section className="py-12 md:py-16">
@@ -113,8 +119,8 @@ const ToolsPage = () => {
                   </h1>
 
                   <p className="text-xl text-foreground/80 max-w-2xl text-left">
-                    Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai,
-                    kurie padės padidinti produktyvumą ir efektyvumą jūsų veikloje.
+                    Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai, kurie padės
+                    padidinti produktyvumą ir efektyvumą jūsų veikloje.
                   </p>
                 </div>
                 <Link to="/kontaktai?type=AI_IRANKIS" className="w-full sm:w-auto">
@@ -131,7 +137,7 @@ const ToolsPage = () => {
               {/* Paieška ir kategorijos */}
               <div className="mb-8">
                 <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-                
+
                 {/* Inline CTA viršuje */}
                 <div className="mt-4">
                   <BusinessSolutionsCTA variant="inline" context="tools" />
@@ -171,8 +177,12 @@ const ToolsPage = () => {
             ) : (
               <div className="text-center py-12">
                 <div className="dark-card">
-                  <p className="text-xl text-foreground/60 mb-4">Pagal paieškos kriterijus įrankių nerasta</p>
-                  <p className="text-foreground/50">Pabandykite pakeisti paieškos žodžius arba kategoriją</p>
+                  <p className="text-xl text-foreground/60 mb-4">
+                    Pagal paieškos kriterijus įrankių nerasta
+                  </p>
+                  <p className="text-foreground/50">
+                    Pabandykite pakeisti paieškos žodžius arba kategoriją
+                  </p>
                 </div>
               </div>
             )}
@@ -185,15 +195,18 @@ const ToolsPage = () => {
             {/* Apie rekomendacijas sekcija */}
             <div className="mt-12">
               <div className="dark-card">
-                <h2 className="text-3xl font-bold text-foreground mb-4">Apie įrankių rekomendacijas</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-4">
+                  Apie įrankių rekomendacijas
+                </h2>
                 <p className="text-foreground/80 mb-6 leading-relaxed">
-                  Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų naudingumą,
-                  kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti partnerinės, už kurias
-                  gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį ar paslaugą.
+                  Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų
+                  naudingumą, kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti
+                  partnerinės, už kurias gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį
+                  ar paslaugą.
                 </p>
                 <p className="text-foreground/70">
-                  Tačiau tai neturi įtakos mūsų rekomendacijoms ir nuomonei apie įrankius.
-                  Visada stengiuosi pateikti objektyvią ir naudingą informaciją apie AI sprendimus.
+                  Tačiau tai neturi įtakos mūsų rekomendacijoms ir nuomonei apie įrankius. Visada
+                  stengiuosi pateikti objektyvią ir naudingą informaciją apie AI sprendimus.
                 </p>
               </div>
             </div>

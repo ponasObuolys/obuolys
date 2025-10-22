@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Trash2, RefreshCw, Users, Database } from 'lucide-react';
-import { toast } from 'sonner';
-import { log } from '@/utils/browserLogger';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Trash2, RefreshCw, Users, Database } from "lucide-react";
+import { toast } from "sonner";
+import { log } from "@/utils/browserLogger";
 
 interface TestUser {
   id: string;
@@ -31,48 +31,65 @@ export default function AdminUserCleanup() {
     try {
       // Užkrauname auth_users_view peržiūrą
       const { data: authData, error: authError } = await supabase
-        .from('auth_users_view')
-        .select('id, email, created_at')
-        .or('email.like.%test-%,email.like.%@example.com%')
-        .order('created_at', { ascending: false });
+        .from("auth_users_view")
+        .select("id, email, created_at")
+        .or("email.like.%test-%,email.like.%@example.com%")
+        .order("created_at", { ascending: false });
 
       if (authError) {
-        log.error('Auth users error:', authError);
+        log.error("Auth users error:", authError);
         toast.error(`Klaida kraunant autentifikuotus vartotojus: ${authError.message}`);
       } else {
-        setAuthUsers(authData || []);
+        const normalizedAuthUsers: TestUser[] = (authData ?? []).map(user => ({
+          id: String(user.id ?? ""),
+          email: String(user.email ?? ""),
+          created_at: String(user.created_at ?? ""),
+        }));
+
+        setAuthUsers(normalizedAuthUsers);
       }
 
       // Užkrauname user_profiles peržiūrą
       const { data: profileData, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('id, email, created_at')
-        .or('email.like.%test-%,email.like.%@example.com%')
-        .order('created_at', { ascending: false });
+        .from("user_profiles")
+        .select("id, email, created_at")
+        .or("email.like.%test-%,email.like.%@example.com%")
+        .order("created_at", { ascending: false });
 
       if (profileError) {
-        log.error('User profiles error:', profileError);
+        log.error("User profiles error:", profileError);
         toast.error(`Klaida kraunant naudotojų profilius: ${profileError.message}`);
       } else {
-        setUserProfiles(profileData || []);
+        const normalizedUserProfiles: TestUser[] = (profileData ?? []).map(user => ({
+          id: String(user.id ?? ""),
+          email: String(user.email ?? ""),
+          created_at: String(user.created_at ?? ""),
+        }));
+
+        setUserProfiles(normalizedUserProfiles);
       }
 
       // Užkrauname profiles lentelę
       const { data: allProfiles, error: allProfilesError } = await supabase
-        .from('profiles')
-        .select('id, username, created_at')
-        .order('created_at', { ascending: false });
+        .from("profiles")
+        .select("id, username, created_at")
+        .order("created_at", { ascending: false });
 
       if (allProfilesError) {
-        log.error('Profiles error:', allProfilesError);
+        log.error("Profiles error:", allProfilesError);
         toast.error(`Klaida kraunant profilius: ${allProfilesError.message}`);
       } else {
-        setProfiles(allProfiles || []);
-      }
+        const normalizedProfiles: ProfileSummary[] = (allProfiles ?? []).map(profile => ({
+          id: String(profile.id ?? ""),
+          username: profile.username ?? null,
+          created_at: String(profile.created_at ?? ""),
+        }));
 
+        setProfiles(normalizedProfiles);
+      }
     } catch (error) {
-      log.error('Load error:', error);
-      toast.error('Klaida kraunant duomenis');
+      log.error("Load error:", error);
+      toast.error("Klaida kraunant duomenis");
     } finally {
       setLoading(false);
     }
@@ -83,10 +100,7 @@ export default function AdminUserCleanup() {
 
     try {
       // Pirmiausia bandoma šalinti iš profiles
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
+      const { error: profileError } = await supabase.from("profiles").delete().eq("id", userId);
 
       if (profileError) {
         throw new Error(`Profile deletion failed: ${profileError.message}`);
@@ -97,10 +111,11 @@ export default function AdminUserCleanup() {
 
       toast.success(`Profilis pašalintas: ${email}`);
       await loadData(); // Refresh data
-
     } catch (error) {
-      log.error('Delete error:', error);
-      toast.error(`Nepavyko pašalinti ${email}: ${error instanceof Error ? error.message : 'Nežinoma klaida'}`);
+      log.error("Delete error:", error);
+      toast.error(
+        `Nepavyko pašalinti ${email}: ${error instanceof Error ? error.message : "Nežinoma klaida"}`
+      );
     } finally {
       setDeleting(prev => prev.filter(id => id !== userId));
     }
@@ -108,7 +123,7 @@ export default function AdminUserCleanup() {
 
   const bulkDeleteProfiles = async () => {
     if (!authUsers.length) {
-      toast.error('Nėra testinių vartotojų, kurių profilius būtų galima šalinti');
+      toast.error("Nėra testinių vartotojų, kurių profilius būtų galima šalinti");
       return;
     }
 
@@ -122,10 +137,7 @@ export default function AdminUserCleanup() {
 
     for (const user of authUsers) {
       try {
-        const { error } = await supabase
-          .from('profiles')
-          .delete()
-          .eq('id', user.id);
+        const { error } = await supabase.from("profiles").delete().eq("id", user.id);
 
         if (error) {
           log.error(`Nepavyko pašalinti ${user.email}:`, error);
@@ -139,7 +151,7 @@ export default function AdminUserCleanup() {
       }
     }
 
-    toast.success(`Pašalinta ${deleted} profilių${failed > 0 ? `, ${failed} nepavyko` : ''}`);
+    toast.success(`Pašalinta ${deleted} profilių${failed > 0 ? `, ${failed} nepavyko` : ""}`);
     await loadData();
     setLoading(false);
   };
@@ -153,7 +165,7 @@ export default function AdminUserCleanup() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Vartotojų valymo administravimo skydelis</h1>
         <Button onClick={loadData} disabled={loading} variant="outline">
-          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
           Atnaujinti
         </Button>
       </div>
@@ -187,7 +199,7 @@ export default function AdminUserCleanup() {
             )}
 
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {authUsers.map((user) => (
+              {authUsers.map(user => (
                 <div key={user.id} className="p-3 border rounded-lg">
                   <div className="text-sm font-medium truncate">{user.email}</div>
                   <div className="text-xs text-muted-foreground">{user.created_at}</div>
@@ -221,7 +233,7 @@ export default function AdminUserCleanup() {
               Sujungti auth + profilio duomenys (tik skaitymui)
             </p>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {userProfiles.map((user) => (
+              {userProfiles.map(user => (
                 <div key={user.id} className="p-3 border rounded-lg">
                   <div className="text-sm font-medium truncate">{user.email}</div>
                   <div className="text-xs text-muted-foreground">{user.created_at}</div>
@@ -245,9 +257,11 @@ export default function AdminUserCleanup() {
               Naudotojų profiliai (redaguojama lentelė)
             </p>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {profiles.map((profile) => (
+              {profiles.map(profile => (
                 <div key={profile.id} className="p-3 border rounded-lg">
-                  <div className="text-sm font-medium">{profile.username || 'Vartotojo vardas nenurodytas'}</div>
+                  <div className="text-sm font-medium">
+                    {profile.username || "Vartotojo vardas nenurodytas"}
+                  </div>
                   <div className="text-xs text-muted-foreground">{profile.created_at}</div>
                 </div>
               ))}
@@ -260,8 +274,13 @@ export default function AdminUserCleanup() {
         <CardContent className="pt-6">
           <h3 className="font-semibold text-yellow-800 mb-2">Svarbios pastabos:</h3>
           <ul className="text-sm text-yellow-700 space-y-1">
-            <li>• <strong>auth_users_view</strong> ir <strong>user_profiles</strong> yra tik skaitymui skirti vaizdai</li>
-            <li>• Su anon raktu redaguoti galima tik <strong>profiles</strong> lentelę</li>
+            <li>
+              • <strong>auth_users_view</strong> ir <strong>user_profiles</strong> yra tik skaitymui
+              skirti vaizdai
+            </li>
+            <li>
+              • Su anon raktu redaguoti galima tik <strong>profiles</strong> lentelę
+            </li>
             <li>• Šalinimui iš auth.users reikalingas service role raktas (admin prieiga)</li>
             <li>• Testiniai vartotojai auth sistemoje liks be profilių (našlaičiai)</li>
             <li>• Ši sąsaja leidžia sutvarkyti tiek, kiek leidžia dabartinės teisės</li>

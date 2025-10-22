@@ -1,22 +1,22 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  TrendingUp, 
-  MousePointerClick, 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  TrendingUp,
+  MousePointerClick,
   Target,
   AlertCircle,
   CheckCircle,
   ArrowUp,
   ArrowDown,
-  Sparkles
-} from 'lucide-react';
-import { 
-  useCTAPerformance, 
-  useStickyPerformance, 
-  useCTARecommendations 
-} from '@/hooks/use-cta-analytics';
+  Sparkles,
+} from "lucide-react";
+import {
+  useCTAPerformance,
+  useStickyPerformance,
+  useCTARecommendations,
+} from "@/hooks/use-cta-analytics";
 
 export default function CTAAnalyticsPage() {
   const { data: ctaPerformance, isLoading: ctaLoading } = useCTAPerformance();
@@ -24,16 +24,14 @@ export default function CTAAnalyticsPage() {
   const { data: recommendations, isLoading: recsLoading } = useCTARecommendations();
 
   // Calculate overview stats
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const totalClicks = ctaPerformance?.reduce((sum, cta: any) => sum + (cta.total_clicks || 0), 0) || 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const activeCTAs = ctaPerformance?.filter((cta: any) => cta.active).length || 0;
+
+  const totalClicks =
+    ctaPerformance?.reduce((sum, cta) => sum + ((cta.total_clicks as number | null) || 0), 0) || 0;
+  const activeCTAs = ctaPerformance?.filter(cta => cta.active).length || 0;
   const topCTA = ctaPerformance?.[0];
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const highImpactRecs = recommendations?.filter((r: any) => r.impact === 'High').length || 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mediumImpactRecs = recommendations?.filter((r: any) => r.impact === 'Medium').length || 0;
+
+  const highImpactRecs = recommendations?.filter(r => r.impact === "High").length || 0;
+  const mediumImpactRecs = recommendations?.filter(r => r.impact === "Medium").length || 0;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -56,9 +54,7 @@ export default function CTAAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalClicks.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Visų laikų statistika
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Visų laikų statistika</p>
             </CardContent>
           </Card>
 
@@ -70,9 +66,7 @@ export default function CTAAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{activeCTAs}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Rodomi vartotojams
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Rodomi vartotojams</p>
             </CardContent>
           </Card>
 
@@ -85,7 +79,7 @@ export default function CTAAnalyticsPage() {
             <CardContent>
               <div className="text-2xl font-bold">{topCTA?.total_clicks || 0}</div>
               <p className="text-xs text-muted-foreground mt-1 truncate">
-                {topCTA?.title || 'Nėra duomenų'}
+                {topCTA?.title || "Nėra duomenų"}
               </p>
             </CardContent>
           </Card>
@@ -98,9 +92,7 @@ export default function CTAAnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{highImpactRecs + mediumImpactRecs}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {highImpactRecs} aukšto poveikio
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">{highImpactRecs} aukšto poveikio</p>
             </CardContent>
           </Card>
         </div>
@@ -108,12 +100,16 @@ export default function CTAAnalyticsPage() {
         {/* Main Content */}
         <Tabs defaultValue="performance" className="space-y-6">
           <TabsList className="flex-wrap h-auto gap-1 md:gap-0">
-            <TabsTrigger value="performance" className="text-xs md:text-sm">Performance</TabsTrigger>
+            <TabsTrigger value="performance" className="text-xs md:text-sm">
+              Performance
+            </TabsTrigger>
             <TabsTrigger value="recommendations" className="text-xs md:text-sm">
               <span className="hidden sm:inline">Rekomendacijos</span>
               <span className="sm:hidden">Rekom.</span>
             </TabsTrigger>
-            <TabsTrigger value="sticky" className="text-xs md:text-sm">Sticky Messages</TabsTrigger>
+            <TabsTrigger value="sticky" className="text-xs md:text-sm">
+              Sticky Messages
+            </TabsTrigger>
           </TabsList>
 
           {/* Performance Tab */}
@@ -121,21 +117,17 @@ export default function CTAAnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>CTA Performance</CardTitle>
-                <CardDescription>
-                  Visi CTA tekstai surikiuoti pagal paspaudimus
-                </CardDescription>
+                <CardDescription>Visi CTA tekstai surikiuoti pagal paspaudimus</CardDescription>
               </CardHeader>
               <CardContent>
                 {ctaLoading ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Kraunama...
-                  </div>
+                  <div className="text-center py-8 text-muted-foreground">Kraunama...</div>
                 ) : ctaPerformance && ctaPerformance.length > 0 ? (
                   <div className="space-y-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {ctaPerformance.map((cta: any, index: number) => (
-                      <div 
-                        key={cta.id} 
+                      <div
+                        key={cta.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex-1">
@@ -150,9 +142,7 @@ export default function CTAAnalyticsPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {cta.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground mb-2">{cta.description}</p>
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Target className="h-3 w-3" />
@@ -161,7 +151,7 @@ export default function CTAAnalyticsPage() {
                             <span>Priority: {cta.priority}</span>
                             {cta.last_clicked && (
                               <span>
-                                Paskutinis: {new Date(cta.last_clicked).toLocaleDateString('lt-LT')}
+                                Paskutinis: {new Date(cta.last_clicked).toLocaleDateString("lt-LT")}
                               </span>
                             )}
                           </div>
@@ -198,22 +188,17 @@ export default function CTAAnalyticsPage() {
               </CardHeader>
               <CardContent>
                 {recsLoading ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Kraunama...
-                  </div>
+                  <div className="text-center py-8 text-muted-foreground">Kraunama...</div>
                 ) : recommendations && recommendations.length > 0 ? (
                   <div className="space-y-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {recommendations.map((rec: any, index: number) => {
-                      const isIncrease = rec.recommendation_type === 'increase_priority';
-                      const isDecrease = rec.recommendation_type === 'decrease_priority';
-                      const isDeactivate = rec.recommendation_type === 'deactivate';
+                      const isIncrease = rec.recommendation_type === "increase_priority";
+                      const isDecrease = rec.recommendation_type === "decrease_priority";
+                      const isDeactivate = rec.recommendation_type === "deactivate";
 
                       return (
-                        <div 
-                          key={index}
-                          className="p-4 border rounded-lg space-y-3"
-                        >
+                        <div key={index} className="p-4 border rounded-lg space-y-3">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">
                               {isIncrease && (
@@ -231,23 +216,23 @@ export default function CTAAnalyticsPage() {
                                   <AlertCircle className="h-5 w-5 text-red-500" />
                                 </div>
                               )}
-                              
+
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                   <h3 className="font-semibold">{rec.title}</h3>
-                                  <Badge 
+                                  <Badge
                                     variant={
-                                      rec.impact === 'High' ? 'default' : 
-                                      rec.impact === 'Medium' ? 'secondary' : 
-                                      'outline'
+                                      rec.impact === "High"
+                                        ? "default"
+                                        : rec.impact === "Medium"
+                                          ? "secondary"
+                                          : "outline"
                                     }
                                   >
                                     {rec.impact} Impact
                                   </Badge>
                                 </div>
-                                <p className="text-sm text-muted-foreground mb-2">
-                                  {rec.reason}
-                                </p>
+                                <p className="text-sm text-muted-foreground mb-2">{rec.reason}</p>
                                 <div className="flex items-center gap-4 text-xs">
                                   <span className="text-muted-foreground">
                                     Dabartinis priority: <strong>{rec.current_priority}</strong>
@@ -258,7 +243,7 @@ export default function CTAAnalyticsPage() {
                                 </div>
                               </div>
                             </div>
-                            
+
                             <Button size="sm" variant="outline">
                               Pritaikyti
                             </Button>
@@ -284,20 +269,16 @@ export default function CTAAnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Sticky Messages Performance</CardTitle>
-                <CardDescription>
-                  Sticky sidebar žinučių statistika
-                </CardDescription>
+                <CardDescription>Sticky sidebar žinučių statistika</CardDescription>
               </CardHeader>
               <CardContent>
                 {stickyLoading ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Kraunama...
-                  </div>
+                  <div className="text-center py-8 text-muted-foreground">Kraunama...</div>
                 ) : stickyPerformance && stickyPerformance.length > 0 ? (
                   <div className="space-y-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {stickyPerformance.map((msg: any, _index: number) => (
-                      <div 
+                      <div
                         key={msg.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                       >
@@ -311,14 +292,12 @@ export default function CTAAnalyticsPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {msg.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground mb-2">{msg.description}</p>
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <span>Priority: {msg.priority}</span>
                             {msg.last_clicked && (
                               <span>
-                                Paskutinis: {new Date(msg.last_clicked).toLocaleDateString('lt-LT')}
+                                Paskutinis: {new Date(msg.last_clicked).toLocaleDateString("lt-LT")}
                               </span>
                             )}
                           </div>

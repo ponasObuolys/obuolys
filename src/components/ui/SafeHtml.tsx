@@ -1,6 +1,6 @@
-import React from 'react';
-import DOMPurify from 'dompurify';
-import { cn } from '@/lib/utils';
+import React from "react";
+import DOMPurify from "dompurify";
+import { cn } from "@/lib/utils";
 
 interface SafeHtmlProps {
   content: string;
@@ -15,13 +15,42 @@ interface SafeHtmlProps {
 }
 
 const DEFAULT_ALLOWED_TAGS = [
-  'p', 'br', 'strong', 'em', 'b', 'i', 'u', 's', 'strike',
-  'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'blockquote', 'pre', 'code', 'a', 'img', 'div', 'span'
+  "p",
+  "br",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "u",
+  "s",
+  "strike",
+  "ul",
+  "ol",
+  "li",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "blockquote",
+  "pre",
+  "code",
+  "a",
+  "img",
+  "div",
+  "span",
 ];
 
 const DEFAULT_ALLOWED_ATTRIBUTES = [
-  'class', 'className', 'href', 'title', 'alt', 'src', 'width', 'height'
+  "class",
+  "className",
+  "href",
+  "title",
+  "alt",
+  "src",
+  "width",
+  "height",
 ];
 
 /**
@@ -42,10 +71,10 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
   allowedTags = DEFAULT_ALLOWED_TAGS,
   allowedAttributes = DEFAULT_ALLOWED_ATTRIBUTES,
   // Pagal nutylėjimą nešaliname turinio iš neleistinų žymių, kad neišnyktų tekstas
-  stripIgnoreTag = false
+  stripIgnoreTag = false,
 }) => {
   const sanitizedContent = React.useMemo(() => {
-    if (!content) return '';
+    if (!content) return "";
 
     // Configure DOMPurify with security-first settings
     const sanitizeConfig = {
@@ -53,13 +82,13 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
       ALLOWED_ATTR: allowedAttributes,
       // Paliekame vidinį turinį, nebent aiškiai nurodyta pašalinti kartu su žyme
       KEEP_CONTENT: !stripIgnoreTag,
-      FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'textarea'],
-      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],
+      FORBID_TAGS: ["script", "object", "embed", "form", "input", "textarea"],
+      FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur"],
       ALLOW_DATA_ATTR: false,
       SANITIZE_DOM: true,
       RETURN_DOM: false,
       RETURN_DOM_FRAGMENT: false,
-      RETURN_TRUSTED_TYPE: false
+      RETURN_TRUSTED_TYPE: false,
     };
 
     try {
@@ -67,7 +96,7 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
     } catch {
       // Silently handle sanitization errors to prevent XSS
       // In production, this would be logged to external service
-      return ''; // Return empty string on error to prevent XSS
+      return ""; // Return empty string on error to prevent XSS
     }
   }, [content, allowedTags, allowedAttributes, stripIgnoreTag]);
 
@@ -90,14 +119,28 @@ export const SafeHtml: React.FC<SafeHtmlProps> = ({
  * SafeHtml variant specifically for rich text content (articles, courses)
  * Includes additional formatting tags commonly used in CMS content
  */
-export const SafeRichText: React.FC<Omit<SafeHtmlProps, 'allowedTags'>> = (props) => {
+export const SafeRichText: React.FC<Omit<SafeHtmlProps, "allowedTags">> = props => {
   const richTextTags = [
     ...DEFAULT_ALLOWED_TAGS,
-    'table', 'thead', 'tbody', 'tr', 'td', 'th',
-    'dl', 'dt', 'dd', 'figure', 'figcaption',
-    'sub', 'sup', 'mark', 'small',
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "td",
+    "th",
+    "dl",
+    "dt",
+    "dd",
+    "figure",
+    "figcaption",
+    "sub",
+    "sup",
+    "mark",
+    "small",
     // Semantinės žymės iš CMS turinio
-    'section', 'article', 'aside'
+    "section",
+    "article",
+    "aside",
   ];
 
   return <SafeHtml {...props} allowedTags={richTextTags} />;
@@ -107,8 +150,8 @@ export const SafeRichText: React.FC<Omit<SafeHtmlProps, 'allowedTags'>> = (props
  * SafeHtml variant for basic text content with minimal formatting
  * Suitable for user-generated content or comments
  */
-export const SafeBasicText: React.FC<Omit<SafeHtmlProps, 'allowedTags'>> = (props) => {
-  const basicTags = ['p', 'br', 'strong', 'em', 'b', 'i'];
+export const SafeBasicText: React.FC<Omit<SafeHtmlProps, "allowedTags">> = props => {
+  const basicTags = ["p", "br", "strong", "em", "b", "i"];
 
   return <SafeHtml {...props} allowedTags={basicTags} />;
 };

@@ -99,6 +99,7 @@ Performance Standards:
 **Coverage**: >90% for critical components
 
 **Example Test Categories**:
+
 - Component rendering and props
 - User interactions and state changes
 - Hook behavior and side effects
@@ -126,6 +127,7 @@ describe('LazyImage', () => {
 **Coverage**: All CRUD operations + RLS policies
 
 **Example Test Categories**:
+
 - Article/Tool/Course CRUD operations
 - Authentication and authorization flows
 - File upload and storage operations
@@ -134,14 +136,10 @@ describe('LazyImage', () => {
 
 ```typescript
 // Example: Article CRUD integration test
-describe('Articles Integration', () => {
-  it('creates and retrieves articles with RLS', async () => {
+describe("Articles Integration", () => {
+  it("creates and retrieves articles with RLS", async () => {
     const article = await createTestArticle();
-    const retrieved = await supabase
-      .from('articles')
-      .select('*')
-      .eq('id', article.id)
-      .single();
+    const retrieved = await supabase.from("articles").select("*").eq("id", article.id).single();
 
     expect(retrieved.data).toEqual(article);
   });
@@ -155,6 +153,7 @@ describe('Articles Integration', () => {
 **Coverage**: Critical user paths + admin workflows
 
 **Example Test Categories**:
+
 - User registration and authentication
 - Article reading and navigation
 - Admin content management
@@ -164,15 +163,15 @@ describe('Articles Integration', () => {
 
 ```typescript
 // Example: Admin workflow E2E test
-test('admin can create and publish article', async ({ page }) => {
+test("admin can create and publish article", async ({ page }) => {
   await adminHelpers.signInAsAdmin();
   await adminHelpers.createArticle({
-    title: 'Test Article',
-    content: 'Test content',
-    category: 'AI'
+    title: "Test Article",
+    content: "Test content",
+    category: "AI",
   });
 
-  await expect(page.locator('text=Straipsnis sukurtas')).toBeVisible();
+  await expect(page.locator("text=Straipsnis sukurtas")).toBeVisible();
 });
 ```
 
@@ -273,15 +272,15 @@ npm run test:coverage:check
 // vitest.config.ts
 export default defineConfig({
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
     coverage: {
-      provider: 'v8',
+      provider: "v8",
       thresholds: {
-        global: { branches: 80, functions: 80, lines: 80, statements: 80 }
-      }
-    }
-  }
+        global: { branches: 80, functions: 80, lines: 80, statements: 80 },
+      },
+    },
+  },
 });
 ```
 
@@ -291,16 +290,16 @@ export default defineConfig({
 // playwright.config.ts
 export default defineConfig({
   projects: [
-    { name: 'chromium', use: devices['Desktop Chrome'] },
-    { name: 'firefox', use: devices['Desktop Firefox'] },
-    { name: 'webkit', use: devices['Desktop Safari'] },
-    { name: 'Mobile Chrome', use: devices['Pixel 5'] },
-    { name: 'Mobile Safari', use: devices['iPhone 12'] }
+    { name: "chromium", use: devices["Desktop Chrome"] },
+    { name: "firefox", use: devices["Desktop Firefox"] },
+    { name: "webkit", use: devices["Desktop Safari"] },
+    { name: "Mobile Chrome", use: devices["Pixel 5"] },
+    { name: "Mobile Safari", use: devices["iPhone 12"] },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:8080'
-  }
+    command: "npm run dev",
+    url: "http://localhost:8080",
+  },
 });
 ```
 

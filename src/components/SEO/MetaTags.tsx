@@ -1,7 +1,7 @@
-import { Helmet } from 'react-helmet-async';
-import { useLocation } from 'react-router-dom';
-import type { PageSEO } from '@/utils/seo';
-import { generateTitle, generateRobotsContent, generateKeywords, SITE_CONFIG } from '@/utils/seo';
+import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
+import type { PageSEO } from "@/utils/seo";
+import { generateTitle, generateRobotsContent, generateKeywords, SITE_CONFIG } from "@/utils/seo";
 
 interface MetaTagsProps extends PageSEO {
   children?: React.ReactNode;

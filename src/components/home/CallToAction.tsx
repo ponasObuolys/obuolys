@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   return (
@@ -12,8 +12,8 @@ const CallToAction = () => {
                 Pradėkite savo AI kelionę jau šiandien
               </h2>
               <p className="text-lg mb-8 text-white/90">
-                Prisijunkite prie bendruomenės ir gaukite nemokamus patarimus, kaip efektyviai naudoti 
-                dirbtinį intelektą savo asmeniniame ar profesiniame gyvenime.
+                Prisijunkite prie bendruomenės ir gaukite nemokamus patarimus, kaip efektyviai
+                naudoti dirbtinį intelektą savo asmeniniame ar profesiniame gyvenime.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/kursai" className="w-full sm:w-auto">

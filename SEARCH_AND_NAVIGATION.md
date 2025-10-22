@@ -3,6 +3,7 @@
 ## Apžvalga
 
 Projekte įdiegtos dvi pagrindinės UX funkcijos:
+
 1. **Globali Paieška** - visapusiška paieška po visą turinį su Command Palette interface
 2. **Breadcrumbs Navigacija** - duonos trupiniai visiems turinio puslapiams
 
@@ -13,6 +14,7 @@ Projekte įdiegtos dvi pagrindinės UX funkcijos:
 ### Funkcionalumas
 
 Globali paieškos sistema leidžia naudotojams greitai rasti:
+
 - ✅ **Straipsnius** (articles)
 - ✅ **Įrankius** (tools)
 - ✅ **Kursus** (courses)
@@ -34,13 +36,14 @@ Globali paieškos sistema leidžia naudotojams greitai rasti:
 Pagrindinis paieškos komponentas:
 
 ```tsx
-import { GlobalSearch } from '@/components/search/global-search';
+import { GlobalSearch } from "@/components/search/global-search";
 
 // Naudojimas
-<GlobalSearch />
+<GlobalSearch />;
 ```
 
 **Funkcijos:**
+
 - Command Dialog su keyboard navigation
 - Supabase full-text search su `ilike` operator
 - Automat iškai grupuoja rezultatus
@@ -52,12 +55,13 @@ import { GlobalSearch } from '@/components/search/global-search';
 Custom hook paieškos optimizavimui:
 
 ```tsx
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from "@/hooks/useDebounce";
 
 const debouncedValue = useDebounce(searchQuery, 300);
 ```
 
 **Kodėl svarbu:**
+
 - Sumažina API calls skaičių
 - Pagerina našumą
 - Geresnė UX (mažiau flicker'io)
@@ -65,22 +69,27 @@ const debouncedValue = useDebounce(searchQuery, 300);
 ### Integracijos
 
 **Header Component** ([src/components/layout/Header.tsx](src/components/layout/Header.tsx)):
+
 - Desktop: Tarp navigacijos ir theme toggle
 - Mobile: Atskirame skyriuje mobile menu
 
 ```tsx
-{/* Desktop */}
+{
+  /* Desktop */
+}
 <div className="hidden lg:flex items-center space-x-4">
   <GlobalSearch />
   <ThemeToggle />
-</div>
+</div>;
 
-{/* Mobile */}
+{
+  /* Mobile */
+}
 <div className="border-t border-border pt-4 mt-4">
   <div className="px-4 py-3">
     <GlobalSearch />
   </div>
-</div>
+</div>;
 ```
 
 ### Paieškos Algoritmas
@@ -88,25 +97,25 @@ const debouncedValue = useDebounce(searchQuery, 300);
 ```typescript
 // 1. Paieška straipsniuose
 const { data: articles } = await supabase
-  .from('articles')
-  .select('id, title, slug, description, category')
-  .eq('published', true)
+  .from("articles")
+  .select("id, title, slug, description, category")
+  .eq("published", true)
   .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},content.ilike.${searchTerm}`)
   .limit(5);
 
 // 2. Paieška įrankiuose
 const { data: tools } = await supabase
-  .from('tools')
-  .select('id, name, slug, description, category')
-  .eq('published', true)
+  .from("tools")
+  .select("id, name, slug, description, category")
+  .eq("published", true)
   .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
   .limit(5);
 
 // 3. Paieška kursuose
 const { data: courses } = await supabase
-  .from('courses')
-  .select('id, title, slug, description')
-  .eq('published', true)
+  .from("courses")
+  .select("id, title, slug, description")
+  .eq("published", true)
   .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},content.ilike.${searchTerm}`)
   .limit(5);
 
@@ -117,6 +126,7 @@ const combinedResults = [...articles, ...tools, ...courses];
 ### UI/UX Detales
 
 **Search Trigger Button:**
+
 ```tsx
 <button className="flex items-center gap-2 px-3 py-2 text-sm">
   <Search className="h-4 w-4" />
@@ -126,11 +136,13 @@ const combinedResults = [...articles, ...tools, ...courses];
 ```
 
 **Empty States:**
+
 - Nieko neįrašyta → "Pradėkite rašyti..."
 - Nieko nerasta → "Nieko nerasta. Pabandykite kitą užklausą."
 - Loading → Loader2 spinner
 
 **Result Item:**
+
 ```tsx
 <CommandItem onSelect={() => navigate(url)}>
   <Icon className="h-4 w-4 mr-2" /> {/* FileText / Wrench / GraduationCap */}
@@ -180,64 +192,71 @@ Breadcrumbs (duonos trupiniai) pagerina navigaciją ir SEO.
 #### Breadcrumbs Component ([src/components/ui/breadcrumbs.tsx](src/components/ui/breadcrumbs.tsx))
 
 ```tsx
-import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 <Breadcrumbs
   items={[
-    { label: 'Straipsniai', href: '/publikacijos' },
-    { label: 'AI Naujienos', href: '/publikacijos' },
-    { label: 'Straipsnio pavadinimas' }
+    { label: "Straipsniai", href: "/publikacijos" },
+    { label: "AI Naujienos", href: "/publikacijos" },
+    { label: "Straipsnio pavadinimas" },
   ]}
   showHome={true} // default: true
-/>
+/>;
 ```
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `BreadcrumbItem[]` | required | Breadcrumb elementai |
-| `showHome` | `boolean` | `true` | Rodyti Home ikoną |
+| Prop       | Type               | Default  | Description          |
+| ---------- | ------------------ | -------- | -------------------- |
+| `items`    | `BreadcrumbItem[]` | required | Breadcrumb elementai |
+| `showHome` | `boolean`          | `true`   | Rodyti Home ikoną    |
 
 **BreadcrumbItem:**
+
 ```typescript
 interface BreadcrumbItem {
-  label: string;  // Rodomas tekstas
-  href?: string;  // Nuoroda (optional)
+  label: string; // Rodomas tekstas
+  href?: string; // Nuoroda (optional)
 }
 ```
 
 ### Integracijos
 
 **PublicationDetail** ([src/pages/PublicationDetail.tsx](src/pages/PublicationDetail.tsx)):
+
 ```tsx
 <Breadcrumbs
   items={[
-    { label: 'Straipsniai', href: '/publikacijos' },
-    { label: publication.content_type === 'Naujiena' ? 'AI Naujienos' : 'Straipsniai', href: '/publikacijos' },
-    { label: publication.title }
+    { label: "Straipsniai", href: "/publikacijos" },
+    {
+      label: publication.content_type === "Naujiena" ? "AI Naujienos" : "Straipsniai",
+      href: "/publikacijos",
+    },
+    { label: publication.title },
   ]}
 />
 ```
 
 **ToolDetailPage** ([src/pages/ToolDetailPage.tsx](src/pages/ToolDetailPage.tsx)):
+
 ```tsx
 <Breadcrumbs
   items={[
-    { label: 'Įrankiai', href: '/irankiai' },
-    { label: tool.category, href: '/irankiai' },
-    { label: tool.name }
+    { label: "Įrankiai", href: "/irankiai" },
+    { label: tool.category, href: "/irankiai" },
+    { label: tool.name },
   ]}
 />
 ```
 
 **CourseDetail** ([src/pages/CourseDetail.tsx](src/pages/CourseDetail.tsx)):
+
 ```tsx
 <Breadcrumbs
   items={[
-    { label: 'Kursai', href: '/kursai' },
-    { label: course.level, href: '/kursai' },
-    { label: course.title }
+    { label: "Kursai", href: "/kursai" },
+    { label: course.level, href: "/kursai" },
+    { label: course.title },
   ]}
 />
 ```
@@ -280,15 +299,17 @@ interface BreadcrumbItem {
 **Schema.org Structured Data:**
 
 Breadcrumbs jau turi structured data:
+
 ```typescript
 generateBreadcrumbStructuredData([
-  { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
-  { name: 'Straipsniai', url: 'https://ponasobuolys.lt/publikacijos' },
-  { name: title, url: currentUrl }
-])
+  { name: "Pradžia", url: "https://ponasobuolys.lt" },
+  { name: "Straipsniai", url: "https://ponasobuolys.lt/publikacijos" },
+  { name: title, url: currentUrl },
+]);
 ```
 
 **SEO Benefits:**
+
 - ✅ Rich snippets Google rezultatuose
 - ✅ Geresnė puslapio hierarchija
 - ✅ Pagerina crawl efficiency
@@ -297,11 +318,13 @@ generateBreadcrumbStructuredData([
 ### Accessibility
 
 **ARIA Attributes:**
+
 - `aria-label="Breadcrumb"` - screen reader navigation
 - `aria-current="page"` - žymi aktyvų puslapį
 - Keyboard navigation su Tab
 
 **Screen Reader Experience:**
+
 ```
 "Navigation landmark: Breadcrumb"
 "Link: Home"
@@ -345,6 +368,7 @@ Content Pages
 ## 📊 Bundle Impact
 
 **New Files:**
+
 - `global-search.tsx`: ~5KB
 - `useDebounce.ts`: ~0.5KB
 - `breadcrumbs.tsx`: ~1.5KB
@@ -352,6 +376,7 @@ Content Pages
 **Total Impact:** +~7KB (gzipped ~3KB)
 
 **Chunk Changes:**
+
 - `shared-components`: +19KB (255.61 KB total)
 - No impact on initial bundle
 
@@ -362,6 +387,7 @@ Content Pages
 ### Manual Tests
 
 **Global Search:**
+
 1. ✅ Press `Cmd+K` → dialog opens
 2. ✅ Type "AI" → results appear
 3. ✅ Click result → navigates correctly
@@ -371,6 +397,7 @@ Content Pages
 7. ✅ Mobile → search button visible
 
 **Breadcrumbs:**
+
 1. ✅ Navigate to article → breadcrumbs show
 2. ✅ Click "Straipsniai" → navigates to /publikacijos
 3. ✅ Click Home icon → navigates to /
@@ -409,6 +436,7 @@ test('search navigates to result', async ({ page }) => {
 **Problem:** Keyboard shortcut neveikia
 
 **Sprendimas:**
+
 - Patikrinkite browser shortcut conflicts
 - Kai kuriuose browsers `Cmd+K` used for location bar
 - Mobile naudokite trigger button
@@ -418,6 +446,7 @@ test('search navigates to result', async ({ page }) => {
 **Problem:** Breadcrumbs nerodomi
 
 **Sprendimas:**
+
 1. Patikrinkite ar komponentas importuotas
 2. Užtikrinkite kad `items` prop ne tuščias
 3. Patikrinkite console for errors
@@ -427,9 +456,11 @@ test('search navigates to result', async ({ page }) => {
 **Problem:** Paieška lėta
 
 **Sprendimas:**
+
 - Padidinkite debounce delay (300ms → 500ms)
 - Sumažinkite results limit (5 → 3)
 - Optimizuokite DB indexes:
+
 ```sql
 CREATE INDEX idx_articles_title ON articles USING gin(to_tsvector('simple', title));
 CREATE INDEX idx_tools_name ON tools USING gin(to_tsvector('simple', name));
@@ -440,14 +471,17 @@ CREATE INDEX idx_tools_name ON tools USING gin(to_tsvector('simple', name));
 ## 📚 Susijusios Bylos
 
 **Search:**
+
 - [src/components/search/global-search.tsx](src/components/search/global-search.tsx)
 - [src/hooks/useDebounce.ts](src/hooks/useDebounce.ts)
 - [src/components/ui/command.tsx](src/components/ui/command.tsx)
 
 **Breadcrumbs:**
+
 - [src/components/ui/breadcrumbs.tsx](src/components/ui/breadcrumbs.tsx)
 
 **Integration:**
+
 - [src/components/layout/Header.tsx](src/components/layout/Header.tsx)
 - [src/pages/PublicationDetail.tsx](src/pages/PublicationDetail.tsx)
 - [src/pages/ToolDetailPage.tsx](src/pages/ToolDetailPage.tsx)
@@ -458,6 +492,7 @@ CREATE INDEX idx_tools_name ON tools USING gin(to_tsvector('simple', name));
 ## Changelog
 
 ### 2025-01-21 - Initial Release
+
 - ✅ Įdiegta Global Search su Cmd+K
 - ✅ Breadcrumbs komponentas
 - ✅ Integruota į Header ir content pages

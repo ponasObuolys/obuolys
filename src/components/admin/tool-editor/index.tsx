@@ -2,12 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { ToolFormFields } from "./tool-form-fields";
-import {
-  useNameSlugSync,
-  useToolData,
-  useToolForm,
-  useToolSubmit,
-} from "./tool-editor.hooks";
+import { useNameSlugSync, useToolData, useToolForm, useToolSubmit } from "./tool-editor.hooks";
 import type { ToolEditorProps } from "./tool-editor.types";
 
 const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {

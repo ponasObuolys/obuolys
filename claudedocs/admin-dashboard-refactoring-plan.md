@@ -5,6 +5,7 @@
 **File**: `src/pages/AdminDashboard.tsx` (696 lines)
 
 ### Issues Identified
+
 - **Monolithic component**: Single component handling multiple concerns
 - **Mixed responsibilities**: Stats, content management, user management, UI state
 - **Large state object**: 7+ state variables in a single component
@@ -12,6 +13,7 @@
 - **Hard to maintain**: Difficult to test and extend individual features
 
 ### Responsibilities Currently Handled
+
 1. Authentication checking and redirects
 2. Tab navigation state management
 3. Dashboard statistics fetching and display
@@ -28,6 +30,7 @@
 ### Phase 1: Extract Custom Hooks
 
 #### 1.1 Dashboard State Management Hook
+
 ```typescript
 // src/hooks/admin/useAdminDashboard.ts
 export interface AdminDashboardState {
@@ -51,6 +54,7 @@ export const useAdminDashboard = (): {
 ```
 
 #### 1.2 Dashboard Statistics Hook
+
 ```typescript
 // src/hooks/admin/useDashboardStats.ts
 export interface DashboardStats {
@@ -76,6 +80,7 @@ export const useDashboardStats = (): {
 ### Phase 2: Create Tab Components
 
 #### 2.1 Overview Tab Component
+
 ```typescript
 // src/components/admin/dashboard/OverviewTab.tsx
 import type { DashboardStats } from '@/hooks/admin/useDashboardStats';
@@ -101,6 +106,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 ```
 
 #### 2.2 Content Management Tabs
+
 ```typescript
 // src/components/admin/dashboard/PublicationsTab.tsx
 interface PublicationsTabProps {
@@ -129,6 +135,7 @@ export const PublicationsTab: React.FC<PublicationsTabProps> = ({
 ### Phase 3: Create Layout Components
 
 #### 3.1 Dashboard Layout
+
 ```typescript
 // src/components/admin/dashboard/DashboardLayout.tsx
 interface DashboardLayoutProps {
@@ -154,6 +161,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 ```
 
 #### 3.2 Content Management Layout
+
 ```typescript
 // src/components/admin/dashboard/ContentManagementLayout.tsx
 interface ContentManagementLayoutProps<T> {
@@ -324,6 +332,7 @@ export default AdminDashboard;
 ## Implementation Benefits
 
 ### Code Quality Improvements
+
 - **Single Responsibility**: Each component handles one specific concern
 - **Reusability**: Layout and management components can be reused
 - **Testability**: Individual components and hooks can be tested in isolation
@@ -331,12 +340,14 @@ export default AdminDashboard;
 - **Type Safety**: All components have proper TypeScript interfaces
 
 ### Performance Benefits
+
 - **Code Splitting**: Tabs can be lazy loaded
 - **Selective Re-rendering**: Only relevant components update when state changes
 - **Optimized Hooks**: Custom hooks can implement proper memoization
 - **Reduced Bundle Size**: Smaller individual components
 
 ### Developer Experience
+
 - **Clear Structure**: Easy to understand component hierarchy
 - **Focused Development**: Work on specific features without touching others
 - **Easy Extension**: Add new tabs or features without modifying existing code
@@ -345,30 +356,35 @@ export default AdminDashboard;
 ## Migration Strategy
 
 ### Phase 1: Create Infrastructure (Week 1)
+
 1. Create hooks directory structure
 2. Implement useAdminDashboard hook
 3. Implement useDashboardStats hook
 4. Test hooks in isolation
 
 ### Phase 2: Extract Components (Week 2)
+
 1. Create DashboardLayout component
 2. Extract OverviewTab component
 3. Create ContentManagementLayout
 4. Test layout components
 
 ### Phase 3: Implement Tab Components (Week 3)
+
 1. Create PublicationsTab
 2. Create ToolsTab
 3. Create other content tabs
 4. Create DashboardTabs component
 
 ### Phase 4: Integration (Week 4)
+
 1. Update main AdminDashboard component
 2. Implement error handling with new utilities
 3. Test complete integration
 4. Performance optimization
 
 ### Quality Assurance
+
 - **Testing**: Each component and hook should have unit tests
 - **Type Safety**: All components use proper TypeScript interfaces
 - **Error Handling**: Consistent error handling using new utilities

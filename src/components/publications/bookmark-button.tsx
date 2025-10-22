@@ -32,15 +32,8 @@ export function BookmarkButton({
         className
       )}
     >
-      <Bookmark
-        className={cn(
-          "h-4 w-4 transition-all",
-          isBookmarked && "fill-current"
-        )}
-      />
-      {showText && (
-        <span>{isBookmarked ? "Išsaugota" : "Išsaugoti"}</span>
-      )}
+      <Bookmark className={cn("h-4 w-4 transition-all", isBookmarked && "fill-current")} />
+      {showText && <span>{isBookmarked ? "Išsaugota" : "Išsaugoti"}</span>}
     </Button>
   );
 }

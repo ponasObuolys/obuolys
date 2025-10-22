@@ -1,7 +1,7 @@
-import type { PageSEO } from '@/utils/seo';
-import { MetaTags } from './MetaTags';
-import { OpenGraphTags } from './OpenGraphTags';
-import { StructuredData } from './StructuredData';
+import type { PageSEO } from "@/utils/seo";
+import { MetaTags } from "./MetaTags";
+import { OpenGraphTags } from "./OpenGraphTags";
+import { StructuredData } from "./StructuredData";
 
 interface SEOHeadProps extends PageSEO {
   structuredData?: object | object[];

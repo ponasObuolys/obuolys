@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Mock Supabase client for testing
 export const createClient = vi.fn(() => ({
@@ -9,8 +9,8 @@ export const createClient = vi.fn(() => ({
     signInWithPassword: vi.fn().mockResolvedValue({ data: {}, error: null }),
     signOut: vi.fn().mockResolvedValue({ error: null }),
     onAuthStateChange: vi.fn().mockReturnValue({
-      data: { subscription: { unsubscribe: vi.fn() } }
-    })
+      data: { subscription: { unsubscribe: vi.fn() } },
+    }),
   },
   from: vi.fn(() => ({
     select: vi.fn().mockReturnThis(),
@@ -35,7 +35,7 @@ export const createClient = vi.fn(() => ({
     range: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue({ data: null, error: null }),
     maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-    then: vi.fn().mockResolvedValue({ data: [], error: null })
+    then: vi.fn().mockResolvedValue({ data: [], error: null }),
   })),
   storage: {
     from: vi.fn(() => ({
@@ -44,21 +44,21 @@ export const createClient = vi.fn(() => ({
       remove: vi.fn().mockResolvedValue({ data: [], error: null }),
       list: vi.fn().mockResolvedValue({ data: [], error: null }),
       createSignedUrl: vi.fn().mockResolvedValue({
-        data: { signedUrl: 'https://example.com/file.jpg' },
-        error: null
+        data: { signedUrl: "https://example.com/file.jpg" },
+        error: null,
       }),
       getPublicUrl: vi.fn().mockReturnValue({
-        data: { publicUrl: 'https://example.com/file.jpg' }
-      })
-    }))
+        data: { publicUrl: "https://example.com/file.jpg" },
+      }),
+    })),
   },
   realtime: {
     channel: vi.fn(() => ({
       on: vi.fn().mockReturnThis(),
-      subscribe: vi.fn().mockResolvedValue('ok'),
-      unsubscribe: vi.fn().mockResolvedValue('ok')
-    }))
-  }
+      subscribe: vi.fn().mockResolvedValue("ok"),
+      unsubscribe: vi.fn().mockResolvedValue("ok"),
+    })),
+  },
 }));
 
 export default { createClient };

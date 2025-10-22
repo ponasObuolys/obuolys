@@ -1,22 +1,15 @@
+import { useState } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
-import { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -24,23 +17,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { GoogleSignInButton } from '@/components/auth/google-sign-in-button';
+} from "@/components/ui/form";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 
 const loginSchema = z.object({
-  email: z.string().email('Neteisingas el. pašto formatas'),
-  password: z.string().min(6, 'Slaptažodis turi būti bent 6 simbolių'),
+  email: z.string().email("Neteisingas el. pašto formatas"),
+  password: z.string().min(6, "Slaptažodis turi būti bent 6 simbolių"),
 });
 
-const signupSchema = z.object({
-  email: z.string().email('Neteisingas el. pašto formatas'),
-  username: z.string().min(3, 'Vartotojo vardas turi būti bent 3 simbolių'),
-  password: z.string().min(6, 'Slaptažodis turi būti bent 6 simbolių'),
-  confirmPassword: z.string().min(6, 'Slaptažodis turi būti bent 6 simbolių'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Slaptažodžiai nesutampa",
-  path: ["confirmPassword"],
-});
+const signupSchema = z
+  .object({
+    email: z.string().email("Neteisingas el. pašto formatas"),
+    username: z.string().min(3, "Vartotojo vardas turi būti bent 3 simbolių"),
+    password: z.string().min(6, "Slaptažodis turi būti bent 6 simbolių"),
+    confirmPassword: z.string().min(6, "Slaptažodis turi būti bent 6 simbolių"),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Slaptažodžiai nesutampa",
+    path: ["confirmPassword"],
+  });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -49,23 +44,23 @@ const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
   const navigate = useNavigate();
   const [authError, setAuthError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('login');
+  const [activeTab, setActiveTab] = useState("login");
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const signupForm = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      email: '',
-      username: '',
-      password: '',
-      confirmPassword: '',
+      email: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -73,9 +68,9 @@ const Auth = () => {
     setAuthError(null);
     try {
       await signIn(data.email, data.password);
-      navigate('/');
+      navigate("/");
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida prisijungiant';
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida prisijungiant";
       setAuthError(errorMessage);
     }
   };
@@ -84,9 +79,9 @@ const Auth = () => {
     setAuthError(null);
     try {
       await signUp(data.email, data.password, data.username);
-      setActiveTab('login');
+      setActiveTab("login");
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Įvyko klaida registruojantis';
+      const errorMessage = error instanceof Error ? error.message : "Įvyko klaida registruojantis";
       setAuthError(errorMessage);
     }
   };
@@ -104,7 +99,7 @@ const Auth = () => {
               <TabsTrigger value="login">Prisijungimas</TabsTrigger>
               <TabsTrigger value="signup">Registracija</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="login">
               <Card>
                 <CardHeader>
@@ -147,35 +142,35 @@ const Auth = () => {
                           </FormItem>
                         )}
                       />
-                      <Button type="submit" className="w-full" disabled={loginForm.formState.isSubmitting}>
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={loginForm.formState.isSubmitting}
+                      >
                         Prisijungti
                       </Button>
                     </form>
                   </Form>
-                  
+
                   <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
                       <span className="w-full border-t" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Arba
-                      </span>
+                      <span className="bg-background px-2 text-muted-foreground">Arba</span>
                     </div>
                   </div>
-                  
+
                   <GoogleSignInButton />
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="signup">
               <Card>
                 <CardHeader>
                   <CardTitle>Registracija</CardTitle>
-                  <CardDescription>
-                    Sukurkite naują paskyrą įvesdami savo duomenis.
-                  </CardDescription>
+                  <CardDescription>Sukurkite naują paskyrą įvesdami savo duomenis.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {authError && (
@@ -237,23 +232,25 @@ const Auth = () => {
                           </FormItem>
                         )}
                       />
-                      <Button type="submit" className="w-full" disabled={signupForm.formState.isSubmitting}>
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={signupForm.formState.isSubmitting}
+                      >
                         Registruotis
                       </Button>
                     </form>
                   </Form>
-                  
+
                   <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
                       <span className="w-full border-t" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Arba
-                      </span>
+                      <span className="bg-background px-2 text-muted-foreground">Arba</span>
                     </div>
                   </div>
-                  
+
                   <GoogleSignInButton />
                 </CardContent>
               </Card>

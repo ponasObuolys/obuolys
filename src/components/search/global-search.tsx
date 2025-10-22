@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, FileText, Wrench, GraduationCap, ArrowRight, Loader2 } from 'lucide-react';
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, FileText, Wrench, GraduationCap, ArrowRight, Loader2 } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -8,23 +8,23 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { DialogTitle } from '@/components/ui/dialog';
-import { supabase } from '@/integrations/supabase/client';
-import { useDebounce } from '@/hooks/useDebounce';
+} from "@/components/ui/command";
+import { DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface SearchResult {
   id: string;
   title: string;
   description: string;
-  type: 'article' | 'tool' | 'course';
+  type: "article" | "tool" | "course";
   slug: string;
   category?: string;
 }
 
 export function GlobalSearch() {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
@@ -33,14 +33,14 @@ export function GlobalSearch() {
   // Keyboard shortcut: Cmd+K / Ctrl+K
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen(open => !open);
       }
     };
 
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   // Search function
@@ -57,50 +57,50 @@ export function GlobalSearch() {
 
       // Search articles
       const { data: articles } = await supabase
-        .from('articles')
-        .select('id, title, slug, description, category')
-        .eq('published', true)
+        .from("articles")
+        .select("id, title, slug, description, category")
+        .eq("published", true)
         .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},content.ilike.${searchTerm}`)
         .limit(5);
 
       // Search tools
       const { data: tools } = await supabase
-        .from('tools')
-        .select('id, name, slug, description, category')
-        .eq('published', true)
+        .from("tools")
+        .select("id, name, slug, description, category")
+        .eq("published", true)
         .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
         .limit(5);
 
       // Search courses
       const { data: courses } = await supabase
-        .from('courses')
-        .select('id, title, slug, description')
-        .eq('published', true)
+        .from("courses")
+        .select("id, title, slug, description")
+        .eq("published", true)
         .or(`title.ilike.${searchTerm},description.ilike.${searchTerm},content.ilike.${searchTerm}`)
         .limit(5);
 
       const combinedResults: SearchResult[] = [
-        ...(articles || []).map((a) => ({
+        ...(articles || []).map(a => ({
           id: a.id,
           title: a.title,
-          description: a.description || '',
-          type: 'article' as const,
+          description: a.description || "",
+          type: "article" as const,
           slug: a.slug,
           category: Array.isArray(a.category) ? a.category[0] : a.category,
         })),
-        ...(tools || []).map((t) => ({
+        ...(tools || []).map(t => ({
           id: t.id,
           title: t.name,
-          description: t.description || '',
-          type: 'tool' as const,
+          description: t.description || "",
+          type: "tool" as const,
           slug: t.slug,
           category: t.category || undefined,
         })),
-        ...(courses || []).map((c) => ({
+        ...(courses || []).map(c => ({
           id: c.id,
           title: c.title,
-          description: c.description || '',
-          type: 'course' as const,
+          description: c.description || "",
+          type: "course" as const,
           slug: c.slug,
         })),
       ];
@@ -128,10 +128,10 @@ export function GlobalSearch() {
 
     navigate(routes[result.type]);
     setOpen(false);
-    setQuery('');
+    setQuery("");
   };
 
-  const getIcon = (type: SearchResult['type']) => {
+  const getIcon = (type: SearchResult["type"]) => {
     const icons = {
       article: FileText,
       tool: Wrench,
@@ -142,13 +142,16 @@ export function GlobalSearch() {
   };
 
   // Group results by type
-  const groupedResults = results.reduce((acc, result) => {
-    if (!acc[result.type]) {
-      acc[result.type] = [];
-    }
-    acc[result.type].push(result);
-    return acc;
-  }, {} as Record<SearchResult['type'], SearchResult[]>);
+  const groupedResults = results.reduce(
+    (acc, result) => {
+      if (!acc[result.type]) {
+        acc[result.type] = [];
+      }
+      acc[result.type].push(result);
+      return acc;
+    },
+    {} as Record<SearchResult["type"], SearchResult[]>
+  );
 
   return (
     <>
@@ -186,7 +189,7 @@ export function GlobalSearch() {
             <>
               {groupedResults.article && groupedResults.article.length > 0 && (
                 <CommandGroup heading="Straipsniai">
-                  {groupedResults.article.map((result) => (
+                  {groupedResults.article.map(result => (
                     <CommandItem
                       key={result.id}
                       value={`${result.title} ${result.description}`}
@@ -210,7 +213,7 @@ export function GlobalSearch() {
 
               {groupedResults.tool && groupedResults.tool.length > 0 && (
                 <CommandGroup heading="Įrankiai">
-                  {groupedResults.tool.map((result) => (
+                  {groupedResults.tool.map(result => (
                     <CommandItem
                       key={result.id}
                       value={`${result.title} ${result.description}`}
@@ -234,7 +237,7 @@ export function GlobalSearch() {
 
               {groupedResults.course && groupedResults.course.length > 0 && (
                 <CommandGroup heading="Kursai">
-                  {groupedResults.course.map((result) => (
+                  {groupedResults.course.map(result => (
                     <CommandItem
                       key={result.id}
                       value={`${result.title} ${result.description}`}

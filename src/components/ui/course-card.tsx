@@ -18,10 +18,10 @@ interface CourseCardProps {
 
 // Color palette for course levels
 const levelColors: { [key: string]: string } = {
-  "Pradedantiesiems": "bg-green-600",
-  "Pažengusiems": "bg-blue-600",
-  "Profesionalams": "bg-purple-600",
-  "default": "bg-green-600"
+  Pradedantiesiems: "bg-green-600",
+  Pažengusiems: "bg-blue-600",
+  Profesionalams: "bg-purple-600",
+  default: "bg-green-600",
 };
 
 const CourseCard = ({ course }: CourseCardProps) => {
@@ -32,20 +32,23 @@ const CourseCard = ({ course }: CourseCardProps) => {
       <div className="project-card h-full flex flex-col">
         {/* Header with icon and title */}
         <div className="flex items-start gap-3 mb-4">
-          <div className={`w-12 h-12 rounded-lg ${levelColor} flex items-center justify-center flex-shrink-0`}>
+          <div
+            className={`w-12 h-12 rounded-lg ${levelColor} flex items-center justify-center flex-shrink-0`}
+          >
             <span className="text-white font-bold text-lg">
               {course.level ? course.level.charAt(0) : "K"}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold line-clamp-2 mb-1 text-left">
-              {course.title}
-            </h3>
-            <p className="text-sm text-foreground/90 text-left">
-              {course.level || "Kursas"}
-            </p>
+            <h3 className="font-semibold line-clamp-2 mb-1 text-left">{course.title}</h3>
+            <p className="text-sm text-foreground/90 text-left">{course.level || "Kursas"}</p>
           </div>
-          <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </div>
@@ -64,9 +67,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
         {/* Description - flexible */}
         <div className="flex-1 mb-4">
-          <p className="text-sm text-foreground/90 line-clamp-3 text-left">
-            {course.description}
-          </p>
+          <p className="text-sm text-foreground/90 line-clamp-3 text-left">{course.description}</p>
         </div>
 
         {/* Metadata and price - fixed at bottom */}
@@ -74,11 +75,11 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex items-center gap-4 text-xs text-foreground/90">
             <div className="flex items-center gap-1">
               <Clock size={14} />
-              <span>{course.duration || 'Nenurodyta'}</span>
+              <span>{course.duration || "Nenurodyta"}</span>
             </div>
             <div className="flex items-center gap-1">
               <BarChart size={14} />
-              <span>{course.level || 'Pradedantiesiems'}</span>
+              <span>{course.level || "Pradedantiesiems"}</span>
             </div>
           </div>
 
@@ -88,7 +89,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                 ? `${Number(course.price).toFixed(2)} €`
                 : course.price
                   ? `${course.price} €`
-                  : 'Nemokamas'}
+                  : "Nemokamas"}
             </div>
             <span className="text-xs text-foreground/90">Sužinoti daugiau →</span>
           </div>

@@ -5,10 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import type { ProfileUpdateData } from "./auth-context.types";
 
 // Patikrinti administratoriaus statusą
-export const checkAdminStatus = async (
-  userId: string,
-  setIsAdmin: (isAdmin: boolean) => void
-) => {
+export const checkAdminStatus = async (userId: string, setIsAdmin: (isAdmin: boolean) => void) => {
   try {
     const { data, error } = await supabase
       .from("profiles")
@@ -82,18 +79,19 @@ export const signIn = async (email: string, password: string) => {
 export const signInWithGoogle = async () => {
   try {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
         queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+          access_type: "offline",
+          prompt: "consent",
         },
       },
     });
     if (error) throw error;
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Įvyko klaida prisijungiant su Google";
+    const errorMessage =
+      error instanceof Error ? error.message : "Įvyko klaida prisijungiant su Google";
     toast({
       title: "Klaida",
       description: errorMessage,
@@ -249,8 +247,7 @@ export const uploadProfileImage = async (
 
     return avatarUrl;
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
+    const errorMessage = error instanceof Error ? error.message : "Įvyko klaida įkeliant nuotrauką";
     toast({
       title: "Klaida",
       description: errorMessage,

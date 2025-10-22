@@ -57,4 +57,4 @@
 - Pakeistas Google Translate API į DeepL API
 - Pridėta galimybė importuoti tik vieną naujieną per dieną
 - Išspręsta CORS problema su proxy serveriais
-- Pridėtas serverio klaidų apdorojimas 
+- Pridėtas serverio klaidų apdorojimas

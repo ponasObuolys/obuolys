@@ -69,12 +69,10 @@ export function useBookmark({ articleId }: UseBookmarkProps) {
         });
       } else {
         // Add bookmark
-        const { error } = await supabase
-          .from("article_bookmarks")
-          .insert({
-            article_id: articleId,
-            user_id: user.id,
-          });
+        const { error } = await supabase.from("article_bookmarks").insert({
+          article_id: articleId,
+          user_id: user.id,
+        });
 
         if (error) throw error;
 

@@ -18,16 +18,7 @@ interface UserManagerProps {
   onUpdate: () => void;
 }
 
-// Define proper types for the Supabase query results
-interface Profile {
-  id: string;
-  username: string | null;
-  is_admin: boolean;
-  created_at: string;
-  updated_at: string;
-  avatar_url: string;
-}
-
+// Define proper types for the User displayed in the UI
 interface User {
   id: string;
   username: string | null;
@@ -59,11 +50,24 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
 
         if (fallbackError) throw fallbackError;
 
+        // Supabase returns nullable fields
+        type ProfileData = {
+          id: string;
+          username: string | null;
+          is_admin: boolean;
+          created_at: string;
+          updated_at: string;
+          avatar_url: string | null;
+        };
+
         const transformedData =
-          fallbackData?.map((profile: Profile) => ({
-            ...profile,
+          fallbackData?.map((profile: ProfileData) => ({
+            id: profile.id || "",
+            username: profile.username,
             email: "Nėra prieigos", // We can't access auth.users directly
-            created_at_auth: profile.created_at,
+            created_at_auth: profile.created_at || "",
+            is_admin: profile.is_admin || false,
+            avatar_url: profile.avatar_url || undefined,
           })) || [];
 
         setUsers(transformedData);
@@ -71,18 +75,26 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
       }
 
       // Transform the data using user_profiles view
-      type UserProfile = Profile & {
-        email?: string;
-        auth_created_at?: string;
+      // user_profiles view returns all nullable fields
+      type UserProfileView = {
+        id: string | null;
+        username: string | null;
+        is_admin: boolean | null;
+        created_at: string | null;
+        updated_at: string | null;
+        avatar_url: string | null;
+        email: string | null;
+        auth_created_at: string | null;
       };
 
       const transformedData =
-        profilesData?.map((profile: UserProfile) => ({
-          id: profile.id,
+        profilesData?.map((profile: UserProfileView) => ({
+          id: profile.id || "",
           username: profile.username,
           email: profile.email || "Nenurodytas",
-          created_at_auth: profile.auth_created_at || profile.created_at,
-          is_admin: profile.is_admin,
+          created_at_auth: profile.auth_created_at || profile.created_at || "",
+          is_admin: profile.is_admin || false,
+          avatar_url: profile.avatar_url || undefined,
         })) || [];
 
       setUsers(transformedData);
@@ -206,7 +218,12 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
                         </>
                       )}
                     </Button>
-                    <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => suspendUser(user.id)}
+                      disabled
+                    >
                       <Ban className="h-4 w-4 mr-1" /> Suspenduoti
                     </Button>
                   </div>
@@ -224,7 +241,11 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
             <CardContent className="p-4">
               <div className="flex items-start gap-3 mb-3">
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} alt="Avatar" className="w-12 h-12 rounded-full flex-shrink-0" />
+                  <img
+                    src={user.avatar_url}
+                    alt="Avatar"
+                    className="w-12 h-12 rounded-full flex-shrink-0"
+                  />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
                     <UserIcon className="h-6 w-6 text-gray-500" />
@@ -237,7 +258,10 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
                     ID: {user.id.slice(0, 8)}...
                   </div>
                 </div>
-                <Badge variant={user.is_admin ? "destructive" : "secondary"} className="flex-shrink-0">
+                <Badge
+                  variant={user.is_admin ? "destructive" : "secondary"}
+                  className="flex-shrink-0"
+                >
                   {user.is_admin ? "Admin" : "Vartotojas"}
                 </Badge>
               </div>
@@ -263,7 +287,12 @@ const UserManager = ({ onUpdate }: UserManagerProps) => {
                       </>
                     )}
                   </Button>
-                  <Button variant="secondary" size="sm" onClick={() => suspendUser(user.id)} disabled>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => suspendUser(user.id)}
+                    disabled
+                  >
                     <Ban className="h-4 w-4" />
                   </Button>
                 </div>

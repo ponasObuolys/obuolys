@@ -37,7 +37,8 @@
       "Bash(timeout 10 npm run dev:*)",
       "Bash(taskkill:*)",
       "Bash(timeout 5 npm run dev:*)",
-      "Bash(exit 0)"
+      "Bash(exit 0)",
+      "Bash(npx prettier --write \"src/pages/admin/CTAAnalyticsPage.tsx\")"
     ],
     "deny": [],
     "ask": []

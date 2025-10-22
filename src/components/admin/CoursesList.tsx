@@ -92,7 +92,10 @@ const CoursesList = ({ onEdit, onDelete }: CoursesListProps) => {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold truncate">{course.title}</h3>
                   </div>
-                  <Badge variant={course.published ? "default" : "secondary"} className="text-xs flex-shrink-0">
+                  <Badge
+                    variant={course.published ? "default" : "secondary"}
+                    className="text-xs flex-shrink-0"
+                  >
                     {course.published ? "Publikuota" : "Juodraštis"}
                   </Badge>
                 </div>
@@ -109,19 +112,15 @@ const CoursesList = ({ onEdit, onDelete }: CoursesListProps) => {
                 </div>
 
                 <div className="flex gap-2 pt-2 border-t">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => onEdit(course.id)}
                     className="flex-1"
                   >
                     <FilePenLine className="h-4 w-4 mr-1" /> Redaguoti
                   </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    onClick={() => handleDelete(course.id)}
-                  >
+                  <Button variant="destructive" size="sm" onClick={() => handleDelete(course.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

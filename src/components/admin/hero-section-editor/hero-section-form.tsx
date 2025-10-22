@@ -38,7 +38,9 @@ export const HeroSectionForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{editingSection ? "Redaguoti hero sekciją" : "Sukurti naują hero sekciją"}</CardTitle>
+        <CardTitle>
+          {editingSection ? "Redaguoti hero sekciją" : "Sukurti naują hero sekciją"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -114,7 +116,7 @@ export const HeroSectionForm = ({
                       <FileUpload
                         bucket="site-images"
                         folder="hero-sections"
-                        onUploadComplete={(url) => {
+                        onUploadComplete={url => {
                           field.onChange(url);
                           toast({
                             title: "Sėkmė",
@@ -149,7 +151,9 @@ export const HeroSectionForm = ({
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Aktyvus</FormLabel>
-                    <FormDescription>Ar ši hero sekcija turi būti rodoma svetainėje</FormDescription>
+                    <FormDescription>
+                      Ar ši hero sekcija turi būti rodoma svetainėje
+                    </FormDescription>
                   </div>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />

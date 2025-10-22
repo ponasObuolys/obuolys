@@ -57,7 +57,10 @@ export function PerformanceMonitor() {
       </Tabs>
 
       {metrics.length > 0 && (
-        <RecommendationsCard getLatestMetric={getLatestMetric} performanceScore={performanceScore} />
+        <RecommendationsCard
+          getLatestMetric={getLatestMetric}
+          performanceScore={performanceScore}
+        />
       )}
     </div>
   );

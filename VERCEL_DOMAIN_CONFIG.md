@@ -1,7 +1,9 @@
 # Vercel Domain Configuration - WWW Redirect
 
 ## 🎯 Tikslas
+
 Redirect visą WWW traffic į non-WWW canonical domain:
+
 ```
 https://www.ponasobuolys.lt → https://ponasobuolys.lt (301 redirect)
 ```
@@ -11,11 +13,13 @@ https://www.ponasobuolys.lt → https://ponasobuolys.lt (301 redirect)
 ## 📋 Vercel Dashboard Steps
 
 ### 1. Login į Vercel
+
 ```
 https://vercel.com/login
 ```
 
 ### 2. Navigate to Project Settings
+
 1. Select project: **obuolys** (ar kaip vadinasi jūsų projektas)
 2. Click **Settings** tab viršuje
 3. Click **Domains** iš kairės meniu
@@ -25,6 +29,7 @@ https://vercel.com/login
 ### 3. Configure Domains
 
 #### Current Setup (tikėtina):
+
 - ✅ `ponasobuolys.lt` (Primary domain)
 - ✅ `www.ponasobuolys.lt` (Added domain)
 
@@ -39,6 +44,7 @@ https://vercel.com/login
 5. Click **Save**
 
 **Visual representation**:
+
 ```
 Domain: www.ponasobuolys.lt
 Status: Active
@@ -58,6 +64,7 @@ Permanent (301): [x] Enable
 ### 4. Verify Configuration
 
 #### A. Check Domain Settings
+
 ```
 ponasobuolys.lt
 ├─ Type: Production Branch
@@ -74,11 +81,13 @@ www.ponasobuolys.lt
 #### B. Test Redirects (po deploy)
 
 **Using Browser**:
+
 1. Open `https://www.ponasobuolys.lt`
 2. Should automatically redirect to `https://ponasobuolys.lt`
 3. Check browser URL bar - should show non-WWW
 
 **Using curl**:
+
 ```bash
 curl -I https://www.ponasobuolys.lt
 
@@ -94,11 +103,13 @@ location: https://ponasobuolys.lt/
 ### Issue: WWW not redirecting
 
 **Check**:
+
 1. Vercel Dashboard → Domains → `www.ponasobuolys.lt`
 2. Verify "Redirect to" field is set
 3. Verify "Permanent" checkbox is enabled
 
 **Solution**:
+
 ```
 1. Remove www.ponasobuolys.lt domain
 2. Re-add www.ponasobuolys.lt
@@ -121,17 +132,20 @@ location: https://ponasobuolys.lt/
 ## ✅ Testing Checklist (po konfigūracijos)
 
 ### Immediate Tests
+
 - [ ] Vercel Dashboard shows redirect configuration
 - [ ] `www.ponasobuolys.lt` has "Redirect" type
 - [ ] `ponasobuolys.lt` is "Primary Domain"
 
 ### Post-Deploy Tests (5-10 min po deploy)
+
 - [ ] `https://www.ponasobuolys.lt` → redirects to `https://ponasobuolys.lt`
 - [ ] `https://www.ponasobuolys.lt/publikacijos` → `https://ponasobuolys.lt/publikacijos`
 - [ ] HTTP `curl -I` shows `301 Moved Permanently`
 - [ ] Browser URL bar shows non-WWW po redirect
 
 ### SEO Tests (1-7 days po deploy)
+
 - [ ] Google Search Console detects canonical URLs
 - [ ] Sitemap uses non-WWW (already updated)
 - [ ] Robots.txt uses non-WWW (already updated)
@@ -168,6 +182,7 @@ Jei Vercel Dashboard redirect neveikia, galite pridėti į `vercel.json`:
 ## 📊 Expected Results
 
 ### Before Configuration
+
 ```
 https://ponasobuolys.lt          ✅ Works
 https://www.ponasobuolys.lt      ✅ Works (duplicate content)
@@ -176,6 +191,7 @@ https://www.ponasobuolys.lt      ✅ Works (duplicate content)
 ```
 
 ### After Configuration
+
 ```
 https://ponasobuolys.lt          ✅ Works (canonical)
 https://www.ponasobuolys.lt      ➡️  301 → https://ponasobuolys.lt
@@ -217,6 +233,7 @@ A: 1) Check Vercel Dashboard config, 2) Wait 10 min, 3) Clear browser cache, 4) 
 ## 📞 Support
 
 Jei problemos:
+
 1. Vercel Docs: https://vercel.com/docs/concepts/projects/domains
 2. Vercel Support: https://vercel.com/support
 3. Or ask me!

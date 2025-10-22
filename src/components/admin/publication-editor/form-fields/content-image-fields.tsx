@@ -2,7 +2,7 @@ import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/f
 import LazyImage from "@/components/ui/lazy-image";
 import type { UseFormReturn } from "react-hook-form";
 import FileUpload from "../../FileUpload";
-import RichTextEditor from "../../rich-text-editor";
+import RichTextEditor from "../../RichTextEditor";
 import type { PublicationFormData } from "../publication-editor.types";
 
 interface ContentImageFieldsProps {
@@ -54,11 +54,7 @@ export const ContentImageFields = ({
         {imageUrl && (
           <div className="mt-4">
             <p className="text-sm font-medium mb-2">Esamas paveikslėlis:</p>
-            <LazyImage
-              src={imageUrl}
-              alt="Esamas paveikslėlis"
-              className="max-w-xs rounded-md"
-            />
+            <LazyImage src={imageUrl} alt="Esamas paveikslėlis" className="max-w-xs rounded-md" />
           </div>
         )}
         <FormMessage>{form.formState.errors.image_url?.message}</FormMessage>

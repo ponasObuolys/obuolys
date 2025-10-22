@@ -66,7 +66,7 @@ const PublicationsPage = () => {
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory =
-      selectedCategory === "Visos kategorijos" || 
+      selectedCategory === "Visos kategorijos" ||
       (item.category && item.category.includes(selectedCategory));
 
     return matchesSearch && matchesCategory;
@@ -78,7 +78,13 @@ const PublicationsPage = () => {
         title="AI Naujienos ir Publikacijos"
         description="Naujausios dirbtinio intelekto naujienos ir straipsniai lietuvių kalba. Sužinokite paskutines AI tendencijas, naujoves ir analizę - ponas Obuolys"
         canonical={`${SITE_CONFIG.domain}/publikacijos`}
-        keywords={['AI naujienos Lietuva', 'dirbtinio intelekto naujienos', 'AI straipsniai lietuviškai', 'ChatGPT naujienos', 'machine learning naujienos']}
+        keywords={[
+          "AI naujienos Lietuva",
+          "dirbtinio intelekto naujienos",
+          "AI straipsniai lietuviškai",
+          "ChatGPT naujienos",
+          "machine learning naujienos",
+        ]}
         type="website"
       />
       <section className="py-12 md:py-16">
@@ -96,7 +102,8 @@ const PublicationsPage = () => {
                     AI Naujienos ir Publikacijos
                   </h1>
                   <p className="text-xl text-foreground/80 max-w-2xl text-left">
-                    Svarbiausios AI naujienos, analizės ir straipsniai apie dirbtinio intelekto tendencijas Lietuvoje ir pasaulyje.
+                    Svarbiausios AI naujienos, analizės ir straipsniai apie dirbtinio intelekto
+                    tendencijas Lietuvoje ir pasaulyje.
                   </p>
                 </div>
                 <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
@@ -125,7 +132,7 @@ const PublicationsPage = () => {
               <div className="mb-4">
                 <BusinessSolutionsCTA variant="inline" context="publications" />
               </div>
-              
+
               {/* Kategorijų filtrai */}
               <div className="flex flex-wrap gap-2">
                 {categories.map(category => (
@@ -165,7 +172,9 @@ const PublicationsPage = () => {
             ) : (
               <div className="text-center py-12">
                 <div className="dark-card">
-                  <p className="text-xl text-foreground/60 mb-4">Pagal jūsų paiešką AI naujienų nerasta</p>
+                  <p className="text-xl text-foreground/60 mb-4">
+                    Pagal jūsų paiešką AI naujienų nerasta
+                  </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
                       className="button-outline"
@@ -199,7 +208,8 @@ const PublicationsPage = () => {
                   Turite įdomią AI naujieną?
                 </h2>
                 <p className="text-xl text-foreground/80 mb-8 max-w-2xl mx-auto">
-                  Pasidalinkite su lietuvių AI bendruomene! Siųskite savo pasiūlymus ir padėkite formuoti AI diskursą Lietuvoje.
+                  Pasidalinkite su lietuvių AI bendruomene! Siųskite savo pasiūlymus ir padėkite
+                  formuoti AI diskursą Lietuvoje.
                 </p>
                 <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
                   <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto mx-auto">

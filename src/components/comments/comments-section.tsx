@@ -56,7 +56,7 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
 
       // Fetch user profiles and replies for each comment
       const commentsWithReplies = await Promise.all(
-        (commentsData || []).map(async (comment) => {
+        (commentsData || []).map(async comment => {
           // Fetch user profile
           const { data: userProfile } = await supabase
             .from("profiles")
@@ -75,7 +75,7 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
 
           // Fetch profiles for replies
           const repliesWithProfiles = await Promise.all(
-            (repliesData || []).map(async (reply) => {
+            (repliesData || []).map(async reply => {
               const { data: replyUserProfile } = await supabase
                 .from("profiles")
                 .select("username, avatar_url")
@@ -216,17 +216,17 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-2 mb-8">
           <MessageCircle className="h-6 w-6" />
-          <h2 className="text-2xl font-bold">
-            Komentarai ({comments.length})
-          </h2>
+          <h2 className="text-2xl font-bold">Komentarai ({comments.length})</h2>
         </div>
 
         {/* New comment form */}
         <div className="mb-8 bg-card border border-border rounded-lg p-4">
           <Textarea
-            placeholder={user ? "Parašykite komentarą..." : "Prisijunkite, kad galėtumėte komentuoti"}
+            placeholder={
+              user ? "Parašykite komentarą..." : "Prisijunkite, kad galėtumėte komentuoti"
+            }
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            onChange={e => setNewComment(e.target.value)}
             disabled={!user || submitting}
             rows={4}
             className="mb-3"
@@ -258,14 +258,12 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
               <p>Dar nėra komentarų. Būkite pirmas!</p>
             </div>
           ) : (
-            comments.map((comment) => (
+            comments.map(comment => (
               <div key={comment.id} className="bg-card border border-border rounded-lg p-4">
                 <div className="flex gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={comment.user?.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {getInitials(comment.user?.username || null)}
-                    </AvatarFallback>
+                    <AvatarFallback>{getInitials(comment.user?.username || null)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
@@ -295,7 +293,7 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
                         <Textarea
                           placeholder="Parašykite atsakymą..."
                           value={replyContent}
-                          onChange={(e) => setReplyContent(e.target.value)}
+                          onChange={e => setReplyContent(e.target.value)}
                           disabled={submitting}
                           rows={3}
                           className="mb-2"
@@ -306,11 +304,7 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
                             onClick={() => handleSubmitReply(comment.id)}
                             disabled={submitting || !replyContent.trim()}
                           >
-                            {submitting ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
-                            ) : (
-                              "Siųsti"
-                            )}
+                            {submitting ? <Loader2 className="h-3 w-3 animate-spin" /> : "Siųsti"}
                           </Button>
                           <Button
                             size="sm"
@@ -329,7 +323,7 @@ export function CommentsSection({ articleId }: CommentsSectionProps) {
                     {/* Replies */}
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-4 ml-4 space-y-4 border-l-2 border-border pl-4">
-                        {comment.replies.map((reply) => (
+                        {comment.replies.map(reply => (
                           <div key={reply.id} className="flex gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={reply.user?.avatar_url || undefined} />

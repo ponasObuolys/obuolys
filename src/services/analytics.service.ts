@@ -8,12 +8,12 @@ import { hasAnalyticsConsent } from "@/components/gdpr/cookie-consent.utils";
 function getSessionId(): string {
   const SESSION_KEY = "obuolys_session_id";
   let sessionId = sessionStorage.getItem(SESSION_KEY);
-  
+
   if (!sessionId) {
     sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     sessionStorage.setItem(SESSION_KEY, sessionId);
   }
-  
+
   return sessionId;
 }
 
@@ -23,16 +23,16 @@ function getSessionId(): string {
 function wasRecentlyViewed(articleId: string): boolean {
   const RECENT_VIEWS_KEY = "obuolys_recent_views";
   const VIEW_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
-  
+
   try {
     const recentViewsStr = localStorage.getItem(RECENT_VIEWS_KEY);
     if (!recentViewsStr) return false;
-    
+
     const recentViews: Record<string, number> = JSON.parse(recentViewsStr);
     const lastViewTime = recentViews[articleId];
-    
+
     if (!lastViewTime) return false;
-    
+
     const timeSinceView = Date.now() - lastViewTime;
     return timeSinceView < VIEW_TIMEOUT;
   } catch {
@@ -46,13 +46,11 @@ function wasRecentlyViewed(articleId: string): boolean {
 function markAsViewed(articleId: string): void {
   const RECENT_VIEWS_KEY = "obuolys_recent_views";
   const VIEW_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-  
+
   try {
     const recentViewsStr = localStorage.getItem(RECENT_VIEWS_KEY);
-    const recentViews: Record<string, number> = recentViewsStr 
-      ? JSON.parse(recentViewsStr) 
-      : {};
-    
+    const recentViews: Record<string, number> = recentViewsStr ? JSON.parse(recentViewsStr) : {};
+
     // Clean up old views (older than 30 minutes)
     const now = Date.now();
     Object.keys(recentViews).forEach(key => {
@@ -60,7 +58,7 @@ function markAsViewed(articleId: string): void {
         delete recentViews[key];
       }
     });
-    
+
     // Mark current article as viewed
     recentViews[articleId] = now;
     localStorage.setItem(RECENT_VIEWS_KEY, JSON.stringify(recentViews));
@@ -89,15 +87,13 @@ export async function trackPageView(articleId: string): Promise<void> {
 
     const sessionId = getSessionId();
     const { data: userData } = await supabase.auth.getUser();
-    
-    const { error } = await supabase
-      .from("page_views")
-      .insert({
-        article_id: articleId,
-        user_id: userData?.user?.id || null,
-        session_id: sessionId,
-        user_agent: navigator.userAgent,
-      });
+
+    const { error } = await supabase.from("page_views").insert({
+      article_id: articleId,
+      user_id: userData?.user?.id || null,
+      session_id: sessionId,
+      user_agent: navigator.userAgent,
+    });
 
     if (error) {
       throw error;

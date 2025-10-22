@@ -30,7 +30,7 @@ Naudokite **HTML `<meta>` tag** approach:
 ```html
 <head>
   <!-- Prerender.io fragment meta tag -->
-  <meta name="fragment" content="!">
+  <meta name="fragment" content="!" />
 
   <!-- Existing meta tags -->
   ...
@@ -48,36 +48,37 @@ Since we can't use middleware in Vite, we'll use a different approach:
 ### Create `api/_prerender.js`
 
 ```javascript
-const PRERENDER_TOKEN = 'D9EDsSifvfj3S7qLPh0T';
-const PRERENDER_URL = 'https://service.prerender.io';
+const PRERENDER_TOKEN = "D9EDsSifvfj3S7qLPh0T";
+const PRERENDER_URL = "https://service.prerender.io";
 
-const CRAWLERS = /googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkshare|w3c_validator|whatsapp/i;
+const CRAWLERS =
+  /googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkshare|w3c_validator|whatsapp/i;
 
 export default async function handler(req, res) {
-  const ua = req.headers['user-agent'] || '';
+  const ua = req.headers["user-agent"] || "";
 
   if (!CRAWLERS.test(ua)) {
     // Not a bot, serve normal SPA
-    return res.redirect(307, '/');
+    return res.redirect(307, "/");
   }
 
   // Bot detected, fetch from Prerender.io
-  const url = `https://${req.headers.host}${req.url.replace('/api/_prerender', '')}`;
+  const url = `https://${req.headers.host}${req.url.replace("/api/_prerender", "")}`;
 
   try {
     const response = await fetch(`${PRERENDER_URL}/${url}`, {
       headers: {
-        'X-Prerender-Token': PRERENDER_TOKEN,
+        "X-Prerender-Token": PRERENDER_TOKEN,
       },
     });
 
     const html = await response.text();
 
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader("Content-Type", "text/html");
     res.status(200).send(html);
   } catch (error) {
-    console.error('Prerender error:', error);
-    return res.redirect(307, '/');
+    console.error("Prerender error:", error);
+    return res.redirect(307, "/");
   }
 }
 ```

@@ -3,6 +3,7 @@
 ## 🎯 Problema
 
 Facebook scraper **negali skaityti** React dynamic meta tags, nes:
+
 1. SPA aplikacija naudoja client-side rendering
 2. Facebook bot nemato JavaScript generated content
 3. React-Helmet meta tags neveikia botams
@@ -16,6 +17,7 @@ Facebook scraper **negali skaityti** React dynamic meta tags, nes:
 ### Veikimo principas
 
 Sukurti Vercel Edge Middleware, kuris:
+
 1. Detektuoja Facebook/Social bot User-Agent
 2. Pre-renders HTML su correct OG tags
 3. Grąžina static HTML su metadata
@@ -25,18 +27,12 @@ Sukurti Vercel Edge Middleware, kuris:
 #### 1. Sukurti `api/_middleware.ts`
 
 ```typescript
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-const SOCIAL_BOTS = [
-  'facebookexternalhit',
-  'Facebot',
-  'Twitterbot',
-  'LinkedInBot',
-  'WhatsApp',
-];
+const SOCIAL_BOTS = ["facebookexternalhit", "Facebot", "Twitterbot", "LinkedInBot", "WhatsApp"];
 
 export async function middleware(req: NextRequest) {
-  const ua = req.headers.get('user-agent') || '';
+  const ua = req.headers.get("user-agent") || "";
   const isBot = SOCIAL_BOTS.some(bot => ua.includes(bot));
 
   if (!isBot) return NextResponse.next();
@@ -47,7 +43,7 @@ export async function middleware(req: NextRequest) {
   const html = await response.text();
 
   return new NextResponse(html, {
-    headers: { 'Content-Type': 'text/html' },
+    headers: { "Content-Type": "text/html" },
   });
 }
 ```
@@ -55,7 +51,7 @@ export async function middleware(req: NextRequest) {
 #### 2. Sukurti `api/prerender.ts`
 
 ```typescript
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const path = req.query.path as string;
@@ -64,7 +60,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const content = await fetchContent(path);
 
   if (!content) {
-    return res.status(404).send('Not found');
+    return res.status(404).send("Not found");
   }
 
   // Generate HTML with OG tags
@@ -85,7 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 </body>
 </html>`;
 
-  res.setHeader('Content-Type', 'text/html');
+  res.setHeader("Content-Type", "text/html");
   res.status(200).send(html);
 }
 ```
@@ -125,16 +121,16 @@ npm install prerender-node
 ### api/prerender.js
 
 ```javascript
-const prerender = require('prerender-node');
+const prerender = require("prerender-node");
 
-prerender.set('prerenderToken', process.env.PRERENDER_TOKEN);
+prerender.set("prerenderToken", process.env.PRERENDER_TOKEN);
 
 module.exports = (req, res) => {
   if (prerender.shouldShowPrerenderedPage(req)) {
     prerender.prerenderRequest(req, res);
   } else {
     // Serve normal SPA
-    res.sendFile('dist/index.html');
+    res.sendFile("dist/index.html");
   }
 };
 ```
@@ -157,12 +153,7 @@ npm install --save-dev react-snap
     "postbuild": "react-snap"
   },
   "reactSnap": {
-    "include": [
-      "/",
-      "/publikacijos/*",
-      "/kursai/*",
-      "/irankiai/*"
-    ],
+    "include": ["/", "/publikacijos/*", "/kursai/*", "/irankiai/*"],
     "puppeteerArgs": ["--no-sandbox"],
     "waitFor": 1000
   }
@@ -182,29 +173,31 @@ Sukurti dynamic OG images per Vercel Edge Functions.
 #### api/og-image.tsx
 
 ```tsx
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from "@vercel/og";
 
 export const config = {
-  runtime: 'edge',
+  runtime: "edge",
 };
 
 export default function handler(req: Request) {
   const { searchParams } = new URL(req.url);
-  const title = searchParams.get('title') || 'ponas Obuolys';
-  const description = searchParams.get('description') || 'AI naujienos';
+  const title = searchParams.get("title") || "ponas Obuolys";
+  const description = searchParams.get("description") || "AI naujienos";
 
   return new ImageResponse(
     (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '40px',
-      }}>
-        <h1 style={{ fontSize: '64px', color: 'white' }}>{title}</h1>
-        <p style={{ fontSize: '32px', color: '#f0f0f0' }}>{description}</p>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          padding: "40px",
+        }}
+      >
+        <h1 style={{ fontSize: "64px", color: "white" }}>{title}</h1>
+        <p style={{ fontSize: "32px", color: "#f0f0f0" }}>{description}</p>
       </div>
     ),
     {
@@ -218,7 +211,10 @@ export default function handler(req: Request) {
 #### index.html meta tags
 
 ```html
-<meta property="og:image" content="https://ponasobuolys.lt/api/og-image?title=...&description=...">
+<meta
+  property="og:image"
+  content="https://ponasobuolys.lt/api/og-image?title=...&description=..."
+/>
 ```
 
 ---
@@ -226,12 +222,15 @@ export default function handler(req: Request) {
 ## 🚀 Rekomenduojamas implementacijos kelias
 
 ### Greičiausias (5 min):
+
 **Sprendimas 4** - OG Image Generation
 
 ### Geriausias long-term (30 min):
+
 **Sprendimas 2** - Prerender.io
 
 ### DIY Solution (2h):
+
 **Sprendimas 1** - Custom Edge Middleware
 
 ---
@@ -260,12 +259,12 @@ Turėtų grąžinti HTML su correct OG tags.
 
 ## 📊 Sprendimų palyginimas
 
-| Sprendimas | Sudėtingumas | Laikas | SEO | Cost |
-|------------|--------------|--------|-----|------|
-| **Prerender.io** | ⭐ | 5 min | ⭐⭐⭐⭐⭐ | $$ |
-| **React-Snap** | ⭐⭐ | 15 min | ⭐⭐⭐⭐ | Free |
-| **Custom Middleware** | ⭐⭐⭐⭐ | 2h | ⭐⭐⭐⭐⭐ | Free |
-| **OG Image Only** | ⭐ | 5 min | ⭐⭐⭐ | Free |
+| Sprendimas            | Sudėtingumas | Laikas | SEO        | Cost |
+| --------------------- | ------------ | ------ | ---------- | ---- |
+| **Prerender.io**      | ⭐           | 5 min  | ⭐⭐⭐⭐⭐ | $$   |
+| **React-Snap**        | ⭐⭐         | 15 min | ⭐⭐⭐⭐   | Free |
+| **Custom Middleware** | ⭐⭐⭐⭐     | 2h     | ⭐⭐⭐⭐⭐ | Free |
+| **OG Image Only**     | ⭐           | 5 min  | ⭐⭐⭐     | Free |
 
 ---
 

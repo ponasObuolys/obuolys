@@ -1,8 +1,8 @@
 // CTA ir Hero sekcijų TypeScript tipai
 
-export type CTAContext = 'article' | 'tools' | 'publications';
-export type CTAVariant = 'default' | 'compact' | 'inline';
-export type CTAIcon = 'Target' | 'Rocket' | 'Sparkles' | 'Brain' | 'Zap' | 'TrendingUp';
+export type CTAContext = "article" | "tools" | "publications";
+export type CTAVariant = "default" | "compact" | "inline";
+export type CTAIcon = "Target" | "Rocket" | "Sparkles" | "Brain" | "Zap" | "TrendingUp";
 
 export interface CTASection {
   id: string;

@@ -35,6 +35,38 @@ type Comment = ArticleComment & {
   };
 };
 
+const normalizeComment = (comment: Record<string, unknown>): ArticleComment => ({
+  id: String(comment.id ?? ""),
+  article_id: String(comment.article_id ?? ""),
+  user_id: String(comment.user_id ?? ""),
+  content: String(comment.content ?? ""),
+  parent_id: (comment.parent_id as string | null | undefined) ?? null,
+  is_approved: comment.is_approved === true,
+  is_deleted: comment.is_deleted === true,
+  created_at: String(comment.created_at ?? ""),
+  updated_at: String(comment.updated_at ?? ""),
+});
+
+const normalizeUserProfile = (
+  profile: Record<string, unknown> | null | undefined
+): Comment["user"] =>
+  profile
+    ? {
+        username: (profile.username as string | null | undefined) ?? null,
+        avatar_url: (profile.avatar_url as string | null | undefined) ?? null,
+      }
+    : undefined;
+
+const normalizeArticleInfo = (
+  article: Record<string, unknown> | null | undefined
+): Comment["article"] =>
+  article
+    ? {
+        title: String(article.title ?? ""),
+        slug: String(article.slug ?? ""),
+      }
+    : undefined;
+
 const AdminCommentsModeration = () => {
   const { toast } = useToast();
   const [pendingComments, setPendingComments] = useState<Comment[]>([]);
@@ -74,48 +106,58 @@ const AdminCommentsModeration = () => {
 
       // Fetch user profiles and article info for pending comments
       const pendingWithDetails = await Promise.all(
-        (pendingData || []).map(async (comment) => {
+        (pendingData || []).map(async rawComment => {
+          const baseComment = normalizeComment(rawComment as Record<string, unknown>);
           const [userProfile, article] = await Promise.all([
             supabase
               .from("profiles")
               .select("username, avatar_url")
-              .eq("id", comment.user_id)
+              .eq("id", baseComment.user_id)
               .single(),
             supabase
               .from("articles")
               .select("title, slug")
-              .eq("id", comment.article_id)
+              .eq("id", baseComment.article_id)
               .single(),
           ]);
 
           return {
-            ...comment,
-            user: userProfile.data || undefined,
-            article: article.data || undefined,
+            ...baseComment,
+            user: normalizeUserProfile(
+              userProfile.data as Record<string, unknown> | null | undefined
+            ),
+            article: normalizeArticleInfo(
+              article.data as Record<string, unknown> | null | undefined
+            ),
           };
         })
       );
 
       // Fetch user profiles and article info for approved comments
       const approvedWithDetails = await Promise.all(
-        (approvedData || []).map(async (comment) => {
+        (approvedData || []).map(async rawComment => {
+          const baseComment = normalizeComment(rawComment as Record<string, unknown>);
           const [userProfile, article] = await Promise.all([
             supabase
               .from("profiles")
               .select("username, avatar_url")
-              .eq("id", comment.user_id)
+              .eq("id", baseComment.user_id)
               .single(),
             supabase
               .from("articles")
               .select("title, slug")
-              .eq("id", comment.article_id)
+              .eq("id", baseComment.article_id)
               .single(),
           ]);
 
           return {
-            ...comment,
-            user: userProfile.data || undefined,
-            article: article.data || undefined,
+            ...baseComment,
+            user: normalizeUserProfile(
+              userProfile.data as Record<string, unknown> | null | undefined
+            ),
+            article: normalizeArticleInfo(
+              article.data as Record<string, unknown> | null | undefined
+            ),
           };
         })
       );
@@ -237,7 +279,9 @@ const AdminCommentsModeration = () => {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2 gap-2">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mb-1">
-                  <span className="font-semibold truncate">{comment.user?.username || "Vartotojas"}</span>
+                  <span className="font-semibold truncate">
+                    {comment.user?.username || "Vartotojas"}
+                  </span>
                   <span className="text-xs md:text-sm text-muted-foreground">
                     {formatDistanceToNow(new Date(comment.created_at), {
                       addSuffix: true,
@@ -256,7 +300,10 @@ const AdminCommentsModeration = () => {
                 )}
               </div>
               {comment.parent_id && (
-                <Badge variant="secondary" className="text-xs self-start md:self-auto flex-shrink-0">
+                <Badge
+                  variant="secondary"
+                  className="text-xs self-start md:self-auto flex-shrink-0"
+                >
                   Atsakymas
                 </Badge>
               )}
@@ -327,9 +374,7 @@ const AdminCommentsModeration = () => {
           <MessageCircle className="h-8 w-8" />
           <h1 className="text-3xl font-bold">Komentarų moderavimas</h1>
         </div>
-        <p className="text-muted-foreground">
-          Peržiūrėkite ir moderuokite vartotojų komentarus
-        </p>
+        <p className="text-muted-foreground">Peržiūrėkite ir moderuokite vartotojų komentarus</p>
       </div>
 
       <Tabs defaultValue="pending" className="w-full">
@@ -343,7 +388,9 @@ const AdminCommentsModeration = () => {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="approved" className="text-xs md:text-sm">Patvirtinti</TabsTrigger>
+          <TabsTrigger value="approved" className="text-xs md:text-sm">
+            Patvirtinti
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">
@@ -351,13 +398,11 @@ const AdminCommentsModeration = () => {
             <Card>
               <CardContent className="py-12 text-center">
                 <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground">
-                  Nėra laukiančių patvirtinimo komentarų
-                </p>
+                <p className="text-muted-foreground">Nėra laukiančių patvirtinimo komentarų</p>
               </CardContent>
             </Card>
           ) : (
-            pendingComments.map((comment) => (
+            pendingComments.map(comment => (
               <CommentCard key={comment.id} comment={comment} isPending={true} />
             ))
           )}
@@ -372,7 +417,7 @@ const AdminCommentsModeration = () => {
               </CardContent>
             </Card>
           ) : (
-            approvedComments.map((comment) => (
+            approvedComments.map(comment => (
               <CommentCard key={comment.id} comment={comment} isPending={false} />
             ))
           )}

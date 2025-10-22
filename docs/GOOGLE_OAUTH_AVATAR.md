@@ -3,6 +3,7 @@
 ## Apžvalga
 
 Kai vartotojas prisijungia su Google paskyra, jo profilio paveikslėlis automatiškai rodomas:
+
 - Header meniu "Profilis" mygtuke
 - Mobile meniu "Profilio nustatymai" punkte
 - Profilio puslapyje (Nustatymai → Profilio informacija)
@@ -15,12 +16,12 @@ Kai vartotojas prisijungia su Google paskyra, jo profilio paveikslėlis automati
 
 ```typescript
 const { error } = await supabase.auth.signInWithOAuth({
-  provider: 'google',
+  provider: "google",
   options: {
     redirectTo: `${window.location.origin}/`,
     queryParams: {
-      access_type: 'offline',
-      prompt: 'consent',
+      access_type: "offline",
+      prompt: "consent",
     },
   },
 });
@@ -57,6 +58,7 @@ $$;
 ```
 
 **Svarbūs laukai:**
+
 - `username` - imamas iš Google `full_name`, `name`, arba el. pašto
 - `avatar_url` - imamas iš Google `picture` lauko (Google OAuth standartinis laukas)
 
@@ -65,7 +67,9 @@ $$;
 Header komponentas (`Header.tsx`) naudoja `getUserProfile()` metodą iš AuthContext:
 
 ```typescript
-const [profileData, setProfileData] = useState<{ username?: string; avatarUrl?: string } | null>(null);
+const [profileData, setProfileData] = useState<{ username?: string; avatarUrl?: string } | null>(
+  null
+);
 const { user, getUserProfile } = useAuth();
 
 useEffect(() => {
@@ -80,9 +84,10 @@ useEffect(() => {
 ```
 
 Avatar komponentas:
+
 ```tsx
 <Avatar className="h-6 w-6">
-  <AvatarImage src={profileData?.avatarUrl || ''} alt={profileData?.username || 'User'} />
+  <AvatarImage src={profileData?.avatarUrl || ""} alt={profileData?.username || "User"} />
   <AvatarFallback>
     {profileData?.username?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
   </AvatarFallback>
@@ -95,13 +100,8 @@ Profilio puslapis (`ProfileInformationTab.tsx`) jau naudoja `avatarUrl`:
 
 ```tsx
 <Avatar className="h-24 w-24">
-  <AvatarImage
-    src={profileData?.avatarUrl || ""}
-    alt={profileData?.username || "Vartotojas"}
-  />
-  <AvatarFallback>
-    {profileData?.username?.charAt(0).toUpperCase() || "V"}
-  </AvatarFallback>
+  <AvatarImage src={profileData?.avatarUrl || ""} alt={profileData?.username || "Vartotojas"} />
+  <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || "V"}</AvatarFallback>
 </Avatar>
 ```
 
@@ -147,7 +147,7 @@ FROM auth.users u
 WHERE p.id = u.id
   AND p.avatar_url IS NULL
   AND (
-    u.raw_user_meta_data->>'picture' IS NOT NULL 
+    u.raw_user_meta_data->>'picture' IS NOT NULL
     OR u.raw_user_meta_data->>'avatar_url' IS NOT NULL
   );
 ```
@@ -164,26 +164,28 @@ WHERE p.id = u.id
    - Patikrinkite `raw_user_meta_data` → ar yra `picture` laukas
 
 2. **Patikrinkite profiles lentelę:**
+
    ```sql
    SELECT id, username, avatar_url FROM profiles WHERE id = 'user-id';
    ```
-   
+
    Jei `avatar_url` yra `null`, bet `auth.users` turi `picture`, paleiskite backfill migracią.
 
 3. **Patikrinkite trigger:**
    ```sql
-   SELECT * FROM information_schema.triggers 
+   SELECT * FROM information_schema.triggers
    WHERE trigger_name = 'on_auth_user_created';
    ```
 
 ### Avatar neatsinaujina
 
 Jei pakeitėte Google profilio paveikslėlį:
+
 1. Atsijunkite ir prisijunkite iš naujo
 2. Arba rankiniu būdu atnaujinkite `profiles.avatar_url`:
    ```sql
-   UPDATE profiles 
-   SET avatar_url = 'new-url' 
+   UPDATE profiles
+   SET avatar_url = 'new-url'
    WHERE id = 'user-id';
    ```
 

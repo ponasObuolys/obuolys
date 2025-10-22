@@ -1,5 +1,5 @@
-import { Check, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Check, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PricingPlan {
   name: string;
@@ -19,7 +19,7 @@ const PricingCard = ({ plan, onCTAClick }: PricingCardProps) => {
   return (
     <div
       className={`dark-card flex flex-col h-full ${
-        plan.popular ? 'border-2 border-primary scale-105' : ''
+        plan.popular ? "border-2 border-primary scale-105" : ""
       }`}
     >
       {plan.popular && (
@@ -28,17 +28,11 @@ const PricingCard = ({ plan, onCTAClick }: PricingCardProps) => {
         </div>
       )}
 
-      <h3 className="text-2xl font-bold mb-2 text-foreground text-left">
-        {plan.name}
-      </h3>
+      <h3 className="text-2xl font-bold mb-2 text-foreground text-left">{plan.name}</h3>
 
       <div className="mb-4">
-        <div className="text-3xl font-bold text-primary mb-1 text-left">
-          {plan.priceRange}
-        </div>
-        <div className="text-sm text-foreground/60 text-left">
-          Trukmė: {plan.duration}
-        </div>
+        <div className="text-3xl font-bold text-primary mb-1 text-left">{plan.priceRange}</div>
+        <div className="text-sm text-foreground/60 text-left">Trukmė: {plan.duration}</div>
       </div>
 
       <div className="mb-6 flex-1">
@@ -62,9 +56,9 @@ const PricingCard = ({ plan, onCTAClick }: PricingCardProps) => {
 
       <Button
         onClick={onCTAClick}
-        className={`w-full ${plan.popular ? 'button-primary' : 'button-outline'}`}
+        className={`w-full ${plan.popular ? "button-primary" : "button-outline"}`}
       >
-        {plan.popular ? 'Gauti kainų pasiūlymą' : 'Aptarti projektą'}
+        {plan.popular ? "Gauti kainų pasiūlymą" : "Aptarti projektą"}
         <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
     </div>

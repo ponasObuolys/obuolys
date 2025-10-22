@@ -22,12 +22,12 @@ const ToolCard = ({ tool }: ToolCardProps) => {
   // Get category color - similar to article cards
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      "Produktyvumas": "bg-blue-600",
-      "Kūrybinis": "bg-purple-600",
-      "Verslas": "bg-orange-500",
-      "Tyrimai": "bg-green-600",
-      "Analitika": "bg-cyan-500",
-      "default": "bg-primary"
+      Produktyvumas: "bg-blue-600",
+      Kūrybinis: "bg-purple-600",
+      Verslas: "bg-orange-500",
+      Tyrimai: "bg-green-600",
+      Analitika: "bg-cyan-500",
+      default: "bg-primary",
     };
     return colors[category] || colors.default;
   };
@@ -36,10 +36,14 @@ const ToolCard = ({ tool }: ToolCardProps) => {
 
   return (
     <Link to={`/irankiai/${tool.slug}`} className="block group">
-      <div className={`project-card h-full flex flex-col ${tool.featured ? 'border-2 border-yellow-500/50 hover:border-yellow-500' : ''}`}>
+      <div
+        className={`project-card h-full flex flex-col ${tool.featured ? "border-2 border-yellow-500/50 hover:border-yellow-500" : ""}`}
+      >
         {/* Header with icon and title - fixed */}
         <div className="flex items-start gap-3 mb-4">
-          <div className={`w-12 h-12 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}>
+          <div
+            className={`w-12 h-12 rounded-lg ${categoryColor} flex items-center justify-center flex-shrink-0`}
+          >
             <span className="text-white font-bold text-lg">
               {tool.category ? tool.category.charAt(0) : "🔧"}
             </span>
@@ -48,15 +52,16 @@ const ToolCard = ({ tool }: ToolCardProps) => {
             <h3 className="font-semibold line-clamp-1 mb-1 text-left truncate" title={tool.name}>
               {tool.name}
             </h3>
-            <p className="text-sm text-foreground/90 text-left">
-              {tool.category || "AI Įrankis"}
-            </p>
+            <p className="text-sm text-foreground/90 text-left">{tool.category || "AI Įrankis"}</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            {tool.featured && (
-              <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-            )}
-            <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {tool.featured && <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />}
+            <svg
+              className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>

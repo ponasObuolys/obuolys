@@ -32,9 +32,7 @@ export default function CookiePolicyPage() {
             </div>
             <h1 className="text-4xl font-bold">Slapukų Politika</h1>
           </div>
-          <p className="text-muted-foreground">
-            Paskutinį kartą atnaujinta: 2025-10-20
-          </p>
+          <p className="text-muted-foreground">Paskutinį kartą atnaujinta: 2025-10-20</p>
         </div>
 
         {/* Content */}
@@ -43,12 +41,12 @@ export default function CookiePolicyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">Kas Yra Slapukai?</h2>
             <p>
-              Slapukai (cookies) yra maži tekstiniai failai, kuriuos svetainė išsaugo jūsų 
-              naršyklėje. Mes taip pat naudojame panašias technologijas, tokias kaip 
-              localStorage ir sessionStorage.
+              Slapukai (cookies) yra maži tekstiniai failai, kuriuos svetainė išsaugo jūsų
+              naršyklėje. Mes taip pat naudojame panašias technologijas, tokias kaip localStorage ir
+              sessionStorage.
             </p>
             <p>
-              Šios technologijos padeda mums užtikrinti svetainės veikimą, analizuoti lankytojų 
+              Šios technologijos padeda mums užtikrinti svetainės veikimą, analizuoti lankytojų
               elgesį ir pagerinti jūsų naršymo patirtį.
             </p>
           </section>
@@ -68,7 +66,7 @@ export default function CookiePolicyPage() {
                   </span>
                 </div>
               </div>
-              
+
               <p className="mb-4">
                 Šie slapukai yra būtini svetainės veikimui ir negali būti išjungti.
               </p>
@@ -77,20 +75,36 @@ export default function CookiePolicyPage() {
                 <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-semibold mb-2">obuolys_session_id</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li><strong>Tipas:</strong> sessionStorage</li>
-                    <li><strong>Paskirtis:</strong> Unikalus sesijos identifikatorius</li>
-                    <li><strong>Laikymo laikas:</strong> Iki naršyklės uždarymo</li>
-                    <li><strong>Trečioji šalis:</strong> Ne</li>
+                    <li>
+                      <strong>Tipas:</strong> sessionStorage
+                    </li>
+                    <li>
+                      <strong>Paskirtis:</strong> Unikalus sesijos identifikatorius
+                    </li>
+                    <li>
+                      <strong>Laikymo laikas:</strong> Iki naršyklės uždarymo
+                    </li>
+                    <li>
+                      <strong>Trečioji šalis:</strong> Ne
+                    </li>
                   </ul>
                 </div>
 
                 <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-semibold mb-2">obuolys_cookie_consent</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li><strong>Tipas:</strong> localStorage</li>
-                    <li><strong>Paskirtis:</strong> Saugo jūsų slapukų sutikimo nustatymus</li>
-                    <li><strong>Laikymo laikas:</strong> Neribotai (kol neištrinate)</li>
-                    <li><strong>Trečioji šalis:</strong> Ne</li>
+                    <li>
+                      <strong>Tipas:</strong> localStorage
+                    </li>
+                    <li>
+                      <strong>Paskirtis:</strong> Saugo jūsų slapukų sutikimo nustatymus
+                    </li>
+                    <li>
+                      <strong>Laikymo laikas:</strong> Neribotai (kol neištrinate)
+                    </li>
+                    <li>
+                      <strong>Trečioji šalis:</strong> Ne
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -107,43 +121,74 @@ export default function CookiePolicyPage() {
                   </span>
                 </div>
               </div>
-              
+
               <p className="mb-4">
-                Šie slapukai padeda mums suprasti, kaip lankytojai naudojasi svetaine. 
-                Galite juos išjungti pasirinkdami "Tik būtini" slapukų sutikimo lange.
+                Šie slapukai padeda mums suprasti, kaip lankytojai naudojasi svetaine. Galite juos
+                išjungti pasirinkdami "Tik būtini" slapukų sutikimo lange.
               </p>
 
               <div className="space-y-4">
                 <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-semibold mb-2">obuolys_recent_views</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li><strong>Tipas:</strong> localStorage</li>
-                    <li><strong>Paskirtis:</strong> Saugo neseniai skaitytų publikacijų sąrašą deduplikacijai</li>
-                    <li><strong>Duomenys:</strong> Publikacijos ID ir laiko žyma</li>
-                    <li><strong>Laikymo laikas:</strong> 30 minučių</li>
-                    <li><strong>Trečioji šalis:</strong> Ne</li>
+                    <li>
+                      <strong>Tipas:</strong> localStorage
+                    </li>
+                    <li>
+                      <strong>Paskirtis:</strong> Saugo neseniai skaitytų publikacijų sąrašą
+                      deduplikacijai
+                    </li>
+                    <li>
+                      <strong>Duomenys:</strong> Publikacijos ID ir laiko žyma
+                    </li>
+                    <li>
+                      <strong>Laikymo laikas:</strong> 30 minučių
+                    </li>
+                    <li>
+                      <strong>Trečioji šalis:</strong> Ne
+                    </li>
                   </ul>
                 </div>
 
                 <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-semibold mb-2">Supabase Realtime Presence</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li><strong>Tipas:</strong> WebSocket connection</li>
-                    <li><strong>Paskirtis:</strong> Skaičiuoja realiu laiku skaitančius vartotojus</li>
-                    <li><strong>Duomenys:</strong> Laikinas buvimo žymėjimas (online_at, user_agent)</li>
-                    <li><strong>Laikymo laikas:</strong> Tik aktyvios sesijos metu</li>
-                    <li><strong>Trečioji šalis:</strong> Supabase (EU serveriai, GDPR atitiktis)</li>
+                    <li>
+                      <strong>Tipas:</strong> WebSocket connection
+                    </li>
+                    <li>
+                      <strong>Paskirtis:</strong> Skaičiuoja realiu laiku skaitančius vartotojus
+                    </li>
+                    <li>
+                      <strong>Duomenys:</strong> Laikinas buvimo žymėjimas (online_at, user_agent)
+                    </li>
+                    <li>
+                      <strong>Laikymo laikas:</strong> Tik aktyvios sesijos metu
+                    </li>
+                    <li>
+                      <strong>Trečioji šalis:</strong> Supabase (EU serveriai, GDPR atitiktis)
+                    </li>
                   </ul>
                 </div>
 
                 <div className="bg-muted/50 rounded p-4">
                   <h4 className="font-semibold mb-2">page_views (duomenų bazė)</h4>
                   <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li><strong>Tipas:</strong> Duomenų bazės įrašas</li>
-                    <li><strong>Paskirtis:</strong> Skaičiuoja publikacijų peržiūras</li>
-                    <li><strong>Duomenys:</strong> Publikacijos ID, sesijos ID, user_agent, data</li>
-                    <li><strong>Laikymo laikas:</strong> Neribotai (anoniminė statistika)</li>
-                    <li><strong>Trečioji šalis:</strong> Supabase (EU serveriai)</li>
+                    <li>
+                      <strong>Tipas:</strong> Duomenų bazės įrašas
+                    </li>
+                    <li>
+                      <strong>Paskirtis:</strong> Skaičiuoja publikacijų peržiūras
+                    </li>
+                    <li>
+                      <strong>Duomenys:</strong> Publikacijos ID, sesijos ID, user_agent, data
+                    </li>
+                    <li>
+                      <strong>Laikymo laikas:</strong> Neribotai (anoniminė statistika)
+                    </li>
+                    <li>
+                      <strong>Trečioji šalis:</strong> Supabase (EU serveriai)
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -158,24 +203,21 @@ export default function CookiePolicyPage() {
             </h2>
 
             <h3 className="text-xl font-semibold mb-3">1. Per Mūsų Svetainę</h3>
-            <p className="mb-4">
-              Galite bet kada pakeisti savo slapukų nustatymus:
-            </p>
+            <p className="mb-4">Galite bet kada pakeisti savo slapukų nustatymus:</p>
             <Button onClick={clearConsent} variant="outline" className="mb-6">
               <Cookie className="mr-2 h-4 w-4" />
               Pakeisti slapukų nustatymus
             </Button>
 
             <h3 className="text-xl font-semibold mb-3">2. Per Naršyklę</h3>
-            <p className="mb-4">
-              Galite valdyti slapukus per savo naršyklės nustatymus:
-            </p>
+            <p className="mb-4">Galite valdyti slapukus per savo naršyklės nustatymus:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
                 <strong>Chrome:</strong> Nustatymai → Privatumas ir saugumas → Slapukai
               </li>
               <li>
-                <strong>Firefox:</strong> Nustatymai → Privatumas ir saugumas → Slapukai ir svetainių duomenys
+                <strong>Firefox:</strong> Nustatymai → Privatumas ir saugumas → Slapukai ir
+                svetainių duomenys
               </li>
               <li>
                 <strong>Safari:</strong> Nuostatos → Privatumas → Valdyti svetainių duomenis
@@ -187,7 +229,8 @@ export default function CookiePolicyPage() {
 
             <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mt-6">
               <p className="text-sm">
-                <strong>⚠️ Svarbu:</strong> Išjungus būtinus slapukus, svetainė gali veikti netinkamai.
+                <strong>⚠️ Svarbu:</strong> Išjungus būtinus slapukus, svetainė gali veikti
+                netinkamai.
               </p>
             </div>
           </section>
@@ -195,17 +238,22 @@ export default function CookiePolicyPage() {
           {/* Third Party Services */}
           <section>
             <h2 className="text-2xl font-bold mb-4">Trečiųjų Šalių Paslaugos</h2>
-            
+
             <div className="space-y-4">
               <div className="bg-card border border-border rounded-lg p-4">
                 <h3 className="font-semibold mb-2">Supabase</h3>
                 <ul className="text-sm space-y-1 text-muted-foreground">
-                  <li><strong>Paskirtis:</strong> Duomenų bazė, autentifikacija, realtime funkcijos</li>
-                  <li><strong>Serveriai:</strong> EU (GDPR atitiktis)</li>
-                  <li><strong>Privatumo politika:</strong>{" "}
-                    <a 
-                      href="https://supabase.com/privacy" 
-                      target="_blank" 
+                  <li>
+                    <strong>Paskirtis:</strong> Duomenų bazė, autentifikacija, realtime funkcijos
+                  </li>
+                  <li>
+                    <strong>Serveriai:</strong> EU (GDPR atitiktis)
+                  </li>
+                  <li>
+                    <strong>Privatumo politika:</strong>{" "}
+                    <a
+                      href="https://supabase.com/privacy"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline"
                     >
@@ -218,12 +266,17 @@ export default function CookiePolicyPage() {
               <div className="bg-card border border-border rounded-lg p-4">
                 <h3 className="font-semibold mb-2">Google Sign-In</h3>
                 <ul className="text-sm space-y-1 text-muted-foreground">
-                  <li><strong>Paskirtis:</strong> Prisijungimas per Google paskyrą (pasirinktinai)</li>
-                  <li><strong>Duomenys:</strong> El. paštas, vardas (jei naudojate)</li>
-                  <li><strong>Privatumo politika:</strong>{" "}
-                    <a 
-                      href="https://policies.google.com/privacy" 
-                      target="_blank" 
+                  <li>
+                    <strong>Paskirtis:</strong> Prisijungimas per Google paskyrą (pasirinktinai)
+                  </li>
+                  <li>
+                    <strong>Duomenys:</strong> El. paštas, vardas (jei naudojate)
+                  </li>
+                  <li>
+                    <strong>Privatumo politika:</strong>{" "}
+                    <a
+                      href="https://policies.google.com/privacy"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline"
                     >
@@ -239,11 +292,12 @@ export default function CookiePolicyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">Pakeitimai</h2>
             <p>
-              Galime atnaujinti šią slapukų politiką. Apie svarbius pakeitimus informuosime 
-              per svetainę.
+              Galime atnaujinti šią slapukų politiką. Apie svarbius pakeitimus informuosime per
+              svetainę.
             </p>
             <p className="mt-4">
-              <strong>Versija:</strong> 1.0<br />
+              <strong>Versija:</strong> 1.0
+              <br />
               <strong>Paskutinį kartą atnaujinta:</strong> 2025-10-20
             </p>
           </section>
@@ -255,7 +309,8 @@ export default function CookiePolicyPage() {
               Daugiau informacijos apie tai, kaip tvarkome jūsų duomenis, rasite mūsų{" "}
               <Link to="/privatumas" className="text-primary hover:underline">
                 Privatumo politikoje
-              </Link>.
+              </Link>
+              .
             </p>
             <p className="mt-4">
               Jei turite klausimų, susisiekite:{" "}

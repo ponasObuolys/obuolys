@@ -9,6 +9,7 @@
 ## 📋 Current Security Assessment
 
 **🚨 Critical Issues**:
+
 - 7 instances of `dangerouslySetInnerHTML` without sanitization
 - 27 files with console statements (information leakage risk)
 - Missing Content Security Policy (CSP)
@@ -22,7 +23,9 @@
 ## 🎯 Security Hardening Plan
 
 ### Phase 1: XSS Vulnerability Mitigation (Week 1)
+
 ### Phase 2: Logging & Environment Security (Week 2)
+
 ### Phase 3: Content Security Policy & Advanced Protection (Week 3)
 
 ---
@@ -41,7 +44,7 @@ npm install --save-dev @types/dompurify
 **File**: `src/utils/htmlSanitizer.ts`
 
 ```typescript
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 /**
  * Security configuration for HTML sanitization
@@ -49,21 +52,38 @@ import DOMPurify from 'dompurify';
 const SANITIZE_CONFIG = {
   // Allow basic formatting and structure
   ALLOWED_TAGS: [
-    'p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'div', 'span', 'pre', 'code'
+    "p",
+    "br",
+    "strong",
+    "em",
+    "u",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "a",
+    "img",
+    "div",
+    "span",
+    "pre",
+    "code",
   ],
-  ALLOWED_ATTR: [
-    'href', 'src', 'alt', 'title', 'class', 'data-*', 'loading', 'width', 'height'
-  ],
+  ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "data-*", "loading", "width", "height"],
   // Remove dangerous attributes
-  FORBID_ATTR: ['script', 'onerror', 'onload', 'onclick', 'onmouseover'],
+  FORBID_ATTR: ["script", "onerror", "onload", "onclick", "onmouseover"],
   // Remove script tags and event handlers
-  FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'textarea'],
+  FORBID_TAGS: ["script", "object", "embed", "form", "input", "textarea"],
   // Keep relative URLs
   ALLOW_DATA_ATTR: false,
   // Add target="_blank" to external links
-  ADD_TAGS: ['#text'],
-  ADD_ATTR: ['target']
+  ADD_TAGS: ["#text"],
+  ADD_ATTR: ["target"],
 };
 
 /**
@@ -72,8 +92,8 @@ const SANITIZE_CONFIG = {
  * @returns Sanitized HTML safe for rendering
  */
 export const sanitizeHtml = (html: string): string => {
-  if (!html || typeof html !== 'string') {
-    return '';
+  if (!html || typeof html !== "string") {
+    return "";
   }
 
   // Configure DOMPurify for this sanitization
@@ -84,15 +104,15 @@ export const sanitizeHtml = (html: string): string => {
     KEEP_CONTENT: true,
     // Transform external links
     TRANSFORM_TAGS: {
-      'a': function(tagName: string, attribs: any) {
+      a: function (tagName: string, attribs: any) {
         const href = attribs.href;
-        if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
-          attribs.target = '_blank';
-          attribs.rel = 'noopener noreferrer';
+        if (href && (href.startsWith("http://") || href.startsWith("https://"))) {
+          attribs.target = "_blank";
+          attribs.rel = "noopener noreferrer";
         }
         return { tagName, attribs };
-      }
-    }
+      },
+    },
   });
 
   return clean;
@@ -103,27 +123,39 @@ export const sanitizeHtml = (html: string): string => {
  * Allows more formatting but still prevents XSS
  */
 export const sanitizeRichContent = (html: string): string => {
-  if (!html || typeof html !== 'string') {
-    return '';
+  if (!html || typeof html !== "string") {
+    return "";
   }
 
   return DOMPurify.sanitize(html, {
     ...SANITIZE_CONFIG,
     ALLOWED_TAGS: [
       ...SANITIZE_CONFIG.ALLOWED_TAGS,
-      'table', 'thead', 'tbody', 'tr', 'td', 'th',
-      'hr', 'sub', 'sup', 'small', 'mark'
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "td",
+      "th",
+      "hr",
+      "sub",
+      "sup",
+      "small",
+      "mark",
     ],
-    ALLOWED_ATTR: [
-      ...SANITIZE_CONFIG.ALLOWED_ATTR,
-      'colspan', 'rowspan', 'style'
-    ],
+    ALLOWED_ATTR: [...SANITIZE_CONFIG.ALLOWED_ATTR, "colspan", "rowspan", "style"],
     ALLOW_DATA_ATTR: true,
     // Allow limited inline styles for rich content
     ALLOWED_CSS_PROPERTIES: [
-      'color', 'background-color', 'font-size', 'font-weight',
-      'text-align', 'text-decoration', 'margin', 'padding'
-    ]
+      "color",
+      "background-color",
+      "font-size",
+      "font-weight",
+      "text-align",
+      "text-decoration",
+      "margin",
+      "padding",
+    ],
   });
 };
 
@@ -142,7 +174,7 @@ export const validateHtmlSafety = (html: string): boolean => {
     /on\w+\s*=/gi,
     /<iframe\b[^>]*>/gi,
     /<object\b[^>]*>/gi,
-    /<embed\b[^>]*>/gi
+    /<embed\b[^>]*>/gi,
   ];
 
   return !dangerousPatterns.some(pattern => pattern.test(html));
@@ -303,14 +335,14 @@ const themeStyles = Object.entries(THEMES)
 **File**: `src/utils/lazyLoadImages.ts`
 
 ```typescript
-import { sanitizeHtml } from './htmlSanitizer';
+import { sanitizeHtml } from "./htmlSanitizer";
 
 /**
  * Safely adds lazy loading to images in HTML content
  * Now includes HTML sanitization
  */
 export const addLazyLoadingToImages = (html: string): string => {
-  if (!html) return '';
+  if (!html) return "";
 
   // First sanitize the HTML
   const sanitized = sanitizeHtml(html);
@@ -320,7 +352,7 @@ export const addLazyLoadingToImages = (html: string): string => {
     /<img([^>]*?)src=["']([^"']*?)["']([^>]*?)>/gi,
     (match, beforeSrc, src, afterSrc) => {
       // Skip if already has loading attribute
-      if (match.includes('loading=')) {
+      if (match.includes("loading=")) {
         return match;
       }
 
@@ -346,7 +378,7 @@ npm install --save-dev @types/winston
 **File**: `src/utils/logger.ts`
 
 ```typescript
-import winston from 'winston';
+import winston from "winston";
 
 // Environment check
 const isDevelopment = import.meta.env.DEV;
@@ -356,7 +388,7 @@ const isProduction = import.meta.env.PROD;
  * Secure logging configuration
  */
 const loggerConfig: winston.LoggerOptions = {
-  level: isDevelopment ? 'debug' : 'warn',
+  level: isDevelopment ? "debug" : "warn",
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
@@ -369,21 +401,18 @@ const loggerConfig: winston.LoggerOptions = {
         timestamp,
         level,
         message: sanitizeMessage(message),
-        ...sanitizedMeta
+        ...sanitizedMeta,
       });
     })
   ),
-  transports: []
+  transports: [],
 };
 
 // Development: Console logging
 if (isDevelopment) {
   loggerConfig.transports?.push(
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     })
   );
 }
@@ -392,7 +421,7 @@ if (isDevelopment) {
 if (isProduction) {
   loggerConfig.transports?.push(
     new winston.transports.Console({
-      format: winston.format.json()
+      format: winston.format.json(),
     })
   );
 }
@@ -403,21 +432,27 @@ const logger = winston.createLogger(loggerConfig);
  * Sanitize log data to remove sensitive information
  */
 function sanitizeLogData(data: any): any {
-  if (!data || typeof data !== 'object') return data;
+  if (!data || typeof data !== "object") return data;
 
   const sensitiveKeys = [
-    'password', 'token', 'auth', 'authorization', 'cookie',
-    'session', 'key', 'secret', 'private', 'credential'
+    "password",
+    "token",
+    "auth",
+    "authorization",
+    "cookie",
+    "session",
+    "key",
+    "secret",
+    "private",
+    "credential",
   ];
 
   const sanitized = { ...data };
 
   Object.keys(sanitized).forEach(key => {
-    if (sensitiveKeys.some(sensitive =>
-      key.toLowerCase().includes(sensitive.toLowerCase())
-    )) {
-      sanitized[key] = '[REDACTED]';
-    } else if (typeof sanitized[key] === 'object') {
+    if (sensitiveKeys.some(sensitive => key.toLowerCase().includes(sensitive.toLowerCase()))) {
+      sanitized[key] = "[REDACTED]";
+    } else if (typeof sanitized[key] === "object") {
       sanitized[key] = sanitizeLogData(sanitized[key]);
     }
   });
@@ -429,13 +464,13 @@ function sanitizeLogData(data: any): any {
  * Sanitize log messages
  */
 function sanitizeMessage(message: string): string {
-  if (typeof message !== 'string') return message;
+  if (typeof message !== "string") return message;
 
   // Remove potential sensitive data from messages
   return message
-    .replace(/password[=:]\s*[^\s]+/gi, 'password=[REDACTED]')
-    .replace(/token[=:]\s*[^\s]+/gi, 'token=[REDACTED]')
-    .replace(/key[=:]\s*[^\s]+/gi, 'key=[REDACTED]');
+    .replace(/password[=:]\s*[^\s]+/gi, "password=[REDACTED]")
+    .replace(/token[=:]\s*[^\s]+/gi, "token=[REDACTED]")
+    .replace(/key[=:]\s*[^\s]+/gi, "key=[REDACTED]");
 }
 
 /**
@@ -461,10 +496,10 @@ export const secureLogger = {
   // Security-specific logging
   security: (event: string, details?: any) => {
     logger.warn(`SECURITY: ${event}`, {
-      type: 'security_event',
-      ...details
+      type: "security_event",
+      ...details,
     });
-  }
+  },
 };
 
 // Development helper (replaces console.log in dev mode)
@@ -479,32 +514,32 @@ export const devLog = isDevelopment
 
 ```typescript
 // BEFORE (UNSAFE):
-console.log('User data:', userData);
-console.error('API error:', error);
-console.warn('Deprecated feature used');
+console.log("User data:", userData);
+console.error("API error:", error);
+console.warn("Deprecated feature used");
 
 // AFTER (SECURE):
-import { secureLogger, devLog } from '@/utils/logger';
+import { secureLogger, devLog } from "@/utils/logger";
 
 // For development debugging only
-devLog('User data:', userData);
+devLog("User data:", userData);
 
 // For actual logging
-secureLogger.error('API request failed', {
-  endpoint: '/api/users',
-  status: response.status
+secureLogger.error("API request failed", {
+  endpoint: "/api/users",
+  status: response.status,
 });
 
-secureLogger.warn('Deprecated feature accessed', {
-  feature: 'legacy_auth',
-  userId: user.id // Safe to log IDs
+secureLogger.warn("Deprecated feature accessed", {
+  feature: "legacy_auth",
+  userId: user.id, // Safe to log IDs
 });
 
 // For security events
-secureLogger.security('Login attempt', {
+secureLogger.security("Login attempt", {
   success: false,
   ip: clientIP,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 ```
 
@@ -537,7 +572,7 @@ interface EnvironmentConfig {
   };
   app: {
     version: string;
-    environment: 'development' | 'production' | 'test';
+    environment: "development" | "production" | "test";
   };
 }
 
@@ -553,7 +588,7 @@ function validateEnvironment(): EnvironmentConfig {
     .map(([key, _]) => key);
 
   if (missing.length > 0) {
-    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
   }
 
   return {
@@ -562,8 +597,8 @@ function validateEnvironment(): EnvironmentConfig {
       anonKey: requiredVars.VITE_SUPABASE_ANON_KEY,
     },
     app: {
-      version: import.meta.env.VITE_APP_VERSION || '1.0.0',
-      environment: import.meta.env.DEV ? 'development' : 'production',
+      version: import.meta.env.VITE_APP_VERSION || "1.0.0",
+      environment: import.meta.env.DEV ? "development" : "production",
     },
   };
 }
@@ -574,15 +609,12 @@ export const env = validateEnvironment();
 **File**: `src/integrations/supabase/client.ts` (Updated)
 
 ```typescript
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
-import { env } from '@/config/environment';
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./types";
+import { env } from "@/config/environment";
 
 // Use environment configuration instead of hardcoded values
-export const supabase = createClient<Database>(
-  env.supabase.url,
-  env.supabase.anonKey
-);
+export const supabase = createClient<Database>(env.supabase.url, env.supabase.anonKey);
 ```
 
 ---
@@ -608,13 +640,15 @@ export const supabase = createClient<Database>(
 ```html
 <head>
   <!-- Security Headers -->
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
   <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://*.supabase.co;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
@@ -624,7 +658,8 @@ export const supabase = createClient<Database>(
     frame-ancestors 'none';
     base-uri 'self';
     form-action 'self';
-  ">
+  "
+  />
 </head>
 ```
 
@@ -633,11 +668,11 @@ export const supabase = createClient<Database>(
 **File**: `src/hooks/useSecurityMonitoring.ts`
 
 ```typescript
-import { useEffect } from 'react';
-import { secureLogger } from '@/utils/logger';
+import { useEffect } from "react";
+import { secureLogger } from "@/utils/logger";
 
 interface SecurityEvent {
-  type: 'csp_violation' | 'xss_attempt' | 'unauthorized_access' | 'suspicious_activity';
+  type: "csp_violation" | "xss_attempt" | "unauthorized_access" | "suspicious_activity";
   details: any;
 }
 
@@ -645,12 +680,12 @@ export const useSecurityMonitoring = () => {
   useEffect(() => {
     // CSP Violation Reporting
     const handleCSPViolation = (event: SecurityPolicyViolationEvent) => {
-      secureLogger.security('CSP Violation Detected', {
+      secureLogger.security("CSP Violation Detected", {
         directive: event.violatedDirective,
         blockedURI: event.blockedURI,
         documentURI: event.documentURI,
         sourceFile: event.sourceFile,
-        lineNumber: event.lineNumber
+        lineNumber: event.lineNumber,
       });
     };
 
@@ -659,22 +694,20 @@ export const useSecurityMonitoring = () => {
       const dangerousPatterns = [
         /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
         /javascript:/gi,
-        /on\w+\s*=/gi
+        /on\w+\s*=/gi,
       ];
 
       // Monitor for suspicious input patterns
-      document.addEventListener('input', (event) => {
+      document.addEventListener("input", event => {
         const target = event.target as HTMLInputElement;
         if (target && target.value) {
-          const hasDangerousPattern = dangerousPatterns.some(pattern =>
-            pattern.test(target.value)
-          );
+          const hasDangerousPattern = dangerousPatterns.some(pattern => pattern.test(target.value));
 
           if (hasDangerousPattern) {
-            secureLogger.security('Potential XSS attempt detected', {
+            secureLogger.security("Potential XSS attempt detected", {
               inputType: target.type,
               elementId: target.id,
-              pattern: 'dangerous_script_pattern'
+              pattern: "dangerous_script_pattern",
             });
           }
         }
@@ -686,24 +719,24 @@ export const useSecurityMonitoring = () => {
       let failedAttempts = 0;
       const maxAttempts = 5;
 
-      window.addEventListener('auth-failure', () => {
+      window.addEventListener("auth-failure", () => {
         failedAttempts++;
         if (failedAttempts >= maxAttempts) {
-          secureLogger.security('Multiple authentication failures', {
+          secureLogger.security("Multiple authentication failures", {
             attempts: failedAttempts,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
       });
     };
 
     // Register event listeners
-    document.addEventListener('securitypolicyviolation', handleCSPViolation);
+    document.addEventListener("securitypolicyviolation", handleCSPViolation);
     detectXSSAttempts();
     monitorAuthFailures();
 
     return () => {
-      document.removeEventListener('securitypolicyviolation', handleCSPViolation);
+      document.removeEventListener("securitypolicyviolation", handleCSPViolation);
     };
   }, []);
 
@@ -720,7 +753,7 @@ export const useSecurityMonitoring = () => {
 **File**: `src/utils/inputValidation.ts`
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Enhanced input validation schemas with security rules
@@ -732,75 +765,64 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_PATTERN = /^https?:\/\/[^\s<>"{}|\\^`\[\]]+$/;
 
 // Security-enhanced text validation
-export const secureTextSchema = z.string()
-  .min(1, 'Laukas yra privalomas')
-  .max(1000, 'Tekstas per ilgas')
+export const secureTextSchema = z
+  .string()
+  .min(1, "Laukas yra privalomas")
+  .max(1000, "Tekstas per ilgas")
   .refine(
-    (value) => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(value),
-    'Tekstas turi neleistinus elementus'
+    value => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(value),
+    "Tekstas turi neleistinus elementus"
   )
-  .refine(
-    (value) => !/javascript:/gi.test(value),
-    'JavaScript kodas neleistinas'
-  );
+  .refine(value => !/javascript:/gi.test(value), "JavaScript kodas neleistinas");
 
 // Enhanced email validation
-export const secureEmailSchema = z.string()
-  .email('Neteisingas el. pašto formatas')
-  .max(254, 'El. paštas per ilgas')
-  .refine(
-    (value) => EMAIL_PATTERN.test(value),
-    'El. pašto formatas neatitinka saugumo reikalavimų'
-  );
+export const secureEmailSchema = z
+  .string()
+  .email("Neteisingas el. pašto formatas")
+  .max(254, "El. paštas per ilgas")
+  .refine(value => EMAIL_PATTERN.test(value), "El. pašto formatas neatitinka saugumo reikalavimų");
 
 // Secure URL validation
-export const secureUrlSchema = z.string()
-  .url('Neteisingas URL formatas')
-  .refine(
-    (value) => URL_PATTERN.test(value),
-    'URL turi būti HTTPS protokolo'
-  )
-  .refine(
-    (value) => !value.includes('javascript:'),
-    'JavaScript URL neleistinas'
-  );
+export const secureUrlSchema = z
+  .string()
+  .url("Neteisingas URL formatas")
+  .refine(value => URL_PATTERN.test(value), "URL turi būti HTTPS protokolo")
+  .refine(value => !value.includes("javascript:"), "JavaScript URL neleistinas");
 
 // Rich content validation (for admin forms)
-export const secureRichContentSchema = z.string()
-  .max(50000, 'Turinys per ilgas')
+export const secureRichContentSchema = z
+  .string()
+  .max(50000, "Turinys per ilgas")
+  .refine(value => {
+    // Check for balanced HTML tags
+    const openTags = (value.match(/<[^\/][^>]*>/g) || []).length;
+    const closeTags = (value.match(/<\/[^>]*>/g) || []).length;
+    return Math.abs(openTags - closeTags) <= 5; // Allow some self-closing tags
+  }, "HTML struktūra neteisinga")
   .refine(
-    (value) => {
-      // Check for balanced HTML tags
-      const openTags = (value.match(/<[^\/][^>]*>/g) || []).length;
-      const closeTags = (value.match(/<\/[^>]*>/g) || []).length;
-      return Math.abs(openTags - closeTags) <= 5; // Allow some self-closing tags
-    },
-    'HTML struktūra neteisinga'
-  )
-  .refine(
-    (value) => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(value),
-    'Script tagai neleistini'
+    value => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(value),
+    "Script tagai neleistini"
   );
 
 /**
  * Runtime input sanitization
  */
-export const sanitizeInput = (input: string, type: 'text' | 'email' | 'url' = 'text'): string => {
-  if (!input || typeof input !== 'string') return '';
+export const sanitizeInput = (input: string, type: "text" | "email" | "url" = "text"): string => {
+  if (!input || typeof input !== "string") return "";
 
   // Remove null bytes and control characters
-  let sanitized = input.replace(/[\x00-\x1F\x7F]/g, '');
+  let sanitized = input.replace(/[\x00-\x1F\x7F]/g, "");
 
   // Type-specific sanitization
   switch (type) {
-    case 'email':
+    case "email":
       sanitized = sanitized.toLowerCase().trim();
       break;
-    case 'url':
+    case "url":
       sanitized = sanitized.trim();
       // Ensure HTTPS if it's an HTTP URL
-      if (sanitized.startsWith('http://')) {
-        sanitized = sanitized.replace('http://', 'https://');
+      if (sanitized.startsWith("http://")) {
+        sanitized = sanitized.replace("http://", "https://");
       }
       break;
     default:
@@ -933,42 +955,42 @@ npx eslint . --ext .ts,.tsx --config .eslintrc-security.js
 **File**: `src/__tests__/security.test.ts`
 
 ```typescript
-import { sanitizeHtml, validateHtmlSafety } from '../utils/htmlSanitizer';
-import { sanitizeInput } from '../utils/inputValidation';
+import { sanitizeHtml, validateHtmlSafety } from "../utils/htmlSanitizer";
+import { sanitizeInput } from "../utils/inputValidation";
 
-describe('Security Functions', () => {
-  describe('HTML Sanitization', () => {
-    test('removes script tags', () => {
+describe("Security Functions", () => {
+  describe("HTML Sanitization", () => {
+    test("removes script tags", () => {
       const malicious = '<p>Hello</p><script>alert("xss")</script>';
       const sanitized = sanitizeHtml(malicious);
-      expect(sanitized).not.toContain('<script>');
-      expect(sanitized).toContain('<p>Hello</p>');
+      expect(sanitized).not.toContain("<script>");
+      expect(sanitized).toContain("<p>Hello</p>");
     });
 
-    test('removes event handlers', () => {
+    test("removes event handlers", () => {
       const malicious = '<img src="x" onerror="alert(1)">';
       const sanitized = sanitizeHtml(malicious);
-      expect(sanitized).not.toContain('onerror');
+      expect(sanitized).not.toContain("onerror");
     });
 
-    test('preserves safe content', () => {
-      const safe = '<p><strong>Bold text</strong> and <em>italic</em></p>';
+    test("preserves safe content", () => {
+      const safe = "<p><strong>Bold text</strong> and <em>italic</em></p>";
       const sanitized = sanitizeHtml(safe);
       expect(sanitized).toBe(safe);
     });
   });
 
-  describe('Input Validation', () => {
-    test('removes control characters', () => {
-      const input = 'Hello\x00World\x1F';
+  describe("Input Validation", () => {
+    test("removes control characters", () => {
+      const input = "Hello\x00World\x1F";
       const sanitized = sanitizeInput(input);
-      expect(sanitized).toBe('HelloWorld');
+      expect(sanitized).toBe("HelloWorld");
     });
 
-    test('handles email sanitization', () => {
-      const email = '  USER@EXAMPLE.COM  ';
-      const sanitized = sanitizeInput(email, 'email');
-      expect(sanitized).toBe('user@example.com');
+    test("handles email sanitization", () => {
+      const email = "  USER@EXAMPLE.COM  ";
+      const sanitized = sanitizeInput(email, "email");
+      expect(sanitized).toBe("user@example.com");
     });
   });
 });
@@ -982,36 +1004,42 @@ describe('Security Functions', () => {
 # Security Audit Checklist
 
 ## ✅ XSS Protection
+
 - [ ] All dangerouslySetInnerHTML replaced with SafeHtml component
 - [ ] HTML sanitization implemented with DOMPurify
 - [ ] Content validation in place
 - [ ] Rich text editor content sanitized
 
 ## ✅ Logging Security
+
 - [ ] Console statements removed from production
 - [ ] Secure logging system implemented
 - [ ] Sensitive data sanitization in logs
 - [ ] Security event monitoring active
 
 ## ✅ Environment Security
+
 - [ ] Environment variables properly configured
 - [ ] No hardcoded secrets in source code
 - [ ] Validation for required environment variables
 - [ ] Separate development/production configurations
 
 ## ✅ Content Security Policy
+
 - [ ] CSP headers implemented
 - [ ] Security headers configured
 - [ ] CSP violation monitoring active
 - [ ] Frame protection enabled
 
 ## ✅ Input Validation
+
 - [ ] Enhanced validation schemas with security rules
 - [ ] Input sanitization implemented
 - [ ] Form security monitoring
 - [ ] XSS attempt detection
 
 ## ✅ Testing
+
 - [ ] Security test suite implemented
 - [ ] HTML sanitization tests passing
 - [ ] Input validation tests passing
@@ -1023,6 +1051,7 @@ describe('Security Functions', () => {
 ## 📊 EXPECTED SECURITY IMPROVEMENT
 
 ### Before Implementation (6/10):
+
 - ❌ 7 unsafe dangerouslySetInnerHTML usages
 - ❌ 27 console statements in production
 - ❌ No Content Security Policy
@@ -1030,6 +1059,7 @@ describe('Security Functions', () => {
 - ❌ Basic environment variable handling
 
 ### After Implementation (10/10):
+
 - ✅ All HTML content sanitized with DOMPurify
 - ✅ Production-safe logging system
 - ✅ Comprehensive Content Security Policy
@@ -1039,6 +1069,7 @@ describe('Security Functions', () => {
 - ✅ Security testing suite
 
 ### Security Score Breakdown:
+
 - **XSS Protection**: 6/10 → 10/10
 - **Information Disclosure**: 5/10 → 10/10
 - **Content Security**: 4/10 → 10/10
@@ -1052,16 +1083,19 @@ describe('Security Functions', () => {
 ## 🚀 IMPLEMENTATION TIMELINE
 
 ### Week 1: XSS Mitigation
+
 - Days 1-2: Install dependencies and create sanitization utilities
 - Days 3-4: Replace dangerouslySetInnerHTML usage
 - Day 5: Testing and validation
 
 ### Week 2: Logging & Environment
+
 - Days 1-2: Implement secure logging system
 - Days 3-4: Replace console statements
 - Day 5: Environment variable security
 
 ### Week 3: CSP & Advanced Protection
+
 - Days 1-2: Implement Content Security Policy
 - Days 3-4: Security monitoring and testing
 - Day 5: Final audit and validation

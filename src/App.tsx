@@ -74,7 +74,10 @@ const CookiePolicyPage = createLazyComponent(() => import("./pages/CookiePolicyP
 const Auth = createNamedLazyComponent("auth-pages", () => import("./pages/Auth"));
 const AuthCallback = createNamedLazyComponent("auth-pages", () => import("./pages/AuthCallback"));
 const ProfilePage = createNamedLazyComponent("auth-pages", () => import("./pages/ProfilePage"));
-const MyBookmarksPage = createNamedLazyComponent("auth-pages", () => import("./pages/MyBookmarksPage"));
+const MyBookmarksPage = createNamedLazyComponent(
+  "auth-pages",
+  () => import("./pages/MyBookmarksPage")
+);
 const AdminDashboard = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/AdminDashboard")
@@ -238,359 +241,380 @@ const App = () => {
               <ThemeProvider>
                 <ImageLoadingProvider>
                   <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter
-                    future={{
-                      v7_startTransition: true,
-                      v7_relativeSplatPath: true,
-                    }}
-                  >
-                    <Routes>
-                      <Route path="/" element={<SiteLayout />}>
-                        {/* Home page with content error boundary */}
-                        <Route
-                          index
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/"
-                              routeName="HomePage"
-                              enableAutoRecovery={true}
-                            >
-                              <HomePage />
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter
+                      future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true,
+                      }}
+                    >
+                      <Routes>
+                        <Route path="/" element={<SiteLayout />}>
+                          {/* Home page with content error boundary */}
+                          <Route
+                            index
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/"
+                                routeName="HomePage"
+                                enableAutoRecovery={true}
+                              >
+                                <HomePage />
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
 
-                        {/* Public content pages with content error boundaries */}
-                        <Route
-                          path="/publikacijos"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/publikacijos"
-                              routeName="PublicationsPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamos publikacijos..." />}
+                          {/* Public content pages with content error boundaries */}
+                          <Route
+                            path="/publikacijos"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/publikacijos"
+                                routeName="PublicationsPage"
                               >
-                                <PublicationsPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/publikacijos/:slug"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/publikacijos/:slug"
-                              routeName="PublicationDetail"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunama publikacija..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamos publikacijos..." />}
+                                >
+                                  <PublicationsPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/publikacijos/:slug"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/publikacijos/:slug"
+                                routeName="PublicationDetail"
                               >
-                                <PublicationDetail />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/irankiai"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/irankiai" routeName="ToolsPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunami įrankiai..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama publikacija..." />}
+                                >
+                                  <PublicationDetail />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/irankiai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/irankiai"
+                                routeName="ToolsPage"
                               >
-                                <ToolsPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/irankiai/:slug"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/irankiai/:slug"
-                              routeName="ToolDetailPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamas įrankis..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunami įrankiai..." />}
+                                >
+                                  <ToolsPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/irankiai/:slug"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/irankiai/:slug"
+                                routeName="ToolDetailPage"
                               >
-                                <ToolDetailPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/kursai"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/kursai" routeName="CoursesPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunami kursai..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas įrankis..." />}
+                                >
+                                  <ToolDetailPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/kursai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/kursai"
+                                routeName="CoursesPage"
                               >
-                                <CoursesPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/kursai/:slug"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/kursai/:slug"
-                              routeName="CourseDetail"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamas kursas..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunami kursai..." />}
+                                >
+                                  <CoursesPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/kursai/:slug"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/kursai/:slug"
+                                routeName="CourseDetail"
                               >
-                                <CourseDetail />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/kontaktai"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/kontaktai"
-                              routeName="ContactPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunami kontaktai..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas kursas..." />}
+                                >
+                                  <CourseDetail />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/kontaktai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/kontaktai"
+                                routeName="ContactPage"
                               >
-                                <ContactPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/paremti"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/paremti" routeName="SupportPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamas paramos puslapis..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunami kontaktai..." />}
+                                >
+                                  <ContactPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/paremti"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/paremti"
+                                routeName="SupportPage"
                               >
-                                <SupportPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/verslo-sprendimai"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/verslo-sprendimai" routeName="CustomSolutionsPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunami verslo sprendimai..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas paramos puslapis..." />}
+                                >
+                                  <SupportPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/verslo-sprendimai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/verslo-sprendimai"
+                                routeName="CustomSolutionsPage"
                               >
-                                <CustomSolutionsPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/privatumas"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/privatumas" routeName="PrivacyPolicyPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunama privatumo politika..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunami verslo sprendimai..." />}
+                                >
+                                  <CustomSolutionsPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/privatumas"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/privatumas"
+                                routeName="PrivacyPolicyPage"
                               >
-                                <PrivacyPolicyPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/slapukai"
-                          element={
-                            <ContentRouteErrorBoundary routePath="/slapukai" routeName="CookiePolicyPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunama slapukų politika..." />}
+                                <SuspenseWithChunkError
+                                  fallback={
+                                    <LoadingSpinner text="Kraunama privatumo politika..." />
+                                  }
+                                >
+                                  <PrivacyPolicyPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/slapukai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/slapukai"
+                                routeName="CookiePolicyPage"
                               >
-                                <CookiePolicyPage />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama slapukų politika..." />}
+                                >
+                                  <CookiePolicyPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
 
-                        {/* Authentication routes with auth error boundaries */}
-                        <Route
-                          path="/auth"
-                          element={
-                            <AuthRouteErrorBoundary routePath="/auth" routeName="Auth">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunama prisijungimo forma..." />}
+                          {/* Authentication routes with auth error boundaries */}
+                          <Route
+                            path="/auth"
+                            element={
+                              <AuthRouteErrorBoundary routePath="/auth" routeName="Auth">
+                                <SuspenseWithChunkError
+                                  fallback={
+                                    <LoadingSpinner text="Kraunama prisijungimo forma..." />
+                                  }
+                                >
+                                  <Auth />
+                                </SuspenseWithChunkError>
+                              </AuthRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/auth/callback"
+                            element={
+                              <AuthRouteErrorBoundary
+                                routePath="/auth/callback"
+                                routeName="AuthCallback"
                               >
-                                <Auth />
-                              </SuspenseWithChunkError>
-                            </AuthRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/auth/callback"
-                          element={
-                            <AuthRouteErrorBoundary routePath="/auth/callback" routeName="AuthCallback">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Jungiamasi..." />}
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Jungiamasi..." />}
+                                >
+                                  <AuthCallback />
+                                </SuspenseWithChunkError>
+                              </AuthRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/profilis"
+                            element={
+                              <AuthRouteErrorBoundary routePath="/profilis" routeName="ProfilePage">
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas profilis..." />}
+                                >
+                                  <ProfilePage />
+                                </SuspenseWithChunkError>
+                              </AuthRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/mano-sarasas"
+                            element={
+                              <AuthRouteErrorBoundary
+                                routePath="/mano-sarasas"
+                                routeName="MyBookmarksPage"
                               >
-                                <AuthCallback />
-                              </SuspenseWithChunkError>
-                            </AuthRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/profilis"
-                          element={
-                            <AuthRouteErrorBoundary routePath="/profilis" routeName="ProfilePage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamas profilis..." />}
-                              >
-                                <ProfilePage />
-                              </SuspenseWithChunkError>
-                            </AuthRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/mano-sarasas"
-                          element={
-                            <AuthRouteErrorBoundary routePath="/mano-sarasas" routeName="MyBookmarksPage">
-                              <SuspenseWithChunkError
-                                fallback={<LoadingSpinner text="Kraunamas sąrašas..." />}
-                              >
-                                <MyBookmarksPage />
-                              </SuspenseWithChunkError>
-                            </AuthRouteErrorBoundary>
-                          }
-                        />
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas sąrašas..." />}
+                                >
+                                  <MyBookmarksPage />
+                                </SuspenseWithChunkError>
+                              </AuthRouteErrorBoundary>
+                            }
+                          />
 
-                        {/* Admin routes with admin error boundaries */}
-                        <Route
-                          path="/admin"
-                          element={
-                            <AdminRouteErrorBoundary routePath="/admin" routeName="AdminDashboard">
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunamas administravimo skydelis..." />
-                                }
+                          {/* Admin routes with admin error boundaries */}
+                          <Route
+                            path="/admin"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin"
+                                routeName="AdminDashboard"
                               >
-                                <AdminDashboard />
-                              </SuspenseWithChunkError>
-                            </AdminRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/cleanup"
-                          element={
-                            <AdminRouteErrorBoundary
-                              routePath="/admin/cleanup"
-                              routeName="AdminUserCleanup"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunamas naudotojų valymo skydelis..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={
+                                    <LoadingSpinner text="Kraunamas administravimo skydelis..." />
+                                  }
+                                >
+                                  <AdminDashboard />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/cleanup"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin/cleanup"
+                                routeName="AdminUserCleanup"
                               >
-                                <AdminUserCleanup />
-                              </SuspenseWithChunkError>
-                            </AdminRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/setup"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/admin/setup"
-                              routeName="AdminSetup"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunamas admin setup..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={
+                                    <LoadingSpinner text="Kraunamas naudotojų valymo skydelis..." />
+                                  }
+                                >
+                                  <AdminUserCleanup />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/setup"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/admin/setup"
+                                routeName="AdminSetup"
                               >
-                                <AdminSetup />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/info"
-                          element={
-                            <ContentRouteErrorBoundary
-                              routePath="/admin/info"
-                              routeName="AdminInfo"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunama admin informacija..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas admin setup..." />}
+                                >
+                                  <AdminSetup />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/info"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/admin/info"
+                                routeName="AdminInfo"
                               >
-                                <AdminInfo />
-                              </SuspenseWithChunkError>
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/inquiries"
-                          element={
-                            <AdminRouteErrorBoundary
-                              routePath="/admin/inquiries"
-                              routeName="AdminInquiriesPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunamos užklausos..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama admin informacija..." />}
+                                >
+                                  <AdminInfo />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/inquiries"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin/inquiries"
+                                routeName="AdminInquiriesPage"
                               >
-                                <AdminInquiriesPage />
-                              </SuspenseWithChunkError>
-                            </AdminRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/cta"
-                          element={
-                            <AdminRouteErrorBoundary
-                              routePath="/admin/cta"
-                              routeName="AdminCTAManagementPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunamas CTA valdymas..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamos užklausos..." />}
+                                >
+                                  <AdminInquiriesPage />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/cta"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin/cta"
+                                routeName="AdminCTAManagementPage"
                               >
-                                <AdminCTAManagementPage />
-                              </SuspenseWithChunkError>
-                            </AdminRouteErrorBoundary>
-                          }
-                        />
-                        <Route
-                          path="/admin/analytics"
-                          element={
-                            <AdminRouteErrorBoundary
-                              routePath="/admin/analytics"
-                              routeName="AdminCTAAnalyticsPage"
-                            >
-                              <SuspenseWithChunkError
-                                fallback={
-                                  <LoadingSpinner text="Kraunama analytics..." />
-                                }
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamas CTA valdymas..." />}
+                                >
+                                  <AdminCTAManagementPage />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/analytics"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin/analytics"
+                                routeName="AdminCTAAnalyticsPage"
                               >
-                                <AdminCTAAnalyticsPage />
-                              </SuspenseWithChunkError>
-                            </AdminRouteErrorBoundary>
-                          }
-                        />
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama analytics..." />}
+                                >
+                                  <AdminCTAAnalyticsPage />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
 
-                        {/* 404 page with route error boundary */}
-                        <Route
-                          path="*"
-                          element={
-                            <ContentRouteErrorBoundary routePath="*" routeName="NotFound">
-                              <NotFound />
-                            </ContentRouteErrorBoundary>
-                          }
-                        />
-                      </Route>
-                    </Routes>
-                  </BrowserRouter>
+                          {/* 404 page with route error boundary */}
+                          <Route
+                            path="*"
+                            element={
+                              <ContentRouteErrorBoundary routePath="*" routeName="NotFound">
+                                <NotFound />
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                        </Route>
+                      </Routes>
+                    </BrowserRouter>
                   </TooltipProvider>
                 </ImageLoadingProvider>
               </ThemeProvider>
@@ -598,7 +622,7 @@ const App = () => {
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
-      
+
       {/* GDPR Cookie Consent Banner */}
       <CookieConsent />
     </GlobalErrorBoundary>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Check } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { log } from '@/utils/browserLogger';
+import { log } from "@/utils/browserLogger";
 
 interface SocialShareProps {
   url: string;
@@ -16,7 +16,7 @@ export function SocialShare({
   url,
   title = "",
   className = "",
-  showCopyLink = true
+  showCopyLink = true,
 }: SocialShareProps) {
   const [copied, setCopied] = useState(false);
 
@@ -30,8 +30,8 @@ export function SocialShare({
     e.preventDefault();
     window.open(
       `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
-      'twitter-share-dialog',
-      'width=626,height=436'
+      "twitter-share-dialog",
+      "width=626,height=436"
     );
   };
 
@@ -39,8 +39,8 @@ export function SocialShare({
     e.preventDefault();
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-      'linkedin-share-dialog',
-      'width=626,height=436'
+      "linkedin-share-dialog",
+      "width=626,height=436"
     );
   };
 
@@ -75,7 +75,7 @@ export function SocialShare({
             </TooltipContent>
           </Tooltip>
         )}
-        
+
         {/* Facebook Button */}
         <Tooltip>
           <TooltipTrigger asChild>
@@ -125,8 +125,6 @@ export function SocialShare({
             <p>Dalintis LinkedIn</p>
           </TooltipContent>
         </Tooltip>
-
-
       </TooltipProvider>
     </div>
   );

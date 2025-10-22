@@ -1,35 +1,48 @@
 # CLS (Cumulative Layout Shift) Optimizacijos
 
 ## Problema
+
 Google Search Console pranešė apie **CLS 0.64** (Blogai: > 0.25, Norma: < 0.1), dėl ko puslapiai neindeksuojami.
 
 ## Atliktos optimizacijos
 
 ### 1. ✅ Font Loading Optimizacija
+
 **Problema**: Google Fonts be `font-display: swap` sukelia FOIT (Flash of Invisible Text)
 
 **Sprendimas** ([index.html](index.html)):
+
 ```html
 <!-- Preload critical fonts -->
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" as="style">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link
+  rel="preload"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+  as="style"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 ### 2. ✅ LazyImage komponentas su eksplicitiniais dimensions
+
 **Problema**: Paveiksliukai kraunasi be nustatyto dydžio, sukeldami layout shifts
 
 **Sprendimas** ([src/components/ui/lazy-image.tsx](src/components/ui/lazy-image.tsx)):
+
 ```tsx
 <LazyImage
   src="/image.jpg"
   alt="Description"
-  width={800}           // Explicit width
-  height={600}          // Explicit height
-  aspectRatio="16/9"    // OR use aspect ratio
+  width={800} // Explicit width
+  height={600} // Explicit height
+  aspectRatio="16/9" // OR use aspect ratio
 />
 ```
 
 **Naudojimo pavyzdžiai**:
+
 ```tsx
 // 1. Su explicit dimensions (rekomenduojama)
 <LazyImage
@@ -58,9 +71,11 @@ Google Search Console pranešė apie **CLS 0.64** (Blogai: > 0.25, Norma: < 0.1)
 ```
 
 ### 3. ✅ CSS Containment
+
 **Problema**: Animacijos ir hover efektai gali sukelti layout shifts
 
 **Sprendimas** ([src/index.css](src/index.css)):
+
 ```css
 .animate-glow {
   contain: layout style paint;
@@ -73,17 +88,19 @@ Google Search Console pranešė apie **CLS 0.64** (Blogai: > 0.25, Norma: < 0.1)
 ```
 
 ### 4. ✅ Skeleton Loaders
+
 **Problema**: Dinaminis turinys kraunasi be rezervuotos vietos
 
 **Sprendimas** ([src/components/ui/content-skeleton.tsx](src/components/ui/content-skeleton.tsx)):
 
 **Naudojimo pavyzdžiai**:
+
 ```tsx
-import { ArticleCardSkeleton, ListSkeleton } from '@/components/ui/content-skeleton';
+import { ArticleCardSkeleton, ListSkeleton } from "@/components/ui/content-skeleton";
 
 // Articles list page
 const ArticlesPage = () => {
-  const { data: articles, isLoading } = useQuery('articles', fetchArticles);
+  const { data: articles, isLoading } = useQuery("articles", fetchArticles);
 
   if (isLoading) {
     return <ListSkeleton count={6} />;
@@ -99,10 +116,10 @@ const ArticlesPage = () => {
 };
 
 // Article detail page
-import { ArticleDetailSkeleton } from '@/components/ui/content-skeleton';
+import { ArticleDetailSkeleton } from "@/components/ui/content-skeleton";
 
 const ArticleDetail = () => {
-  const { data: article, isLoading } = useQuery('article', fetchArticle);
+  const { data: article, isLoading } = useQuery("article", fetchArticle);
 
   if (isLoading) {
     return <ArticleDetailSkeleton />;
@@ -113,6 +130,7 @@ const ArticleDetail = () => {
 ```
 
 **Prieinami skeleton komponentai**:
+
 - `ArticleCardSkeleton` - straipsnių kortelėms
 - `ToolCardSkeleton` - įrankių kortelėms
 - `CourseCardSkeleton` - kursų kortelėms
@@ -121,11 +139,14 @@ const ArticleDetail = () => {
 - `ListSkeleton` - sąrašams su custom count
 
 ### 5. ✅ Min-Height konteinerių optimizacija
+
 **Problema**: Tuščias konteineris "šokinėja" užsikraunant
 
 **Sprendimas** ([src/index.css](src/index.css)):
+
 ```css
-body, #root {
+body,
+#root {
   min-height: 100vh;
   min-height: 100dvh; /* Mobile viewport */
 }
@@ -134,23 +155,27 @@ body, #root {
 ## Rekomendacijos naudojimui
 
 ### Priority Images (LCP Optimization)
+
 Pirmiausiai matomus paveiksliukus (above-the-fold) žymėkite kaip `priority`:
+
 ```tsx
 <LazyImage
   src="/hero-image.jpg"
   alt="Hero"
-  priority={true}      // Loads immediately, not lazy
+  priority={true} // Loads immediately, not lazy
   width={1920}
   height={1080}
 />
 ```
 
 ### Aspect Ratio vs Explicit Dimensions
+
 - **Responsive dizainai**: naudokite `aspectRatio="16/9"`
 - **Fixed dydžiai**: naudokite `width` ir `height`
 - **Always provide dimensions** - bent vieną iš šių!
 
 ### Skeleton Loaders Integration
+
 Kiekviename puslapyje su dynamic content naudokite skeleton loaders:
 
 ```tsx
@@ -170,6 +195,7 @@ const MyPage = () => {
 ## Testavimas
 
 ### Lighthouse (Chrome DevTools)
+
 ```bash
 # 1. Atidaryti Chrome DevTools (F12)
 # 2. Performance tab → Lighthouse
@@ -180,6 +206,7 @@ const MyPage = () => {
 **Tikslas**: CLS < 0.1 (Žalias)
 
 ### Web Vitals
+
 ```bash
 npm run dev
 # Atidaryti puslapį ir pažiūrėti Console
@@ -187,6 +214,7 @@ npm run dev
 ```
 
 ### Real User Monitoring (Vercel Analytics)
+
 - Vercel Dashboard → Analytics → Web Vitals
 - Stebėti CLS metrikas production aplinkoje
 - Tikslas: 75th percentile < 0.1
@@ -205,11 +233,13 @@ npm run dev
 ## Rezultatai
 
 **Prieš optimizaciją**:
+
 - CLS: 0.64 (Poor)
 - 17 URLs su problemomis
 - Google neindeksuoja
 
 **Po optimizacijos** (tikėtina):
+
 - CLS: < 0.1 (Good)
 - Visi URLs indexable
 - Geresnis SEO ranking

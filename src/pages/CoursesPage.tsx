@@ -22,7 +22,7 @@ import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 
 type Course = Database["public"]["Tables"]["courses"]["Row"];
 
-type ServiceType = 'individual' | 'group' | 'workshop' | null;
+type ServiceType = "individual" | "group" | "workshop" | null;
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -84,11 +84,12 @@ const CoursesPage = () => {
 
   const getServiceContent = (service: ServiceType) => {
     switch (service) {
-      case 'individual':
+      case "individual":
         return {
           title: "1-1 AI konsultacija su praktiniais sprendimais",
           subtitle: "Asmeninė konsultacija su AI specialistu",
-          description: "Asmeninė konsultacija su AI specialistu – tai 60 minučių intensyvus pokalbis, kurio metu gaunate praktines rekomendacijas ir konkrečius AI sprendimus būtent jūsų situacijai. Ne teorija, o realūs įrankiai ir metodai.",
+          description:
+            "Asmeninė konsultacija su AI specialistu – tai 60 minučių intensyvus pokalbis, kurio metu gaunate praktines rekomendacijas ir konkrečius AI sprendimus būtent jūsų situacijai. Ne teorija, o realūs įrankiai ir metodai.",
           sections: [
             {
               title: "Konsultacijos turinys:",
@@ -99,8 +100,8 @@ const CoursesPage = () => {
                 "Verslo procesų automatizavimas su AI asistentais",
                 "Turinio kūrimas su dirbtinio intelekto pagalba (tekstai, vaizdai, video)",
                 "AI sprendimų sąnaudų optimizavimas",
-                "Konkretūs pavyzdžiai ir šablonai jūsų sričiai"
-              ]
+                "Konkretūs pavyzdžiai ir šablonai jūsų sričiai",
+              ],
             },
             {
               title: "Idealu:",
@@ -108,18 +109,20 @@ const CoursesPage = () => {
                 "Savarankiškai dirbantiems ir freelanceriams",
                 "Įmonių darbuotojams, siekiantiems produktyvumo",
                 "Rinkodarininkams ir turinio kūrėjams",
-                "Klientų aptarnavimo specialistams"
-              ]
-            }
+                "Klientų aptarnavimo specialistams",
+              ],
+            },
           ],
           footer: "Garantija: Gaunate darbo šablonus, prompt bibliotekų ir AI įrankių sąrašą",
-          keywords: "AI konsultacija online, ChatGPT mokymai lietuviškai, praktiniai AI sprendimai, AI įrankiai verslui, dirbtinio intelekto mokymai, generatyvioji AI, turinio kūrimas su AI, automatizavimas"
+          keywords:
+            "AI konsultacija online, ChatGPT mokymai lietuviškai, praktiniai AI sprendimai, AI įrankiai verslui, dirbtinio intelekto mokymai, generatyvioji AI, turinio kūrimas su AI, automatizavimas",
         };
-      case 'group':
+      case "group":
         return {
           title: "Korporatyviniai AI mokymai jūsų komandai",
           subtitle: "Specializuoti dirbtinio intelekto mokymai",
-          description: "Specializuoti dirbtinio intelekto mokymai, pritaikyti jūsų organizacijos poreikiams. Mokome 5-20 darbuotojų, kaip efektyviai naudoti AI įrankius kasdienėje veikloje ir padidinti komandos produktyvumą iki 40%.",
+          description:
+            "Specializuoti dirbtinio intelekto mokymai, pritaikyti jūsų organizacijos poreikiams. Mokome 5-20 darbuotojų, kaip efektyviai naudoti AI įrankius kasdienėje veikloje ir padidinti komandos produktyvumą iki 40%.",
           sections: [
             {
               title: "Mokymo programa:",
@@ -131,8 +134,8 @@ const CoursesPage = () => {
                 "Turinio generavimas su dirbtinio intelekto pagalba",
                 "AI integracijos strategija organizacijoje",
                 "Duomenų saugumas ir etika naudojant AI",
-                "Komandos produktyvumo optimizavimas"
-              ]
+                "Komandos produktyvumo optimizavimas",
+              ],
             },
             {
               title: "Mokymo eiga:",
@@ -141,8 +144,8 @@ const CoursesPage = () => {
                 "Pritaikyta programa jūsų sričiai (IT, rinkodara, pardavimai, klientų aptarnavimas)",
                 "Praktiniai užsiėmimai su realiais jūsų projektų pavyzdžiais",
                 "Darbo šablonų ir prompt bibliotekų sukūrimas",
-                "Po-mokymo palaikymas 30 dienų"
-              ]
+                "Po-mokymo palaikymas 30 dienų",
+              ],
             },
             {
               title: "Kam skirta:",
@@ -151,18 +154,21 @@ const CoursesPage = () => {
                 "IT komandom",
                 "Rinkodaros ir komunikacijos skyriams",
                 "Klientų aptarnavimo komandom",
-                "Valdymo komandom"
-              ]
-            }
+                "Valdymo komandom",
+              ],
+            },
           ],
-          footer: "Trukmė: 2-4 valandos (pritaikoma) | Dalyviai: 5-20 žmonių | Formatas: Online arba On-site",
-          keywords: "AI mokymai įmonėms, ChatGPT mokymai komandai, dirbtinio intelekto mokymai verslui, korporatyviniai AI mokymai, AI produktyvumas, komandos mokymas, generatyvioji AI verslui"
+          footer:
+            "Trukmė: 2-4 valandos (pritaikoma) | Dalyviai: 5-20 žmonių | Formatas: Online arba On-site",
+          keywords:
+            "AI mokymai įmonėms, ChatGPT mokymai komandai, dirbtinio intelekto mokymai verslui, korporatyviniai AI mokymai, AI produktyvumas, komandos mokymas, generatyvioji AI verslui",
         };
-      case 'workshop':
+      case "workshop":
         return {
           title: "AI dirbtuvės: nuo idėjos iki veikiančio produkto",
           subtitle: "Du dienų AI workshop'as su VIBE CODING",
-          description: "Du dienų AI workshop'as, kurio metu sukuriate realų AI sprendimą savo verslui ar projektui. Dirbtuvių pabaigoje turite veikiantį prototipą ir planą tolimesnei plėtrai. Įskaitant VIBE CODING su Claude Code, Cursor, Windsurf - moderniausiomis AI programavimo priemonėmis.",
+          description:
+            "Du dienų AI workshop'as, kurio metu sukuriate realų AI sprendimą savo verslui ar projektui. Dirbtuvių pabaigoje turite veikiantį prototipą ir planą tolimesnei plėtrai. Įskaitant VIBE CODING su Claude Code, Cursor, Windsurf - moderniausiomis AI programavimo priemonėmis.",
           sections: [
             {
               title: "Šeštadienis – Projektavimas ir prototipavimas:",
@@ -170,8 +176,8 @@ const CoursesPage = () => {
                 "09:00-10:30 - AI galimybių ir įrankių apžvalga",
                 "10:45-12:30 - Jūsų projekto idėjos analizė ir AI architektūros projektavimas",
                 "13:30-15:30 - Prompt engineering ir AI workflow kūrimas + VIBE CODING įvadas",
-                "15:45-18:00 - Prototipo kūrimas su Claude Code/Cursor/Windsurf mentoriaus pagalba"
-              ]
+                "15:45-18:00 - Prototipo kūrimas su Claude Code/Cursor/Windsurf mentoriaus pagalba",
+              ],
             },
             {
               title: "Sekmadienis – Integracijos ir automatizavimas:",
@@ -180,8 +186,8 @@ const CoursesPage = () => {
                 "11:15-13:00 - Testavimas ir optimizavimas",
                 "14:00-16:00 - Deployment ir produkcijos paruošimas",
                 "16:15-17:30 - Projektų pristatymai ir feedback",
-                "17:30-18:00 - Plėtros planas ir gairės"
-              ]
+                "17:30-18:00 - Plėtros planas ir gairės",
+              ],
             },
             {
               title: "VIBE CODING sesijos:",
@@ -191,8 +197,8 @@ const CoursesPage = () => {
                 "Windsurf - modernios AI development aplinkos",
                 "OpenAI Codex integracijos",
                 "Realaus kodo generavimas ir optimizavimas",
-                "Best practices dirbtiniam intelektui koduoti"
-              ]
+                "Best practices dirbtiniam intelektui koduoti",
+              ],
             },
             {
               title: "Ką išsinešite:",
@@ -203,8 +209,8 @@ const CoursesPage = () => {
                 "Deployment instrukcijas",
                 "VIBE CODING šablonus ir workflow'us",
                 "Prieigų prie AI įrankių (14-30 dienų trial)",
-                "Bendruomenės prieigą ir palaikymą"
-              ]
+                "Bendruomenės prieigą ir palaikymą",
+              ],
             },
             {
               title: "Projektų pavyzdžiai:",
@@ -214,12 +220,14 @@ const CoursesPage = () => {
                 "Duomenų analizės ir insights platformos",
                 "Asmeniniai AI asistentai specifinėms užduotims",
                 "AI įrankiai produktyvumui didinti",
-                "Custom GPT su jūsų duomenų baze"
-              ]
-            }
+                "Custom GPT su jūsų duomenų baze",
+              ],
+            },
           ],
-          footer: "Reikalavimai: Bazinės programavimo žinios (Python arba JavaScript) | Nešiojamas kompiuteris | Idėja arba problema",
-          keywords: "AI workshop Lietuvoje, VIBE CODING, Claude Code, Cursor, Windsurf, dirbtinio intelekto kursai, AI projektų kūrimas, praktiniai AI mokymai, ChatGPT API, AI prototipas, custom GPT, AI chatbot kūrimas"
+          footer:
+            "Reikalavimai: Bazinės programavimo žinios (Python arba JavaScript) | Nešiojamas kompiuteris | Idėja arba problema",
+          keywords:
+            "AI workshop Lietuvoje, VIBE CODING, Claude Code, Cursor, Windsurf, dirbtinio intelekto kursai, AI projektų kūrimas, praktiniai AI mokymai, ChatGPT API, AI prototipas, custom GPT, AI chatbot kūrimas",
         };
       default:
         return null;
@@ -257,15 +265,11 @@ const CoursesPage = () => {
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
-                <p className="text-foreground/90 leading-relaxed">
-                  {serviceContent.description}
-                </p>
+                <p className="text-foreground/90 leading-relaxed">{serviceContent.description}</p>
 
                 {serviceContent.sections.map((section, idx) => (
                   <div key={idx} className="space-y-3">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {section.title}
-                    </h3>
+                    <h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
                     <ul className="space-y-2">
                       {section.items.map((item, itemIdx) => (
                         <li key={itemIdx} className="flex items-start gap-2 text-foreground/80">
@@ -278,16 +282,12 @@ const CoursesPage = () => {
                 ))}
 
                 <div className="border-t border-border pt-4 mt-6">
-                  <p className="text-sm font-medium text-foreground/90">
-                    {serviceContent.footer}
-                  </p>
+                  <p className="text-sm font-medium text-foreground/90">{serviceContent.footer}</p>
                 </div>
 
                 <div className="flex gap-3 mt-6">
                   <Link to="/kontaktai?type=KONSULTACIJA" className="flex-1">
-                    <Button className="button-primary w-full">
-                      Registruotis dabar
-                    </Button>
+                    <Button className="button-primary w-full">Registruotis dabar</Button>
                   </Link>
                   <Button
                     variant="outline"
@@ -307,7 +307,13 @@ const CoursesPage = () => {
         title="AI Kursai ir Mokymai"
         description="Dirbtinio intelekto mokymai ir konsultacijos lietuvių kalba. Personalizuoti sprendimai ir praktiniai AI patarimai - ponas Obuolys"
         canonical={`${SITE_CONFIG.domain}/kursai`}
-        keywords={['AI kursai', 'AI mokymai lietuviškai', 'dirbtinio intelekto kursai', 'ChatGPT mokymai', 'AI konsultacijos']}
+        keywords={[
+          "AI kursai",
+          "AI mokymai lietuviškai",
+          "dirbtinio intelekto kursai",
+          "ChatGPT mokymai",
+          "AI konsultacijos",
+        ]}
         type="website"
       />
       <section className="py-12 md:py-16">
@@ -327,8 +333,8 @@ const CoursesPage = () => {
                   </h1>
 
                   <p className="text-xl text-foreground/90 max-w-2xl text-left">
-                    Individualūs mokymai, praktiniai sprendimai ir konsultacijos dirbtinio intelekto srityje.
-                    Pritaikyta jūsų verslo poreikiams ir tikslams.
+                    Individualūs mokymai, praktiniai sprendimai ir konsultacijos dirbtinio intelekto
+                    srityje. Pritaikyta jūsų verslo poreikiams ir tikslams.
                   </p>
                 </div>
                 <Link to="/kontaktai?type=KONSULTACIJA" className="w-full sm:w-auto">
@@ -344,13 +350,13 @@ const CoursesPage = () => {
               {/* Individual Consultation */}
               <div
                 className="project-card flex flex-col h-full"
-                onClick={() => setSelectedService('individual')}
+                onClick={() => setSelectedService("individual")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedService('individual')}
+                onKeyDown={e => e.key === "Enter" && setSelectedService("individual")}
               >
                 {/* Header section - fixed */}
                 <div className="flex items-start gap-3 mb-4 min-h-[80px]">
@@ -361,10 +367,12 @@ const CoursesPage = () => {
                     <h3 className="font-semibold text-foreground mb-1 text-left">
                       Individuali konsultacija
                     </h3>
-                    <p className="text-sm text-foreground/90 text-left">1-1 pokalbis, pritaikyti sprendimai</p>
+                    <p className="text-sm text-foreground/90 text-left">
+                      1-1 pokalbis, pritaikyti sprendimai
+                    </p>
                   </div>
                 </div>
-                
+
                 {/* Description section - flexible */}
                 <div className="flex-1 mb-4">
                   <p className="text-sm text-foreground/70 text-left">
@@ -372,7 +380,7 @@ const CoursesPage = () => {
                     Gausite konkrečius rekomendacijas ir veiksmų planą.
                   </p>
                 </div>
-                
+
                 {/* Metadata section - fixed at bottom */}
                 <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
@@ -389,13 +397,13 @@ const CoursesPage = () => {
               {/* Group Training */}
               <div
                 className="project-card flex flex-col h-full"
-                onClick={() => setSelectedService('group')}
+                onClick={() => setSelectedService("group")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedService('group')}
+                onKeyDown={e => e.key === "Enter" && setSelectedService("group")}
               >
                 {/* Header section - fixed */}
                 <div className="flex items-start gap-3 mb-4 min-h-[80px]">
@@ -403,21 +411,19 @@ const CoursesPage = () => {
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1 text-left">
-                      Grupės mokymai
-                    </h3>
+                    <h3 className="font-semibold text-foreground mb-1 text-left">Grupės mokymai</h3>
                     <p className="text-sm text-foreground/60 text-left">Komandos, darbuotojai</p>
                   </div>
                 </div>
-                
+
                 {/* Description section - flexible */}
                 <div className="flex-1 mb-4">
                   <p className="text-sm text-foreground/70 text-left">
-                    Specializuoti mokymai jūsų komandai arba organizacijai.
-                    Praktiniai užsiėmimai su realiais pavyzdžiais ir įrankiais.
+                    Specializuoti mokymai jūsų komandai arba organizacijai. Praktiniai užsiėmimai su
+                    realiais pavyzdžiais ir įrankiais.
                   </p>
                 </div>
-                
+
                 {/* Metadata section - fixed at bottom */}
                 <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
@@ -434,13 +440,13 @@ const CoursesPage = () => {
               {/* Workshop */}
               <div
                 className="project-card flex flex-col h-full"
-                onClick={() => setSelectedService('workshop')}
+                onClick={() => setSelectedService("workshop")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedService('workshop')}
+                onKeyDown={e => e.key === "Enter" && setSelectedService("workshop")}
               >
                 {/* Header section - fixed */}
                 <div className="flex items-start gap-3 mb-4 min-h-[80px]">
@@ -448,21 +454,21 @@ const CoursesPage = () => {
                     <Star className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1 text-left">
-                      AI dirbtuvės
-                    </h3>
-                    <p className="text-sm text-foreground/60 text-left">Intensyvūs praktiniai užsiėmimai</p>
+                    <h3 className="font-semibold text-foreground mb-1 text-left">AI dirbtuvės</h3>
+                    <p className="text-sm text-foreground/60 text-left">
+                      Intensyvūs praktiniai užsiėmimai
+                    </p>
                   </div>
                 </div>
-                
+
                 {/* Description section - flexible */}
                 <div className="flex-1 mb-4">
                   <p className="text-sm text-foreground/70 text-left">
-                    Intensyvios praktinės dirbtuvės su konkrečiais projektais.
-                    Nuo AI įrankių iki sprendimų integracijos jūsų veikloje.
+                    Intensyvios praktinės dirbtuvės su konkrečiais projektais. Nuo AI įrankių iki
+                    sprendimų integracijos jūsų veikloje.
                   </p>
                 </div>
-                
+
                 {/* Metadata section - fixed at bottom */}
                 <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
                   <div className="flex items-center gap-1">
@@ -481,7 +487,9 @@ const CoursesPage = () => {
             {courses.length > 0 && (
               <div className="mb-12">
                 <div className="dark-card">
-                  <h2 className="text-2xl font-bold text-foreground mb-6 text-left">Aktualūs kursai</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-6 text-left">
+                    Aktualūs kursai
+                  </h2>
                   {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {Array.from({ length: 3 }).map((_, index) => (
@@ -495,7 +503,7 @@ const CoursesPage = () => {
                           key={course.id}
                           course={{
                             ...course,
-                            image_url: course.image_url ?? undefined
+                            image_url: course.image_url ?? undefined,
                           }}
                         />
                       ))}
@@ -503,11 +511,23 @@ const CoursesPage = () => {
                       <div className="project-card flex flex-col items-center justify-center min-h-[400px] border-dashed opacity-60 hover:opacity-80 transition-opacity">
                         <div className="text-center">
                           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            <svg
+                              className="w-8 h-8 text-primary"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
                             </svg>
                           </div>
-                          <h3 className="font-semibold text-foreground mb-2">Netrukus bus daugiau</h3>
+                          <h3 className="font-semibold text-foreground mb-2">
+                            Netrukus bus daugiau
+                          </h3>
                           <p className="text-sm text-foreground/60">Ruošiami nauji kursai</p>
                         </div>
                       </div>
@@ -568,22 +588,16 @@ const CoursesPage = () => {
 
             {/* Call to Action */}
             <div className="dark-card text-center">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Pradėkime jūsų AI kelionę
-              </h2>
+              <h2 className="text-3xl font-bold text-foreground mb-4">Pradėkime jūsų AI kelionę</h2>
               <p className="text-xl text-foreground/80 mb-8 max-w-2xl mx-auto">
-                Susisiekite dėl nemokamos konsultacijos ir sužinokite, kaip AI gali transformuoti jūsų veiklą.
-                Pirmas pokalbis - visada nemokamas!
+                Susisiekite dėl nemokamos konsultacijos ir sužinokite, kaip AI gali transformuoti
+                jūsų veiklą. Pirmas pokalbis - visada nemokamas!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/kontaktai">
-                  <Button className="button-primary">
-                    Registruotis konsultacijai
-                  </Button>
+                  <Button className="button-primary">Registruotis konsultacijai</Button>
                 </Link>
-                <Button className="button-outline">
-                  Sužinoti daugiau
-                </Button>
+                <Button className="button-outline">Sužinoti daugiau</Button>
               </div>
             </div>
           </div>

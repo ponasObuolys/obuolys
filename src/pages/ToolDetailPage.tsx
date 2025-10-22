@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 // Importuojama detalės kortelė
-import ToolDetailCard from '@/components/ui/tool-detail-card';
-import { log } from '@/utils/browserLogger';
+import ToolDetailCard from "@/components/ui/tool-detail-card";
+import { log } from "@/utils/browserLogger";
 
-import SEOHead from '@/components/SEO';
-import { generateToolSEO, generateBreadcrumbStructuredData } from '@/utils/seo';
-import { ShareButton } from '@/components/ui/share-button';
+import SEOHead from "@/components/SEO";
+import { generateToolSEO, generateBreadcrumbStructuredData } from "@/utils/seo";
+import { ShareButton } from "@/components/ui/share-button";
 
 // Definuojame Tool tipą čia, kad atitiktų ToolDetailCard
 interface Tool {
@@ -36,21 +36,21 @@ const ToolDetailPage = () => {
   useEffect(() => {
     const fetchTool = async () => {
       if (!slug) return;
-      
+
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from('tools')
-          .select('*') // Galima specifikuoti reikiamus stulpelius
-          .eq('slug', slug)
-          .single(); 
-          
+          .from("tools")
+          .select("*") // Galima specifikuoti reikiamus stulpelius
+          .eq("slug", slug)
+          .single();
+
         if (error) {
           // Jei .single() grąžina klaidą (pvz., nerasta arba daugiau nei vienas)
           log.error("Error fetching tool (or not found):", error.message);
           throw new Error("Įrankis nerastas arba įvyko klaida.");
         }
-        
+
         if (data) {
           // Čia galėtume validuoti duomenis pagal Tool tipą, jei reikia
           setTool(data as Tool);
@@ -59,11 +59,12 @@ const ToolDetailPage = () => {
           throw new Error("Įrankis nerastas.");
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti įrankio informacijos.";
+        const errorMessage =
+          error instanceof Error ? error.message : "Nepavyko gauti įrankio informacijos.";
         toast({
           title: "Klaida",
           description: errorMessage,
-          variant: "destructive"
+          variant: "destructive",
         });
         setTool(null); // Nustatome į null klaidos atveju
         log.error("Error fetching tool details:", errorMessage);
@@ -71,7 +72,7 @@ const ToolDetailPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchTool();
   }, [slug, toast]);
 
@@ -88,7 +89,9 @@ const ToolDetailPage = () => {
     return (
       <div className="container mx-auto py-16 text-center">
         <h1 className="text-3xl font-semibold mb-6">Įrankis nerastas</h1>
-        <p className="text-foreground/90 mb-8">Atsiprašome, bet įrankis, kurio ieškote, neegzistuoja.</p>
+        <p className="text-foreground/90 mb-8">
+          Atsiprašome, bet įrankis, kurio ieškote, neegzistuoja.
+        </p>
         <Link to="/irankiai">
           <Button variant="default">
             <ArrowLeft className="mr-2 h-4 w-4" /> Grįžti į įrankių sąrašą
@@ -103,7 +106,7 @@ const ToolDetailPage = () => {
     ? generateToolSEO({
         title: tool.name,
         description: tool.description,
-        slug: slug || '',
+        slug: slug || "",
         image: tool.image_url,
         category: tool.category,
       })
@@ -112,34 +115,34 @@ const ToolDetailPage = () => {
   const structuredData = tool
     ? [
         {
-          '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
           name: tool.name,
           description: tool.description,
           applicationCategory: tool.category,
-          operatingSystem: 'All',
-          image: tool.image_url || 'https://ponasobuolys.lt/og-cover.jpg',
+          operatingSystem: "All",
+          image: tool.image_url || "https://ponasobuolys.lt/og-cover.jpg",
           url: `https://ponasobuolys.lt/irankiai/${tool.slug}`,
           offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'EUR',
-            availability: 'https://schema.org/InStock',
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "EUR",
+            availability: "https://schema.org/InStock",
             url: tool.url,
           },
           publisher: {
-            '@type': 'Organization',
-            name: 'Ponas Obuolys',
+            "@type": "Organization",
+            name: "Ponas Obuolys",
             logo: {
-              '@type': 'ImageObject',
-              url: 'https://ponasobuolys.lt/logo.png',
+              "@type": "ImageObject",
+              url: "https://ponasobuolys.lt/logo.png",
             },
           },
-          inLanguage: 'lt',
+          inLanguage: "lt",
         },
         generateBreadcrumbStructuredData([
-          { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
-          { name: 'AI Įrankiai', url: 'https://ponasobuolys.lt/irankiai' },
+          { name: "Pradžia", url: "https://ponasobuolys.lt" },
+          { name: "AI Įrankiai", url: "https://ponasobuolys.lt/irankiai" },
           { name: tool.name, url: `https://ponasobuolys.lt/irankiai/${slug}` },
         ]),
       ]
@@ -152,9 +155,9 @@ const ToolDetailPage = () => {
         <div className="container mx-auto px-4 py-8 max-w-3xl">
           <Breadcrumbs
             items={[
-              { label: 'Įrankiai', href: '/irankiai' },
-              { label: tool.category, href: '/irankiai' },
-              { label: tool.name }
+              { label: "Įrankiai", href: "/irankiai" },
+              { label: tool.category, href: "/irankiai" },
+              { label: tool.name },
             ]}
           />
 
@@ -184,4 +187,4 @@ const ToolDetailPage = () => {
   );
 };
 
-export default ToolDetailPage; 
+export default ToolDetailPage;

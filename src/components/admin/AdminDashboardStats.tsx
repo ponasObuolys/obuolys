@@ -23,7 +23,7 @@ const AdminDashboardStats = ({ stats }: AdminDashboardStatsProps) => {
           <div className="text-2xl font-bold">{stats.publicationsCount}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Įrankiai</CardTitle>
@@ -32,7 +32,7 @@ const AdminDashboardStats = ({ stats }: AdminDashboardStatsProps) => {
           <div className="text-2xl font-bold">{stats.toolsCount}</div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium">Kursai</CardTitle>

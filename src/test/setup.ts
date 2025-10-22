@@ -1,35 +1,35 @@
-import '@testing-library/jest-dom';
-import { TextEncoder, TextDecoder } from 'util';
-import { vi, beforeAll, afterAll, afterEach } from 'vitest';
+import "@testing-library/jest-dom";
+import { TextEncoder, TextDecoder } from "util";
+import { vi, beforeAll, afterAll, afterEach } from "vitest";
 
 // Polyfill'ai jsdom aplinkai
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder as typeof global.TextDecoder;
 
 // Imituojame IntersectionObserver (naudojama LazyImage testuose)
-global.IntersectionObserver = vi.fn().mockImplementation((_callback) => ({
+global.IntersectionObserver = vi.fn().mockImplementation(_callback => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
   root: null,
-  rootMargin: '',
-  thresholds: []
+  rootMargin: "",
+  thresholds: [],
 }));
 
 // Imituojame ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
-  unobserve: vi.fn()
+  unobserve: vi.fn(),
 }));
 
 // Imituojame HTMLCanvasElement.getContext (pvz., recharts grafikai)
-Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
   writable: true,
-  value: (function mockedGetContext(contextId: string, _options?: unknown) {
-    if (contextId === '2d') {
+  value: function mockedGetContext(contextId: string, _options?: unknown) {
+    if (contextId === "2d") {
       return {
-        canvas: document.createElement('canvas'),
+        canvas: document.createElement("canvas"),
         // Būtinos 2D konteksto savybės/metodai, kurių gali prireikti bibliotekoms
         measureText: vi.fn().mockReturnValue({ width: 0 }),
         fillRect: vi.fn(),
@@ -58,31 +58,31 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
         getContextAttributes: vi.fn().mockReturnValue({}),
         // Dažniausiai referencijuojamos CanvasRenderingContext2D savybės
         globalAlpha: 1,
-        globalCompositeOperation: 'source-over',
+        globalCompositeOperation: "source-over",
         lineWidth: 1,
-        lineCap: 'butt',
-        lineJoin: 'miter',
+        lineCap: "butt",
+        lineJoin: "miter",
         miterLimit: 10,
         shadowBlur: 0,
-        shadowColor: 'transparent',
+        shadowColor: "transparent",
         shadowOffsetX: 0,
         shadowOffsetY: 0,
-        strokeStyle: '#000',
-        fillStyle: '#000',
-        font: '',
-        textAlign: 'start',
-        textBaseline: 'alphabetic',
-        direction: 'inherit',
+        strokeStyle: "#000",
+        fillStyle: "#000",
+        font: "",
+        textAlign: "start",
+        textBaseline: "alphabetic",
+        direction: "inherit",
         imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'low'
+        imageSmoothingQuality: "low",
       } as unknown as CanvasRenderingContext2D;
     }
     return null;
-  }) as unknown as HTMLCanvasElement['getContext']
+  } as unknown as HTMLCanvasElement["getContext"],
 });
 
 // Imituojame window.matchMedia (naudojama responsyviems komponentams)
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
     matches: false,
@@ -97,24 +97,26 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Imituojame scrollTo su abiem parašais (options arba x,y)
-Object.defineProperty(window, 'scrollTo', {
+Object.defineProperty(window, "scrollTo", {
   writable: true,
-  value: ((..._args: Parameters<Window['scrollTo']>) => { /* tyčinis no-op */ }) as unknown as Window['scrollTo']
+  value: ((..._args: Parameters<Window["scrollTo"]>) => {
+    /* tyčinis no-op */
+  }) as unknown as Window["scrollTo"],
 });
 
 // Helmet susijusiems testams – neliečiame read-only document.head, tik prireikus imit. classList
-if (typeof document !== 'undefined') {
+if (typeof document !== "undefined") {
   // Imituojame classList tik jei jo nėra
-  const headElement = document.head as (HTMLElement & { classList?: DOMTokenList });
+  const headElement = document.head as HTMLElement & { classList?: DOMTokenList };
   if (headElement && !headElement.classList) {
-    Object.defineProperty(headElement, 'classList', {
+    Object.defineProperty(headElement, "classList", {
       value: {
         add: vi.fn(),
         remove: vi.fn(),
         contains: vi.fn().mockReturnValue(false),
-        toggle: vi.fn()
+        toggle: vi.fn(),
       },
-      writable: true
+      writable: true,
     });
   }
 }
@@ -123,8 +125,8 @@ if (typeof document !== 'undefined') {
 Object.assign(navigator, {
   clipboard: {
     writeText: vi.fn().mockResolvedValue(undefined),
-    readText: vi.fn().mockResolvedValue('')
-  }
+    readText: vi.fn().mockResolvedValue(""),
+  },
 });
 
 // Nutildome console.error testų metu (išskyrus realias klaidas)
@@ -133,8 +135,8 @@ const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
     if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
+      typeof args[0] === "string" &&
+      args[0].includes("Warning: ReactDOM.render is no longer supported")
     ) {
       return;
     }
@@ -150,10 +152,10 @@ afterAll(() => {
 // Create a more robust Supabase mock that works across different test scenarios
 const createGlobalSupabaseMock = () => {
   const mockAuth = {
-    onAuthStateChange: vi.fn((_callback) => {
+    onAuthStateChange: vi.fn(_callback => {
       // Don't auto-trigger callbacks in global setup
       return {
-        data: { subscription: { unsubscribe: vi.fn() } }
+        data: { subscription: { unsubscribe: vi.fn() } },
       };
     }),
     getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
@@ -161,53 +163,53 @@ const createGlobalSupabaseMock = () => {
     signInWithPassword: vi.fn().mockResolvedValue({
       data: {
         user: {
-          id: 'test-user-id',
-          email: 'test@example.com',
+          id: "test-user-id",
+          email: "test@example.com",
           app_metadata: {},
           user_metadata: {},
-          aud: 'authenticated',
+          aud: "authenticated",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          role: 'authenticated'
+          role: "authenticated",
         },
         session: {
-          access_token: 'test-token',
-          refresh_token: 'test-refresh',
+          access_token: "test-token",
+          refresh_token: "test-refresh",
           expires_in: 3600,
-          token_type: 'bearer'
-        }
+          token_type: "bearer",
+        },
       },
-      error: null
+      error: null,
     }),
     signUp: vi.fn().mockResolvedValue({
       data: {
         user: {
-          id: 'test-user-id',
-          email: 'new@example.com',
+          id: "test-user-id",
+          email: "new@example.com",
           app_metadata: {},
           user_metadata: {},
-          aud: 'authenticated',
+          aud: "authenticated",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          role: 'authenticated'
+          role: "authenticated",
         },
-        session: null
+        session: null,
       },
-      error: null
+      error: null,
     }),
     signOut: vi.fn().mockResolvedValue({ error: null }),
     updateUser: vi.fn().mockResolvedValue({
       data: { user: null },
-      error: null
-    })
+      error: null,
+    }),
   };
 
   const mockStorage = {
     from: vi.fn(() => ({
-      upload: vi.fn().mockResolvedValue({ data: { path: 'test-path' }, error: null }),
-      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'http://test-url' } }),
-      remove: vi.fn().mockResolvedValue({ data: null, error: null })
-    }))
+      upload: vi.fn().mockResolvedValue({ data: { path: "test-path" }, error: null }),
+      getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: "http://test-url" } }),
+      remove: vi.fn().mockResolvedValue({ data: null, error: null }),
+    })),
   };
 
   const mockFrom = vi.fn(() => ({
@@ -217,7 +219,7 @@ const createGlobalSupabaseMock = () => {
     delete: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue({ data: { is_admin: false }, error: null }),
-    then: vi.fn().mockResolvedValue({ data: [], error: null })
+    then: vi.fn().mockResolvedValue({ data: [], error: null }),
   }));
 
   return {
@@ -227,16 +229,16 @@ const createGlobalSupabaseMock = () => {
     realtime: {
       channel: vi.fn(() => ({
         on: vi.fn().mockReturnThis(),
-        subscribe: vi.fn().mockResolvedValue('ok'),
-        unsubscribe: vi.fn().mockResolvedValue('ok')
-      }))
-    }
+        subscribe: vi.fn().mockResolvedValue("ok"),
+        unsubscribe: vi.fn().mockResolvedValue("ok"),
+      })),
+    },
   };
 };
 
 // Global Supabase mock
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: createGlobalSupabaseMock()
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: createGlobalSupabaseMock(),
 }));
 
 // Clean up after each test

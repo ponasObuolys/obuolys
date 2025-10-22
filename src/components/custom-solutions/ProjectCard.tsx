@@ -1,5 +1,5 @@
-import { Check } from 'lucide-react';
-import { useState, useRef, type MouseEvent } from 'react';
+import { Check } from "lucide-react";
+import { useState, useRef, type MouseEvent } from "react";
 
 interface Project {
   id: number;
@@ -16,7 +16,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
-  const [transform, setTransform] = useState('');
+  const [transform, setTransform] = useState("");
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -25,25 +25,25 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     const rect = imageContainerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     // Neigiamos reikšmės - paveikslėlis juda priešinga kryptimi
     const moveX = ((x - centerX) / centerX) * -20;
     const moveY = ((y - centerY) / centerY) * -20;
-    
+
     setTransform(`scale(1.3) translate(${moveX}px, ${moveY}px)`);
   };
 
   const handleMouseLeave = () => {
-    setTransform('');
+    setTransform("");
   };
 
   return (
     <div className="dark-card flex flex-col h-full">
       {/* Image placeholder */}
-      <div 
+      <div
         ref={imageContainerRef}
         className="relative h-64 mb-6 rounded-lg overflow-hidden bg-muted group cursor-pointer"
         onMouseMove={handleMouseMove}
@@ -65,22 +65,16 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
 
       {/* Content */}
       <div className="flex-1 flex flex-col">
-        <h3 className="text-2xl font-bold mb-4 text-foreground text-left">
-          {project.title}
-        </h3>
+        <h3 className="text-2xl font-bold mb-4 text-foreground text-left">{project.title}</h3>
 
         <div className="mb-4">
           <h4 className="text-sm font-bold text-foreground/60 mb-2 text-left">PROBLEMA:</h4>
-          <p className="text-foreground/80 text-left leading-relaxed">
-            {project.problem}
-          </p>
+          <p className="text-foreground/80 text-left leading-relaxed">{project.problem}</p>
         </div>
 
         <div className="mb-6">
           <h4 className="text-sm font-bold text-foreground/60 mb-2 text-left">SPRENDIMAS:</h4>
-          <p className="text-foreground/80 text-left leading-relaxed">
-            {project.solution}
-          </p>
+          <p className="text-foreground/80 text-left leading-relaxed">{project.solution}</p>
         </div>
 
         <div className="mt-auto">

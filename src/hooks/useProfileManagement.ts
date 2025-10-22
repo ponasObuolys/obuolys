@@ -94,7 +94,7 @@ export const useProfileManagement = () => {
 
   // Fetch saved publications
   const fetchSavedPublications = useCallback(async () => {
-    if (!isFeatureEnabled('savedPublications')) {
+    if (!isFeatureEnabled("savedPublications")) {
       toast({
         title: "Funkcija neprieinama",
         description: "Išsaugotų publikacijų funkcija dar neįdiegta.",
@@ -112,7 +112,7 @@ export const useProfileManagement = () => {
       //   .from('user_saved_publications')
       //   .select('*, publication:publications(*)')
       //   .eq('user_id', user?.id);
-      throw new Error('Not implemented');
+      throw new Error("Not implemented");
     } catch (error) {
       const err =
         error instanceof Error ? error : new Error("Klaida gaunant išsaugotas publikacijas");
@@ -133,7 +133,7 @@ export const useProfileManagement = () => {
 
   // Fetch enrolled courses
   const fetchEnrolledCourses = useCallback(async () => {
-    if (!isFeatureEnabled('enrolledCourses')) {
+    if (!isFeatureEnabled("enrolledCourses")) {
       toast({
         title: "Funkcija neprieinama",
         description: "Prenumeruojamų kursų funkcija dar neįdiegta.",
@@ -151,7 +151,7 @@ export const useProfileManagement = () => {
       //   .from('user_enrolled_courses')
       //   .select('*, course:courses(*)')
       //   .eq('user_id', user?.id);
-      throw new Error('Not implemented');
+      throw new Error("Not implemented");
     } catch (error) {
       const err =
         error instanceof Error ? error : new Error("Klaida gaunant prenumeruojamus kursus");

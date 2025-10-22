@@ -1,16 +1,16 @@
-import { Mail, Youtube, MessageSquare, Facebook, Phone } from 'lucide-react';
+import { Mail, Youtube, MessageSquare, Facebook, Phone } from "lucide-react";
 
 export const SocialLinks = ({ className }: { className?: string }) => {
   // Decode phone number (obfuscated from bots)
   const getPhoneNumber = () => {
-    const parts = ['370', '671', '68860'];
-    return parts.join('');
+    const parts = ["370", "671", "68860"];
+    return parts.join("");
   };
 
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
     const phoneNumber = getPhoneNumber();
-    window.open(`https://wa.me/${phoneNumber}`, '_blank');
+    window.open(`https://wa.me/${phoneNumber}`, "_blank");
   };
 
   return (

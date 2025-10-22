@@ -5,52 +5,52 @@
  * Ensures code coverage meets minimum requirements
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const COVERAGE_THRESHOLDS = {
   statements: 80,
   branches: 80,
   functions: 80,
-  lines: 80
+  lines: 80,
 };
 
 const CRITICAL_FILES_THRESHOLD = {
   statements: 90,
   branches: 85,
   functions: 90,
-  lines: 90
+  lines: 90,
 };
 
 // Files that require higher coverage
 const CRITICAL_FILES = [
-  'src/context/AuthContext.tsx',
-  'src/integrations/supabase/client.ts',
-  'src/components/admin/*.tsx',
-  'src/hooks/*.ts'
+  "src/context/AuthContext.tsx",
+  "src/integrations/supabase/client.ts",
+  "src/components/admin/*.tsx",
+  "src/hooks/*.ts",
 ];
 
 function readCoverageReport() {
-  const coveragePath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
+  const coveragePath = path.join(process.cwd(), "coverage", "coverage-summary.json");
 
   if (!fs.existsSync(coveragePath)) {
-    console.error('❌ Coverage report not found. Run tests with coverage first.');
+    console.error("❌ Coverage report not found. Run tests with coverage first.");
     process.exit(1);
   }
 
-  return JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
+  return JSON.parse(fs.readFileSync(coveragePath, "utf8"));
 }
 
 function checkGlobalCoverage(coverage) {
   const total = coverage.total;
   let passed = true;
 
-  console.log('\n📊 Global Coverage Report:');
-  console.log('================================');
+  console.log("\n📊 Global Coverage Report:");
+  console.log("================================");
 
   for (const [metric, threshold] of Object.entries(COVERAGE_THRESHOLDS)) {
     const actual = total[metric].pct;
-    const status = actual >= threshold ? '✅' : '❌';
+    const status = actual >= threshold ? "✅" : "❌";
 
     console.log(`${status} ${metric.padEnd(12)}: ${actual.toFixed(1)}% (required: ${threshold}%)`);
 
@@ -63,17 +63,17 @@ function checkGlobalCoverage(coverage) {
 }
 
 function checkCriticalFilesCoverage(coverage) {
-  console.log('\n🎯 Critical Files Coverage:');
-  console.log('================================');
+  console.log("\n🎯 Critical Files Coverage:");
+  console.log("================================");
 
   let passed = true;
   let criticalFilesFound = 0;
 
   for (const [filePath, fileCoverage] of Object.entries(coverage)) {
-    if (filePath === 'total') continue;
+    if (filePath === "total") continue;
 
     const isCritical = CRITICAL_FILES.some(pattern => {
-      const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+      const regex = new RegExp(pattern.replace(/\*/g, ".*"));
       return regex.test(filePath);
     });
 
@@ -83,9 +83,11 @@ function checkCriticalFilesCoverage(coverage) {
 
       for (const [metric, threshold] of Object.entries(CRITICAL_FILES_THRESHOLD)) {
         const actual = fileCoverage[metric].pct;
-        const status = actual >= threshold ? '✅' : '❌';
+        const status = actual >= threshold ? "✅" : "❌";
 
-        console.log(`   ${status} ${metric.padEnd(12)}: ${actual.toFixed(1)}% (required: ${threshold}%)`);
+        console.log(
+          `   ${status} ${metric.padEnd(12)}: ${actual.toFixed(1)}% (required: ${threshold}%)`
+        );
 
         if (actual < threshold) {
           passed = false;
@@ -95,33 +97,33 @@ function checkCriticalFilesCoverage(coverage) {
   }
 
   if (criticalFilesFound === 0) {
-    console.log('⚠️  No critical files found in coverage report');
+    console.log("⚠️  No critical files found in coverage report");
   }
 
   return passed;
 }
 
 function checkUncoveredLines(coverage) {
-  console.log('\n🔍 Files with Low Coverage:');
-  console.log('================================');
+  console.log("\n🔍 Files with Low Coverage:");
+  console.log("================================");
 
   const lowCoverageFiles = [];
 
   for (const [filePath, fileCoverage] of Object.entries(coverage)) {
-    if (filePath === 'total') continue;
+    if (filePath === "total") continue;
 
     const linesCoverage = fileCoverage.lines.pct;
     if (linesCoverage < 60) {
       lowCoverageFiles.push({
         file: filePath,
         coverage: linesCoverage,
-        uncoveredLines: fileCoverage.lines.total - fileCoverage.lines.covered
+        uncoveredLines: fileCoverage.lines.total - fileCoverage.lines.covered,
       });
     }
   }
 
   if (lowCoverageFiles.length === 0) {
-    console.log('✅ No files with critically low coverage');
+    console.log("✅ No files with critically low coverage");
     return true;
   }
 
@@ -144,10 +146,10 @@ function generateCoverageReport(coverage) {
       statements: total.statements.pct,
       branches: total.branches.pct,
       functions: total.functions.pct,
-      lines: total.lines.pct
+      lines: total.lines.pct,
     },
     thresholds: COVERAGE_THRESHOLDS,
-    passed: true
+    passed: true,
   };
 
   // Check if all thresholds are met
@@ -159,7 +161,7 @@ function generateCoverageReport(coverage) {
   }
 
   // Save report
-  const reportsDir = path.join(process.cwd(), 'coverage', 'reports');
+  const reportsDir = path.join(process.cwd(), "coverage", "reports");
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });
   }
@@ -172,7 +174,7 @@ function generateCoverageReport(coverage) {
 }
 
 function main() {
-  console.log('🧪 Running Coverage Quality Gates...\n');
+  console.log("🧪 Running Coverage Quality Gates...\n");
 
   try {
     const coverage = readCoverageReport();
@@ -183,22 +185,21 @@ function main() {
 
     const report = generateCoverageReport(coverage);
 
-    console.log('\n🏁 Coverage Summary:');
-    console.log('================================');
-    console.log(`Global thresholds: ${globalPassed ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`Critical files: ${criticalPassed ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`Low coverage check: ${lowCoveragePassed ? '✅ PASSED' : '⚠️  WARNING'}`);
+    console.log("\n🏁 Coverage Summary:");
+    console.log("================================");
+    console.log(`Global thresholds: ${globalPassed ? "✅ PASSED" : "❌ FAILED"}`);
+    console.log(`Critical files: ${criticalPassed ? "✅ PASSED" : "❌ FAILED"}`);
+    console.log(`Low coverage check: ${lowCoveragePassed ? "✅ PASSED" : "⚠️  WARNING"}`);
 
     if (!globalPassed || !criticalPassed) {
-      console.log('\n❌ Coverage quality gates FAILED');
-      console.log('Please improve test coverage before merging.');
+      console.log("\n❌ Coverage quality gates FAILED");
+      console.log("Please improve test coverage before merging.");
       process.exit(1);
     }
 
-    console.log('\n✅ All coverage quality gates PASSED');
-
+    console.log("\n✅ All coverage quality gates PASSED");
   } catch (error) {
-    console.error('❌ Error running coverage checks:', error.message);
+    console.error("❌ Error running coverage checks:", error.message);
     process.exit(1);
   }
 }

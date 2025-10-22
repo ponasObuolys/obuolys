@@ -10,6 +10,7 @@
 ## 🔴 KRITINIAI SEO PAGEINIMAI (Aukščiausias prioritetas)
 
 ### 1. Meta Tags & Structured Data
+
 **Tikslas:** Pagerinti puslapių indeksavimą ir socialinį dalijimąsi
 
 - [x] **Dinaminiai meta title/description kiekvienam puslapiui** ✅
@@ -55,6 +56,7 @@
 ---
 
 ### 2. Sitemap & Robots.txt
+
 **Tikslas:** Palengvinti Google crawling ir indeksavimą
 
 - [x] **XML Sitemap Generavimas** ✅
@@ -84,6 +86,7 @@
 ---
 
 ### 3. Core Web Vitals Optimizacija
+
 **Tikslas:** Pagerinti puslapio greičio rodiklius (LCP, FID, CLS)
 
 - [ ] **Image Optimization**
@@ -128,6 +131,7 @@
 ## 🟡 SVARBŪS SEO PAGEINIMAI
 
 ### 4. Content SEO
+
 **Tikslas:** Semantic HTML ir content struktūra SEO draugiškai
 
 - [ ] **Semantic HTML5 Struktūra**
@@ -171,6 +175,7 @@
 ---
 
 ### 5. Performance Optimization
+
 **Tikslas:** Puslapio greitis ir UX pagerinimas
 
 - [ ] **Lazy Loading Pagerinimas**
@@ -211,6 +216,7 @@
 ---
 
 ### 6. Mobile & Accessibility
+
 **Tikslas:** Mobile-first ir prieinamumas
 
 - [ ] **Mobile-First Responsive Design Audit**
@@ -246,6 +252,7 @@
 ## 🟢 PAPILDOMI PAGEINIMAI
 
 ### 7. Technical SEO
+
 **Tikslas:** Technical best practices
 
 - [ ] **404 Puslapio Optimizacija**
@@ -284,6 +291,7 @@
 ---
 
 ### 8. Analytics & Monitoring
+
 **Tikslas:** SEO performance tracking
 
 - [ ] **Google Search Console Integration**
@@ -318,6 +326,7 @@
 ---
 
 ### 9. Content Strategy
+
 **Tikslas:** Content marketing SEO
 
 - [ ] **Blog Posting Frequency**
@@ -352,6 +361,7 @@
 ## 📊 SPECIFIŠKI PAGEINIMAI "PONAS OBUOLYS" BRAND'UI
 
 ### 10. Brand Optimization
+
 **Tikslas:** "Ponas Obuolys" brand stiprinimas
 
 - [ ] **"Ponas Obuolys" Keyword Optimization**
@@ -394,6 +404,7 @@
 ## 📋 IMPLEMENTAVIMO TVARKA
 
 ### Phase 1: Greitas Efektas (1-2 savaitės)
+
 **Prioritetas: 🔴 Kritiniai**
 
 1. ✅ Meta tags & Structured Data (#1)
@@ -406,6 +417,7 @@
 ---
 
 ### Phase 2: Vidutinis Efektas (2-4 savaitės)
+
 **Prioritetas: 🟡 Svarbūs**
 
 5. ✅ Performance optimization (#5)
@@ -418,6 +430,7 @@
 ---
 
 ### Phase 3: Ilgalaikis (1-3 mėnesiai)
+
 **Prioritetas: 🟢 Papildomi**
 
 9. ✅ Technical SEO (#7)
@@ -432,6 +445,7 @@
 ## 📊 SUCCESS METRICS
 
 ### KPIs Tracking
+
 - **Organic Traffic:** +50% per 6 mėnesius
 - **Keyword Rankings:** Top 3 "AI naujienos Lietuvoje"
 - **Page Speed:** <2s LCP, >90 Lighthouse score
@@ -440,6 +454,7 @@
 - **Bounce Rate:** <40%
 
 ### Tools
+
 - Google Search Console
 - Google Analytics 4
 - Lighthouse CI
@@ -450,19 +465,20 @@
 
 ## 🔄 ATNAUJINIMŲ LOG
 
-| Data | Atlikta | Autorius | Pastabos |
-|------|---------|----------|----------|
-| 2025-10-01 | Sukurtas SEO planas | Claude | Pradinis dokumentas |
-| 2025-10-01 | **Phase 1 COMPLETED - 100%** ✅ | Claude | Full Meta Tags & Structured Data implementation |
-| 2025-10-01 | **Sitemap Generated** ✅ | Claude | Generated 66 URLs, ready for deployment |
-| 2025-10-01 | **Deployment & Testing** ✅ | Claude | robots.txt & sitemap.xml tested on production |
-| 2025-10-01 | **Documentation Created** ✅ | Claude | Test results & GSC setup guides |
+| Data       | Atlikta                         | Autorius | Pastabos                                        |
+| ---------- | ------------------------------- | -------- | ----------------------------------------------- |
+| 2025-10-01 | Sukurtas SEO planas             | Claude   | Pradinis dokumentas                             |
+| 2025-10-01 | **Phase 1 COMPLETED - 100%** ✅ | Claude   | Full Meta Tags & Structured Data implementation |
+| 2025-10-01 | **Sitemap Generated** ✅        | Claude   | Generated 66 URLs, ready for deployment         |
+| 2025-10-01 | **Deployment & Testing** ✅     | Claude   | robots.txt & sitemap.xml tested on production   |
+| 2025-10-01 | **Documentation Created** ✅    | Claude   | Test results & GSC setup guides                 |
 
 ### Detali Progress Summary (2025-10-01)
 
 #### ✅ COMPLETED (Phase 1 - 100%)
 
 **Infrastructure sukurta:**
+
 - ✅ `src/utils/seo.ts` - SEO utility funkcijos (400+ lines)
   - Dynamic meta tag generation
   - Structured data generators (Article, Course, Organization, WebSite, Person, Breadcrumb)
@@ -476,6 +492,7 @@
   - `index.ts` - Exports
 
 **Pages Integration (100% Complete):**
+
 - ✅ Home Page (`src/pages/Index.tsx`)
   - Organization & WebSite structured data
   - Dynamic meta tags + OpenGraph & Twitter Cards
@@ -498,6 +515,7 @@
   - Contact meta tags + Consultation keywords
 
 **SEO Configuration:**
+
 - ✅ `public/robots.txt` - Updated with proper rules
   - Disallow admin & auth paths
   - Allow all public content
@@ -512,6 +530,7 @@
 - ✅ `public/sitemap.xml` - Generated sitemap file ready for deployment
 
 **Testing & Quality:**
+
 - ✅ TypeScript compilation passed (`npm run type-check`)
 - ✅ ESLint passed (no errors)
 - ✅ Production build successful (`npm run build` - 3.55s)
@@ -523,12 +542,14 @@
 **Time Spent:** ~2 hours
 
 **Deployment Infrastructure:**
+
 - ✅ `scripts/generate-sitemap.js` - Sitemap generation script (200+ lines)
 - ✅ `SEO_DEPLOYMENT_GUIDE.md` - Comprehensive deployment guide (450+ lines)
 - ✅ `public/sitemap.xml` - Generated sitemap (66 URLs)
 - ✅ `package.json` - Added sitemap:generate script
 
 **Documentation Created:**
+
 - ✅ `claudedocs/SEO_Deployment_Test_Results.md` - Production test results
 - ✅ `claudedocs/Google_Search_Console_Setup.md` - Complete GSC setup guide
 
@@ -537,6 +558,7 @@
 #### 📋 NEXT STEPS (Phase 2 & Deployment)
 
 **Priority 1 - Deployment & Testing:**
+
 1. ✅ **Sitemap Generation & Deployment** (COMPLETED)
    - ✅ Generated static sitemap.xml to public/ (66 URLs)
    - ✅ Created npm script: `npm run sitemap:generate`
@@ -558,12 +580,12 @@
    - [ ] Twitter Card Validator: https://cards-dev.twitter.com/validator
    - [ ] LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
 
-**Priority 2 - Phase 2 Preparation:**
-4. **Image Optimization Strategy**
-   - WebP conversion pipeline
-   - Responsive image sizes (srcset)
-   - Priority loading implementation
-   - Lazy loading optimization
+**Priority 2 - Phase 2 Preparation:** 4. **Image Optimization Strategy**
+
+- WebP conversion pipeline
+- Responsive image sizes (srcset)
+- Priority loading implementation
+- Lazy loading optimization
 
 5. **Performance Audit**
    - Lighthouse CI setup

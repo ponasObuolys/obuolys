@@ -55,7 +55,11 @@ const MetricCard = ({
   </div>
 );
 
-export const WebVitalsTab = ({ getLatestMetric, getRatingColor, formatValue }: WebVitalsTabProps) => {
+export const WebVitalsTab = ({
+  getLatestMetric,
+  getRatingColor,
+  formatValue,
+}: WebVitalsTabProps) => {
   const coreMetrics = ["LCP", "INP", "CLS"];
   const otherMetrics = ["FCP", "TTFB"];
 
@@ -67,7 +71,7 @@ export const WebVitalsTab = ({ getLatestMetric, getRatingColor, formatValue }: W
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {coreMetrics.map((metricName) => (
+            {coreMetrics.map(metricName => (
               <MetricCard
                 key={metricName}
                 metricName={metricName}
@@ -86,7 +90,7 @@ export const WebVitalsTab = ({ getLatestMetric, getRatingColor, formatValue }: W
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {otherMetrics.map((metricName) => (
+            {otherMetrics.map(metricName => (
               <MetricCard
                 key={metricName}
                 metricName={metricName}

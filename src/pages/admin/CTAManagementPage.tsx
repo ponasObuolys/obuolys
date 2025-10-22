@@ -1,7 +1,7 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CTAManagement } from '@/components/admin/cta-management';
-import { StickyMessagesManagement } from '@/components/admin/sticky-messages-management';
-import { HeroManagement } from '@/components/admin/hero-management';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CTAManagement } from "@/components/admin/cta-management";
+import { StickyMessagesManagement } from "@/components/admin/sticky-messages-management";
+import { HeroManagement } from "@/components/admin/hero-management";
 
 export default function CTAManagementPage() {
   return (

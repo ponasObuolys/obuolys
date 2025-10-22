@@ -4,7 +4,7 @@
  * but only when the browser isn't busy with other tasks
  */
 
-import { log } from '@/utils/browserLogger';
+import { log } from "@/utils/browserLogger";
 
 /**
  * Preload a single image
@@ -26,9 +26,7 @@ export const preloadImage = (src: string): Promise<HTMLImageElement> => {
  */
 export const preloadImagesWhenIdle = (imageSources: string[]): void => {
   // If requestIdleCallback is not supported, use setTimeout as fallback
-  const requestIdleCallback = 
-    window.requestIdleCallback || 
-    ((cb) => setTimeout(cb, 1));
+  const requestIdleCallback = window.requestIdleCallback || (cb => setTimeout(cb, 1));
 
   // Preload images when browser is idle
   requestIdleCallback(() => {
@@ -63,12 +61,12 @@ export const extractImagesFromHTML = (htmlContent: string): string[] => {
   const imgRegex = /<img[^>]+src="([^">]+)"/g;
   const images: string[] = [];
   let match;
-  
+
   while ((match = imgRegex.exec(htmlContent)) !== null) {
     if (match[1]) {
       images.push(match[1]);
     }
   }
-  
+
   return images;
 };

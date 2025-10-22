@@ -53,14 +53,19 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
                     </p>
                   )}
                 </div>
-                <Badge variant={tool.published ? "default" : "secondary"} className="text-xs flex-shrink-0">
+                <Badge
+                  variant={tool.published ? "default" : "secondary"}
+                  className="text-xs flex-shrink-0"
+                >
                   {tool.published ? "Publikuota" : "Juodraštis"}
                 </Badge>
               </div>
 
               {/* Info */}
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                <div>Kategorija: <span className="font-medium">{tool.category || "Nenurodyta"}</span></div>
+                <div>
+                  Kategorija: <span className="font-medium">{tool.category || "Nenurodyta"}</span>
+                </div>
                 {tool.featured && (
                   <Badge variant="outline" className="text-xs h-5">
                     ⭐ Rekomenduojamas
@@ -85,17 +90,17 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
 
               {/* Actions */}
               <div className="flex flex-wrap gap-2 pt-2 border-t">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => onEdit(tool.id)}
                   className="text-xs h-8"
                 >
                   <FilePenLine className="h-4 w-4 mr-1" /> Redaguoti
                 </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
+                <Button
+                  variant="destructive"
+                  size="sm"
                   onClick={() => handleDelete(tool.id)}
                   className="text-xs h-8"
                 >

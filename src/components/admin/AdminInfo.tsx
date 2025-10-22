@@ -1,9 +1,9 @@
-import { useAuth } from '@/context/AuthContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, ExternalLink, User, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Shield, ExternalLink, User, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const AdminInfo = () => {
   const { user, isAdmin } = useAuth();
@@ -23,7 +23,8 @@ const AdminInfo = () => {
             <Alert>
               <Settings className="h-4 w-4" />
               <AlertDescription>
-                <strong>Vartotojas:</strong> {user?.email}<br />
+                <strong>Vartotojas:</strong> {user?.email}
+                <br />
                 <strong>Admin statusas:</strong> Aktyvus
               </AlertDescription>
             </Alert>
@@ -63,15 +64,14 @@ const AdminInfo = () => {
           {!user ? (
             <Alert>
               <User className="h-4 w-4" />
-              <AlertDescription>
-                Pirmiausia turite prisijungti prie sistemos.
-              </AlertDescription>
+              <AlertDescription>Pirmiausia turite prisijungti prie sistemos.</AlertDescription>
             </Alert>
           ) : (
             <Alert>
               <User className="h-4 w-4" />
               <AlertDescription>
-                <strong>Prisijungęs vartotojas:</strong> {user.email}<br />
+                <strong>Prisijungęs vartotojas:</strong> {user.email}
+                <br />
                 <strong>Admin teisės:</strong> Neaktyvios
               </AlertDescription>
             </Alert>
@@ -82,10 +82,14 @@ const AdminInfo = () => {
 
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">1</div>
+                <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  1
+                </div>
                 <div>
                   <p className="font-medium">Automatinis būdas (jei RLS leidžia):</p>
-                  <p className="text-sm text-muted-foreground">Naudokite admin setup puslapį automatiniam admin teisių suteikimui.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Naudokite admin setup puslapį automatiniam admin teisių suteikimui.
+                  </p>
                   {user && (
                     <Button asChild variant="outline" className="mt-2">
                       <Link to="/admin/setup" className="flex items-center space-x-2">
@@ -98,7 +102,9 @@ const AdminInfo = () => {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">2</div>
+                <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                  2
+                </div>
                 <div>
                   <p className="font-medium">Rankinis būdas per Supabase:</p>
                   <div className="text-sm text-muted-foreground space-y-1">

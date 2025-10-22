@@ -1,92 +1,113 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, Building, Calendar, DollarSign, Clock, User, FileText } from 'lucide-react';
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, Phone, Building, Calendar, DollarSign, Clock, User, FileText } from "lucide-react";
 
 interface Inquiry {
   id: string;
   created_at: string;
   full_name: string;
   email: string;
-  phone?: string;
-  company_name?: string;
-  company_size?: string;
+  phone?: string | null;
+  company_name?: string | null;
+  company_size?: string | null;
   project_type: string;
-  budget_range?: string;
-  timeline?: string;
+  budget_range?: string | null;
+  timeline?: string | null;
   description: string;
-  current_solution?: string;
+  current_solution?: string | null;
   status: string;
-  notes?: string;
-  admin_notes?: string;
+  notes?: string | null;
+  admin_notes?: string | null;
 }
 
 const projectTypeLabels: Record<string, string> = {
-  crm: 'CRM Sistema',
-  logistics: 'Logistikos Sprendimas',
-  automation: 'Automatizacija',
-  analytics: 'Analitika',
-  scheduling: 'Grafikų Planavimas',
-  accounting: 'Buhalterija',
-  other: 'Kita'
+  crm: "CRM Sistema",
+  logistics: "Logistikos Sprendimas",
+  automation: "Automatizacija",
+  analytics: "Analitika",
+  scheduling: "Grafikų Planavimas",
+  accounting: "Buhalterija",
+  other: "Kita",
 };
 
 const budgetLabels: Record<string, string> = {
-  under_5k: 'Iki €5,000',
-  '5k_12k': '€5,000 - €12,000',
-  '12k_25k': '€12,000 - €25,000',
-  over_25k: 'Virš €25,000',
-  not_sure: 'Dar nežinau'
+  under_5k: "Iki €5,000",
+  "5k_12k": "€5,000 - €12,000",
+  "12k_25k": "€12,000 - €25,000",
+  over_25k: "Virš €25,000",
+  not_sure: "Dar nežinau",
 };
 
 const timelineLabels: Record<string, string> = {
-  urgent: 'Skubu',
-  '1_2_months': '1-2 mėnesiai',
-  '2_3_months': '2-3 mėnesiai',
-  flexible: 'Lanksčiai'
+  urgent: "Skubu",
+  "1_2_months": "1-2 mėnesiai",
+  "2_3_months": "2-3 mėnesiai",
+  flexible: "Lanksčiai",
 };
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-  new: { label: 'Nauja', color: 'bg-blue-500' },
-  contacted: { label: 'Susisiekta', color: 'bg-yellow-500' },
-  in_discussion: { label: 'Diskusijoje', color: 'bg-purple-500' },
-  quoted: { label: 'Pasiūlymas išsiųstas', color: 'bg-orange-500' },
-  accepted: { label: 'Priimta', color: 'bg-green-500' },
-  rejected: { label: 'Atmesta', color: 'bg-red-500' },
-  completed: { label: 'Užbaigta', color: 'bg-gray-500' }
+  new: { label: "Nauja", color: "bg-blue-500" },
+  contacted: { label: "Susisiekta", color: "bg-yellow-500" },
+  in_discussion: { label: "Diskusijoje", color: "bg-purple-500" },
+  quoted: { label: "Pasiūlymas išsiųstas", color: "bg-orange-500" },
+  accepted: { label: "Priimta", color: "bg-green-500" },
+  rejected: { label: "Atmesta", color: "bg-red-500" },
+  completed: { label: "Užbaigta", color: "bg-gray-500" },
 };
 
 const InquiriesPage = () => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const { toast } = useToast();
 
   const fetchInquiries = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('custom_tool_inquiries')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("custom_tool_inquiries")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setInquiries(data || []);
+
+      const normalizedInquiries: Inquiry[] = (data ?? []).map(
+        (inquiry: Record<string, unknown>) => ({
+          id: String(inquiry.id ?? ""),
+          created_at: String(inquiry.created_at ?? ""),
+          full_name: String(inquiry.full_name ?? ""),
+          email: String(inquiry.email ?? ""),
+          phone: (inquiry.phone as string | null | undefined) ?? null,
+          company_name: (inquiry.company_name as string | null | undefined) ?? null,
+          company_size: (inquiry.company_size as string | null | undefined) ?? null,
+          project_type: String(inquiry.project_type ?? "other"),
+          budget_range: (inquiry.budget_range as string | null | undefined) ?? null,
+          timeline: (inquiry.timeline as string | null | undefined) ?? null,
+          description: String(inquiry.description ?? ""),
+          current_solution: (inquiry.current_solution as string | null | undefined) ?? null,
+          status: String(inquiry.status ?? "new"),
+          notes: (inquiry.notes as string | null | undefined) ?? null,
+          admin_notes: (inquiry.admin_notes as string | null | undefined) ?? null,
+        })
+      );
+
+      setInquiries(normalizedInquiries);
     } catch {
       toast({
-        title: 'Klaida',
-        description: 'Nepavyko gauti užklausų',
-        variant: 'destructive'
+        title: "Klaida",
+        description: "Nepavyko gauti užklausų",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -100,29 +121,27 @@ const InquiriesPage = () => {
   const updateInquiryStatus = async (id: string, newStatus: string) => {
     try {
       const { error } = await supabase
-        .from('custom_tool_inquiries')
+        .from("custom_tool_inquiries")
         .update({ status: newStatus })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
-      setInquiries(prev =>
-        prev.map(inq => (inq.id === id ? { ...inq, status: newStatus } : inq))
-      );
+      setInquiries(prev => prev.map(inq => (inq.id === id ? { ...inq, status: newStatus } : inq)));
 
       if (selectedInquiry?.id === id) {
-        setSelectedInquiry(prev => prev ? { ...prev, status: newStatus } : null);
+        setSelectedInquiry(prev => (prev ? { ...prev, status: newStatus } : null));
       }
 
       toast({
-        title: 'Sėkmingai atnaujinta',
-        description: 'Užklausos statusas pakeistas'
+        title: "Sėkmingai atnaujinta",
+        description: "Užklausos statusas pakeistas",
       });
     } catch {
       toast({
-        title: 'Klaida',
-        description: 'Nepavyko atnaujinti statuso',
-        variant: 'destructive'
+        title: "Klaida",
+        description: "Nepavyko atnaujinti statuso",
+        variant: "destructive",
       });
     }
   };
@@ -130,32 +149,29 @@ const InquiriesPage = () => {
   const updateAdminNotes = async (id: string, notes: string) => {
     try {
       const { error } = await supabase
-        .from('custom_tool_inquiries')
+        .from("custom_tool_inquiries")
         .update({ admin_notes: notes })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
-      setInquiries(prev =>
-        prev.map(inq => (inq.id === id ? { ...inq, admin_notes: notes } : inq))
-      );
+      setInquiries(prev => prev.map(inq => (inq.id === id ? { ...inq, admin_notes: notes } : inq)));
 
       toast({
-        title: 'Sėkmingai išsaugota',
-        description: 'Admin pastabos atnaujintos'
+        title: "Sėkmingai išsaugota",
+        description: "Admin pastabos atnaujintos",
       });
     } catch {
       toast({
-        title: 'Klaida',
-        description: 'Nepavyko išsaugoti pastabų',
-        variant: 'destructive'
+        title: "Klaida",
+        description: "Nepavyko išsaugoti pastabų",
+        variant: "destructive",
       });
     }
   };
 
-  const filteredInquiries = filterStatus === 'all'
-    ? inquiries
-    : inquiries.filter(inq => inq.status === filterStatus);
+  const filteredInquiries =
+    filterStatus === "all" ? inquiries : inquiries.filter(inq => inq.status === filterStatus);
 
   if (loading) {
     return (
@@ -169,7 +185,9 @@ const InquiriesPage = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Verslo Sprendimų Užklausos</h1>
-        <p className="text-foreground/70">Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui</p>
+        <p className="text-foreground/70">
+          Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui
+        </p>
       </div>
 
       {/* Filter */}
@@ -207,13 +225,13 @@ const InquiriesPage = () => {
                 onClick={() => setSelectedInquiry(inquiry)}
                 className={`dark-card cursor-pointer transition-all ${
                   selectedInquiry?.id === inquiry.id
-                    ? 'border-2 border-primary'
-                    : 'hover:border-primary/50'
+                    ? "border-2 border-primary"
+                    : "hover:border-primary/50"
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-foreground text-left">{inquiry.full_name}</h3>
-                  <Badge className={statusLabels[inquiry.status]?.color || 'bg-gray-500'}>
+                  <Badge className={statusLabels[inquiry.status]?.color || "bg-gray-500"}>
                     {statusLabels[inquiry.status]?.label || inquiry.status}
                   </Badge>
                 </div>
@@ -221,12 +239,12 @@ const InquiriesPage = () => {
                   {projectTypeLabels[inquiry.project_type]}
                 </p>
                 <p className="text-xs text-foreground/50 text-left">
-                  {new Date(inquiry.created_at).toLocaleDateString('lt-LT', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                  {new Date(inquiry.created_at).toLocaleDateString("lt-LT", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
               </div>
@@ -248,12 +266,12 @@ const InquiriesPage = () => {
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <Badge className={statusLabels[selectedInquiry.status]?.color || 'bg-gray-500'}>
+                  <Badge className={statusLabels[selectedInquiry.status]?.color || "bg-gray-500"}>
                     {statusLabels[selectedInquiry.status]?.label || selectedInquiry.status}
                   </Badge>
                   <Select
                     value={selectedInquiry.status}
-                    onValueChange={(value) => updateInquiryStatus(selectedInquiry.id, value)}
+                    onValueChange={value => updateInquiryStatus(selectedInquiry.id, value)}
                   >
                     <SelectTrigger className="w-48">
                       <SelectValue />
@@ -272,18 +290,26 @@ const InquiriesPage = () => {
               <div className="space-y-6">
                 {/* Contact Info */}
                 <div className="border-t border-border pt-4">
-                  <h3 className="font-bold text-foreground mb-3 text-left">Kontaktinė informacija</h3>
+                  <h3 className="font-bold text-foreground mb-3 text-left">
+                    Kontaktinė informacija
+                  </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-primary" />
-                      <a href={`mailto:${selectedInquiry.email}`} className="text-primary hover:underline">
+                      <a
+                        href={`mailto:${selectedInquiry.email}`}
+                        className="text-primary hover:underline"
+                      >
                         {selectedInquiry.email}
                       </a>
                     </div>
                     {selectedInquiry.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4 text-primary" />
-                        <a href={`tel:${selectedInquiry.phone}`} className="text-primary hover:underline">
+                        <a
+                          href={`tel:${selectedInquiry.phone}`}
+                          className="text-primary hover:underline"
+                        >
                           {selectedInquiry.phone}
                         </a>
                       </div>
@@ -297,7 +323,9 @@ const InquiriesPage = () => {
                     {selectedInquiry.company_size && (
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-foreground/60" />
-                        <span className="text-foreground/80 capitalize">{selectedInquiry.company_size}</span>
+                        <span className="text-foreground/80 capitalize">
+                          {selectedInquiry.company_size}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -326,12 +354,13 @@ const InquiriesPage = () => {
                     <div className="flex items-center gap-2 md:col-span-2">
                       <Calendar className="w-4 h-4 text-foreground/60" />
                       <span className="text-foreground/80">
-                        Gauta: {new Date(selectedInquiry.created_at).toLocaleDateString('lt-LT', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                        Gauta:{" "}
+                        {new Date(selectedInquiry.created_at).toLocaleDateString("lt-LT", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                       </span>
                     </div>
@@ -352,7 +381,9 @@ const InquiriesPage = () => {
                 {/* Current Solution */}
                 {selectedInquiry.current_solution && (
                   <div className="border-t border-border pt-4">
-                    <h3 className="font-bold text-foreground mb-3 text-left">Dabartinis sprendimas</h3>
+                    <h3 className="font-bold text-foreground mb-3 text-left">
+                      Dabartinis sprendimas
+                    </h3>
                     <p className="text-foreground/80 whitespace-pre-wrap text-left">
                       {selectedInquiry.current_solution}
                     </p>
@@ -363,9 +394,11 @@ const InquiriesPage = () => {
                 <div className="border-t border-border pt-4">
                   <h3 className="font-bold text-foreground mb-3 text-left">Admin pastabos</h3>
                   <Textarea
-                    value={selectedInquiry.admin_notes || ''}
-                    onChange={(e) => {
-                      setSelectedInquiry(prev => prev ? { ...prev, admin_notes: e.target.value } : null);
+                    value={selectedInquiry.admin_notes || ""}
+                    onChange={e => {
+                      setSelectedInquiry(prev =>
+                        prev ? { ...prev, admin_notes: e.target.value } : null
+                      );
                     }}
                     placeholder="Įrašykite pastabas apie šią užklausą..."
                     rows={4}
@@ -373,9 +406,8 @@ const InquiriesPage = () => {
                   />
                   <Button
                     onClick={() => {
-                      if (selectedInquiry.admin_notes !== undefined) {
-                        updateAdminNotes(selectedInquiry.id, selectedInquiry.admin_notes);
-                      }
+                      const notesToSave = selectedInquiry.admin_notes ?? "";
+                      updateAdminNotes(selectedInquiry.id, notesToSave);
                     }}
                     className="button-primary"
                   >
@@ -386,7 +418,7 @@ const InquiriesPage = () => {
                 {/* Quick Actions */}
                 <div className="border-t border-border pt-4 flex gap-3">
                   <Button
-                    onClick={() => window.open(`mailto:${selectedInquiry.email}`, '_blank')}
+                    onClick={() => window.open(`mailto:${selectedInquiry.email}`, "_blank")}
                     className="button-primary"
                   >
                     <Mail className="w-4 h-4 mr-2" />
@@ -394,7 +426,7 @@ const InquiriesPage = () => {
                   </Button>
                   {selectedInquiry.phone && (
                     <Button
-                      onClick={() => window.open(`tel:${selectedInquiry.phone}`, '_blank')}
+                      onClick={() => window.open(`tel:${selectedInquiry.phone}`, "_blank")}
                       className="button-outline"
                     >
                       <Phone className="w-4 h-4 mr-2" />

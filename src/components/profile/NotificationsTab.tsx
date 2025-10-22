@@ -47,7 +47,8 @@ export const NotificationsTab = ({
 
         <div className="rounded-lg bg-muted/50 p-4 text-left">
           <p className="text-sm text-muted-foreground">
-            <strong>Pastaba:</strong> Kitos pranešimų funkcijos šiuo metu yra kuriamos ir netrukus bus prieinamos.
+            <strong>Pastaba:</strong> Kitos pranešimų funkcijos šiuo metu yra kuriamos ir netrukus
+            bus prieinamos.
           </p>
         </div>
       </CardContent>

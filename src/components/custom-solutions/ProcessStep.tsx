@@ -21,17 +21,13 @@ const ProcessStep = ({ step }: ProcessStepProps) => {
           </div>
         </div>
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-foreground mb-1 text-left">
-            {step.title}
-          </h3>
+          <h3 className="text-xl font-bold text-foreground mb-1 text-left">{step.title}</h3>
           <p className="text-sm text-foreground/60 text-left">{step.duration}</p>
         </div>
         <div className="text-4xl">{step.icon}</div>
       </div>
 
-      <p className="text-foreground/80 mb-4 text-left leading-relaxed">
-        {step.description}
-      </p>
+      <p className="text-foreground/80 mb-4 text-left leading-relaxed">{step.description}</p>
 
       <div className="border-t border-border pt-4">
         <p className="text-sm text-foreground/70 text-left">

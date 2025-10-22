@@ -26,11 +26,7 @@ export const BasicFields = ({ form, onTitleChange }: BasicFieldsProps) => {
             <FormItem>
               <FormLabel>Pavadinimas</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Publikacijos pavadinimas"
-                  {...field}
-                  onChange={onTitleChange}
-                />
+                <Input placeholder="Publikacijos pavadinimas" {...field} onChange={onTitleChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

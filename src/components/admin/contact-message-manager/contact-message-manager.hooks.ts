@@ -19,7 +19,7 @@ export const useContactMessages = () => {
 
       if (error) throw error;
 
-      const normalized: ContactMessage[] = (data ?? []).map((row) => ({
+      const normalized: ContactMessage[] = (data ?? []).map(row => ({
         id: row.id,
         name: row.name,
         email: row.email,
@@ -56,11 +56,14 @@ export const useMessageActions = (
 
   const markAsRead = async (id: string) => {
     try {
-      const { error } = await supabase.from("contact_messages").update({ status: "read" }).eq("id", id);
+      const { error } = await supabase
+        .from("contact_messages")
+        .update({ status: "read" })
+        .eq("id", id);
 
       if (error) throw error;
 
-      setMessages(messages.map((msg) => (msg.id === id ? { ...msg, status: "read" as const } : msg)));
+      setMessages(messages.map(msg => (msg.id === id ? { ...msg, status: "read" as const } : msg)));
 
       toast({
         title: "Sėkmė",
@@ -86,7 +89,7 @@ export const useMessageActions = (
       if (error) throw error;
 
       setMessages(
-        messages.map((msg) => (msg.id === id ? { ...msg, status: "unread" as const } : msg))
+        messages.map(msg => (msg.id === id ? { ...msg, status: "unread" as const } : msg))
       );
 
       toast({
@@ -113,7 +116,7 @@ export const useMessageActions = (
 
       if (error) throw error;
 
-      setMessages(messages.filter((msg) => msg.id !== id));
+      setMessages(messages.filter(msg => msg.id !== id));
 
       toast({
         title: "Sėkmė",

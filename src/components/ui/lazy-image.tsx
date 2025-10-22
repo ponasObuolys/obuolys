@@ -148,8 +148,8 @@ const LazyImageInner: React.FC<LazyImageProps> = ({
   // CLS optimization: Calculate inline styles for dimensions
   const dimensionStyles: React.CSSProperties = {
     ...(aspectRatio && { aspectRatio }),
-    ...(width && { width: typeof width === 'number' ? `${width}px` : width }),
-    ...(height && { height: typeof height === 'number' ? `${height}px` : height }),
+    ...(width && { width: typeof width === "number" ? `${width}px` : width }),
+    ...(height && { height: typeof height === "number" ? `${height}px` : height }),
   };
 
   // Show error fallback if image failed to load and error fallback is enabled

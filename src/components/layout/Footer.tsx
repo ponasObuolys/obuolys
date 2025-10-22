@@ -1,11 +1,11 @@
-import { SocialLinks } from '@/components/ui/SocialLinks';
-import { Link } from 'react-router-dom';
+import { SocialLinks } from "@/components/ui/SocialLinks";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer 
+    <footer
       className="bg-secondary text-white mt-16 w-full"
-      itemScope 
+      itemScope
       itemType="https://schema.org/WPFooter"
       role="contentinfo"
     >
@@ -14,7 +14,10 @@ const Footer = () => {
         <div itemScope itemType="https://schema.org/Person" className="hidden">
           <meta itemProp="name" content="ponas Obuolys" />
           <meta itemProp="jobTitle" content="AI specialistas" />
-          <meta itemProp="description" content="Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba" />
+          <meta
+            itemProp="description"
+            content="Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba"
+          />
           <meta itemProp="email" content="labas@ponasobuolys.lt" />
           <meta itemProp="url" content="https://ponasobuolys.lt" />
         </div>

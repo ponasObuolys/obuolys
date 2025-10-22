@@ -5,11 +5,13 @@
 Pridėtos dvi naujos analitikos funkcijos:
 
 ### 1. 🔥 Trending Articles (Populiariausi Straipsniai)
+
 - Rodo TOP straipsnius pagal peržiūras per pasirinktą laikotarpį
 - Integruota į pagrindinį puslapį ir Admin Dashboard
 - Realaus laiko duomenys su 5 min cache
 
 ### 2. 📱 Device & Browser Stats (Įrenginių ir Naršyklių Statistika)
+
 - Rodo, kokiais įrenginiais (Mobile/Desktop/Tablet) skaito vartotojai
 - Rodo, kokiomis naršyklėmis (Chrome/Firefox/Safari/etc.) skaito
 - Integruota į Admin Dashboard
@@ -58,10 +60,12 @@ npx supabase gen types typescript --project-id <your-project-id> > src/integrati
 ### 3. Patikrinti, ar Veikia
 
 **Trending Articles:**
+
 - Atidaryti pagrindinį puslapį (/)
 - Turėtumėte matyti sekciją "Populiariausia šią savaitę" po featured straipsniais
 
 **Device Stats:**
+
 - Prisijungti kaip admin
 - Eiti į Admin Dashboard
 - Overview tab'e turėtumėte matyti įrenginių ir naršyklių statistiką
@@ -71,17 +75,21 @@ npx supabase gen types typescript --project-id <your-project-id> > src/integrati
 ## 📁 Sukurti Failai
 
 ### SQL Migracija:
+
 - `supabase/migrations/20250120_trending_and_device_stats.sql`
 
 ### Hooks:
+
 - `src/hooks/use-trending-articles.ts`
 - `src/hooks/use-device-stats.ts`
 
 ### Komponentai:
+
 - `src/components/widgets/trending-articles.tsx`
 - `src/components/widgets/device-stats.tsx`
 
 ### Atnaujinti Puslapiai:
+
 - `src/pages/Index.tsx` - pridėtas TrendingArticles
 - `src/pages/AdminDashboard.tsx` - pridėti abu widget'ai
 
@@ -126,19 +134,23 @@ import { DeviceStats } from '@/components/widgets/device-stats';
 ### SQL Funkcijų Parametrai
 
 **get_trending_articles:**
+
 - `since_date` (TIMESTAMPTZ) - Nuo kada skaičiuoti peržiūras (default: 7 dienos)
 - `limit_count` (INT) - Kiek straipsnių grąžinti (default: 10)
 
 **get_device_breakdown:**
+
 - `since_date` (TIMESTAMPTZ) - Nuo kada skaičiuoti statistiką (default: 30 dienų)
 
 ### React Query Cache
 
 **Trending Articles:**
+
 - staleTime: 5 minutės
 - Automatiškai atsinaujina kas 5 min
 
 **Device Stats:**
+
 - staleTime: 10 minučių
 - Automatiškai atsinaujina kas 10 min
 
@@ -152,7 +164,8 @@ import { DeviceStats } from '@/components/widgets/device-stats';
 
 ### Problema: TypeScript klaidos apie RPC funkcijas
 
-**Sprendimas:** 
+**Sprendimas:**
+
 1. Paleiskite migracijas
 2. Sugeneruokite naujus types (žr. 2 žingsnį)
 3. ARBA ignoruokite - kodas veiks su `as any` assertions
@@ -160,11 +173,13 @@ import { DeviceStats } from '@/components/widgets/device-stats';
 ### Problema: Nėra duomenų widget'uose
 
 **Galimos priežastys:**
+
 1. Dar nėra page_views duomenų duomenų bazėje
 2. Visi straipsniai nepublikuoti (published = false)
 3. Nėra peržiūrų per pasirinktą laikotarpį
 
 **Sprendimas:** Patikrinkite duomenų bazėje:
+
 ```sql
 -- Patikrinti, ar yra page_views
 SELECT COUNT(*) FROM page_views;
@@ -181,6 +196,7 @@ SELECT * FROM get_trending_articles(NOW() - INTERVAL '30 days', 10);
 ## 📊 Duomenų Struktūra
 
 ### TrendingArticle Interface
+
 ```typescript
 {
   id: string;
@@ -193,15 +209,16 @@ SELECT * FROM get_trending_articles(NOW() - INTERVAL '30 days', 10);
 ```
 
 ### DeviceStatsData Interface
+
 ```typescript
 {
   devices: Array<{
-    type: string;        // 'Mobile' | 'Desktop' | 'Tablet'
+    type: string; // 'Mobile' | 'Desktop' | 'Tablet'
     count: number;
     percentage: number;
   }>;
   browsers: Array<{
-    name: string;        // 'Chrome' | 'Firefox' | 'Safari' | etc.
+    name: string; // 'Chrome' | 'Firefox' | 'Safari' | etc.
     count: number;
     percentage: number;
   }>;

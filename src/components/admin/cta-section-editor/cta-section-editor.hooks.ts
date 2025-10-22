@@ -5,7 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import type { TablesInsert } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { log } from "@/utils/browserLogger";
-import { ctaSectionSchema, type CTASection, type CTASectionFormData } from "./cta-section-editor.types";
+import {
+  ctaSectionSchema,
+  type CTASection,
+  type CTASectionFormData,
+} from "./cta-section-editor.types";
 
 export const useCTASectionForm = () => {
   return useForm<CTASectionFormData>({
@@ -67,7 +71,10 @@ export const useCTASectionSubmit = (
       setLoading(true);
 
       if (editingSection) {
-        const { error } = await supabase.from("cta_sections").update(data).eq("id", editingSection.id);
+        const { error } = await supabase
+          .from("cta_sections")
+          .update(data)
+          .eq("id", editingSection.id);
 
         if (error) throw error;
 

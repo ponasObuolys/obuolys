@@ -7,6 +7,7 @@ This directory contains integration tests that test the interaction between your
 Integration tests require a test Supabase instance and are not run by default. To run integration tests:
 
 1. **Set up test environment variables:**
+
 ```bash
 # .env.test.local
 VITE_SUPABASE_URL=your-test-supabase-url
@@ -20,6 +21,7 @@ INTEGRATION_TESTS=true
    - Use test data that can be safely created/deleted
 
 3. **Run integration tests:**
+
 ```bash
 npm run test:integration
 ```
@@ -27,21 +29,25 @@ npm run test:integration
 ## Test Categories
 
 ### Database Operations
+
 - CRUD operations for all main tables (articles, tools, courses, etc.)
 - Complex queries and joins
 - Pagination and performance testing
 
 ### Authentication & Authorization
+
 - User registration and login flows
 - RLS (Row Level Security) policy enforcement
 - Admin vs. regular user permissions
 
 ### Storage Operations
+
 - File uploads and downloads
 - Public URL generation
 - File management operations
 
 ### Real-time Features
+
 - WebSocket connections
 - Real-time data updates
 - Subscription management
@@ -65,6 +71,7 @@ If integration tests fail:
 ## Performance Benchmarks
 
 Integration tests include performance assertions:
+
 - Database queries should complete within 1 second
 - File uploads should complete within 5 seconds
 - Real-time subscriptions should connect within 100ms

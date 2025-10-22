@@ -61,10 +61,7 @@ export const usePublicationForm = () => {
   return form;
 };
 
-export const usePublicationData = (
-  id: string | null,
-  form: UseFormReturn<PublicationFormData>
-) => {
+export const usePublicationData = (id: string | null, form: UseFormReturn<PublicationFormData>) => {
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -87,7 +84,11 @@ export const usePublicationData = (
           title: data.title,
           slug: data.slug,
           description: data.description,
-          category: Array.isArray(data.category) ? data.category : data.category ? [data.category] : [],
+          category: Array.isArray(data.category)
+            ? data.category
+            : data.category
+              ? [data.category]
+              : [],
           read_time: data.read_time,
           author: data.author && data.author.trim() ? data.author : "ponas Obuolys",
           date: new Date(data.date).toISOString().split("T")[0],
@@ -141,11 +142,7 @@ export const useReadTimeCalculation = (
   return { readTimeManuallyEdited, setReadTimeManuallyEdited };
 };
 
-export const usePublicationSubmit = (
-  id: string | null,
-  content: string,
-  onSave: () => void
-) => {
+export const usePublicationSubmit = (id: string | null, content: string, onSave: () => void) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 

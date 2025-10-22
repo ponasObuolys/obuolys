@@ -3,6 +3,7 @@
 ## 🎯 Kas padaryta
 
 ### ✅ CLS Optimizacijos (0.64 → < 0.1)
+
 1. Font loading optimizacija - preload + display:swap
 2. LazyImage dimensions - width/height/aspectRatio
 3. Skeleton loaders - dynamic content
@@ -11,6 +12,7 @@
 6. Responsive header fix (lg→xl breakpoint)
 
 ### ✅ Google Indexing Fixes
+
 1. **Canonical URLs** - non-WWW (`https://ponasobuolys.lt`)
 2. **301 Redirects** - `/mokymai/`, `/tag/`, `/collections/`
 3. **Sitemap.xml** - updated to non-WWW
@@ -22,12 +24,14 @@
 ## 📋 Pre-Deployment Checklist
 
 ### Code Quality
+
 - [x] TypeScript check passed (`npm run type-check`)
 - [x] No console errors in dev server
 - [x] All imports resolved
 - [ ] **Run Lighthouse CLS test** (< 0.1 mobile)
 
 ### Files Changed
+
 - [x] `public/sitemap.xml` - WWW → non-WWW
 - [x] `public/robots.txt` - sitemap URL updated
 - [x] `src/utils/seo.ts` - SITE_CONFIG domain updated
@@ -109,11 +113,13 @@ git push origin main
 ```
 
 Vercel will automatically:
+
 - ✅ Build your changes
 - ✅ Deploy to production
 - ✅ Update `https://ponasobuolys.lt`
 
 **Monitor deployment**:
+
 1. Go to https://vercel.com/dashboard
 2. Watch deployment progress
 3. Wait for "Ready" status (~2-3 min)
@@ -125,6 +131,7 @@ Vercel will automatically:
 **CRITICAL**: Follow [VERCEL_DOMAIN_CONFIG.md](VERCEL_DOMAIN_CONFIG.md)
 
 **Quick steps**:
+
 1. Vercel Dashboard → Project → Settings → Domains
 2. Find `www.ponasobuolys.lt`
 3. Click Edit
@@ -133,6 +140,7 @@ Vercel will automatically:
 6. Save
 
 **Test redirect** (after 5-10 min):
+
 ```bash
 curl -I https://www.ponasobuolys.lt
 
@@ -146,6 +154,7 @@ location: https://ponasobuolys.lt/
 ### 5. **Verify Production** (10 min)
 
 #### A. **CLS Test** (CRITICAL)
+
 ```
 1. Open https://ponasobuolys.lt (incognito mode)
 2. Chrome DevTools (F12)
@@ -155,6 +164,7 @@ location: https://ponasobuolys.lt/
 ```
 
 #### B. **Canonical URLs Test**
+
 ```
 1. View page source (Ctrl+U)
 2. Find: <link rel="canonical" href="https://ponasobuolys.lt/" />
@@ -162,6 +172,7 @@ location: https://ponasobuolys.lt/
 ```
 
 #### C. **Redirect Test**
+
 ```
 Test all old URLs:
 https://www.ponasobuolys.lt → redirects to https://ponasobuolys.lt ✅
@@ -171,6 +182,7 @@ https://ponasobuolys.lt/collections/kursai → redirects to /kursai ✅
 ```
 
 #### D. **Sitemap Test**
+
 ```
 https://ponasobuolys.lt/sitemap.xml
 - Verify all URLs use: https://ponasobuolys.lt (NO www) ✅
@@ -178,6 +190,7 @@ https://ponasobuolys.lt/sitemap.xml
 ```
 
 #### E. **Robots.txt Test**
+
 ```
 https://ponasobuolys.lt/robots.txt
 - Verify sitemap: https://ponasobuolys.lt/sitemap.xml (NO www) ✅
@@ -188,6 +201,7 @@ https://ponasobuolys.lt/robots.txt
 ### 6. **Google Search Console** (15 min)
 
 #### A. **Submit Updated Sitemap**
+
 ```
 1. Go to: https://search.google.com/search-console
 2. Select property: ponasobuolys.lt
@@ -197,6 +211,7 @@ https://ponasobuolys.lt/robots.txt
 ```
 
 #### B. **Request Re-indexing** (problem URLs)
+
 ```
 For each problematic URL from GSC report:
 
@@ -207,11 +222,13 @@ For each problematic URL from GSC report:
 ```
 
 **Priority URLs to re-index**:
+
 - Homepage: `https://ponasobuolys.lt/`
 - Key articles from GSC report
 - Main category pages: `/publikacijos`, `/irankiai`, `/kursai`
 
 #### C. **Remove WWW URLs** (optional)
+
 ```
 1. URL Inspection → Enter www.ponasobuolys.lt/...
 2. If indexed, request removal
@@ -224,24 +241,28 @@ For each problematic URL from GSC report:
 ### 7. **Monitor Results** (1-4 weeks)
 
 #### Week 1: Immediate
+
 - [ ] CLS < 0.1 on all pages (Lighthouse)
 - [ ] WWW redirects working (curl test)
 - [ ] Canonical URLs in place (view source)
 - [ ] Vercel deployment successful
 
 #### Week 2: Short-term
+
 - [ ] Google re-crawls updated sitemap
 - [ ] Some URLs show improved CLS in GSC
 - [ ] Redirect URLs decrease in GSC errors
 - [ ] PageSpeed Insights shows improvements
 
 #### Weeks 3-4: Long-term
+
 - [ ] Most problem URLs re-indexed
 - [ ] CLS issues resolved in GSC Core Web Vitals
 - [ ] "Page with redirect" errors decrease
 - [ ] "Crawled - not indexed" issues resolve
 
 #### Expected GSC Metrics:
+
 ```
 Before:
 - CLS: 0.64 (Poor) - 17 URLs
@@ -259,17 +280,20 @@ After (3-4 weeks):
 ## 📊 Success Metrics
 
 ### Performance (Immediate)
+
 - ✅ CLS < 0.1 (Mobile & Desktop)
 - ✅ LCP < 2.5s
 - ✅ Lighthouse Performance > 90
 
 ### SEO (1-4 weeks)
+
 - ✅ All canonical URLs indexed
 - ✅ No duplicate content issues
 - ✅ 301 redirects working
 - ✅ Core Web Vitals "Good"
 
 ### Traffic (4-8 weeks)
+
 - 📈 Organic traffic increase (better rankings)
 - 📈 Lower bounce rate (faster page load)
 - 📈 Higher engagement (better UX)
@@ -281,12 +305,14 @@ After (3-4 weeks):
 ### Issue: CLS still > 0.1
 
 **Debug**:
+
 1. Chrome DevTools → Performance
 2. Record page load
 3. Experience → Layout Shifts
 4. Identify shifting elements
 
 **Common causes**:
+
 - Images missing dimensions
 - Fonts not preloaded
 - Dynamic content without skeleton
@@ -295,6 +321,7 @@ After (3-4 weeks):
 ### Issue: WWW not redirecting
 
 **Solutions**:
+
 1. Check Vercel Dashboard redirect config
 2. Wait 10 minutes for DNS
 3. Clear browser cache
@@ -305,6 +332,7 @@ After (3-4 weeks):
 
 **Wait**: Google can take 1-4 weeks
 **Speed up**:
+
 1. Submit sitemap in GSC
 2. Request indexing for important URLs
 3. Check for other errors in GSC
@@ -313,6 +341,7 @@ After (3-4 weeks):
 ### Issue: Old URLs still showing
 
 **Check**:
+
 1. 301 redirects in `vercel.json`
 2. Vercel deployment successful
 3. Test redirects with curl
@@ -322,31 +351,34 @@ After (3-4 weeks):
 
 ## 📚 Documentation Reference
 
-| Document | Purpose |
-|----------|---------|
-| [CLS_OPTIMIZATION.md](CLS_OPTIMIZATION.md) | Detailed CLS fixes explanation |
-| [TESTING_INSTRUCTIONS.md](TESTING_INSTRUCTIONS.md) | User testing guide |
-| [INDEXING_FIX_PLAN.md](INDEXING_FIX_PLAN.md) | Indexing issues & solutions |
-| [VERCEL_DOMAIN_CONFIG.md](VERCEL_DOMAIN_CONFIG.md) | Vercel redirect setup |
-| [scripts/test-cls.md](scripts/test-cls.md) | CLS testing methodology |
+| Document                                           | Purpose                        |
+| -------------------------------------------------- | ------------------------------ |
+| [CLS_OPTIMIZATION.md](CLS_OPTIMIZATION.md)         | Detailed CLS fixes explanation |
+| [TESTING_INSTRUCTIONS.md](TESTING_INSTRUCTIONS.md) | User testing guide             |
+| [INDEXING_FIX_PLAN.md](INDEXING_FIX_PLAN.md)       | Indexing issues & solutions    |
+| [VERCEL_DOMAIN_CONFIG.md](VERCEL_DOMAIN_CONFIG.md) | Vercel redirect setup          |
+| [scripts/test-cls.md](scripts/test-cls.md)         | CLS testing methodology        |
 
 ---
 
 ## ✅ Final Checklist
 
 ### Before Deploy
+
 - [x] All code changes committed
 - [ ] Lighthouse CLS < 0.1 locally
 - [ ] TypeScript check passed
 - [ ] No dev server errors
 
 ### During Deploy
+
 - [ ] Git push successful
 - [ ] Vercel build successful
 - [ ] Vercel deployment "Ready"
 - [ ] Vercel domain redirect configured
 
 ### After Deploy (10 min)
+
 - [ ] Production CLS < 0.1 (Lighthouse)
 - [ ] WWW redirects to non-WWW
 - [ ] Old URLs redirect properly
@@ -354,11 +386,13 @@ After (3-4 weeks):
 - [ ] Canonical tags in page source
 
 ### Google Search Console (same day)
+
 - [ ] Submit updated sitemap
 - [ ] Request re-indexing (5-10 URLs)
 - [ ] Monitor Core Web Vitals tab
 
 ### Follow-up (weekly)
+
 - [ ] Week 1: Check CLS improvements
 - [ ] Week 2: Monitor re-indexing progress
 - [ ] Week 3: Verify error reductions

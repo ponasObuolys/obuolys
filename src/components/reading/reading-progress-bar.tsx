@@ -18,16 +18,16 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
       const rect = element.getBoundingClientRect();
       const elementHeight = element.offsetHeight;
       const viewportHeight = window.innerHeight;
-      
+
       // Calculate how much of the element has been scrolled
       const scrolled = -rect.top;
       const total = elementHeight - viewportHeight;
-      
+
       if (total <= 0) {
         setProgress(100);
         return;
       }
-      
+
       const percentage = Math.min(100, Math.max(0, (scrolled / total) * 100));
       setProgress(percentage);
 
@@ -35,7 +35,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
       if (estimatedReadTime) {
         const minutes = parseInt(estimatedReadTime.match(/\d+/)?.[0] || "5");
         const remainingMinutes = Math.ceil(minutes * (1 - percentage / 100));
-        
+
         if (remainingMinutes > 0) {
           setTimeRemaining(`${remainingMinutes} min liko`);
         } else {
@@ -133,7 +133,6 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
           </div>
         </motion.button>
       )}
-
     </>
   );
 }

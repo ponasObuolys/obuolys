@@ -5,7 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import type { TablesInsert } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { log } from "@/utils/browserLogger";
-import { heroSectionSchema, type HeroSection, type HeroSectionFormData } from "./hero-section-editor.types";
+import {
+  heroSectionSchema,
+  type HeroSection,
+  type HeroSectionFormData,
+} from "./hero-section-editor.types";
 
 export const useHeroSectionForm = () => {
   return useForm<HeroSectionFormData>({
@@ -35,7 +39,7 @@ export const useHeroSections = () => {
 
       if (error) throw error;
       setHeroSections(
-        (data || []).map((section) => ({
+        (data || []).map(section => ({
           ...section,
           button_text: section.button_text || "",
           button_url: section.button_url || "",

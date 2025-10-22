@@ -6,14 +6,14 @@ interface ImageTransformOptions {
   width?: number;
   height?: number;
   quality?: number;
-  format?: 'webp' | 'avif' | 'jpeg' | 'png';
+  format?: "webp" | "avif" | "jpeg" | "png";
 }
 
 export const optimizeSupabaseImage = (
   url: string | null | undefined,
-  options: ImageTransformOptions = {}
+  _options: ImageTransformOptions = {}
 ): string => {
-  if (!url) return '/opengraph-image.png';
+  if (!url) return "/opengraph-image.png";
 
   // NOTE: Supabase image transformation is not enabled for this project
   // Images are already optimized as WebP in storage
@@ -61,30 +61,27 @@ export const getOptimizedImage = (
  */
 export const getOptimalImageFormat = (url: string): string => {
   // If already optimized or not a Supabase URL, return as-is
-  if (!url || !url.includes('supabase.co/storage')) {
+  if (!url || !url.includes("supabase.co/storage")) {
     return url;
   }
 
   // Use optimizeSupabaseImage with default WebP format
-  return optimizeSupabaseImage(url, { format: 'webp', quality: 80 });
+  return optimizeSupabaseImage(url, { format: "webp", quality: 80 });
 };
 
 /**
  * Generate srcset for responsive images
  * Used by LazyImage for responsive loading
  */
-export const generateSrcSet = (
-  url: string,
-  sizes: number[] = [400, 800, 1200, 1600]
-): string => {
-  if (!url) return '';
+export const generateSrcSet = (url: string, sizes: number[] = [400, 800, 1200, 1600]): string => {
+  if (!url) return "";
 
   return sizes
-    .map((width) => {
+    .map(width => {
       const optimizedUrl = optimizeSupabaseImage(url, { width, quality: 80 });
       return `${optimizedUrl} ${width}w`;
     })
-    .join(', ');
+    .join(", ");
 };
 
 /**
@@ -100,11 +97,11 @@ export const calculateSizes = (
   }
 
   const mediaQueries = breakpoints
-    .map((bp) => {
+    .map(bp => {
       const [media, size] = Object.entries(bp)[0];
       return `(${media}) ${size}`;
     })
-    .join(', ');
+    .join(", ");
 
   return `${mediaQueries}, ${defaultSize}`;
 };

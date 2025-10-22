@@ -4,9 +4,9 @@
  */
 
 interface PluralForms {
-  one: string;      // 1, 21, 31, 41, etc. (ends with 1, but not 11)
-  few: string;      // 2-9, 22-29, 32-39, etc. (ends with 2-9, but not 12-19)
-  many: string;     // 0, 10-20, 30, 40, etc. (ends with 0 or 10-20)
+  one: string; // 1, 21, 31, 41, etc. (ends with 1, but not 11)
+  few: string; // 2-9, 22-29, 32-39, etc. (ends with 2-9, but not 12-19)
+  many: string; // 0, 10-20, 30, 40, etc. (ends with 0 or 10-20)
 }
 
 /**
@@ -46,9 +46,9 @@ export function pluralize(count: number, forms: PluralForms): string {
  */
 export function formatViewCount(count: number): string {
   const forms: PluralForms = {
-    one: "peržiūra",    // 1, 21, 31, 41, 51, 61, 71, 81, 91, 101, etc.
-    few: "peržiūros",   // 2-9, 22-29, 32-39, 42-49, 52-59, 62-69, 72-79, 82-89, 92-99, 102-109, etc.
-    many: "peržiūrų",   // 0, 10-20, 30, 40, 50, 60, 70, 80, 90, 100, 110-120, etc.
+    one: "peržiūra", // 1, 21, 31, 41, 51, 61, 71, 81, 91, 101, etc.
+    few: "peržiūros", // 2-9, 22-29, 32-39, 42-49, 52-59, 62-69, 72-79, 82-89, 92-99, 102-109, etc.
+    many: "peržiūrų", // 0, 10-20, 30, 40, 50, 60, 70, 80, 90, 100, 110-120, etc.
   };
 
   return `${count.toLocaleString("lt-LT")} ${pluralize(count, forms)}`;

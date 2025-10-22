@@ -24,12 +24,7 @@ export const CourseHighlights = ({
         {highlights.map((highlight, index) => (
           <div key={index} className="flex items-center">
             <span className="flex-grow">{highlight}</span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => removeHighlight(index)}
-            >
+            <Button type="button" variant="ghost" size="sm" onClick={() => removeHighlight(index)}>
               <X className="h-4 w-4" />
             </Button>
           </div>

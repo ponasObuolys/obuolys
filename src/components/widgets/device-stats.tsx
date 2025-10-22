@@ -73,7 +73,7 @@ export function DeviceStats({ days = 30, className }: DeviceStatsProps) {
             Įrenginiai
           </h4>
           <div className="space-y-3">
-            {data.devices.map((device) => {
+            {data.devices.map(device => {
               const Icon = deviceIcons[device.type as keyof typeof deviceIcons] || Monitor;
               return (
                 <div key={device.type} className="space-y-1">
@@ -82,9 +82,7 @@ export function DeviceStats({ days = 30, className }: DeviceStatsProps) {
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {device.type}
                     </span>
-                    <span className="font-medium text-sm">
-                      {device.percentage}%
-                    </span>
+                    <span className="font-medium text-sm">{device.percentage}%</span>
                   </div>
                   {/* Progress bar */}
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -111,7 +109,7 @@ export function DeviceStats({ days = 30, className }: DeviceStatsProps) {
             Naršyklės
           </h4>
           <div className="space-y-3">
-            {data.browsers.map((browser) => (
+            {data.browsers.map(browser => (
               <div key={browser.name} className="space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="flex items-center gap-2 text-sm">
@@ -120,9 +118,7 @@ export function DeviceStats({ days = 30, className }: DeviceStatsProps) {
                     </span>
                     {browser.name}
                   </span>
-                  <span className="font-medium text-sm">
-                    {browser.percentage}%
-                  </span>
+                  <span className="font-medium text-sm">{browser.percentage}%</span>
                 </div>
                 {/* Progress bar */}
                 <div className="h-2 bg-muted rounded-full overflow-hidden">

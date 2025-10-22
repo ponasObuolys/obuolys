@@ -33,7 +33,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // THEN check for existing session
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -62,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updatePassword: (currentPassword: string, newPassword: string) =>
           authHooks.updatePassword(currentPassword, newPassword),
         uploadProfileImage: (imageFile: File) =>
-          authHooks.uploadProfileImage(user, imageFile, (data) =>
+          authHooks.uploadProfileImage(user, imageFile, data =>
             authHooks.updateUserProfile(user, data)
           ),
         getUserProfile: () => authHooks.getUserProfile(user),

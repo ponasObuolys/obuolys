@@ -5,7 +5,7 @@
 ### 1. Importuokite komponentą
 
 ```tsx
-import { ShareButton } from '@/components/ui/share-button';
+import { ShareButton } from "@/components/ui/share-button";
 ```
 
 ### 2. Pridėkite į jūsų puslapį
@@ -15,13 +15,14 @@ import { ShareButton } from '@/components/ui/share-button';
   title="Puslapio pavadinimas"
   description="Puslapio aprašymas"
   url="https://ponasobuolys.lt/jūsų-puslapis"
-  imageUrl="https://example.com/image.jpg"  // optional
+  imageUrl="https://example.com/image.jpg" // optional
 />
 ```
 
 ### 3. Viskas! ✅
 
 Sharing dabar veikia:
+
 - 📱 **Mobile**: Native share dialog (WhatsApp, Messenger, etc.)
 - 🖥️ **Desktop**: Dropdown su Facebook, Reddit, Email, Copy link
 
@@ -30,27 +31,31 @@ Sharing dabar veikia:
 ## 🎨 Variantai
 
 ### Standard button
+
 ```tsx
 <ShareButton {...shareProps} />
 ```
 
 ### Outline style
+
 ```tsx
 <ShareButton {...shareProps} variant="outline" />
 ```
 
 ### Icon only
-```tsx
-import { ShareIconButton } from '@/components/ui/share-button';
 
-<ShareIconButton {...shareProps} />
+```tsx
+import { ShareIconButton } from "@/components/ui/share-button";
+
+<ShareIconButton {...shareProps} />;
 ```
 
 ### Horizontal group
-```tsx
-import { ShareButtonsGroup } from '@/components/ui/share-button';
 
-<ShareButtonsGroup {...shareProps} />
+```tsx
+import { ShareButtonsGroup } from "@/components/ui/share-button";
+
+<ShareButtonsGroup {...shareProps} />;
 ```
 
 ---
@@ -66,12 +71,14 @@ import { ShareButtonsGroup } from '@/components/ui/share-button';
 ## 🧪 Testuokite
 
 ### Local
+
 ```bash
 npm run dev
 # Eikite į: http://localhost:5173/kursai/vibe-coding-masterclass
 ```
 
 ### Production
+
 ```
 https://ponasobuolys.lt/kursai/vibe-coding-masterclass
 ```

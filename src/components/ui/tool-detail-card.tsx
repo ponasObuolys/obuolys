@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import LazyImage from "@/components/ui/lazy-image";
-import { ExternalLink, CheckCircle, XCircle } from 'lucide-react';
+import { ExternalLink, CheckCircle, XCircle } from "lucide-react";
 
 interface Tool {
   id: string;
@@ -28,9 +28,9 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
       <CardHeader className="p-0">
         {tool.image_url ? (
           <div className="aspect-video w-full overflow-hidden">
-            <LazyImage 
-              src={tool.image_url} 
-              alt={tool.name} 
+            <LazyImage
+              src={tool.image_url}
+              alt={tool.name}
               className="w-full h-full object-cover"
             />
           </div>
@@ -43,9 +43,11 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
       <CardContent className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row justify-between md:items-center mb-4">
           <CardTitle className="text-3xl font-bold mb-2 md:mb-0">{tool.name}</CardTitle>
-          <Badge variant="secondary" className="text-sm py-1 px-3 w-fit">{tool.category}</Badge>
+          <Badge variant="secondary" className="text-sm py-1 px-3 w-fit">
+            {tool.category}
+          </Badge>
         </div>
-        
+
         <CardDescription className="text-lg text-foreground/90 mb-6">
           {tool.description}
         </CardDescription>
@@ -97,7 +99,7 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
             </ul>
           </div>
         )}
-        
+
         <div className="mt-8 flex justify-center">
           <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-block">
             <Button size="lg" className="flex items-center gap-2">
@@ -111,4 +113,4 @@ const ToolDetailCard: React.FC<ToolDetailCardProps> = ({ tool }) => {
   );
 };
 
-export default ToolDetailCard; 
+export default ToolDetailCard;

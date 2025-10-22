@@ -34,7 +34,9 @@ export const CTASectionForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{editingSection ? "Redaguoti CTA sekciją" : "Sukurti naują CTA sekciją"}</CardTitle>
+        <CardTitle>
+          {editingSection ? "Redaguoti CTA sekciją" : "Sukurti naują CTA sekciją"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -61,7 +63,11 @@ export const CTASectionForm = ({
                 <FormItem>
                   <FormLabel>Aprašymas</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Įveskite CTA aprašymą" className="min-h-[100px]" {...field} />
+                    <Textarea
+                      placeholder="Įveskite CTA aprašymą"
+                      className="min-h-[100px]"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>Aprašomasis tekstas, kuris skatina veiksmus</FormDescription>
                   <FormMessage />

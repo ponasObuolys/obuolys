@@ -36,7 +36,11 @@ const HeroSectionEditor = () => {
     handleSuccess,
     fetchHeroSections
   );
-  const { loading: actionsLoading, handleDelete, toggleActive } = useHeroSectionActions(fetchHeroSections);
+  const {
+    loading: actionsLoading,
+    handleDelete,
+    toggleActive,
+  } = useHeroSectionActions(fetchHeroSections);
 
   const handleEdit = (section: HeroSection) => {
     setEditingSection(section);

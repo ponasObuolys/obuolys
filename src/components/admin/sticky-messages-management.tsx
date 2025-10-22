@@ -1,13 +1,18 @@
-import { useState } from 'react';
-import { useStickyMessages, useCreateStickyMessage, useUpdateStickyMessage, useDeleteStickyMessage } from '@/hooks/use-cta';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Plus, Pencil, Trash2, Save, X } from 'lucide-react';
-import type { StickyMessage } from '@/types/cta';
+import { useState } from "react";
+import {
+  useStickyMessages,
+  useCreateStickyMessage,
+  useUpdateStickyMessage,
+  useDeleteStickyMessage,
+} from "@/hooks/use-cta";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
+import type { StickyMessage } from "@/types/cta";
 
 export function StickyMessagesManagement() {
   const { data: messages, isLoading } = useStickyMessages();
@@ -18,18 +23,20 @@ export function StickyMessagesManagement() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState<Partial<StickyMessage>>({
-    title: '',
-    description: '',
-    cta: '',
-    emoji: '🚀',
+    title: "",
+    description: "",
+    cta: "",
+    emoji: "🚀",
     priority: 50,
     active: true,
   });
 
   const handleCreate = async () => {
     if (!formData.title || !formData.description || !formData.cta) return;
-    
-    await createMutation.mutateAsync(formData as Omit<StickyMessage, 'id' | 'created_at' | 'updated_at'>);
+
+    await createMutation.mutateAsync(
+      formData as Omit<StickyMessage, "id" | "created_at" | "updated_at">
+    );
     setIsCreating(false);
     resetForm();
   };
@@ -41,7 +48,7 @@ export function StickyMessagesManagement() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Ar tikrai norite ištrinti šią sticky žinutę?')) {
+    if (confirm("Ar tikrai norite ištrinti šią sticky žinutę?")) {
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -59,10 +66,10 @@ export function StickyMessagesManagement() {
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      description: '',
-      cta: '',
-      emoji: '🚀',
+      title: "",
+      description: "",
+      cta: "",
+      emoji: "🚀",
       priority: 50,
       active: true,
     });
@@ -97,7 +104,7 @@ export function StickyMessagesManagement() {
                 <Label>Pavadinimas</Label>
                 <Input
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
                   placeholder="Pvz: Greitas AI įrankis?"
                 />
               </div>
@@ -105,7 +112,7 @@ export function StickyMessagesManagement() {
                 <Label>CTA tekstas</Label>
                 <Input
                   value={formData.cta}
-                  onChange={(e) => setFormData({ ...formData, cta: e.target.value })}
+                  onChange={e => setFormData({ ...formData, cta: e.target.value })}
                   placeholder="Pvz: Užsakyti"
                 />
               </div>
@@ -113,7 +120,7 @@ export function StickyMessagesManagement() {
                 <Label>Emoji</Label>
                 <Input
                   value={formData.emoji}
-                  onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
+                  onChange={e => setFormData({ ...formData, emoji: e.target.value })}
                   placeholder="🚀"
                 />
               </div>
@@ -123,7 +130,7 @@ export function StickyMessagesManagement() {
               <Label>Aprašymas</Label>
               <Textarea
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Trumpas aprašymas..."
                 rows={2}
               />
@@ -135,13 +142,13 @@ export function StickyMessagesManagement() {
                 <Input
                   type="number"
                   value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                  onChange={e => setFormData({ ...formData, priority: parseInt(e.target.value) })}
                 />
               </div>
               <div className="flex items-center space-x-2 pt-8">
                 <Switch
                   checked={formData.active}
-                  onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+                  onCheckedChange={checked => setFormData({ ...formData, active: checked })}
                 />
                 <Label>Aktyvi</Label>
               </div>
@@ -163,7 +170,7 @@ export function StickyMessagesManagement() {
 
       {/* List */}
       <div className="grid gap-4">
-        {messages?.map((message) => (
+        {messages?.map(message => (
           <Card key={message.id}>
             <CardContent className="pt-6">
               {editingId === message.id ? (
@@ -173,21 +180,21 @@ export function StickyMessagesManagement() {
                       <Label>Pavadinimas</Label>
                       <Input
                         value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        onChange={e => setFormData({ ...formData, title: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>CTA tekstas</Label>
                       <Input
                         value={formData.cta}
-                        onChange={(e) => setFormData({ ...formData, cta: e.target.value })}
+                        onChange={e => setFormData({ ...formData, cta: e.target.value })}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>Emoji</Label>
                       <Input
                         value={formData.emoji}
-                        onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
+                        onChange={e => setFormData({ ...formData, emoji: e.target.value })}
                       />
                     </div>
                   </div>
@@ -196,7 +203,7 @@ export function StickyMessagesManagement() {
                     <Label>Aprašymas</Label>
                     <Textarea
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      onChange={e => setFormData({ ...formData, description: e.target.value })}
                       rows={2}
                     />
                   </div>
@@ -207,13 +214,15 @@ export function StickyMessagesManagement() {
                       <Input
                         type="number"
                         value={formData.priority}
-                        onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                        onChange={e =>
+                          setFormData({ ...formData, priority: parseInt(e.target.value) })
+                        }
                       />
                     </div>
                     <div className="flex items-center space-x-2 pt-8">
                       <Switch
                         checked={formData.active}
-                        onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+                        onCheckedChange={checked => setFormData({ ...formData, active: checked })}
                       />
                       <Label>Aktyvi</Label>
                     </div>
@@ -236,8 +245,10 @@ export function StickyMessagesManagement() {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">{message.emoji}</span>
                       <h3 className="font-semibold">{message.title}</h3>
-                      <span className={`text-xs px-2 py-1 rounded ${message.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                        {message.active ? 'Aktyvi' : 'Neaktyvi'}
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${message.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}
+                      >
+                        {message.active ? "Aktyvi" : "Neaktyvi"}
                       </span>
                       <span className="text-xs px-2 py-1 rounded bg-purple-100 text-purple-800">
                         Priority: {message.priority}
@@ -249,11 +260,21 @@ export function StickyMessagesManagement() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={() => startEdit(message)} variant="outline" size="sm" className="gap-2">
+                    <Button
+                      onClick={() => startEdit(message)}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
                       <Pencil className="h-4 w-4" />
                       Redaguoti
                     </Button>
-                    <Button onClick={() => handleDelete(message.id)} variant="destructive" size="sm" className="gap-2">
+                    <Button
+                      onClick={() => handleDelete(message.id)}
+                      variant="destructive"
+                      size="sm"
+                      className="gap-2"
+                    >
                       <Trash2 className="h-4 w-4" />
                       Ištrinti
                     </Button>

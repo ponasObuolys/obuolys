@@ -5,8 +5,8 @@
  * when accessed by search engine bots or social media crawlers.
  */
 
-const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN || 'D9EDsSifvfj3S7qLPh0T';
-const PRERENDER_SERVICE_URL = 'https://service.prerender.io';
+const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN || "D9EDsSifvfj3S7qLPh0T";
+const PRERENDER_SERVICE_URL = "https://service.prerender.io";
 
 /**
  * Fetch pre-rendered HTML from Prerender.io
@@ -18,8 +18,8 @@ async function fetchPrerenderedContent(url) {
 
   const response = await fetch(prerenderUrl, {
     headers: {
-      'X-Prerender-Token': PRERENDER_TOKEN,
-      'User-Agent': 'Vercel-Prerender-Integration',
+      "X-Prerender-Token": PRERENDER_TOKEN,
+      "User-Agent": "Vercel-Prerender-Integration",
     },
   });
 
@@ -37,31 +37,31 @@ export default async function handler(req, res) {
   const { url: targetPath } = req.query;
 
   if (!targetPath) {
-    return res.status(400).json({ error: 'Missing url parameter' });
+    return res.status(400).json({ error: "Missing url parameter" });
   }
 
   // Construct full URL
-  const protocol = req.headers['x-forwarded-proto'] || 'https';
-  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  const protocol = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
   const fullUrl = `${protocol}://${host}${targetPath}`;
 
   console.log(`[Prerender] Request for: ${fullUrl}`);
-  console.log(`[Prerender] User-Agent: ${req.headers['user-agent']?.substring(0, 50)}...`);
+  console.log(`[Prerender] User-Agent: ${req.headers["user-agent"]?.substring(0, 50)}...`);
 
   try {
     const html = await fetchPrerenderedContent(fullUrl);
 
     // Set headers
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=7200');
-    res.setHeader('X-Prerender-Status', 'HIT');
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=7200");
+    res.setHeader("X-Prerender-Status", "HIT");
 
     return res.status(200).send(html);
   } catch (error) {
-    console.error('[Prerender] Error:', error.message);
+    console.error("[Prerender] Error:", error.message);
 
     // On error, redirect to normal SPA
-    res.setHeader('X-Prerender-Status', 'ERROR');
+    res.setHeader("X-Prerender-Status", "ERROR");
     return res.redirect(307, targetPath);
   }
 }

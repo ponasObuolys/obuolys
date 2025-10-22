@@ -49,10 +49,9 @@ export function useRelatedArticles({
           // Score articles by number of matching categories
           const scoredArticles = data
             .map(article => {
-              const matchingCategories = article.category?.filter(cat =>
-                categories.includes(cat)
-              ) || [];
-              
+              const matchingCategories =
+                article.category?.filter(cat => categories.includes(cat)) || [];
+
               return {
                 ...article,
                 score: matchingCategories.length,

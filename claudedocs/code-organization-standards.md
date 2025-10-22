@@ -46,6 +46,7 @@ src/
 ## File Naming Conventions
 
 ### React Components
+
 ```typescript
 // PascalCase for components
 UserProfileForm.tsx          # Main component file
@@ -57,6 +58,7 @@ UserProfileForm.stories.tsx  # Storybook stories (if applicable)
 ```
 
 ### Hooks
+
 ```typescript
 // camelCase with 'use' prefix
 useUserProfile.ts            # Main hook
@@ -65,6 +67,7 @@ useUserProfile.test.ts       # Hook tests
 ```
 
 ### Utilities and Services
+
 ```typescript
 // camelCase for functions, PascalCase for classes
 errorHandling.ts             # Utility functions
@@ -74,6 +77,7 @@ formatting.utils.ts         # Formatting utilities
 ```
 
 ### Types
+
 ```typescript
 // Descriptive naming with .types.ts suffix
 api.types.ts                # API-related types
@@ -85,53 +89,56 @@ ui.types.ts                 # UI component types
 ## Import Organization Standards
 
 ### Import Order
+
 ```typescript
 // 1. React and external libraries
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 // 2. Internal types (type-only imports)
-import type { Database } from '@/integrations/supabase/types';
-import type { UserRole, AdminDashboardProps } from '@/types/business.types';
-import type { FormData } from '@/types/form.types';
+import type { Database } from "@/integrations/supabase/types";
+import type { UserRole, AdminDashboardProps } from "@/types/business.types";
+import type { FormData } from "@/types/form.types";
 
 // 3. Internal hooks and utilities
-import { useAuth } from '@/context/AuthContext';
-import { useErrorHandler } from '@/utils/errorHandling';
-import { formatDate } from '@/utils/formatting';
+import { useAuth } from "@/context/AuthContext";
+import { useErrorHandler } from "@/utils/errorHandling";
+import { formatDate } from "@/utils/formatting";
 
 // 4. Services
-import { AuthService } from '@/services/auth.service';
-import { ContentService } from '@/services/content.service';
+import { AuthService } from "@/services/auth.service";
+import { ContentService } from "@/services/content.service";
 
 // 5. UI components (shadcn/ui)
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
 // 6. Business components
-import { UserManager } from '@/components/admin/UserManager';
-import { PublicationEditor } from '@/components/admin/editors/PublicationEditor';
+import { UserManager } from "@/components/admin/UserManager";
+import { PublicationEditor } from "@/components/admin/editors/PublicationEditor";
 
 // 7. Constants
-import { API_ENDPOINTS } from '@/constants/api.constants';
-import { VALIDATION_RULES } from '@/constants/validation.constants';
+import { API_ENDPOINTS } from "@/constants/api.constants";
+import { VALIDATION_RULES } from "@/constants/validation.constants";
 ```
 
 ### Type-only Imports
+
 ```typescript
 // Always use type-only imports for types
-import type { User } from '@/types/business.types';
-import type { ComponentProps } from 'react';
+import type { User } from "@/types/business.types";
+import type { ComponentProps } from "react";
 
 // Not this:
-import { User } from '@/types/business.types';
+import { User } from "@/types/business.types";
 ```
 
 ## Component Organization Patterns
 
 ### Component Structure
+
 ```typescript
 // 1. Imports (organized as above)
 import React from 'react';
@@ -189,15 +196,14 @@ export default ComponentName;
 ```
 
 ### Custom Hook Structure
+
 ```typescript
 // 1. Imports
-import { useState, useEffect, useCallback } from 'react';
-import type { HookOptions, HookReturn } from './useHook.types';
+import { useState, useEffect, useCallback } from "react";
+import type { HookOptions, HookReturn } from "./useHook.types";
 
 // 2. Hook implementation
-export const useCustomHook = (
-  options: HookOptions = {}
-): HookReturn => {
+export const useCustomHook = (options: HookOptions = {}): HookReturn => {
   // 2.1 State
   const [state, setState] = useState(initialState);
 
@@ -227,6 +233,7 @@ export const useCustomHook = (
 ## Folder Organization by Feature
 
 ### Feature-based Structure (for large features)
+
 ```
 src/components/admin/dashboard/
 ├── index.ts                    # Export barrel
@@ -250,21 +257,23 @@ src/components/admin/dashboard/
 ```
 
 ### Export Barrels
+
 ```typescript
 // src/components/admin/dashboard/index.ts
-export { DashboardLayout } from './DashboardLayout';
-export { DashboardTabs } from './DashboardTabs';
-export * from './components';
-export * from './hooks';
-export * from './types';
+export { DashboardLayout } from "./DashboardLayout";
+export { DashboardTabs } from "./DashboardTabs";
+export * from "./components";
+export * from "./hooks";
+export * from "./types";
 
 // Usage:
-import { DashboardLayout, useDashboardStats } from '@/components/admin/dashboard';
+import { DashboardLayout, useDashboardStats } from "@/components/admin/dashboard";
 ```
 
 ## Type Organization
 
 ### Interface Naming
+
 ```typescript
 // Component props
 interface ComponentNameProps {
@@ -298,22 +307,24 @@ interface FormNameData {
 ```
 
 ### Enum Conventions
+
 ```typescript
 // PascalCase for enum names, UPPER_CASE for values
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  MODERATOR = 'MODERATOR',
+  ADMIN = "ADMIN",
+  USER = "USER",
+  MODERATOR = "MODERATOR",
 }
 
 export enum ContentStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
+  DRAFT = "DRAFT",
+  PUBLISHED = "PUBLISHED",
+  ARCHIVED = "ARCHIVED",
 }
 ```
 
 ### Utility Types
+
 ```typescript
 // Generic utility types
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -321,13 +332,15 @@ export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 // API utility types
-export type ApiResponse<T> = {
-  data: T;
-  error: null;
-} | {
-  data: null;
-  error: string;
-};
+export type ApiResponse<T> =
+  | {
+      data: T;
+      error: null;
+    }
+  | {
+      data: null;
+      error: string;
+    };
 
 // Form utility types
 export type FormState<T> = {
@@ -342,18 +355,19 @@ export type FormState<T> = {
 ## Constants Organization
 
 ### API Constants
+
 ```typescript
 // src/constants/api.constants.ts
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    LOGOUT: '/auth/logout',
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    LOGOUT: "/auth/logout",
   },
   CONTENT: {
-    ARTICLES: '/api/articles',
-    TOOLS: '/api/tools',
-    COURSES: '/api/courses',
+    ARTICLES: "/api/articles",
+    TOOLS: "/api/tools",
+    COURSES: "/api/courses",
   },
 } as const;
 
@@ -369,6 +383,7 @@ export const HTTP_STATUS = {
 ```
 
 ### UI Constants
+
 ```typescript
 // src/constants/ui.constants.ts
 export const BREAKPOINTS = {
@@ -376,7 +391,7 @@ export const BREAKPOINTS = {
   MD: 768,
   LG: 1024,
   XL: 1280,
-  '2XL': 1536,
+  "2XL": 1536,
 } as const;
 
 export const ANIMATION_DURATION = {
@@ -397,6 +412,7 @@ export const Z_INDEX = {
 ```
 
 ### Validation Constants
+
 ```typescript
 // src/constants/validation.constants.ts
 export const VALIDATION_RULES = {
@@ -419,7 +435,7 @@ export const VALIDATION_RULES = {
   },
   FILE_UPLOAD: {
     MAX_SIZE_MB: 5,
-    ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
+    ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp"],
   },
 } as const;
 ```
@@ -427,7 +443,8 @@ export const VALIDATION_RULES = {
 ## Documentation Standards
 
 ### Component Documentation
-```typescript
+
+````typescript
 /**
  * User profile management form component
  *
@@ -454,17 +471,14 @@ export const VALIDATION_RULES = {
  * @see {@link useUserProfile} for the underlying hook
  * @see {@link ProfileUpdateData} for form data structure
  */
-export const UserProfileForm: React.FC<UserProfileFormProps> = ({
-  user,
-  onUpdate,
-  className
-}) => {
+export const UserProfileForm: React.FC<UserProfileFormProps> = ({ user, onUpdate, className }) => {
   // Implementation
 };
-```
+````
 
 ### Hook Documentation
-```typescript
+
+````typescript
 /**
  * Custom hook for managing user profile state and operations
  *
@@ -493,11 +507,12 @@ export const useUserProfile = (
 ): UseUserProfileReturn => {
   // Implementation
 };
-```
+````
 
 ## Quality Gates
 
 ### Pre-commit Checks
+
 1. **ESLint**: No errors, warnings acceptable with justification
 2. **TypeScript**: Strict type checking, no `any` or `unknown` without proper handling
 3. **Import Organization**: All imports properly organized and typed
@@ -505,6 +520,7 @@ export const useUserProfile = (
 5. **Documentation**: All public interfaces documented
 
 ### Code Review Guidelines
+
 1. **Single Responsibility**: Each component/hook has clear, focused purpose
 2. **Type Safety**: All props, state, and return types properly defined
 3. **Error Handling**: Consistent error handling patterns

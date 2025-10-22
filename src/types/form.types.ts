@@ -2,7 +2,7 @@
  * Form data types for type-safe form handling
  */
 
-import type { Database } from '@/integrations/supabase/types';
+import type { Database } from "@/integrations/supabase/types";
 
 // Base form interfaces
 export interface BaseFormData {
@@ -129,13 +129,13 @@ export interface UserManagementData {
   id: string;
   email: string;
   username?: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   is_active: boolean;
   last_login?: string;
 }
 
 export interface BulkActionData {
-  action: 'delete' | 'activate' | 'deactivate' | 'publish' | 'unpublish';
+  action: "delete" | "activate" | "deactivate" | "publish" | "unpublish";
   selectedIds: string[];
   confirmation: boolean;
 }
@@ -163,8 +163,8 @@ export interface SearchFormData {
   tags?: string[];
   dateFrom?: string;
   dateTo?: string;
-  sortBy?: 'title' | 'date' | 'popularity';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "title" | "date" | "popularity";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface FilterFormData {
@@ -182,7 +182,7 @@ export interface FilterFormData {
 export interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'file' | 'number';
+  type: "text" | "email" | "password" | "textarea" | "select" | "checkbox" | "file" | "number";
   required: boolean;
   placeholder?: string;
   validation?: {
@@ -226,7 +226,9 @@ export interface FormActions<T> {
 export interface UseFormReturn<T> {
   state: FormState<T>;
   actions: FormActions<T>;
-  register: <K extends keyof T>(field: K) => {
+  register: <K extends keyof T>(
+    field: K
+  ) => {
     name: string;
     value: T[K] | undefined;
     onChange: (value: T[K]) => void;
@@ -236,11 +238,11 @@ export interface UseFormReturn<T> {
 }
 
 // Utility types for form handling
-export type FormDataFromTable<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert'];
+export type FormDataFromTable<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Insert"];
 
-export type UpdateFormDataFromTable<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update'];
+export type UpdateFormDataFromTable<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Update"];
 
 // Form validation result
 export interface ValidationResult {

@@ -1,16 +1,20 @@
-import { useParams, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
+import { useParams, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Clock, CheckCircle } from "lucide-react";
 import { SafeRichText } from "@/components/ui/SafeHtml";
-import { Breadcrumbs } from '@/components/ui/breadcrumbs';
-import { secureLogger } from '@/utils/browserLogger';
-import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { secureLogger } from "@/utils/browserLogger";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
-import SEOHead from '@/components/SEO';
-import { generateCourseSEO, generateCourseStructuredData, generateBreadcrumbStructuredData } from '@/utils/seo';
-import { ShareButton } from '@/components/ui/share-button';
+import SEOHead from "@/components/SEO";
+import {
+  generateCourseSEO,
+  generateCourseStructuredData,
+  generateBreadcrumbStructuredData,
+} from "@/utils/seo";
+import { ShareButton } from "@/components/ui/share-button";
 
 interface Course {
   id: string;
@@ -31,9 +35,9 @@ interface Course {
 // Funkcija Patreon nuorodai gauti pagal kurso slug
 const getPatreonLink = (slug: string): string => {
   const patreonLinks: { [key: string]: string } = {
-    'vibe-coding-masterclass': 'https://www.patreon.com/posts/vibe-coding-su-125505176'
+    "vibe-coding-masterclass": "https://www.patreon.com/posts/vibe-coding-su-125505176",
   };
-  return patreonLinks[slug] || '#';
+  return patreonLinks[slug] || "#";
 };
 
 const CourseDetail = () => {
@@ -44,34 +48,34 @@ const CourseDetail = () => {
   useEffect(() => {
     const fetchCourse = async (courseSlug: string) => {
       try {
-        secureLogger.info('Fetching course with slug', { slug: courseSlug });
+        secureLogger.info("Fetching course with slug", { slug: courseSlug });
         // Fetch as an array, limit to 1 result
         const { data, error } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('slug', courseSlug)
-          .eq('published', true)
-          .limit(1); 
+          .from("courses")
+          .select("*")
+          .eq("slug", courseSlug)
+          .eq("published", true)
+          .limit(1);
 
         if (error) {
-          secureLogger.error('Supabase error', { error });
+          secureLogger.error("Supabase error", { error });
           throw error;
         }
 
-        secureLogger.info('Course data array received', { dataLength: data?.length });
+        secureLogger.info("Course data array received", { dataLength: data?.length });
         // Check if the array has data
         if (data && data.length > 0) {
           setCourse(data[0]); // Set the first element
         } else {
-          secureLogger.warn('No course data found', { slug: courseSlug });
+          secureLogger.warn("No course data found", { slug: courseSlug });
           setCourse(null); // Explicitly set to null if no data
         }
       } catch (error) {
-        secureLogger.error('Error fetching course', { error, slug: courseSlug });
+        secureLogger.error("Error fetching course", { error, slug: courseSlug });
         toast({
           title: "Klaida",
           description: "Nepavyko gauti kurso informacijos. Bandykite vėliau.",
-          variant: "destructive"
+          variant: "destructive",
         });
       } finally {
         setLoading(false);
@@ -110,7 +114,7 @@ const CourseDetail = () => {
   const seoData = generateCourseSEO({
     title: course.title,
     description: course.description,
-    slug: slug || '',
+    slug: slug || "",
     image: course.image_url || undefined,
     level: course.level,
   });
@@ -119,15 +123,15 @@ const CourseDetail = () => {
     generateCourseStructuredData({
       title: course.title,
       description: course.description,
-      slug: slug || '',
+      slug: slug || "",
       image: course.image_url || undefined,
       level: course.level,
       duration: course.duration,
       price: course.price ? parseFloat(course.price) : undefined,
     }),
     generateBreadcrumbStructuredData([
-      { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
-      { name: 'AI Kursai', url: 'https://ponasobuolys.lt/kursai' },
+      { name: "Pradžia", url: "https://ponasobuolys.lt" },
+      { name: "AI Kursai", url: "https://ponasobuolys.lt/kursai" },
       { name: course.title, url: `https://ponasobuolys.lt/kursai/${slug}` },
     ]),
   ];
@@ -138,13 +142,16 @@ const CourseDetail = () => {
       <div className="container mx-auto px-4 py-12">
         <Breadcrumbs
           items={[
-            { label: 'Kursai', href: '/kursai' },
-            { label: course.level, href: '/kursai' },
-            { label: course.title }
+            { label: "Kursai", href: "/kursai" },
+            { label: course.level, href: "/kursai" },
+            { label: course.title },
           ]}
         />
 
-        <Link to="/kursai" className="inline-flex items-center text-primary hover:text-primary/80 mb-6">
+        <Link
+          to="/kursai"
+          className="inline-flex items-center text-primary hover:text-primary/80 mb-6"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           <span>Grįžti į kursų sąrašą</span>
         </Link>
@@ -172,46 +179,51 @@ const CourseDetail = () => {
                 </div>
               </div>
 
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-6 text-foreground text-left">Aprašymas</h2>
-              <SafeRichText content={course.content} className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left" />
-            </div>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-6 text-foreground text-left">Aprašymas</h2>
+                <SafeRichText
+                  content={course.content}
+                  className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left"
+                />
+              </div>
             </div>
           </div>
 
           <div className="lg:col-span-1">
-          <div className="dark-card sticky top-24">
-            <div className="text-center mb-6">
-              <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
-              <div className="text-sm mb-4 text-foreground/60">Vienkartinis mokėjimas, prieiga neribotam laikui</div>
-              <Button
-                className="w-full button-primary text-lg py-6"
-                onClick={() => window.location.href = getPatreonLink(course.slug)}
-              >
-                Įsigyti kursą
-              </Button>
-            </div>
+            <div className="dark-card sticky top-24">
+              <div className="text-center mb-6">
+                <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
+                <div className="text-sm mb-4 text-foreground/60">
+                  Vienkartinis mokėjimas, prieiga neribotam laikui
+                </div>
+                <Button
+                  className="w-full button-primary text-lg py-6"
+                  onClick={() => (window.location.href = getPatreonLink(course.slug))}
+                >
+                  Įsigyti kursą
+                </Button>
+              </div>
 
-            <div className="border-t border-border pt-6">
-              <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
-              <ul className="space-y-3 text-left text-foreground/80">
-                <li className="flex items-start">
-                  <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Neribota prieiga prie kurso medžiagos</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Praktiniai užsiėmimai ir užduotys</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span>Tiesioginis ryšys su dėstytoju</span>
-                </li>
-              </ul>
+              <div className="border-t border-border pt-6">
+                <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+                <ul className="space-y-3 text-left text-foreground/80">
+                  <li className="flex items-start">
+                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Neribota prieiga prie kurso medžiagos</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Praktiniai užsiėmimai ir užduotys</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Tiesioginis ryšys su dėstytoju</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

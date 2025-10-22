@@ -3,6 +3,7 @@
 ## 🎯 SEO Strategija
 
 **Pagrindiniai raktažodžiai:**
+
 - individualių verslo įrankių kūrimas
 - custom CRM Lietuvoje
 - verslo automatizacija Lietuvoje
@@ -23,10 +24,13 @@
 ## VARIANTAS A - "Problem-Solver" 🎯
 
 ### Koncepcija
+
 Fokusuojasi į verslo problemas ir skausmo taškus. Emocingas, artimas, rodantis empatiją. Pradeda nuo problemų, kurias klientas jaučia kasdien.
 
 ### Rekomendacija
+
 ✅ **REKOMENDUOJU ŠĮ VARIANTĄ** - Geriausias konversijos rate, nes:
+
 - Iš karto kreipiasi į klientų skausmo taškus
 - Kuria emocinį ryšį
 - Natūralus flow į sprendimą
@@ -59,6 +63,7 @@ Fokusuojasi į verslo problemas ir skausmo taškus. Emocingas, artimas, rodantis
 Pirmiausia išklausau jūsų iššūkius, tada kuriu sprendimą, kurį mylėsite naudoti kasdien. Specializuojuosi logistikos srityje, bet nekuriu ribų verslo automatizacijai.
 
 **CTA pirminiai:**
+
 - [Pirminė konsultacija] → Užpildykite formą
 - [Peržiūrėti portfolio] → Scroll žemyn
 
@@ -153,6 +158,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 **Problema:** Transporto kompanija prarado užsakymų kontrolę, kai augdama pasiekė 50+ krovinių per dieną.
 **Sprendimas:** Custom sistema su real-time krovinių tracking, automatiniais pranešimais klientams, maršrutų optimizacija.
 **Rezultatai:**
+
 - 40% sumažėjo laikas užsakymams apdoroti
 - 95% klientų pasitenkinimas
 - Automatizuoti 80% rutininių procesų
@@ -163,6 +169,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 **Problema:** Dispečeriai kasdien praleidžia 3-4 valandas koordinuodami vairuotojus telefonu.
 **Sprendimas:** Mobili aplikacija vairuotojams + admin dashboard su real-time lokacija, užduočių paskirstymu.
 **Rezultatai:**
+
 - 70% mažiau telefono skambučių
 - Vairuotojai per dieną atlieka 20% daugiau užsakymų
 - Visa komunikacija dokumentuota
@@ -171,6 +178,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 **Problema:** Excel failai kiekvienam sandėliui, duomenys nesinchronizuoti, daug rankinio darbo.
 **Sprendimas:** Centralizuota sistema su barcode scanning, automatine apskaita, low stock alerts.
 **Rezultatai:**
+
 - 0 apskaitos klaidų per 6 mėnesius
 - 3 valandos per dieną sutaupyta
 - Real-time inventory visibility
@@ -179,6 +187,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 **Problema:** Klientai nuolat skambina dėl siuntos statuso, dispečeriai perkrauti.
 **Sprendimas:** Self-service klientų portalas su real-time tracking, dokumentų parsisiųstimu, pranešimais.
 **Rezultatai:**
+
 - 60% mažiau skambučių į centrą
 - Klientai vertina 4.8/5
 - 24/7 prieiga prie informacijos
@@ -187,6 +196,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 **Problema:** Buhalterija praleidžia dieną generuojant sąskaitas už 100+ krovinių.
 **Sprendimas:** Automatinė integracija su krovinių sistema, sąskaitų generavimas pagal taisykles, siuntimas el. paštu.
 **Rezultatai:**
+
 - Iš 8 valandų → 15 minučių per dieną
 - 0 klaidų sąskaitose
 - Greičiau apmokamos sąskaitos
@@ -261,6 +271,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Hosting & Infrastruktūra**
 €50 - €200/mėn (priklausomai nuo apkrovos)
+
 - Modernus cloud hosting (Vercel/Railway/AWS)
 - Automatiniai backup'ai
 - SSL sertifikatai
@@ -268,6 +279,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Maintenance & Support**
 €200 - €500/mėn
+
 - Bug fixes ir techninė pagalba
 - Mažos funkcijos ir patobulinimai
 - Saugumo atnaujinimai
@@ -275,6 +287,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Mokymai**
 €500 - €1,000 (vienkartinis)
+
 - Komandos apmokymas naudotis sistema
 - Admin funkcijų mokymai
 - Video mokymai vėlesniam naudojimui
@@ -289,6 +302,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Žingsnis 1 - Susipažinimas ir Analizė** (1-2 savaitės)
 **Icon:** 🔍
+
 - Nemokama pirminio pokalbio konsultacija (30-60 min)
 - Gilesnė jūsų verslo procesų analizė
 - Esamų sistemų įvertinimas
@@ -301,6 +315,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Žingsnis 2 - Dizainas ir Prototipas** (1-2 savaitės)
 **Icon:** 🎨
+
 - UI/UX dizaino kūrimas
 - Klikkuojamo prototipo pristatymas
 - Jūsų feedback ir pakeitimai
@@ -313,6 +328,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Žingsnis 3 - Kūrimas ir Testavimas** (2-12 savaičių)
 **Icon:** ⚙️
+
 - Iteratyvus kūrimas (kas 1-2 savaitės demo)
 - Reguliarūs progress update'ai
 - Testavimas kiekviename etape
@@ -325,6 +341,7 @@ Jūsų esamų sistemų sujungimas, duomenų mainai, trečiųjų šalių servisų
 
 **Žingsnis 4 - Paleidimas ir Palaikymas** (1 savaitė + ongoing)
 **Icon:** 🚀
+
 - Deployment į production aplinką
 - Duomenų migracija (jei reikia)
 - Komandos apmokymai
@@ -353,6 +370,7 @@ Naudodamas moderniausias AI technologijas galiu pristatyti MVP 2-3 kartus greič
 
 **4. Modernios technologijos** 🌐
 Naudoju naujausias debesų technologijas (Supabase, Vercel), užtikrinančias:
+
 - Greitį ir sklandumą
 - 99.9% uptime
 - Automatinį backup
@@ -376,10 +394,11 @@ A: Taip, galiu integruotis su bet kokiomis sistemomis, turinčiomis API arba duo
 
 **Q2: Kaip ilgai užtrunka projektas?**
 A: Priklauso nuo sudėtingumo:
+
 - MVP: 2-4 savaitės
 - Vidutinio sudėtingumo: 4-8 savaitės
 - Kompleksinis: 2-3+ mėnesiai
-Pirmoje konsultacijoje galiu duoti tikslesnį įvertinimą.
+  Pirmoje konsultacijoje galiu duoti tikslesnį įvertinimą.
 
 **Q3: Ar teikiate maintenance po paleidimo?**
 A: Taip, siūlau skirtingus support planus nuo €200/mėn. Įskaito bug fixes, mažus patobulinimus, technikinę pagalbą. Taip pat nemokamas support pirmą(-us) mėnesį(-ius) po paleidimo.
@@ -392,6 +411,7 @@ A: Visada. Visos sistemos kuriamos responsive dizainų, veikiančių desktop, ta
 
 **Q6: Kaip užtikrinate duomenų saugumą?**
 A:
+
 - Visi duomenys saugomi modernioje debesų infrastruktūroje
 - Automatiniai backup'ai kiekvieną dieną
 - SSL šifravimas
@@ -404,17 +424,19 @@ A: Taip, kodas priklauso jums. Po projekto užbaigimo perduodu visą kodą ir do
 
 **Q8: Kokia yra mokėjimo tvarka?**
 A: Standartiškai:
+
 - 30% avansu prieš pradedant
 - 40% pasiekus 50% projekto
 - 30% pristatant į production
-Dideliems projektams galime aptarti individualų grafiką.
+  Dideliems projektams galime aptarti individualų grafiką.
 
 **Q9: O jei nepatiks rezultatas?**
 A: To nenutinka, nes:
+
 - Kas 1-2 savaitės rodyti progress ir gaunami feedback
 - Galite sustabdyti projektą bet kuriuo metu
 - Pirmas prototipas per 2 savaites - matote kryptį
-Tačiau, jei vis tiek nepatiktų - grąžinu avanso dalį pagal atliktą darbą.
+  Tačiau, jei vis tiek nepatiktų - grąžinu avanso dalį pagal atliktą darbą.
 
 **Q10: Ar dirbate tik Lietuvoje?**
 A: Pagrinde taip, bet galiu dirbti ir su užsienio klientais, kurie kalba lietuviškai arba angliškai. Komunikacija vyksta online, susitikimai per video.
@@ -429,17 +451,18 @@ A: Pagrinde taip, bet galiu dirbti ir su užsienio klientais, kurie kalba lietuv
 Užpildykite trumpą formą ir per 24 valandas susisieksiu su jumis. Pirma 30-60 minučių konsultacija nemokama - aptarsime jūsų poreikius, įvertinsime galimybes ir suformuosime preliminarų planą.
 
 **FORMA:**
-- Vardas Pavardė *
-- El. paštas *
+
+- Vardas Pavardė \*
+- El. paštas \*
 - Telefonas
 - Įmonės pavadinimas
 - Įmonės dydis (dropdown: Iki 10 / 10-50 / 50+ darbuotojų / Neaktualu)
-- Projekto tipas * (dropdown: CRM sistema / Logistikos sprendimas / Automatizacija / Analitika / Grafikų planavimas / Buhalterija / Kita)
+- Projekto tipas \* (dropdown: CRM sistema / Logistikos sprendimas / Automatizacija / Analitika / Grafikų planavimas / Buhalterija / Kita)
 - Biudžeto rėžis (dropdown: Iki €5,000 / €5,000-€12,000 / €12,000-€25,000 / Virš €25,000 / Dar nežinau)
 - Laiko rėmai (dropdown: Skubu / 1-2 mėnesiai / 2-3 mėnesiai / Lanksčiai)
-- Projekto aprašymas * (textarea: Aprašykite savo iššūkius, ko tikitės iš sistemos)
+- Projekto aprašymas \* (textarea: Aprašykite savo iššūkius, ko tikitės iš sistemos)
 - Current solution (textarea optional: Kokius įrankius naudojate dabar?)
-- [✓] Sutinku, kad mano duomenys būtų apdorojami pagal privatumo politiką *
+- [✓] Sutinku, kad mano duomenys būtų apdorojami pagal privatumo politiką \*
 
 [Siųsti užklausą]
 
@@ -499,15 +522,19 @@ Užpildykite trumpą formą ir per 24 valandas susisieksiu su jumis. Pirma 30-60
 ```
 
 ---
+
 ---
 
 ## VARIANTAS B - "Portfolio-First" 🏆
 
 ### Koncepcija
+
 Pradeda nuo social proof - rodo, ką jau padarėme. Pasitikėjimo kūrimas per rezultatus. Tinka klientams, kurie nori matyti įrodymus prieš skaitydami apie paslaugas.
 
 ### Rekomendacija
+
 ⚠️ **ANTRAS PASIRINKIMAS** - Geras variantas, bet:
+
 - Trūksta emocinio ryšio pradžioje
 - Klientas gali nesuprasti, kaip tai tinka jam
 - Mažiau SEO content apie problemas
@@ -539,6 +566,7 @@ Pradeda nuo social proof - rodo, ką jau padarėme. Pasitikėjimo kūrimas per r
 Specializuojuosi logistikos sistemų kūrime, bet šie sprendimai pritaikomi bet kuriai industrijai. Pažiūrėkite rezultatus ir įsivaizduokite, ką tai reikštų jūsų verslui.
 
 **Stats banner:**
+
 - 5+ Projektų
 - 70%+ Efektyvumo padidėjimas
 - 2-8 Savaitės iki paleidimo
@@ -588,15 +616,19 @@ Bet kokių verslo metrų stebėjimas realiu laiku - pardavimai, produktyvumas, K
 [Toliau sekasi tas pats kaip Variante A: Paslaugos → Kainos → Procesas → FAQ → CTA]
 
 ---
+
 ---
 
 ## VARIANTAS C - "Technology-Forward" 🚀
 
 ### Koncepcija
+
 Pabrėžia moderniškumą, greitį, technologijas. Apeluja į tech-savvy klientus, kurie vertina inovacijas. Mažiau emocinis, daugiau facts-based.
 
 ### Rekomendacija
+
 ❌ **NETINKAM DAUGUMAI LIETUVOS SME KLIENTŲ** - Nes:
+
 - Per techniškas mažoms įmonėms
 - Fokusas į "kaip", o ne "kodėl"
 - Gali atrodyti per brangus/complicated
@@ -631,6 +663,7 @@ Pabrėžia moderniškumą, greitį, technologijas. Apeluja į tech-savvy klientu
 AI-powered development. Cloud-native architecture. 3x greitesnis pristatymas. Prisijunkite prie modernios verslo programinės įrangos eros.
 
 **Tech badges:**
+
 - ⚡ Supabase
 - 🚀 Vercel Edge
 - 🤖 AI-Assisted Development
@@ -645,6 +678,7 @@ AI-powered development. Cloud-native architecture. 3x greitesnis pristatymas. Pr
 [Toliau sekasi panašus content bet su tech akcentu]
 
 ---
+
 ---
 
 ## 📊 REKOMENDACIJA IR SPRENDIMAS

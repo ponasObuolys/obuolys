@@ -17,10 +17,7 @@ function RelatedArticleCard({ article }: { article: Article }) {
   const { viewCount, loading } = useArticleViews({ articleId: article.id });
 
   return (
-    <Link
-      to={`/publikacijos/${article.slug}`}
-      className="group block"
-    >
+    <Link to={`/publikacijos/${article.slug}`} className="group block">
       <article className="h-full bg-card border border-border rounded-lg overflow-hidden hover:border-primary transition-all duration-300 hover:shadow-lg">
         {/* Image */}
         {article.image_url ? (
@@ -61,9 +58,7 @@ function RelatedArticleCard({ article }: { article: Article }) {
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-            {article.description}
-          </p>
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{article.description}</p>
 
           {/* Metadata */}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -116,9 +111,7 @@ export function RelatedArticles({ articles, loading }: RelatedArticlesProps) {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">
-              Jums gali patikti
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">Jums gali patikti</h2>
             <p className="text-muted-foreground">
               Susijusios publikacijos, kurios gali jus sudominti
             </p>

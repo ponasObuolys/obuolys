@@ -2,7 +2,7 @@
  * Centralized error handling utilities for type-safe error management
  */
 
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 // Base error interface for application errors
 export interface AppError {
@@ -24,7 +24,7 @@ export interface ValidationError extends AppError {
 }
 
 export interface AuthError extends AppError {
-  type: 'authentication' | 'authorization' | 'session';
+  type: "authentication" | "authorization" | "session";
 }
 
 export interface FileUploadError extends AppError {
@@ -34,7 +34,10 @@ export interface FileUploadError extends AppError {
 }
 
 // Error handler function type
-export type ErrorHandler<T = AppError> = (error: unknown) => T;
+export type ErrorHandler<T = AppError, Args extends unknown[] = []> = (
+  error: unknown,
+  ...args: Args
+) => T;
 
 /**
  * Generic error handler that converts unknown errors to AppError
@@ -49,7 +52,7 @@ export const handleError: ErrorHandler = (error: unknown): AppError => {
   }
 
   // Handle string errors
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return {
       message: error,
       originalError: error,
@@ -57,7 +60,7 @@ export const handleError: ErrorHandler = (error: unknown): AppError => {
   }
 
   // Handle objects with message property
-  if (error && typeof error === 'object' && 'message' in error) {
+  if (error && typeof error === "object" && "message" in error) {
     return {
       message: String(error.message),
       originalError: error,
@@ -66,7 +69,7 @@ export const handleError: ErrorHandler = (error: unknown): AppError => {
 
   // Fallback for unknown error types
   return {
-    message: 'Įvyko nežinoma klaida',
+    message: "Įvyko nežinoma klaida",
     originalError: error,
   };
 };
@@ -78,20 +81,20 @@ export const handleApiError: ErrorHandler<ApiError> = (error: unknown): ApiError
   const baseError = handleError(error);
 
   // Handle Supabase errors
-  if (error && typeof error === 'object' && 'code' in error) {
+  if (error && typeof error === "object" && "code" in error) {
     return {
       ...baseError,
       code: String(error.code),
-      status: 'status' in error ? Number(error.status) : undefined,
+      status: "status" in error ? Number(error.status) : undefined,
     };
   }
 
   // Handle fetch errors
-  if (error instanceof TypeError && error.message.includes('fetch')) {
+  if (error instanceof TypeError && error.message.includes("fetch")) {
     return {
       ...baseError,
-      message: 'Nepavyko prisijungti prie serverio',
-      code: 'NETWORK_ERROR',
+      message: "Nepavyko prisijungti prie serverio",
+      code: "NETWORK_ERROR",
     };
   }
 
@@ -105,12 +108,12 @@ export const handleAuthError: ErrorHandler<AuthError> = (error: unknown): AuthEr
   const baseError = handleError(error);
 
   // Determine auth error type based on error content
-  let type: AuthError['type'] = 'authentication';
+  let type: AuthError["type"] = "authentication";
 
-  if (baseError.message.includes('unauthorized') || baseError.message.includes('permission')) {
-    type = 'authorization';
-  } else if (baseError.message.includes('session') || baseError.message.includes('token')) {
-    type = 'session';
+  if (baseError.message.includes("unauthorized") || baseError.message.includes("permission")) {
+    type = "authorization";
+  } else if (baseError.message.includes("session") || baseError.message.includes("token")) {
+    type = "session";
   }
 
   return {
@@ -122,7 +125,7 @@ export const handleAuthError: ErrorHandler<AuthError> = (error: unknown): AuthEr
 /**
  * File upload error handler
  */
-export const handleFileUploadError: ErrorHandler<FileUploadError> = (
+export const handleFileUploadError: ErrorHandler<FileUploadError, [string?, number?]> = (
   error: unknown,
   fileName?: string,
   fileSize?: number
@@ -141,7 +144,7 @@ export const handleFileUploadError: ErrorHandler<FileUploadError> = (
 /**
  * Form validation error handler
  */
-export const handleValidationError: ErrorHandler<ValidationError> = (
+export const handleValidationError: ErrorHandler<ValidationError, [string?, unknown?]> = (
   error: unknown,
   field?: string,
   value?: unknown
@@ -158,29 +161,29 @@ export const handleValidationError: ErrorHandler<ValidationError> = (
 // Pre-defined error messages in Lithuanian
 export const ERROR_MESSAGES = {
   // Authentication errors
-  AUTH_FAILED: 'Neteisingas el. paštas arba slaptažodis',
-  AUTH_REQUIRED: 'Reikia prisijungti prie sistemos',
-  AUTH_EXPIRED: 'Jūsų sesija baigėsi. Prašome prisijungti iš naujo',
-  AUTH_PERMISSION: 'Neturite leidimo atlikti šį veiksmą',
+  AUTH_FAILED: "Neteisingas el. paštas arba slaptažodis",
+  AUTH_REQUIRED: "Reikia prisijungti prie sistemos",
+  AUTH_EXPIRED: "Jūsų sesija baigėsi. Prašome prisijungti iš naujo",
+  AUTH_PERMISSION: "Neturite leidimo atlikti šį veiksmą",
 
   // API errors
-  NETWORK_ERROR: 'Nepavyko prisijungti prie serverio',
-  SERVER_ERROR: 'Serverio klaida. Bandykite dar kartą vėliau',
-  NOT_FOUND: 'Ieškomas objektas nerastas',
+  NETWORK_ERROR: "Nepavyko prisijungti prie serverio",
+  SERVER_ERROR: "Serverio klaida. Bandykite dar kartą vėliau",
+  NOT_FOUND: "Ieškomas objektas nerastas",
 
   // File upload errors
-  FILE_TOO_LARGE: 'Failas per didelis. Maksimalus dydis: 5MB',
-  FILE_INVALID_TYPE: 'Netinkamas failo tipas',
-  UPLOAD_FAILED: 'Nepavyko įkelti failo',
+  FILE_TOO_LARGE: "Failas per didelis. Maksimalus dydis: 5MB",
+  FILE_INVALID_TYPE: "Netinkamas failo tipas",
+  UPLOAD_FAILED: "Nepavyko įkelti failo",
 
   // Form validation errors
-  REQUIRED_FIELD: 'Šis laukas yra privalomas',
-  INVALID_EMAIL: 'Neteisingas el. pašto formatas',
-  PASSWORD_TOO_SHORT: 'Slaptažodis per trumpas',
+  REQUIRED_FIELD: "Šis laukas yra privalomas",
+  INVALID_EMAIL: "Neteisingas el. pašto formatas",
+  PASSWORD_TOO_SHORT: "Slaptažodis per trumpas",
 
   // Generic errors
-  UNKNOWN_ERROR: 'Įvyko nežinoma klaida',
-  OPERATION_FAILED: 'Nepavyko atlikti veiksmo',
+  UNKNOWN_ERROR: "Įvyko nežinoma klaida",
+  OPERATION_FAILED: "Nepavyko atlikti veiksmo",
 } as const;
 
 /**
@@ -189,27 +192,27 @@ export const ERROR_MESSAGES = {
 export const useErrorHandler = () => {
   const { toast } = useToast();
 
-  const showError = (error: AppError, title = 'Klaida') => {
+  const showError = (error: AppError, title = "Klaida") => {
     toast({
       title,
       description: error.message,
-      variant: 'destructive',
+      variant: "destructive",
     });
   };
 
-  const handleAndShowError = (error: unknown, title = 'Klaida') => {
+  const handleAndShowError = (error: unknown, title = "Klaida") => {
     const appError = handleError(error);
     showError(appError, title);
     return appError;
   };
 
-  const handleApiErrorWithToast = (error: unknown, title = 'API klaida') => {
+  const handleApiErrorWithToast = (error: unknown, title = "API klaida") => {
     const apiError = handleApiError(error);
     showError(apiError, title);
     return apiError;
   };
 
-  const handleAuthErrorWithToast = (error: unknown, title = 'Autentifikacijos klaida') => {
+  const handleAuthErrorWithToast = (error: unknown, title = "Autentifikacijos klaida") => {
     const authError = handleAuthError(error);
     showError(authError, title);
     return authError;
@@ -219,7 +222,7 @@ export const useErrorHandler = () => {
     error: unknown,
     fileName?: string,
     fileSize?: number,
-    title = 'Įkėlimo klaida'
+    title = "Įkėlimo klaida"
   ) => {
     const uploadError = handleFileUploadError(error, fileName, fileSize);
     showError(uploadError, title);
@@ -238,11 +241,11 @@ export const useErrorHandler = () => {
 /**
  * Utility function to create typed async handlers
  */
-export const createAsyncHandler = <T extends (...args: unknown[]) => Promise<unknown>>(
-  handler: T,
-  errorHandler: (error: unknown) => void = handleError
+export const createAsyncHandler = <Args extends unknown[], Result>(
+  handler: (...args: Args) => Promise<Result>,
+  errorHandler: (error: unknown) => unknown = handleError
 ) => {
-  return async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>> | undefined> => {
+  return async (...args: Args): Promise<Result | undefined> => {
     try {
       return await handler(...args);
     } catch (error) {
@@ -265,7 +268,7 @@ export class ErrorBoundaryError extends Error {
     componentStack?: string
   ) {
     super(message);
-    this.name = 'ErrorBoundaryError';
+    this.name = "ErrorBoundaryError";
     this.componentStack = componentStack;
   }
 }

@@ -66,7 +66,7 @@ export const fileToDataUrl = (file: File): Promise<string> => {
  * @returns True if the file is a valid image
  */
 export const isValidImage = (file: File): boolean => {
-  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
   return validTypes.includes(file.type);
 };
 

@@ -1,6 +1,7 @@
 # Supabase URL Configuration
 
 ## Site URL
+
 ✅ Jau nustatyta: `https://ponasobuolys.lt`
 
 ## Redirect URLs
@@ -28,6 +29,7 @@ http://localhost:5173/
 Taip pat atnaujinkite Google Cloud Console:
 
 ### Authorized JavaScript origins (TIK domain, be path):
+
 ```
 https://ponasobuolys.lt
 https://www.ponasobuolys.lt
@@ -37,6 +39,7 @@ http://localhost:5173
 ⚠️ **Svarbu:** JavaScript origins negali turėti path (`/auth/callback`) arba baigtis `/`
 
 ### Authorized redirect URIs (su path):
+
 ```
 https://ponasobuolys.lt/auth/callback
 https://www.ponasobuolys.lt/auth/callback
@@ -74,6 +77,7 @@ Jei OAuth consent screen vis dar rodo `jzixoslapmlqafrlbvpk.supabase.co`:
 ### "Redirect URI mismatch"
 
 Patikrinkite:
+
 - Supabase Redirect URLs turi `https://ponasobuolys.lt/auth/callback`
 - Google Cloud Console Authorized redirect URIs turi tą patį URL
 - Nėra typo (pvz., `/callback` vs `/auth/callback`)
@@ -81,6 +85,7 @@ Patikrinkite:
 ### OAuth loop
 
 Jei po callback grįžta atgal į `/auth/callback`:
+
 - Patikrinkite `AuthCallback.tsx` - ar redirect'ina į `/`
 - Išvalykite cookies ir cache
 - Patikrinkite browser console errors

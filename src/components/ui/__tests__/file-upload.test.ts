@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   storeLocalImage,
   getLocalImage,
@@ -7,10 +7,10 @@ import {
   getAllImageKeys,
   fileToDataUrl,
   isValidImage,
-  getImageDimensions
-} from '../file-upload';
+  getImageDimensions,
+} from "../file-upload";
 
-describe('File Upload Utilities', () => {
+describe("File Upload Utilities", () => {
   beforeEach(() => {
     clearLocalImages();
   });
@@ -19,10 +19,11 @@ describe('File Upload Utilities', () => {
     clearLocalImages();
   });
 
-  describe('Local Image Storage', () => {
-    it('stores and retrieves images correctly', () => {
-      const key = 'test-image-1';
-      const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+  describe("Local Image Storage", () => {
+    it("stores and retrieves images correctly", () => {
+      const key = "test-image-1";
+      const dataUrl =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
       storeLocalImage(key, dataUrl);
       const retrieved = getLocalImage(key);
@@ -30,14 +31,14 @@ describe('File Upload Utilities', () => {
       expect(retrieved).toBe(dataUrl);
     });
 
-    it('returns null for non-existent images', () => {
-      const result = getLocalImage('non-existent-key');
+    it("returns null for non-existent images", () => {
+      const result = getLocalImage("non-existent-key");
       expect(result).toBeNull();
     });
 
-    it('removes images correctly', () => {
-      const key = 'test-image-to-remove';
-      const dataUrl = 'data:image/png;base64,test';
+    it("removes images correctly", () => {
+      const key = "test-image-to-remove";
+      const dataUrl = "data:image/png;base64,test";
 
       storeLocalImage(key, dataUrl);
       expect(getLocalImage(key)).toBe(dataUrl);
@@ -46,23 +47,23 @@ describe('File Upload Utilities', () => {
       expect(getLocalImage(key)).toBeNull();
     });
 
-    it('clears all images', () => {
-      storeLocalImage('image1', 'data:image/png;base64,test1');
-      storeLocalImage('image2', 'data:image/png;base64,test2');
-      storeLocalImage('image3', 'data:image/png;base64,test3');
+    it("clears all images", () => {
+      storeLocalImage("image1", "data:image/png;base64,test1");
+      storeLocalImage("image2", "data:image/png;base64,test2");
+      storeLocalImage("image3", "data:image/png;base64,test3");
 
       expect(getAllImageKeys()).toHaveLength(3);
 
       clearLocalImages();
 
       expect(getAllImageKeys()).toHaveLength(0);
-      expect(getLocalImage('image1')).toBeNull();
-      expect(getLocalImage('image2')).toBeNull();
-      expect(getLocalImage('image3')).toBeNull();
+      expect(getLocalImage("image1")).toBeNull();
+      expect(getLocalImage("image2")).toBeNull();
+      expect(getLocalImage("image3")).toBeNull();
     });
 
-    it('gets all image keys correctly', () => {
-      const keys = ['img1', 'img2', 'img3'];
+    it("gets all image keys correctly", () => {
+      const keys = ["img1", "img2", "img3"];
 
       keys.forEach(key => {
         storeLocalImage(key, `data:image/png;base64,${key}`);
@@ -75,10 +76,10 @@ describe('File Upload Utilities', () => {
       });
     });
 
-    it('overwrites existing images with same key', () => {
-      const key = 'overwrite-test';
-      const dataUrl1 = 'data:image/png;base64,first';
-      const dataUrl2 = 'data:image/png;base64,second';
+    it("overwrites existing images with same key", () => {
+      const key = "overwrite-test";
+      const dataUrl1 = "data:image/png;base64,first";
+      const dataUrl2 = "data:image/png;base64,second";
 
       storeLocalImage(key, dataUrl1);
       expect(getLocalImage(key)).toBe(dataUrl1);
@@ -89,9 +90,9 @@ describe('File Upload Utilities', () => {
     });
   });
 
-  describe('File Processing', () => {
-    it('converts file to data URL', async () => {
-      const mockFileContent = 'test file content';
+  describe("File Processing", () => {
+    it("converts file to data URL", async () => {
+      const mockFileContent = "test file content";
       const expectedDataUrl = `data:text/plain;base64,${btoa(mockFileContent)}`;
 
       // Mock FileReader
@@ -99,12 +100,15 @@ describe('File Upload Utilities', () => {
         readAsDataURL: vi.fn(),
         result: expectedDataUrl,
         onload: null as any,
-        onerror: null as any
+        onerror: null as any,
       };
 
-      vi.stubGlobal('FileReader', vi.fn(() => mockFileReader));
+      vi.stubGlobal(
+        "FileReader",
+        vi.fn(() => mockFileReader)
+      );
 
-      const file = new File([mockFileContent], 'test.txt', { type: 'text/plain' });
+      const file = new File([mockFileContent], "test.txt", { type: "text/plain" });
 
       const promise = fileToDataUrl(file);
 
@@ -116,35 +120,38 @@ describe('File Upload Utilities', () => {
       expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file);
     });
 
-    it('handles file read errors', async () => {
-      const mockError = new Error('File read failed');
+    it("handles file read errors", async () => {
+      const mockError = new Error("File read failed");
 
       const mockFileReader = {
         readAsDataURL: vi.fn(),
         result: null,
         onload: null as any,
-        onerror: null as any
+        onerror: null as any,
       };
 
-      vi.stubGlobal('FileReader', vi.fn(() => mockFileReader));
+      vi.stubGlobal(
+        "FileReader",
+        vi.fn(() => mockFileReader)
+      );
 
-      const file = new File(['test'], 'test.txt', { type: 'text/plain' });
+      const file = new File(["test"], "test.txt", { type: "text/plain" });
 
       const promise = fileToDataUrl(file);
 
       // Simulate error
       mockFileReader.onerror(mockError);
 
-      await expect(promise).rejects.toThrow('File read failed');
+      await expect(promise).rejects.toThrow("File read failed");
     });
 
-    it('validates image file types correctly', () => {
+    it("validates image file types correctly", () => {
       const validImageFiles = [
-        new File([''], 'test.jpg', { type: 'image/jpeg' }),
-        new File([''], 'test.jpeg', { type: 'image/jpg' }),
-        new File([''], 'test.png', { type: 'image/png' }),
-        new File([''], 'test.gif', { type: 'image/gif' }),
-        new File([''], 'test.webp', { type: 'image/webp' })
+        new File([""], "test.jpg", { type: "image/jpeg" }),
+        new File([""], "test.jpeg", { type: "image/jpg" }),
+        new File([""], "test.png", { type: "image/png" }),
+        new File([""], "test.gif", { type: "image/gif" }),
+        new File([""], "test.webp", { type: "image/webp" }),
       ];
 
       validImageFiles.forEach(file => {
@@ -152,10 +159,10 @@ describe('File Upload Utilities', () => {
       });
 
       const invalidFiles = [
-        new File([''], 'test.txt', { type: 'text/plain' }),
-        new File([''], 'test.pdf', { type: 'application/pdf' }),
-        new File([''], 'test.doc', { type: 'application/msword' }),
-        new File([''], 'test.mp4', { type: 'video/mp4' })
+        new File([""], "test.txt", { type: "text/plain" }),
+        new File([""], "test.pdf", { type: "application/pdf" }),
+        new File([""], "test.doc", { type: "application/msword" }),
+        new File([""], "test.mp4", { type: "video/mp4" }),
       ];
 
       invalidFiles.forEach(file => {
@@ -163,20 +170,23 @@ describe('File Upload Utilities', () => {
       });
     });
 
-    it('gets image dimensions correctly', async () => {
+    it("gets image dimensions correctly", async () => {
       const mockImage = {
         naturalWidth: 800,
         naturalHeight: 600,
         onload: null as any,
         onerror: null as any,
-        src: ''
+        src: "",
       };
 
-      const mockCreateObjectURL = vi.fn(() => 'blob:mock-url');
-      vi.stubGlobal('URL', { createObjectURL: mockCreateObjectURL });
-      vi.stubGlobal('Image', vi.fn(() => mockImage));
+      const mockCreateObjectURL = vi.fn(() => "blob:mock-url");
+      vi.stubGlobal("URL", { createObjectURL: mockCreateObjectURL });
+      vi.stubGlobal(
+        "Image",
+        vi.fn(() => mockImage)
+      );
 
-      const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
+      const file = new File([""], "test.jpg", { type: "image/jpeg" });
 
       const promise = getImageDimensions(file);
 
@@ -189,44 +199,50 @@ describe('File Upload Utilities', () => {
       expect(mockCreateObjectURL).toHaveBeenCalledWith(file);
     });
 
-    it('handles image dimension errors', async () => {
-      const mockError = new Error('Image load failed');
+    it("handles image dimension errors", async () => {
+      const mockError = new Error("Image load failed");
 
       const mockImage = {
         naturalWidth: 0,
         naturalHeight: 0,
         onload: null as any,
         onerror: null as any,
-        src: ''
+        src: "",
       };
 
-      const mockCreateObjectURL = vi.fn(() => 'blob:mock-url');
-      vi.stubGlobal('URL', { createObjectURL: mockCreateObjectURL });
-      vi.stubGlobal('Image', vi.fn(() => mockImage));
+      const mockCreateObjectURL = vi.fn(() => "blob:mock-url");
+      vi.stubGlobal("URL", { createObjectURL: mockCreateObjectURL });
+      vi.stubGlobal(
+        "Image",
+        vi.fn(() => mockImage)
+      );
 
-      const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
+      const file = new File([""], "test.jpg", { type: "image/jpeg" });
 
       const promise = getImageDimensions(file);
 
       // Simulate error
       mockImage.onerror(mockError);
 
-      await expect(promise).rejects.toThrow('Image load failed');
+      await expect(promise).rejects.toThrow("Image load failed");
     });
 
-    it('handles corrupted image files gracefully', async () => {
+    it("handles corrupted image files gracefully", async () => {
       const mockImage = {
         naturalWidth: 0,
         naturalHeight: 0,
         onload: null as any,
         onerror: null as any,
-        src: ''
+        src: "",
       };
 
-      vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock-url') });
-      vi.stubGlobal('Image', vi.fn(() => mockImage));
+      vi.stubGlobal("URL", { createObjectURL: vi.fn(() => "blob:mock-url") });
+      vi.stubGlobal(
+        "Image",
+        vi.fn(() => mockImage)
+      );
 
-      const corruptedFile = new File(['corrupted data'], 'corrupted.jpg', { type: 'image/jpeg' });
+      const corruptedFile = new File(["corrupted data"], "corrupted.jpg", { type: "image/jpeg" });
 
       const promise = getImageDimensions(corruptedFile);
 
@@ -238,39 +254,39 @@ describe('File Upload Utilities', () => {
     });
   });
 
-  describe('Edge Cases', () => {
-    it('handles empty file names', () => {
-      const file = new File([''], '', { type: 'image/png' });
+  describe("Edge Cases", () => {
+    it("handles empty file names", () => {
+      const file = new File([""], "", { type: "image/png" });
       expect(isValidImage(file)).toBe(true);
     });
 
-    it('handles files with no extension', () => {
-      const file = new File([''], 'imagefile', { type: 'image/png' });
+    it("handles files with no extension", () => {
+      const file = new File([""], "imagefile", { type: "image/png" });
       expect(isValidImage(file)).toBe(true);
     });
 
-    it('handles very large keys in storage', () => {
-      const longKey = 'a'.repeat(1000);
-      const dataUrl = 'data:image/png;base64,test';
+    it("handles very large keys in storage", () => {
+      const longKey = "a".repeat(1000);
+      const dataUrl = "data:image/png;base64,test";
 
       storeLocalImage(longKey, dataUrl);
       expect(getLocalImage(longKey)).toBe(dataUrl);
     });
 
-    it('handles special characters in keys', () => {
-      const specialKey = 'test_image-123.png?v=1&type=thumbnail';
-      const dataUrl = 'data:image/png;base64,test';
+    it("handles special characters in keys", () => {
+      const specialKey = "test_image-123.png?v=1&type=thumbnail";
+      const dataUrl = "data:image/png;base64,test";
 
       storeLocalImage(specialKey, dataUrl);
       expect(getLocalImage(specialKey)).toBe(dataUrl);
     });
 
-    it('handles unicode characters in file names', () => {
-      const file = new File([''], 'paveikslėlis.png', { type: 'image/png' });
+    it("handles unicode characters in file names", () => {
+      const file = new File([""], "paveikslėlis.png", { type: "image/png" });
       expect(isValidImage(file)).toBe(true);
     });
 
-    it('maintains storage consistency across operations', () => {
+    it("maintains storage consistency across operations", () => {
       // Add multiple images
       for (let i = 0; i < 10; i++) {
         storeLocalImage(`image_${i}`, `data:image/png;base64,image${i}`);
@@ -279,17 +295,17 @@ describe('File Upload Utilities', () => {
       expect(getAllImageKeys()).toHaveLength(10);
 
       // Remove some images
-      removeLocalImage('image_3');
-      removeLocalImage('image_7');
+      removeLocalImage("image_3");
+      removeLocalImage("image_7");
 
       expect(getAllImageKeys()).toHaveLength(8);
-      expect(getLocalImage('image_3')).toBeNull();
-      expect(getLocalImage('image_7')).toBeNull();
-      expect(getLocalImage('image_5')).toBe('data:image/png;base64,image5');
+      expect(getLocalImage("image_3")).toBeNull();
+      expect(getLocalImage("image_7")).toBeNull();
+      expect(getLocalImage("image_5")).toBe("data:image/png;base64,image5");
 
       // Add more images
-      storeLocalImage('new_image_1', 'data:image/png;base64,new1');
-      storeLocalImage('new_image_2', 'data:image/png;base64,new2');
+      storeLocalImage("new_image_1", "data:image/png;base64,new1");
+      storeLocalImage("new_image_2", "data:image/png;base64,new2");
 
       expect(getAllImageKeys()).toHaveLength(10);
     });

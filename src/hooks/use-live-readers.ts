@@ -37,7 +37,7 @@ export function useLiveReaders({
       try {
         // Create a unique channel for this article
         const channelName = `article:${articleId}`;
-        
+
         channel = supabase.channel(channelName, {
           config: {
             presence: {
@@ -58,33 +58,32 @@ export function useLiveReaders({
             }
           })
           .on("presence", { event: "join" }, ({ newPresences }) => {
-            secureLogger.debug("New reader joined", { 
-              articleId, 
-              count: newPresences.length 
+            secureLogger.debug("New reader joined", {
+              articleId,
+              count: newPresences.length,
             });
           })
           .on("presence", { event: "leave" }, ({ leftPresences }) => {
-            secureLogger.debug("Reader left", { 
-              articleId, 
-              count: leftPresences.length 
+            secureLogger.debug("Reader left", {
+              articleId,
+              count: leftPresences.length,
             });
           });
 
         // Subscribe to the channel
-        await channel.subscribe(async (status) => {
+        await channel.subscribe(async status => {
           if (status === "SUBSCRIBED") {
             // Track this user's presence
             const presenceTrackStatus = await channel?.track({
               online_at: new Date().toISOString(),
               user_agent: navigator.userAgent.substring(0, 100),
             });
-            
+
             if (presenceTrackStatus === "ok") {
               secureLogger.debug("Presence tracking started", { articleId });
             }
           }
         });
-
       } catch (err) {
         const error = err instanceof Error ? err : new Error("Failed to setup presence");
         setError(error);

@@ -69,7 +69,7 @@ const PublicationsPage = () => {
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory =
-      selectedCategory === "Visos kategorijos" || 
+      selectedCategory === "Visos kategorijos" ||
       (item.category && item.category.includes(selectedCategory));
 
     return matchesSearch && matchesCategory;
@@ -103,50 +103,50 @@ const PublicationsPage = () => {
                 Visi naujausi AI straipsniai ir publikacijos iš Ponas Obuolys komandos.
               </p>
             </div>
-          <div className="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <Input
-                placeholder="Ieškoti publikacijų..."
-                className="pl-10"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
+            <div className="mb-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                <Input
+                  placeholder="Ieškoti publikacijų..."
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="inline-flex flex-wrap gap-2">
+                {categories.map(category => (
+                  <Button
+                    key={category}
+                    variant="outline"
+                    className={`${
+                      selectedCategory === category
+                        ? "bg-primary text-white hover:bg-primary/90"
+                        : "bg-card text-foreground hover:bg-muted"
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
             </div>
-            <div className="inline-flex flex-wrap gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant="outline"
-                  className={`${
-                    selectedCategory === category
-                      ? "bg-primary text-white hover:bg-primary/90"
-                      : "bg-card text-foreground hover:bg-muted"
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </div>
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <ArticleCardSkeleton key={index} />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPublications.length === 0 ? (
-                <div className="col-span-full text-center text-foreground/90">
-                  Nerasta publikacijų pagal pasirinktus filtrus.
-                </div>
-              ) : (
-                filteredPublications.map(item => <ArticleCard key={item.id} article={item} />)
-              )}
-            </div>
-          )}
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <ArticleCardSkeleton key={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPublications.length === 0 ? (
+                  <div className="col-span-full text-center text-foreground/90">
+                    Nerasta publikacijų pagal pasirinktus filtrus.
+                  </div>
+                ) : (
+                  filteredPublications.map(item => <ArticleCard key={item.id} article={item} />)
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>

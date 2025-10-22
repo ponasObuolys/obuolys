@@ -1,37 +1,45 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { X, CheckCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { X, CheckCircle, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const inquirySchema = z.object({
-  full_name: z.string().min(2, 'Vardas turi būti bent 2 simbolių'),
-  email: z.string().email('Neteisingas el. pašto adresas'),
+  full_name: z.string().min(2, "Vardas turi būti bent 2 simbolių"),
+  email: z.string().email("Neteisingas el. pašto adresas"),
   phone: z.string().optional(),
   company_name: z.string().optional(),
-  company_size: z.enum(['small', 'medium', 'large', 'enterprise']).optional(),
-  project_type: z.enum(['crm', 'logistics', 'automation', 'analytics', 'scheduling', 'accounting', 'other']),
-  budget_range: z.enum(['under_5k', '5k_12k', '12k_25k', 'over_25k', 'not_sure']).optional(),
-  timeline: z.enum(['urgent', '1_2_months', '2_3_months', 'flexible']).optional(),
-  description: z.string().min(20, 'Aprašymas turi būti bent 20 simbolių'),
+  company_size: z.enum(["small", "medium", "large", "enterprise"]).optional(),
+  project_type: z.enum([
+    "crm",
+    "logistics",
+    "automation",
+    "analytics",
+    "scheduling",
+    "accounting",
+    "other",
+  ]),
+  budget_range: z.enum(["under_5k", "5k_12k", "12k_25k", "over_25k", "not_sure"]).optional(),
+  timeline: z.enum(["urgent", "1_2_months", "2_3_months", "flexible"]).optional(),
+  description: z.string().min(20, "Aprašymas turi būti bent 20 simbolių"),
   current_solution: z.string().optional(),
   gdpr_consent: z.boolean().refine(val => val === true, {
-    message: 'Privalote sutikti su privatumo politika'
-  })
+    message: "Privalote sutikti su privatumo politika",
+  }),
 });
 
 type InquiryFormData = z.infer<typeof inquirySchema>;
@@ -49,33 +57,33 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<InquiryFormData>({
-    resolver: zodResolver(inquirySchema)
+    resolver: zodResolver(inquirySchema),
   });
 
-  const gdprConsent = watch('gdpr_consent');
+  const gdprConsent = watch("gdpr_consent");
 
   const onSubmit = async (data: InquiryFormData) => {
     try {
       // Insert inquiry into database
-      const { error: insertError } = await supabase
-        .from('custom_tool_inquiries')
-        .insert([{
+      const { error: insertError } = await supabase.from("custom_tool_inquiries").insert([
+        {
           ...data,
-          source: 'website',
+          source: "website",
           ip_address: null, // Could be captured if needed
-          user_agent: navigator.userAgent
-        }]);
+          user_agent: navigator.userAgent,
+        },
+      ]);
 
       if (insertError) throw insertError;
 
       // Send email notification
       try {
-        await fetch('/api/send-inquiry-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+        await fetch("/api/send-inquiry-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
         });
       } catch {
         // Don't fail the whole submission if email fails
@@ -84,9 +92,10 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
       setIsSubmitted(true);
     } catch {
       toast({
-        title: 'Klaida',
-        description: 'Nepavyko išsiųsti užklausos. Bandykite dar kartą arba susisiekite tiesiogiai el. paštu: labas@ponasobuolys.lt',
-        variant: 'destructive'
+        title: "Klaida",
+        description:
+          "Nepavyko išsiųsti užklausos. Bandykite dar kartą arba susisiekite tiesiogiai el. paštu: labas@ponasobuolys.lt",
+        variant: "destructive",
       });
     }
   };
@@ -139,9 +148,9 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
                 <Label htmlFor="full_name">Vardas Pavardė *</Label>
                 <Input
                   id="full_name"
-                  {...register('full_name')}
+                  {...register("full_name")}
                   placeholder="Jonas Jonaitis"
-                  className={errors.full_name ? 'border-red-500' : ''}
+                  className={errors.full_name ? "border-red-500" : ""}
                 />
                 {errors.full_name && (
                   <p className="text-red-500 text-sm mt-1">{errors.full_name.message}</p>
@@ -153,9 +162,9 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
                 <Input
                   id="email"
                   type="email"
-                  {...register('email')}
+                  {...register("email")}
                   placeholder="jonas@imone.lt"
-                  className={errors.email ? 'border-red-500' : ''}
+                  className={errors.email ? "border-red-500" : ""}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -166,26 +175,22 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="phone">Telefonas</Label>
-                <Input
-                  id="phone"
-                  {...register('phone')}
-                  placeholder="+370 600 00000"
-                />
+                <Input id="phone" {...register("phone")} placeholder="+370 600 00000" />
               </div>
 
               <div>
                 <Label htmlFor="company_name">Įmonės pavadinimas</Label>
-                <Input
-                  id="company_name"
-                  {...register('company_name')}
-                  placeholder="UAB Pavyzdys"
-                />
+                <Input id="company_name" {...register("company_name")} placeholder="UAB Pavyzdys" />
               </div>
             </div>
 
             <div>
               <Label htmlFor="company_size">Įmonės dydis</Label>
-              <Select onValueChange={(value) => setValue('company_size', value as 'small' | 'medium' | 'large' | 'enterprise')}>
+              <Select
+                onValueChange={value =>
+                  setValue("company_size", value as "small" | "medium" | "large" | "enterprise")
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Pasirinkite..." />
                 </SelectTrigger>
@@ -205,8 +210,22 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
 
             <div>
               <Label htmlFor="project_type">Projekto tipas *</Label>
-              <Select onValueChange={(value) => setValue('project_type', value as 'crm' | 'logistics' | 'automation' | 'analytics' | 'scheduling' | 'accounting' | 'other')}>
-                <SelectTrigger className={errors.project_type ? 'border-red-500' : ''}>
+              <Select
+                onValueChange={value =>
+                  setValue(
+                    "project_type",
+                    value as
+                      | "crm"
+                      | "logistics"
+                      | "automation"
+                      | "analytics"
+                      | "scheduling"
+                      | "accounting"
+                      | "other"
+                  )
+                }
+              >
+                <SelectTrigger className={errors.project_type ? "border-red-500" : ""}>
                   <SelectValue placeholder="Pasirinkite projekto tipą..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -227,7 +246,14 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="budget_range">Biudžeto rėžis</Label>
-                <Select onValueChange={(value) => setValue('budget_range', value as 'under_5k' | '5k_12k' | '12k_25k' | 'over_25k' | 'not_sure')}>
+                <Select
+                  onValueChange={value =>
+                    setValue(
+                      "budget_range",
+                      value as "under_5k" | "5k_12k" | "12k_25k" | "over_25k" | "not_sure"
+                    )
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Pasirinkite..." />
                   </SelectTrigger>
@@ -243,7 +269,14 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
 
               <div>
                 <Label htmlFor="timeline">Laiko rėmai</Label>
-                <Select onValueChange={(value) => setValue('timeline', value as 'urgent' | '1_2_months' | '2_3_months' | 'flexible')}>
+                <Select
+                  onValueChange={value =>
+                    setValue(
+                      "timeline",
+                      value as "urgent" | "1_2_months" | "2_3_months" | "flexible"
+                    )
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Pasirinkite..." />
                   </SelectTrigger>
@@ -261,10 +294,10 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
               <Label htmlFor="description">Projekto aprašymas *</Label>
               <Textarea
                 id="description"
-                {...register('description')}
+                {...register("description")}
                 placeholder="Aprašykite savo iššūkius, ko tikitės iš sistemos..."
                 rows={4}
-                className={errors.description ? 'border-red-500' : ''}
+                className={errors.description ? "border-red-500" : ""}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -275,7 +308,7 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
               <Label htmlFor="current_solution">Kokius įrankius naudojate dabar?</Label>
               <Textarea
                 id="current_solution"
-                {...register('current_solution')}
+                {...register("current_solution")}
                 placeholder="Excel, konkretūs CRM/ERP, arba nieko..."
                 rows={2}
               />
@@ -287,18 +320,15 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
             <Checkbox
               id="gdpr_consent"
               checked={gdprConsent}
-              onCheckedChange={(checked) => setValue('gdpr_consent', checked as boolean)}
-              className={errors.gdpr_consent ? 'border-red-500' : ''}
+              onCheckedChange={checked => setValue("gdpr_consent", checked as boolean)}
+              className={errors.gdpr_consent ? "border-red-500" : ""}
             />
             <div className="flex-1">
-              <Label
-                htmlFor="gdpr_consent"
-                className="text-sm cursor-pointer"
-              >
-                Sutinku, kad mano duomenys būtų apdorojami pagal{' '}
+              <Label htmlFor="gdpr_consent" className="text-sm cursor-pointer">
+                Sutinku, kad mano duomenys būtų apdorojami pagal{" "}
                 <a href="/privatumo-politika" target="_blank" className="text-primary underline">
                   privatumo politiką
-                </a>{' '}
+                </a>{" "}
                 konsultacijos tikslais *
               </Label>
               {errors.gdpr_consent && (
@@ -309,33 +339,24 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
 
           {/* Submit Button */}
           <div className="flex gap-3">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="button-primary flex-1"
-            >
+            <Button type="submit" disabled={isSubmitting} className="button-primary flex-1">
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Siunčiama...
                 </>
               ) : (
-                'Siųsti užklausą'
+                "Siųsti užklausą"
               )}
             </Button>
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="outline"
-              className="button-outline"
-            >
+            <Button type="button" onClick={onClose} variant="outline" className="button-outline">
               Atšaukti
             </Button>
           </div>
 
           <p className="text-xs text-foreground/60 text-center">
-            Jūsų duomenys saugūs. Nesidalinsiu su trečiosiomis šalimis.
-            Susisieksiu per 24 val darbo dienomis.
+            Jūsų duomenys saugūs. Nesidalinsiu su trečiosiomis šalimis. Susisieksiu per 24 val darbo
+            dienomis.
           </p>
         </form>
       </div>

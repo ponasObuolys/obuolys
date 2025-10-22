@@ -18,12 +18,12 @@ const ContactMessageManager = () => {
     }
   };
 
-  const filteredMessages = messages.filter((message) => {
+  const filteredMessages = messages.filter(message => {
     if (filter === "all") return true;
     return message.status === filter;
   });
 
-  const unreadCount = messages.filter((msg) => msg.status === "unread").length;
+  const unreadCount = messages.filter(msg => msg.status === "unread").length;
 
   if (loading && messages.length === 0) {
     return <p className="text-center py-4">Kraunama...</p>;

@@ -95,9 +95,7 @@ export const ToolFormFields = ({
               <FormControl>
                 <Input placeholder="https://..." {...field} />
               </FormControl>
-              <FormDescription>
-                Nuoroda į įrankį (gali būti affiliate nuoroda)
-              </FormDescription>
+              <FormDescription>Nuoroda į įrankį (gali būti affiliate nuoroda)</FormDescription>
               <FormMessage />
             </FormItem>
           )}

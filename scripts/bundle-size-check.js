@@ -5,25 +5,25 @@
  * Ensures bundle sizes stay within acceptable limits
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const BUNDLE_SIZE_LIMITS = {
   // Main bundle size limits (in bytes)
-  'index': 512 * 1024, // 512KB
-  'vendor': 1024 * 1024, // 1MB
+  index: 512 * 1024, // 512KB
+  vendor: 1024 * 1024, // 1MB
 
   // Chunk size limits
-  'admin-chunk': 256 * 1024, // 256KB
-  'auth-chunk': 128 * 1024, // 128KB
-  'content-chunk': 256 * 1024, // 256KB
+  "admin-chunk": 256 * 1024, // 256KB
+  "auth-chunk": 128 * 1024, // 128KB
+  "content-chunk": 256 * 1024, // 256KB
 
   // Asset limits
-  'css': 64 * 1024, // 64KB total CSS
-  'images': 2 * 1024 * 1024, // 2MB total images
+  css: 64 * 1024, // 64KB total CSS
+  images: 2 * 1024 * 1024, // 2MB total images
 };
 
 const PERFORMANCE_BUDGETS = {
@@ -42,18 +42,18 @@ function getFileSize(filePath) {
 }
 
 function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 function analyzeDistFolder() {
-  const distPath = path.join(process.cwd(), 'dist');
+  const distPath = path.join(process.cwd(), "dist");
 
   if (!fs.existsSync(distPath)) {
-    console.error('❌ Dist folder not found. Run build first.');
+    console.error("❌ Dist folder not found. Run build first.");
     process.exit(1);
   }
 
@@ -63,18 +63,18 @@ function analyzeDistFolder() {
       css: [],
       images: [],
       fonts: [],
-      other: []
+      other: [],
     },
     totals: {
       javascript: 0,
       css: 0,
       images: 0,
       fonts: 0,
-      total: 0
-    }
+      total: 0,
+    },
   };
 
-  function scanDirectory(dir, relativePath = '') {
+  function scanDirectory(dir, relativePath = "") {
     const items = fs.readdirSync(dir);
 
     for (const item of items) {
@@ -89,28 +89,28 @@ function analyzeDistFolder() {
         const size = stat.size;
         analysis.totals.total += size;
 
-        if (ext === '.js') {
+        if (ext === ".js") {
           analysis.totals.javascript += size;
 
           // Categorize JavaScript bundles
-          if (item.includes('index-')) {
+          if (item.includes("index-")) {
             analysis.bundles.index = (analysis.bundles.index || 0) + size;
-          } else if (item.includes('vendor')) {
+          } else if (item.includes("vendor")) {
             analysis.bundles.vendor = (analysis.bundles.vendor || 0) + size;
-          } else if (item.includes('admin')) {
-            analysis.bundles['admin-chunk'] = (analysis.bundles['admin-chunk'] || 0) + size;
-          } else if (item.includes('auth')) {
-            analysis.bundles['auth-chunk'] = (analysis.bundles['auth-chunk'] || 0) + size;
-          } else if (item.includes('content')) {
-            analysis.bundles['content-chunk'] = (analysis.bundles['content-chunk'] || 0) + size;
+          } else if (item.includes("admin")) {
+            analysis.bundles["admin-chunk"] = (analysis.bundles["admin-chunk"] || 0) + size;
+          } else if (item.includes("auth")) {
+            analysis.bundles["auth-chunk"] = (analysis.bundles["auth-chunk"] || 0) + size;
+          } else if (item.includes("content")) {
+            analysis.bundles["content-chunk"] = (analysis.bundles["content-chunk"] || 0) + size;
           }
-        } else if (ext === '.css') {
+        } else if (ext === ".css") {
           analysis.totals.css += size;
           analysis.assets.css.push({ file: relativeFilePath, size });
-        } else if (['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'].includes(ext)) {
+        } else if ([".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp"].includes(ext)) {
           analysis.totals.images += size;
           analysis.assets.images.push({ file: relativeFilePath, size });
-        } else if (['.woff', '.woff2', '.ttf', '.otf'].includes(ext)) {
+        } else if ([".woff", ".woff2", ".ttf", ".otf"].includes(ext)) {
           analysis.totals.fonts += size;
           analysis.assets.fonts.push({ file: relativeFilePath, size });
         } else {
@@ -125,16 +125,16 @@ function analyzeDistFolder() {
 }
 
 function checkBundleSizes(analysis) {
-  console.log('\n📦 Bundle Size Analysis:');
-  console.log('================================');
+  console.log("\n📦 Bundle Size Analysis:");
+  console.log("================================");
 
   let passed = true;
 
   for (const [bundleName, limit] of Object.entries(BUNDLE_SIZE_LIMITS)) {
-    if (['css', 'images'].includes(bundleName)) continue; // Handled separately
+    if (["css", "images"].includes(bundleName)) continue; // Handled separately
 
     const actualSize = analysis.bundles[bundleName] || 0;
-    const status = actualSize <= limit ? '✅' : '❌';
+    const status = actualSize <= limit ? "✅" : "❌";
     const percentage = ((actualSize / limit) * 100).toFixed(1);
 
     console.log(
@@ -151,15 +151,15 @@ function checkBundleSizes(analysis) {
 }
 
 function checkPerformanceBudgets(analysis) {
-  console.log('\n🎯 Performance Budget Analysis:');
-  console.log('================================');
+  console.log("\n🎯 Performance Budget Analysis:");
+  console.log("================================");
 
   let passed = true;
 
   for (const [category, limit] of Object.entries(PERFORMANCE_BUDGETS)) {
-    const categoryKey = category.replace('total', '').toLowerCase();
+    const categoryKey = category.replace("total", "").toLowerCase();
     const actualSize = analysis.totals[categoryKey] || 0;
-    const status = actualSize <= limit ? '✅' : '❌';
+    const status = actualSize <= limit ? "✅" : "❌";
     const percentage = ((actualSize / limit) * 100).toFixed(1);
 
     console.log(
@@ -176,20 +176,18 @@ function checkPerformanceBudgets(analysis) {
 }
 
 function findLargestAssets(analysis) {
-  console.log('\n🔍 Largest Assets:');
-  console.log('================================');
+  console.log("\n🔍 Largest Assets:");
+  console.log("================================");
 
   const allAssets = [
-    ...analysis.assets.css.map(a => ({ ...a, type: 'CSS' })),
-    ...analysis.assets.images.map(a => ({ ...a, type: 'Image' })),
-    ...analysis.assets.fonts.map(a => ({ ...a, type: 'Font' })),
-    ...analysis.assets.other.map(a => ({ ...a, type: 'Other' }))
+    ...analysis.assets.css.map(a => ({ ...a, type: "CSS" })),
+    ...analysis.assets.images.map(a => ({ ...a, type: "Image" })),
+    ...analysis.assets.fonts.map(a => ({ ...a, type: "Font" })),
+    ...analysis.assets.other.map(a => ({ ...a, type: "Other" })),
   ];
 
   // Sort by size descending and take top 10
-  const largestAssets = allAssets
-    .sort((a, b) => b.size - a.size)
-    .slice(0, 10);
+  const largestAssets = allAssets.sort((a, b) => b.size - a.size).slice(0, 10);
 
   largestAssets.forEach((asset, index) => {
     console.log(
@@ -210,13 +208,13 @@ function generateBundleReport(analysis) {
       totalSize: analysis.totals.total,
       bundleCount: Object.keys(analysis.bundles).length,
       assetCount: Object.values(analysis.assets).flat().length,
-      withinLimits: true
-    }
+      withinLimits: true,
+    },
   };
 
   // Check if within limits
   for (const [bundleName, limit] of Object.entries(BUNDLE_SIZE_LIMITS)) {
-    if (['css', 'images'].includes(bundleName)) continue;
+    if (["css", "images"].includes(bundleName)) continue;
     if ((analysis.bundles[bundleName] || 0) > limit) {
       report.summary.withinLimits = false;
       break;
@@ -224,7 +222,7 @@ function generateBundleReport(analysis) {
   }
 
   // Save report
-  const reportsDir = path.join(process.cwd(), 'dist', 'reports');
+  const reportsDir = path.join(process.cwd(), "dist", "reports");
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });
   }
@@ -237,7 +235,7 @@ function generateBundleReport(analysis) {
 }
 
 function main() {
-  console.log('📊 Running Bundle Size Analysis...\n');
+  console.log("📊 Running Bundle Size Analysis...\n");
 
   try {
     const analysis = analyzeDistFolder();
@@ -251,26 +249,25 @@ function main() {
 
     const report = generateBundleReport(analysis);
 
-    console.log('\n🏁 Bundle Analysis Summary:');
-    console.log('================================');
-    console.log(`Bundle size limits: ${bundlesPassed ? '✅ PASSED' : '❌ FAILED'}`);
-    console.log(`Performance budgets: ${budgetsPassed ? '✅ PASSED' : '❌ FAILED'}`);
+    console.log("\n🏁 Bundle Analysis Summary:");
+    console.log("================================");
+    console.log(`Bundle size limits: ${bundlesPassed ? "✅ PASSED" : "❌ FAILED"}`);
+    console.log(`Performance budgets: ${budgetsPassed ? "✅ PASSED" : "❌ FAILED"}`);
     console.log(`Total size: ${formatBytes(analysis.totals.total)}`);
 
     if (!bundlesPassed || !budgetsPassed) {
-      console.log('\n❌ Bundle size checks FAILED');
-      console.log('Consider:');
-      console.log('- Code splitting large components');
-      console.log('- Removing unused dependencies');
-      console.log('- Optimizing images and assets');
-      console.log('- Using dynamic imports for routes');
+      console.log("\n❌ Bundle size checks FAILED");
+      console.log("Consider:");
+      console.log("- Code splitting large components");
+      console.log("- Removing unused dependencies");
+      console.log("- Optimizing images and assets");
+      console.log("- Using dynamic imports for routes");
       process.exit(1);
     }
 
-    console.log('\n✅ All bundle size checks PASSED');
-
+    console.log("\n✅ All bundle size checks PASSED");
   } catch (error) {
-    console.error('❌ Error running bundle analysis:', error.message);
+    console.error("❌ Error running bundle analysis:", error.message);
     process.exit(1);
   }
 }

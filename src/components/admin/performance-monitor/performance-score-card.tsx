@@ -22,10 +22,18 @@ export const PerformanceScoreCard = ({ performanceScore }: PerformanceScoreCardP
           <Progress value={performanceScore} className="flex-1" />
           <Badge
             variant={
-              performanceScore >= 90 ? "default" : performanceScore >= 50 ? "secondary" : "destructive"
+              performanceScore >= 90
+                ? "default"
+                : performanceScore >= 50
+                  ? "secondary"
+                  : "destructive"
             }
           >
-            {performanceScore >= 90 ? "Puikus" : performanceScore >= 50 ? "Reikia tobulinti" : "Prastas"}
+            {performanceScore >= 90
+              ? "Puikus"
+              : performanceScore >= 50
+                ? "Reikia tobulinti"
+                : "Prastas"}
           </Badge>
         </div>
       </CardContent>

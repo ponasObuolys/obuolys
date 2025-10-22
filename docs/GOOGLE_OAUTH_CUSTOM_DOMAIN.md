@@ -3,11 +3,13 @@
 ## Problema
 
 Kai vartotojas prisijungia su Google, OAuth consent screen rodo:
+
 ```
 You're signing back in to jzixoslapmlqafrlbvpk.supabase.co
 ```
 
 Norime, kad rodytų:
+
 ```
 You're signing in to ponasobuolys.lt
 ```
@@ -24,6 +26,7 @@ You're signing in to ponasobuolys.lt
 4. Pasirinkite savo OAuth 2.0 Client ID
 
 5. **Authorized JavaScript origins** (TIK domain, be path):
+
    ```
    https://ponasobuolys.lt
    https://www.ponasobuolys.lt
@@ -31,6 +34,7 @@ You're signing in to ponasobuolys.lt
    ```
 
 6. **Authorized redirect URIs** (su path):
+
    ```
    https://ponasobuolys.lt/auth/callback
    https://www.ponasobuolys.lt/auth/callback
@@ -83,6 +87,7 @@ Jei nenorite mokėti už Supabase Pro, galite:
 3. Google OAuth matys tik `ponasobuolys.lt`
 
 **Minusai:**
+
 - Reikia palaikyti serverį
 - Papildomas latency
 - Sudėtingesnė konfigūracija
@@ -92,11 +97,13 @@ Jei nenorite mokėti už Supabase Pro, galite:
 Palikite kaip yra - `jzixoslapmlqafrlbvpk.supabase.co` yra visiškai saugus ir funkcionalus.
 
 **Pliusai:**
+
 - Nemokamai
 - Jokios papildomos konfigūracijos
 - Supabase palaiko SSL automatiškai
 
 **Minusai:**
+
 - OAuth consent screen rodo Supabase domain
 
 ### 4. Dabartinė Implementacija
@@ -107,12 +114,12 @@ Jūsų aplikacija dabar naudoja:
 // auth-context.hooks.ts
 export const signInWithGoogle = async () => {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
+    provider: "google",
     options: {
       redirectTo: `${window.location.origin}/auth/callback`,
       queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
+        access_type: "offline",
+        prompt: "consent",
       },
     },
   });
@@ -120,6 +127,7 @@ export const signInWithGoogle = async () => {
 ```
 
 **Redirect flow:**
+
 1. Vartotojas paspaudžia "Sign in with Google"
 2. Nukreipiamas į Google OAuth
 3. Po sėkmingo prisijungimo → `https://ponasobuolys.lt/auth/callback`
@@ -140,6 +148,7 @@ export const signInWithGoogle = async () => {
 **Problema:** Google OAuth redirect URI neatitinka konfigūracijos.
 
 **Sprendimas:**
+
 1. Patikrinkite Google Cloud Console → Credentials
 2. Įsitikinkite, kad `https://ponasobuolys.lt/auth/callback` yra authorized redirect URIs sąraše
 3. Taip pat pridėkite Supabase callback URL:
@@ -152,6 +161,7 @@ export const signInWithGoogle = async () => {
 **Priežastis:** Naudojate Supabase Free plan be custom domain.
 
 **Sprendimai:**
+
 1. Upgrade į Supabase Pro ($25/mėn) ir setup custom domain
 2. Arba palikite kaip yra - tai neturi įtakos funkcionalumui
 
@@ -160,6 +170,7 @@ export const signInWithGoogle = async () => {
 **Problema:** Po OAuth callback vartotojas grąžinamas atgal į `/auth/callback`.
 
 **Sprendimas:**
+
 1. Patikrinkite `AuthCallback.tsx` - ar teisingai redirect'ina į `/`
 2. Patikrinkite browser console errors
 3. Išvalykite browser cache ir cookies

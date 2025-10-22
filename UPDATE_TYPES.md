@@ -13,6 +13,7 @@ Jei gaunate klaidą `command not found` paleisdami `npx supabase`, turite du var
 ### Žingsniai:
 
 1. **Atidarykite Supabase Dashboard:**
+
    ```
    https://supabase.com/dashboard/project/jzixoslapmlqafrlbvpk/api
    ```
@@ -53,6 +54,7 @@ npx supabase@latest gen types typescript --project-id jzixoslapmlqafrlbvpk > src
 ## 📋 Kas bus atnaujinta:
 
 Nauji tipai apims:
+
 - ✅ `custom_tool_inquiries` (nauja lentelė verslo užklausoms)
 - ✅ Visos egzistuojančios lentelės atnaujintos
 

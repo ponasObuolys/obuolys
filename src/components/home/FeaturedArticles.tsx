@@ -61,10 +61,7 @@ const FeaturedArticles = () => {
         ) : articles.length > 0 ? (
           <div className="articles-grid">
             {articles.map(article => (
-              <ArticleCard 
-                key={article.id} 
-                article={article} 
-              />
+              <ArticleCard key={article.id} article={article} />
             ))}
           </div>
         ) : (

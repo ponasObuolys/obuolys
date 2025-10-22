@@ -1,9 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import LazyImage from '@/components/ui/lazy-image';
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import LazyImage from "@/components/ui/lazy-image";
 
 const Hero = () => {
-
   return (
     <section className="py-12 md:py-16">
       <div className="container mx-auto px-4">
@@ -17,16 +16,14 @@ const Hero = () => {
                 </h1>
 
                 <p className="text-xl text-foreground/90 leading-relaxed text-left">
-                  Dirbtinio intelekto specialistas iš Lietuvos.
-                  Šiuo metu kuriu AI sprendimus ir konsultuoju verslo įmones apie dirbtinio intelekto galimybes.
+                  Dirbtinio intelekto specialistas iš Lietuvos. Šiuo metu kuriu AI sprendimus ir
+                  konsultuoju verslo įmones apie dirbtinio intelekto galimybes.
                 </p>
 
                 {/* Action button */}
                 <div className="flex justify-center lg:justify-start pt-4">
                   <Link to="/kontaktai?type=KONSULTACIJA">
-                    <Button className="button-primary">
-                      Konsultuotis
-                    </Button>
+                    <Button className="button-primary">Konsultuotis</Button>
                   </Link>
                 </div>
               </div>
@@ -46,7 +43,10 @@ const Hero = () => {
                       />
                     </div>
                   </div>
-                  <Link to="/kontaktai?type=KONSULTACIJA" className="status-available cursor-pointer hover:bg-accent/20 transition-colors">
+                  <Link
+                    to="/kontaktai?type=KONSULTACIJA"
+                    className="status-available cursor-pointer hover:bg-accent/20 transition-colors"
+                  >
                     AKTYVIAI KONSULTUOJU
                   </Link>
                 </div>
@@ -66,10 +66,22 @@ const Hero = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-left">AI Naujienos</h3>
-                    <p className="text-sm text-foreground/90 text-left">Publikacijos, Straipsniai</p>
+                    <p className="text-sm text-foreground/90 text-left">
+                      Publikacijos, Straipsniai
+                    </p>
                   </div>
-                  <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </div>
               </Link>
@@ -84,8 +96,18 @@ const Hero = () => {
                     <h3 className="font-semibold text-left">Kursai</h3>
                     <p className="text-sm text-foreground/90 text-left">Mokymai, Konsultacijos</p>
                   </div>
-                  <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </div>
               </Link>
@@ -100,8 +122,18 @@ const Hero = () => {
                     <h3 className="font-semibold text-left">Įrankiai</h3>
                     <p className="text-sm text-foreground/90 text-left">AI sprendimai</p>
                   </div>
-                  <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </div>
               </Link>

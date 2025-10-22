@@ -1,5 +1,5 @@
 import { createElement, lazy, type ComponentType, type LazyExoticComponent } from "react";
-import { log } from '@/utils/browserLogger';
+import { log } from "@/utils/browserLogger";
 
 // Cache for storing preloaded components
 const componentCache = new Map<string, Promise<LazyModule<ComponentType<unknown>>>>();

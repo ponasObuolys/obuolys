@@ -95,19 +95,13 @@ export function TrendingArticles({
           <Flame className="h-6 w-6 text-orange-500" />
           Populiariausia <span className="gradient-text">{timeLabel}</span>
         </h2>
-        <p className="text-foreground/90">
-          Daugiausiai skaitomi straipsniai pagal peržiūras
-        </p>
+        <p className="text-foreground/90">Daugiausiai skaitomi straipsniai pagal peržiūras</p>
       </div>
 
       {/* Articles Grid - matching ArticleCard layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((article, index) => (
-          <Link
-            key={article.id}
-            to={`/publikacijos/${article.slug}`}
-            className="block group"
-          >
+          <Link key={article.id} to={`/publikacijos/${article.slug}`} className="block group">
             <div className="project-card h-full">
               {/* Header with ranking and title */}
               <div className="flex items-start gap-3 mb-3">
@@ -121,23 +115,29 @@ export function TrendingArticles({
                     index > 2 && "bg-purple-600"
                   )}
                 >
-                  <span className="text-white font-bold text-lg">
-                    {index + 1}
-                  </span>
+                  <span className="text-white font-bold text-lg">{index + 1}</span>
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold line-clamp-2 mb-1 text-left">
-                    {article.title}
-                  </h3>
+                  <h3 className="font-semibold line-clamp-2 mb-1 text-left">{article.title}</h3>
                   <p className="text-sm text-foreground/90 text-left">
                     {article.category?.join(", ") || "AI Naujienos"}
                   </p>
                 </div>
-                
+
                 {/* Arrow icon */}
-                <svg className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </div>
 

@@ -1,17 +1,16 @@
-
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, LogOut, Shield } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { User, LogOut, Shield } from "lucide-react";
 
 export function UserDropdown() {
   const { user, isAdmin, signOut } = useAuth();
@@ -26,8 +25,8 @@ export function UserDropdown() {
 
   // Get user initials for the avatar
   const getUserInitials = () => {
-    if (!user) return '';
-    return (user.email?.charAt(0) || '').toUpperCase();
+    if (!user) return "";
+    return (user.email?.charAt(0) || "").toUpperCase();
   };
 
   return (
@@ -53,7 +52,7 @@ export function UserDropdown() {
             <span>Mano profilis</span>
           </Link>
         </DropdownMenuItem>
-        
+
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
@@ -65,7 +64,7 @@ export function UserDropdown() {
             </DropdownMenuItem>
           </>
         )}
-        
+
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="flex items-center w-full cursor-pointer"

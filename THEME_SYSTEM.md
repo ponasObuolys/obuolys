@@ -7,11 +7,13 @@ Projekte įdiegta visapusiška light/dark temos sistema su automatinio prisitaik
 ## Funkcionalumas
 
 ### Temos Režimai
+
 - **🌞 Šviesi (Light)** - Šviesus fonas su tamsiu tekstu, geresnė skaitomybė dienos metu
 - **🌙 Tamsi (Dark)** - Tamsus fonas su šviesiu tekstu, mažiau vargina akis tamsioje aplinkoje
 - **💻 Sistema (System)** - Automatiškai prisitaiko prie įrenginio sistemos nustatymų
 
 ### Pagrindinės Savybės
+
 - ✅ Vartotojo pasirinkimas išsaugomas `localStorage`
 - ✅ Automatinis prisitaikymas prie sistemos temos keitimo
 - ✅ Sklandus perjungimas tarp temų be puslapio perkrovimo
@@ -33,6 +35,7 @@ interface ThemeContextType {
 ```
 
 **Funkcionalumas:**
+
 - Temos būsenos saugojimas `localStorage` su raktu `obuolys-theme-preference`
 - Sistema temos nustatymo aptikimas per `window.matchMedia`
 - Sistemos temos pasikeitimų klausymas ir automatinis atnaujinimas
@@ -47,36 +50,40 @@ Temos perjungimo mygtukas su dropdown meniu:
 ```
 
 **Funkcijos:**
+
 - Dropdown meniu su 3 pasirinkimais (Šviesi/Tamsi/Sistema)
 - Animuoti saulės/mėnulio ikonos
 - Pažymėjimas aktyvios temos
 - Lietuviška sąsaja
 
 **Integruota:**
+
 - Desktop: Header navigacijoje tarp įrankių ir "Paremti" mygtuko
 - Mobile: Atskirame skyriuje mobile menu su "Tema" antrašte
 
 ### 3. CSS Variables ([src/index.css](src/index.css))
 
 #### Dark Theme (Default)
+
 ```css
 :root {
-  --background: 220 13% 8%;      /* Tamsus fonas */
-  --foreground: 210 40% 96%;     /* Šviesus tekstas */
-  --card: 220 13% 12%;           /* Kortelių fonas */
-  --primary: 262 83% 58%;        /* Purple accent */
-  --accent: 142 76% 36%;         /* Green accent */
+  --background: 220 13% 8%; /* Tamsus fonas */
+  --foreground: 210 40% 96%; /* Šviesus tekstas */
+  --card: 220 13% 12%; /* Kortelių fonas */
+  --primary: 262 83% 58%; /* Purple accent */
+  --accent: 142 76% 36%; /* Green accent */
   /* ... kitos spalvos */
 }
 ```
 
 #### Light Theme
+
 ```css
 .light {
-  --background: 0 0% 98%;        /* Šviesus fonas */
+  --background: 0 0% 98%; /* Šviesus fonas */
   --foreground: 222.2 47.4% 11.2%; /* Tamsus tekstas */
-  --card: 0 0% 100%;             /* Baltas kortelių fonas */
-  --border: 220 13% 91%;         /* Šviesios kraštinės */
+  --card: 0 0% 100%; /* Baltas kortelių fonas */
+  --border: 220 13% 91%; /* Šviesios kraštinės */
   /* ... kitos spalvos */
 }
 ```
@@ -89,27 +96,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         // ... kitos dinaminės spalvos
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 ```
 
 ## Spalvų Sistema
 
 ### Semantinės Spalvos
 
-| Tailwind Klasė | Paskirtis | Dark Mode | Light Mode |
-|----------------|-----------|-----------|------------|
-| `bg-background` | Pagrindinis fonas | Tamsus | Šviesus |
-| `bg-card` | Kortelių fonas | Tamsesnis | Baltas |
-| `bg-muted` | Antraeiliai elementai | Vidutinis | Pilkas |
-| `text-foreground` | Pagrindinis tekstas | Šviesus | Tamsus |
-| `text-muted-foreground` | Antraeilis tekstas | Pilkas | Tamsesnis pilkas |
-| `border-border` | Kraštinės | Tamsi | Šviesiai pilka |
+| Tailwind Klasė          | Paskirtis             | Dark Mode | Light Mode       |
+| ----------------------- | --------------------- | --------- | ---------------- |
+| `bg-background`         | Pagrindinis fonas     | Tamsus    | Šviesus          |
+| `bg-card`               | Kortelių fonas        | Tamsesnis | Baltas           |
+| `bg-muted`              | Antraeiliai elementai | Vidutinis | Pilkas           |
+| `text-foreground`       | Pagrindinis tekstas   | Šviesus   | Tamsus           |
+| `text-muted-foreground` | Antraeilis tekstas    | Pilkas    | Tamsesnis pilkas |
+| `border-border`         | Kraštinės             | Tamsi     | Šviesiai pilka   |
 
 ### Spalvų Naudojimas
 
@@ -131,34 +138,40 @@ export default {
 ### Pritaikyta (16 failų)
 
 **Homepage Komponentai:**
+
 - [src/components/home/Hero.tsx](src/components/home/Hero.tsx)
 - [src/components/home/FeaturedArticles.tsx](src/components/home/FeaturedArticles.tsx)
 - [src/components/home/AITools.tsx](src/components/home/AITools.tsx)
 - [src/components/home/CallToAction.tsx](src/components/home/CallToAction.tsx)
 
 **UI Komponentai:**
+
 - [src/components/ui/article-card.tsx](src/components/ui/article-card.tsx)
 - [src/components/ui/tool-card.tsx](src/components/ui/tool-card.tsx)
 - [src/components/ui/course-card.tsx](src/components/ui/course-card.tsx)
 - [src/components/ui/tool-detail-card.tsx](src/components/ui/tool-detail-card.tsx)
 
 **Layout:**
+
 - [src/components/layout/Header.tsx](src/components/layout/Header.tsx) - su theme toggle
 - [src/components/layout/Footer.tsx](src/components/layout/Footer.tsx)
 
 **Puslapiai:**
+
 - [src/pages/ArticlesPage.tsx](src/pages/ArticlesPage.tsx)
 - [src/pages/CoursesPage.tsx](src/pages/CoursesPage.tsx)
 - [src/pages/ToolDetailPage.tsx](src/pages/ToolDetailPage.tsx)
 - [src/components/widgets/trending-articles.tsx](src/components/widgets/trending-articles.tsx)
 
 **Sistema:**
+
 - [src/index.css](src/index.css)
 - [src/App.tsx](src/App.tsx)
 
 ### Liko Nepritaikyta (Admin panelė)
 
 Admin komponentai bus pritaikomi atskirai, nes jie:
+
 - Pasiekiami tik administratoriams
 - Mažesnė įtaka vartotojų patirčiai
 - Reikia atskirų testavimų
@@ -168,7 +181,7 @@ Admin komponentai bus pritaikomi atskirai, nes jie:
 ### useTheme Hook
 
 ```tsx
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from "@/hooks/useTheme";
 
 function MyComponent() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -178,9 +191,9 @@ function MyComponent() {
       <p>Dabartinė tema: {theme}</p>
       <p>Pritaikyta tema: {resolvedTheme}</p>
 
-      <button onClick={() => setTheme('light')}>Šviesi</button>
-      <button onClick={() => setTheme('dark')}>Tamsi</button>
-      <button onClick={() => setTheme('system')}>Sistema</button>
+      <button onClick={() => setTheme("light")}>Šviesi</button>
+      <button onClick={() => setTheme("dark")}>Tamsi</button>
+      <button onClick={() => setTheme("system")}>Sistema</button>
     </div>
   );
 }
@@ -189,13 +202,13 @@ function MyComponent() {
 ### Sąlyginės Klasės
 
 ```tsx
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from "@/hooks/useTheme";
 
 function ConditionalStyling() {
   const { resolvedTheme } = useTheme();
 
   return (
-    <div className={resolvedTheme === 'dark' ? 'shadow-lg' : 'shadow-md'}>
+    <div className={resolvedTheme === "dark" ? "shadow-lg" : "shadow-md"}>
       Skirtingas šešėlis tamsiai ir šviesiai temai
     </div>
   );
@@ -254,6 +267,7 @@ describe('Theme System', () => {
 - ✅ Mobile browsers (iOS Safari, Chrome Android)
 
 **Media Query Support:**
+
 - Modern browsers: `addEventListener` API
 - Legacy browsers: `addListener` API (fallback)
 
@@ -291,6 +305,7 @@ describe('Theme System', () => {
 **Problem:** "Sistema" režimas neatpažįsta OS temos.
 
 **Sprendimas:**
+
 - Patikrinkite browser support (Chrome 76+, Firefox 67+)
 - Įsitikinkite, kad OS turi temos nustatymus
 
@@ -314,6 +329,7 @@ describe('Theme System', () => {
 ## Changelog
 
 ### 2025-01-21 - Initial Release
+
 - ✅ Įdiegta ThemeContext sistema
 - ✅ Sukurtas ThemeToggle komponentas
 - ✅ Pritaikyti visi user-facing komponentai

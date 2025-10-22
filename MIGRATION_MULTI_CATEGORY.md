@@ -1,16 +1,19 @@
 # Migracijos instrukcija: Kelios kategorijos publikacijoms
 
 ## Apžvalga
+
 Ši migracija leidžia publikacijoms turėti kelias kategorijas vietoj vienos. `articles.category` laukas pakeičiamas iš `text` į `text[]` (masyvas).
 
 ## Atlikti pakeitimai
 
 ### 1. Duomenų bazė
+
 - **Migracijos failas**: `supabase/migrations/20250115_change_articles_category_to_array.sql`
 - Pakeičia `category` lauką iš `text` į `text[]`
 - Saugiai konvertuoja esamus duomenis (viena kategorija → masyvas su viena kategorija)
 
 ### 2. TypeScript tipai
+
 - **Failas**: `src/integrations/supabase/types.ts`
 - Atnaujinti `articles` tipai:
   - `Row.category: string[]`
@@ -18,6 +21,7 @@
   - `Update.category?: string[]`
 
 ### 3. Formos komponentai
+
 - **Naujas komponentas**: `src/components/ui/multi-select.tsx`
   - Multi-select komponentas su checkbox'ais
   - Galimybė pridėti naujas kategorijas
@@ -28,6 +32,7 @@
   - Pašalinta sena single-select logika
 
 ### 4. Duomenų apdorojimas
+
 - **Failas**: `src/components/admin/publication-editor/publication-editor.hooks.ts`
   - `useCategories`: Flatten'ina kategorijas iš visų publikacijų
   - `usePublicationForm`: Default reikšmė `category: []`
@@ -37,6 +42,7 @@
   - Zod schema: `category: z.array(z.string()).min(1)`
 
 ### 5. Vartotojo sąsaja
+
 - **ArticleCard** (`src/components/ui/article-card.tsx`):
   - Rodo visas kategorijas atskirtas kableliais
   - Naudoja pirmą kategoriją spalvos pasirinkimui
@@ -73,10 +79,11 @@ supabase gen types typescript --project-id jzixoslapmlqafrlbvpk > src/integratio
 ## Testavimas
 
 ### 1. Patikrinkite duomenų bazę
+
 ```sql
 -- Patikrinkite, ar category yra masyvas
-SELECT id, title, category 
-FROM articles 
+SELECT id, title, category
+FROM articles
 LIMIT 5;
 
 -- Patikrinkite, ar visi įrašai turi masyvą
@@ -86,12 +93,14 @@ FROM articles;
 ```
 
 ### 2. Patikrinkite admin sąsają
+
 1. Eikite į **Admin Dashboard → Publikacijos**
 2. Sukurkite naują publikaciją
 3. Pasirinkite kelias kategorijas
 4. Išsaugokite ir patikrinkite, ar visos kategorijos išsaugotos
 
 ### 3. Patikrinkite vartotojo sąsają
+
 1. Eikite į **/publikacijos**
 2. Patikrinkite, ar kategorijų filtrai veikia
 3. Patikrinkite, ar publikacijų kortelėse rodomos visos kategorijos
@@ -106,7 +115,7 @@ Jei kažkas nepavyktų, galite grąžinti pakeitimus:
 ALTER TABLE articles ADD COLUMN category_temp text;
 
 -- 2. Konvertuoti masyvą atgal į string (paimti pirmą elementą)
-UPDATE articles 
+UPDATE articles
 SET category_temp = category[1]
 WHERE category IS NOT NULL AND array_length(category, 1) > 0;
 
@@ -130,10 +139,13 @@ ALTER TABLE articles ALTER COLUMN category SET NOT NULL;
 ## Problemos ir sprendimai
 
 ### Problema: TypeScript klaidos po migracijos
+
 **Sprendimas**: Regeneruokite tipus naudojant `supabase gen types typescript`
 
 ### Problema: Senos publikacijos nerodo kategorijų
+
 **Sprendimas**: Patikrinkite, ar migracija buvo sėkmingai paleista. Visi seni įrašai turėtų būti automatiškai konvertuoti.
 
 ### Problema: Negaliu pasirinkti kelių kategorijų
+
 **Sprendimas**: Išvalykite naršyklės cache ir perkraukite puslapį. Įsitikinkite, kad visi failai yra atnaujinti.

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * Hook to add lazy loading to images that are dynamically added to the DOM
@@ -10,18 +10,18 @@ const useLazyImages = (containerRef: React.RefObject<HTMLElement>) => {
   useEffect(() => {
     // Create a new IntersectionObserver if it doesn't exist
     if (!observerRef.current) {
-      observerRef.current = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
+      observerRef.current = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
           // If the element is in the viewport
           if (entry.isIntersecting) {
             const img = entry.target as HTMLImageElement;
-            
+
             // If the image has a data-src attribute, set the src to that value
             if (img.dataset.src) {
               img.src = img.dataset.src;
-              img.removeAttribute('data-src');
+              img.removeAttribute("data-src");
             }
-            
+
             // Stop observing the image
             observerRef.current?.unobserve(img);
           }
@@ -32,21 +32,24 @@ const useLazyImages = (containerRef: React.RefObject<HTMLElement>) => {
     // Function to process images in the container
     const processImages = () => {
       if (!containerRef.current) return;
-      
+
       // Get all images in the container
-      const images = containerRef.current.querySelectorAll('img:not([loading])');
-      
+      const images = containerRef.current.querySelectorAll("img:not([loading])");
+
       // Add loading="lazy" attribute to all images
-      images.forEach((img) => {
-        img.setAttribute('loading', 'lazy');
-        
+      images.forEach(img => {
+        img.setAttribute("loading", "lazy");
+
         // For browsers that don't support loading="lazy"
         // Store the src in data-src and set src to a placeholder
-        if (!('loading' in HTMLImageElement.prototype)) {
-          const src = img.getAttribute('src');
+        if (!("loading" in HTMLImageElement.prototype)) {
+          const src = img.getAttribute("src");
           if (src) {
-            img.setAttribute('data-src', src);
-            img.setAttribute('src', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjFmMWYxIi8+PC9zdmc+');
+            img.setAttribute("data-src", src);
+            img.setAttribute(
+              "src",
+              "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjFmMWYxIi8+PC9zdmc+"
+            );
             observerRef.current?.observe(img);
           }
         }
@@ -58,11 +61,11 @@ const useLazyImages = (containerRef: React.RefObject<HTMLElement>) => {
 
     // Set up a MutationObserver to watch for new images being added to the container
     const observer = new MutationObserver(processImages);
-    
+
     if (containerRef.current) {
       observer.observe(containerRef.current, {
         childList: true,
-        subtree: true
+        subtree: true,
       });
     }
 

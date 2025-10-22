@@ -1,11 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { UseFormReturn } from "react-hook-form";
 import type { PublicationFormData } from "../publication-editor.types";
 
@@ -26,9 +20,7 @@ export const PublicationCheckboxes = ({ form }: PublicationCheckboxesProps) => {
             </FormControl>
             <div className="space-y-1 leading-none">
               <FormLabel className="text-sm font-medium">Rekomenduojamas</FormLabel>
-              <FormDescription className="text-xs">
-                Rodyti pagrindiniame puslapyje
-              </FormDescription>
+              <FormDescription className="text-xs">Rodyti pagrindiniame puslapyje</FormDescription>
             </div>
           </FormItem>
         )}

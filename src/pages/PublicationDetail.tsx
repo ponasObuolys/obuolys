@@ -62,19 +62,19 @@ const PublicationDetail = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!articleRef.current) return;
-      
+
       const element = articleRef.current;
       const rect = element.getBoundingClientRect();
       const elementHeight = element.offsetHeight;
       const viewportHeight = window.innerHeight;
       const scrolled = -rect.top;
       const total = elementHeight - viewportHeight;
-      
+
       if (total <= 0) {
         setScrollProgress(100);
         return;
       }
-      
+
       const percentage = Math.min(100, Math.max(0, (scrolled / total) * 100));
       setScrollProgress(percentage);
     };
@@ -166,7 +166,7 @@ const PublicationDetail = () => {
         title: publication.title,
         description: publication.description || undefined,
         content: publication.content || undefined,
-        slug: slug || '',
+        slug: slug || "",
         image: publication.image_url || undefined,
         published_at: publication.date,
         updated_at: publication.updated_at || undefined,
@@ -178,16 +178,16 @@ const PublicationDetail = () => {
     ? [
         generateArticleStructuredData({
           title: publication.title,
-          description: publication.description || seoData?.description || '',
-          slug: slug || '',
+          description: publication.description || seoData?.description || "",
+          slug: slug || "",
           image: publication.image_url || undefined,
           published_at: publication.date,
           updated_at: publication.updated_at || undefined,
           author: publication.author || undefined,
         }),
         generateBreadcrumbStructuredData([
-          { name: 'Pradžia', url: 'https://ponasobuolys.lt' },
-          { name: 'Publikacijos', url: 'https://ponasobuolys.lt/publikacijos' },
+          { name: "Pradžia", url: "https://ponasobuolys.lt" },
+          { name: "Publikacijos", url: "https://ponasobuolys.lt/publikacijos" },
           { name: publication.title, url: `https://ponasobuolys.lt/publikacijos/${slug}` },
         ]),
       ]
@@ -196,25 +196,22 @@ const PublicationDetail = () => {
   return (
     <>
       {seoData && <SEOHead {...seoData} structuredData={structuredData || undefined} />}
-      
+
       {/* Reading progress bar */}
       {publication && (
-        <ReadingProgressBar
-          targetRef={articleRef}
-          estimatedReadTime={publication.read_time}
-        />
+        <ReadingProgressBar targetRef={articleRef} estimatedReadTime={publication.read_time} />
       )}
 
       <article ref={articleRef} className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <Breadcrumbs
             items={[
-              { label: 'Straipsniai', href: '/publikacijos' },
+              { label: "Straipsniai", href: "/publikacijos" },
               {
-                label: publication?.content_type === 'Naujiena' ? 'AI Naujienos' : 'Straipsniai',
-                href: '/publikacijos'
+                label: publication?.content_type === "Naujiena" ? "AI Naujienos" : "Straipsniai",
+                href: "/publikacijos",
               },
-              { label: publication?.title || 'Kraunama...' }
+              { label: publication?.title || "Kraunama..." },
             ]}
           />
         </div>
@@ -239,8 +236,10 @@ const PublicationDetail = () => {
               )}
               {publication.category && publication.category.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {publication.category.map((cat) => (
-                    <Badge key={cat} variant="outline">{cat}</Badge>
+                  {publication.category.map(cat => (
+                    <Badge key={cat} variant="outline">
+                      {cat}
+                    </Badge>
                   ))}
                 </div>
               )}
@@ -264,7 +263,9 @@ const PublicationDetail = () => {
                 <BookmarkButton articleId={publication.id} size="sm" showText={false} />
                 <ShareButton
                   title={publication.title}
-                  description={publication.description || publication.content?.substring(0, 200) || ''}
+                  description={
+                    publication.description || publication.content?.substring(0, 200) || ""
+                  }
                   url={`https://ponasobuolys.lt/publikacijos/${slug}`}
                   imageUrl={publication.image_url || undefined}
                   variant="outline"

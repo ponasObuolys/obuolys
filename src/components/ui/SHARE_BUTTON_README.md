@@ -22,14 +22,14 @@ ShareButton komponentas leidžia vartotojams dalintis turiniu per Facebook, Redd
 ### Bazinis pavyzdys
 
 ```tsx
-import { ShareButton } from '@/components/ui/share-button';
+import { ShareButton } from "@/components/ui/share-button";
 
 <ShareButton
   title="Kurso pavadinimas"
   description="Kurso aprašymas"
   url="https://ponasobuolys.lt/kursai/vibe-coding"
   imageUrl="https://example.com/image.jpg"
-/>
+/>;
 ```
 
 ### Su custom stiliais
@@ -39,8 +39,8 @@ import { ShareButton } from '@/components/ui/share-button';
   title="AI Įrankis"
   description="Puikus AI įrankis"
   url="https://ponasobuolys.lt/irankiai/chatgpt"
-  variant="outline"  // default | outline | ghost | icon
-  size="lg"          // default | sm | lg | icon
+  variant="outline" // default | outline | ghost | icon
+  size="lg" // default | sm | lg | icon
   className="custom-class"
 />
 ```
@@ -48,82 +48,82 @@ import { ShareButton } from '@/components/ui/share-button';
 ### Icon-only mygtukas
 
 ```tsx
-import { ShareIconButton } from '@/components/ui/share-button';
+import { ShareIconButton } from "@/components/ui/share-button";
 
 <ShareIconButton
   title="Publikacija"
   description="Įdomi publikacija"
   url="https://ponasobuolys.lt/publikacijos/ai-naujienos"
-/>
+/>;
 ```
 
 ### Share mygtukų grupė
 
 ```tsx
-import { ShareButtonsGroup } from '@/components/ui/share-button';
+import { ShareButtonsGroup } from "@/components/ui/share-button";
 
 <ShareButtonsGroup
   title="Straipsnis"
   description="Straipsnio aprašymas"
   url="https://ponasobuolys.lt/publikacijos/ai-guide"
   iconSize={20}
-/>
+/>;
 ```
 
 ## Props
 
 ### ShareButton Props
 
-| Prop | Tipas | Default | Aprašymas |
-|------|-------|---------|-----------|
-| `title` | `string` | - | **Privalomas**. Sharing pavadinimas |
-| `description` | `string` | - | **Privalomas**. Sharing aprašymas |
-| `url` | `string` | - | **Privalomas**. Sharing URL |
-| `imageUrl` | `string` | `undefined` | Sharing paveiksliuko URL |
-| `variant` | `'default' \| 'outline' \| 'ghost' \| 'icon'` | `'outline'` | Mygtuko stilius |
-| `size` | `'default' \| 'sm' \| 'lg' \| 'icon'` | `'default'` | Mygtuko dydis |
-| `showLabel` | `boolean` | `true` | Rodyti "Dalintis" tekstą |
-| `className` | `string` | `undefined` | Custom CSS klasės |
+| Prop          | Tipas                                         | Default     | Aprašymas                           |
+| ------------- | --------------------------------------------- | ----------- | ----------------------------------- |
+| `title`       | `string`                                      | -           | **Privalomas**. Sharing pavadinimas |
+| `description` | `string`                                      | -           | **Privalomas**. Sharing aprašymas   |
+| `url`         | `string`                                      | -           | **Privalomas**. Sharing URL         |
+| `imageUrl`    | `string`                                      | `undefined` | Sharing paveiksliuko URL            |
+| `variant`     | `'default' \| 'outline' \| 'ghost' \| 'icon'` | `'outline'` | Mygtuko stilius                     |
+| `size`        | `'default' \| 'sm' \| 'lg' \| 'icon'`         | `'default'` | Mygtuko dydis                       |
+| `showLabel`   | `boolean`                                     | `true`      | Rodyti "Dalintis" tekstą            |
+| `className`   | `string`                                      | `undefined` | Custom CSS klasės                   |
 
 ## Integracijos pavyzdžiai
 
 ### CourseDetail.tsx
 
 ```tsx
-import { ShareButton } from '@/components/ui/share-button';
+import { ShareButton } from "@/components/ui/share-button";
 
 <ShareButton
   title={course.title}
   description={course.description}
   url={`https://ponasobuolys.lt/kursai/${slug}`}
   imageUrl={course.image_url || undefined}
-/>
+/>;
 ```
 
 ### ToolDetailPage.tsx
 
 ```tsx
-import { ShareButton } from '@/components/ui/share-button';
+import { ShareButton } from "@/components/ui/share-button";
 
 <ShareButton
   title={tool.name}
   description={tool.description}
   url={`https://ponasobuolys.lt/irankiai/${slug}`}
   imageUrl={tool.image_url}
-/>
+/>;
 ```
 
 ### PublicationDetail.tsx
 
 ```tsx
-import { ShareButton } from '@/components/ui/share-button';
+import { ShareButton } from "@/components/ui/share-button";
 
 <ShareButton
   title={publication.title}
-  description={publication.description || publication.content?.substring(0, 200) || ''}
+  description={publication.description || publication.content?.substring(0, 200) || ""}
   url={`https://ponasobuolys.lt/publikacijos/${slug}`}
   imageUrl={publication.image_url || undefined}
-/>
+/>;
 ```
 
 ## useShare Hook
@@ -131,24 +131,24 @@ import { ShareButton } from '@/components/ui/share-button';
 Galite naudoti `useShare` hook tiesiogiai, jei reikia custom implementacijos:
 
 ```tsx
-import { useShare } from '@/hooks/useShare';
+import { useShare } from "@/hooks/useShare";
 
 const MyComponent = () => {
   const { share, shareToPlatform, canUseWebShare } = useShare();
 
   const handleShare = () => {
     share({
-      title: 'Pavadinimas',
-      description: 'Aprašymas',
-      url: 'https://example.com',
+      title: "Pavadinimas",
+      description: "Aprašymas",
+      url: "https://example.com",
     });
   };
 
   const handleFacebookShare = () => {
-    shareToPlatform('facebook', {
-      title: 'Pavadinimas',
-      description: 'Aprašymas',
-      url: 'https://example.com',
+    shareToPlatform("facebook", {
+      title: "Pavadinimas",
+      description: "Aprašymas",
+      url: "https://example.com",
     });
   };
 
@@ -176,16 +176,16 @@ import {
   copyToClipboard,
   canUseWebShare,
   prepareShareData,
-} from '@/utils/share-utils';
+} from "@/utils/share-utils";
 
 // Facebook share URL
 const fbUrl = getFacebookShareUrl({
-  url: 'https://example.com',
-  title: 'Title',
+  url: "https://example.com",
+  title: "Title",
 });
 
 // Copy to clipboard
-await copyToClipboard('https://example.com');
+await copyToClipboard("https://example.com");
 
 // Check Web Share support
 if (canUseWebShare()) {
@@ -194,8 +194,8 @@ if (canUseWebShare()) {
 
 // Prepare share data with defaults
 const shareData = prepareShareData({
-  url: 'https://example.com',
-  title: 'Custom title',
+  url: "https://example.com",
+  title: "Custom title",
 });
 ```
 
@@ -243,6 +243,7 @@ Open Graph meta tags jau integruoti per `OpenGraphTags.tsx` komponentą. Sharing
 **Problema**: Web Share API veikia tik HTTPS aplinkoje (išskyrus localhost)
 
 **Sprendimas**:
+
 - Development: Naudokite `http://localhost`
 - Production: Įsitikinkite, kad naudojate HTTPS
 
@@ -251,6 +252,7 @@ Open Graph meta tags jau integruoti per `OpenGraphTags.tsx` komponentą. Sharing
 **Problema**: Popup blocker užblokavo share URL
 
 **Sprendimas**:
+
 - Įjunkite popup leidimu naršyklėje
 - Arba naudokite `window.location.href` vietoj `window.open`
 
@@ -259,16 +261,17 @@ Open Graph meta tags jau integruoti per `OpenGraphTags.tsx` komponentą. Sharing
 **Problema**: Clipboard API reikalauja HTTPS arba localhost
 
 **Sprendimas**:
+
 - Development: Naudokite localhost
 - Production: HTTPS privalomas
 
 ## Browser palaikymas
 
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
+| Feature       | Chrome    | Firefox   | Safari    | Edge      |
+| ------------- | --------- | --------- | --------- | --------- |
 | Web Share API | ✅ Mobile | ✅ Mobile | ✅ Mobile | ✅ Mobile |
-| Clipboard API | ✅ | ✅ | ✅ | ✅ |
-| URL Schemes | ✅ | ✅ | ✅ | ✅ |
+| Clipboard API | ✅        | ✅        | ✅        | ✅        |
+| URL Schemes   | ✅        | ✅        | ✅        | ✅        |
 
 ## Pavyzdžiai
 
@@ -297,12 +300,7 @@ Open Graph meta tags jau integruoti per `OpenGraphTags.tsx` komponentą. Sharing
 ### Custom styling
 
 ```tsx
-<ShareButton
-  {...shareProps}
-  className="rounded-full shadow-lg"
-  variant="default"
-  size="lg"
-/>
+<ShareButton {...shareProps} className="rounded-full shadow-lg" variant="default" size="lg" />
 ```
 
 ## Atnaujinimai ir plėtros galimybės
@@ -327,5 +325,6 @@ Open Graph meta tags jau integruoti per `OpenGraphTags.tsx` komponentą. Sharing
 ## Support
 
 Jei kyla klausimų ar problemų, sukurkite issue arba kontaktuokite:
+
 - Email: support@ponasobuolys.lt
 - GitHub: github.com/ponasobuolys/issues

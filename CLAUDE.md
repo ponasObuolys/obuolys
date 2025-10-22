@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build, Development and Common Commands
 
 ### Essential Commands
+
 ```bash
 # Development
 npm run dev                    # Start dev server on port 8080
@@ -47,7 +48,9 @@ npm run git:status             # Enhanced git status with insights
 ```
 
 ### Custom Development Scripts
+
 The project includes extensive custom scripts in `scripts/` directory:
+
 - `dev-assistant.js` - Interactive development assistant
 - `health-monitor.js` - Project health monitoring
 - `performance-monitor.js` - Build and runtime performance analysis
@@ -57,6 +60,7 @@ The project includes extensive custom scripts in `scripts/` directory:
 ## Architecture Overview
 
 ### Tech Stack
+
 - **Frontend**: React 18.3.1 with TypeScript + Vite
 - **UI Components**: Shadcn/UI (Radix UI primitives)
 - **Styling**: Tailwind CSS with tailwindcss-animate
@@ -67,6 +71,7 @@ The project includes extensive custom scripts in `scripts/` directory:
 - **Deployment**: Vercel with Analytics
 
 ### Project Structure
+
 ```
 src/
 ├── components/
@@ -89,7 +94,9 @@ scripts/                    # Custom development utilities
 ### Key Architectural Patterns
 
 #### 1. Multi-Level Error Boundary System
+
 The app uses a sophisticated error boundary hierarchy defined in [src/components/error-boundaries/](src/components/error-boundaries/):
+
 - **GlobalErrorBoundary**: Top-level, catches critical app crashes
 - **RouteErrorBoundary**: Route-level, with auto-recovery capabilities
 - **ContentRouteErrorBoundary**: Content pages (articles, tools, courses)
@@ -100,14 +107,17 @@ The app uses a sophisticated error boundary hierarchy defined in [src/components
 See [src/App.tsx](src/App.tsx#L144-L556) for implementation.
 
 #### 2. Code Splitting Strategy
+
 Intelligent lazy loading with manual chunk optimization:
 
 **Lazy Loading**: Custom `createLazyComponent` utility in [src/utils/lazyLoad.ts](src/utils/lazyLoad.ts)
+
 - Caching by key
 - Intelligent preloading based on priority
 - Error boundary integration
 
 **Manual Chunks** in [vite.config.ts](vite.config.ts#L36-L132):
+
 - `react-core` - React and React Router
 - `ui-*` - Radix UI split by category (overlay, form, feedback, base)
 - `admin-dashboard` - Admin components separate chunk
@@ -119,7 +129,9 @@ Intelligent lazy loading with manual chunk optimization:
 This creates ~25KB initial bundle with efficient lazy loading.
 
 #### 3. Database-First with Supabase
+
 All database operations through Supabase with auto-generated types:
+
 - **Client**: [src/integrations/supabase/client.ts](src/integrations/supabase/client.ts)
 - **Types**: [src/integrations/supabase/types.ts](src/integrations/supabase/types.ts) (auto-generated)
 - **Project ID**: jzixoslapmlqafrlbvpk
@@ -129,41 +141,51 @@ All database operations through Supabase with auto-generated types:
 **Tables**: profiles, articles, tools, courses, contact_messages, hero_sections, cta_sections, translation_requests
 
 #### 4. State Management Architecture
+
 - **Global State**: AuthContext (authentication), LanguageContext (i18n)
 - **Server State**: React Query with 3 retry attempts and exponential backoff
 - **Local State**: useState/useReducer for component-specific state
 - **Image Loading**: ImageLoadingProvider for lazy image optimization
 
 #### 5. Performance Optimizations
+
 - **Intelligent Preloading**: Priority-based preloading system (high/medium/low)
 - **Web Vitals Monitoring**: Integrated with Vercel Analytics
 - **Image Lazy Loading**: Custom LazyImage component with Intersection Observer
 - **CSS Code Splitting**: Separate CSS chunks for better caching
-- **Tree Shaking**: Optimized esbuild config removes console.* in production
+- **Tree Shaking**: Optimized esbuild config removes console.\* in production
 
 ## Critical Project Rules
 
 ### 1. Lithuanian Language Requirement
+
 **All UI text, content, and user-facing strings must be in Lithuanian.**
+
 - Technical terms and variable names can be English
 - Route paths are in Lithuanian (e.g., `/publikacijos`, `/irankiai`, `/kursai`)
 - Translations managed via [src/context/LanguageContext.tsx](src/context/LanguageContext.tsx)
 
 ### 2. Database Changes Protocol
+
 **Always check [DB.md](DB.md) before any database-related code changes.**
+
 - Complete schema documentation with RLS policies
 - Migration history and documentation
 - Foreign key constraints and relationships
 - Never modify database without consulting this file
 
 ### 3. Supabase-Only Integration
+
 **Use Supabase exclusively for all backend operations.**
+
 - No direct PostgreSQL queries outside Supabase client
 - No alternative backend services
 - Follow existing Supabase patterns in [src/integrations/supabase/](src/integrations/supabase/)
 
 ### 4. Image Loading Requirement
+
 **Always use LazyImage component instead of standard `<img>` tags.**
+
 ```tsx
 import LazyImage from '@/components/ui/lazy-image';
 
@@ -175,7 +197,9 @@ import LazyImage from '@/components/ui/lazy-image';
 ```
 
 ### 5. Admin Editor Patterns
+
 **Follow existing editor patterns for consistency:**
+
 - ArticleEditor, NewsEditor, CourseEditor, ToolEditor patterns
 - Use RichTextEditor for content editing
 - FileUpload component for images
@@ -185,12 +209,14 @@ import LazyImage from '@/components/ui/lazy-image';
 See [src/components/admin/](src/components/admin/) for examples.
 
 ### 6. Component Guidelines
+
 - Use shadcn/ui components from [src/components/ui/](src/components/ui/)
 - Follow Tailwind CSS for all styling (no custom CSS files)
 - Use React Hook Form + Zod for all forms
 - Display errors via toast notifications
 
 ### 7. Content Management
+
 - **News**: Manual entry only through admin dashboard (RSS removed)
 - **Articles/Tools/Courses**: Use RichTextEditor
 - **Status System**: published/featured flags control visibility
@@ -198,7 +224,9 @@ See [src/components/admin/](src/components/admin/) for examples.
 ## Database Guidelines
 
 ### Schema Structure
+
 Refer to [DB.md](DB.md) for:
+
 - Complete table definitions with all columns
 - Row Level Security policies for each table
 - Functions and triggers
@@ -206,32 +234,33 @@ Refer to [DB.md](DB.md) for:
 - Migration history
 
 ### Common Patterns
+
 ```typescript
 // Example: Fetching published articles
 const { data, error } = await supabase
-  .from('articles')
-  .select('*')
-  .eq('published', true)
-  .order('created_at', { ascending: false });
+  .from("articles")
+  .select("*")
+  .eq("published", true)
+  .order("created_at", { ascending: false });
 
 // Example: Admin-only operations (RLS enforced)
-const { error } = await supabase
-  .from('articles')
-  .update({ published: true })
-  .eq('id', articleId);
+const { error } = await supabase.from("articles").update({ published: true }).eq("id", articleId);
 // Fails if user is not admin due to RLS
 ```
 
 ### Type Safety
-Always use generated types from [src/integrations/supabase/types.ts](src/integrations/supabase/types.ts):
-```typescript
-import { Database } from '@/integrations/supabase/types';
 
-type Article = Database['public']['Tables']['articles']['Row'];
-type ArticleInsert = Database['public']['Tables']['articles']['Insert'];
+Always use generated types from [src/integrations/supabase/types.ts](src/integrations/supabase/types.ts):
+
+```typescript
+import { Database } from "@/integrations/supabase/types";
+
+type Article = Database["public"]["Tables"]["articles"]["Row"];
+type ArticleInsert = Database["public"]["Tables"]["articles"]["Insert"];
 ```
 
 Regenerate types after schema changes:
+
 ```bash
 npm run supabase:types
 ```
@@ -239,19 +268,23 @@ npm run supabase:types
 ## Key Integration Files
 
 ### Core Configuration
+
 - [vite.config.ts](vite.config.ts) - Build optimization and chunk strategy
 - [src/App.tsx](src/App.tsx) - Route definitions and error boundaries
 - [components.json](components.json) - Shadcn/UI configuration
 
 ### State Management
+
 - [src/context/AuthContext.tsx](src/context/AuthContext.tsx) - Authentication state
 - [src/context/LanguageContext.tsx](src/context/LanguageContext.tsx) - i18n translations
 
 ### Supabase Integration
+
 - [src/integrations/supabase/client.ts](src/integrations/supabase/client.ts) - Supabase client setup
 - [src/integrations/supabase/types.ts](src/integrations/supabase/types.ts) - Auto-generated types
 
 ### Utilities
+
 - [src/utils/lazyLoad.ts](src/utils/lazyLoad.ts) - Code splitting utilities
 - [src/components/ui/lazy-image.tsx](src/components/ui/lazy-image.tsx) - Image lazy loading
 - [src/components/admin/RichTextEditor.tsx](src/components/admin/RichTextEditor.tsx) - Content editor
@@ -259,11 +292,13 @@ npm run supabase:types
 ## Testing Strategy
 
 ### Unit & Integration Tests (Vitest)
+
 - Test files: `*.test.ts`, `*.test.tsx`
 - Location: Co-located with source files or `src/test/`
 - Coverage target: Check with `npm run test:coverage:check`
 
 ### E2E Tests (Playwright)
+
 - Test files: `tests/**/*.spec.ts`
 - Multiple configurations:
   - `playwright.config.ts` - Main E2E tests
@@ -272,6 +307,7 @@ npm run supabase:types
   - `playwright.config.prod.ts` - Production environment tests
 
 ### Test Patterns
+
 ```typescript
 // Unit test example
 import { render, screen } from '@testing-library/react';
@@ -297,6 +333,7 @@ test('user can navigate to articles', async ({ page }) => {
 ## Route Structure
 
 All routes use Lithuanian paths:
+
 ```
 /                           # Homepage
 /publikacijos              # Articles listing
@@ -327,12 +364,14 @@ New routes must be registered in [src/App.tsx](src/App.tsx) with appropriate err
 ## Performance Considerations
 
 ### Bundle Size
+
 - Initial bundle target: ~25KB gzipped
 - Chunk size warning limit: 200KB
 - Monitor with: `npm run build:analyze`
 - Bundle size check: `npm run bundle-size:check`
 
 ### Optimization Checklist
+
 - ✅ Code splitting with lazy loading
 - ✅ Intelligent preloading by priority
 - ✅ Image lazy loading with LazyImage
@@ -342,6 +381,7 @@ New routes must be registered in [src/App.tsx](src/App.tsx) with appropriate err
 - ✅ Web Vitals monitoring
 
 ### Performance Monitoring
+
 ```bash
 npm run performance:analyze     # Full performance analysis
 npm run performance:quick       # Quick performance check

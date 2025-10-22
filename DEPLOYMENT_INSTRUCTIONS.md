@@ -79,15 +79,17 @@ curl -A "facebookexternalhit/1.1" https://www.ponasobuolys.lt/publikacijos/dirbt
 ```
 
 **Expected**:
+
 - Should return pre-rendered HTML
 - Should contain correct `<meta property="og:title">` with specific article title
 - Should contain correct `<meta property="og:image">` with article image
 
 **Check for**:
+
 ```html
-<meta property="og:title" content="Dirbtinio intelekto dalgis pjauna darbo vietas">
-<meta property="og:description" content="[Article description]">
-<meta property="og:image" content="https://...article-image.jpg">
+<meta property="og:title" content="Dirbtinio intelekto dalgis pjauna darbo vietas" />
+<meta property="og:description" content="[Article description]" />
+<meta property="og:image" content="https://...article-image.jpg" />
 ```
 
 ---
@@ -103,6 +105,7 @@ curl -A "facebookexternalhit/1.1" https://www.ponasobuolys.lt/publikacijos/dirbt
 #### Step 2: Verify OG Tags
 
 Check that:
+
 - ✅ Title shows article title (NOT default "ponas Obuolys - Dirbtinio intelekto žinios")
 - ✅ Description shows article description
 - ✅ Image shows article image
@@ -139,9 +142,11 @@ Check that:
    - Check for errors
 
 3. **Verify Vercel Environment Variable**:
+
    ```bash
    vercel env ls
    ```
+
    Should show `PRERENDER_TOKEN` in Production
 
 4. **Check Vercel Function Logs**:
@@ -156,12 +161,14 @@ Check that:
 **Debug steps**:
 
 1. Check Prerender.io status:
+
    ```bash
    curl -H "X-Prerender-Token: D9EDsSifvfj3S7qLPh0T" \
      "https://service.prerender.io/https://www.ponasobuolys.lt/publikacijos/dirbtinio-intelekto-dalgis-pjauna-darbo-vietas"
    ```
 
 2. Check if conditional rewrite is matching:
+
    ```bash
    # Should hit prerender API
    curl -A "facebookexternalhit/1.1" -v https://www.ponasobuolys.lt/publikacijos/test 2>&1 | grep "< x-vercel"
@@ -177,6 +184,7 @@ Check that:
 ### Problem: Slow first load
 
 **Expected behavior**:
+
 - First crawler visit: 3-10 seconds (cache miss)
 - Subsequent visits: <1 second (cache hit)
 
@@ -201,17 +209,19 @@ After deployment, verify:
 ## 📊 Expected Results
 
 ### Before (❌):
+
 ```html
-<meta property="og:title" content="ponas Obuolys - Dirbtinio intelekto žinios">
-<meta property="og:description" content="Dirbtinio intelekto naujienos...">
-<meta property="og:image" content="https://ponasobuolys.lt/opengraph-image.png">
+<meta property="og:title" content="ponas Obuolys - Dirbtinio intelekto žinios" />
+<meta property="og:description" content="Dirbtinio intelekto naujienos..." />
+<meta property="og:image" content="https://ponasobuolys.lt/opengraph-image.png" />
 ```
 
 ### After (✅):
+
 ```html
-<meta property="og:title" content="Dirbtinio intelekto dalgis pjauna darbo vietas">
-<meta property="og:description" content="[Article-specific description]">
-<meta property="og:image" content="[Article-specific image URL]">
+<meta property="og:title" content="Dirbtinio intelekto dalgis pjauna darbo vietas" />
+<meta property="og:description" content="[Article-specific description]" />
+<meta property="og:image" content="[Article-specific image URL]" />
 ```
 
 ---

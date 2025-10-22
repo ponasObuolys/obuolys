@@ -1,5 +1,5 @@
-import { ChevronRight, Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ChevronRight, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export interface BreadcrumbItem {
   label: string;
@@ -13,7 +13,10 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, showHome = true }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
+    <nav
+      aria-label="Breadcrumb"
+      className="flex items-center space-x-2 text-sm text-muted-foreground mb-6"
+    >
       {showHome && (
         <>
           <Link
@@ -41,10 +44,8 @@ export function Breadcrumbs({ items, showHome = true }: BreadcrumbsProps) {
               </Link>
             ) : (
               <span
-                className={`truncate max-w-[200px] ${
-                  isLast ? 'text-foreground font-medium' : ''
-                }`}
-                aria-current={isLast ? 'page' : undefined}
+                className={`truncate max-w-[200px] ${isLast ? "text-foreground font-medium" : ""}`}
+                aria-current={isLast ? "page" : undefined}
               >
                 {item.label}
               </span>

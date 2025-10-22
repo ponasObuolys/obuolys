@@ -1,8 +1,21 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Mail, MailOpen, Trash2, Eye, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { lt } from "date-fns/locale";
@@ -59,7 +72,7 @@ export const MessageTable = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {messages.map((message) => (
+              {messages.map(message => (
                 <TableRow
                   key={message.id}
                   className={message.status === "unread" ? "bg-blue-100 dark:bg-blue-950/30" : ""}
@@ -108,7 +121,11 @@ export const MessageTable = ({
                     <div className="flex justify-end space-x-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" onClick={() => onViewMessage(message)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onViewMessage(message)}
+                          >
                             <Eye className="h-4 w-4 mr-1" />
                             Peržiūrėti
                           </Button>
@@ -128,7 +145,11 @@ export const MessageTable = ({
                         </DialogContent>
                       </Dialog>
 
-                      <Button variant="destructive" size="sm" onClick={() => onDeleteMessage(message.id)}>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => onDeleteMessage(message.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -142,10 +163,12 @@ export const MessageTable = ({
 
       {/* Mobile kortelės */}
       <div className="md:hidden grid gap-3">
-        {messages.map((message) => (
+        {messages.map(message => (
           <Card
             key={message.id}
-            className={message.status === "unread" ? "bg-blue-50 dark:bg-blue-950/30 border-blue-200" : ""}
+            className={
+              message.status === "unread" ? "bg-blue-50 dark:bg-blue-950/30 border-blue-200" : ""
+            }
           >
             <CardContent className="p-4">
               <div className="flex items-start gap-3 mb-3">
@@ -155,20 +178,29 @@ export const MessageTable = ({
                   <MailOpen className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className={`font-medium truncate ${message.status === "unread" ? "text-gray-900 dark:text-gray-100" : ""}`}>
+                  <div
+                    className={`font-medium truncate ${message.status === "unread" ? "text-gray-900 dark:text-gray-100" : ""}`}
+                  >
                     {message.name}
                   </div>
-                  <div className={`text-sm truncate ${message.status === "unread" ? "text-gray-700 dark:text-gray-300" : "text-muted-foreground"}`}>
+                  <div
+                    className={`text-sm truncate ${message.status === "unread" ? "text-gray-700 dark:text-gray-300" : "text-muted-foreground"}`}
+                  >
                     {message.email}
                   </div>
                 </div>
-                <Badge variant={message.status === "unread" ? "default" : "secondary"} className="flex-shrink-0">
+                <Badge
+                  variant={message.status === "unread" ? "default" : "secondary"}
+                  className="flex-shrink-0"
+                >
                   {message.status === "unread" ? "Naujas" : "Skaitytas"}
                 </Badge>
               </div>
 
               <div className="mb-3">
-                <div className={`font-medium text-sm mb-1 line-clamp-2 ${message.status === "unread" ? "text-gray-900 dark:text-gray-100" : ""}`}>
+                <div
+                  className={`font-medium text-sm mb-1 line-clamp-2 ${message.status === "unread" ? "text-gray-900 dark:text-gray-100" : ""}`}
+                >
                   {message.subject}
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -180,7 +212,12 @@ export const MessageTable = ({
               <div className="flex gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={() => onViewMessage(message)} className="flex-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onViewMessage(message)}
+                      className="flex-1"
+                    >
                       <Eye className="h-4 w-4 mr-1" />
                       Peržiūrėti
                     </Button>

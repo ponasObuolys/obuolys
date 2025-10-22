@@ -33,7 +33,7 @@ const MyBookmarksPage = () => {
 
     try {
       setLoading(true);
-      
+
       // Get bookmarked article IDs
       const { data: bookmarks, error: bookmarksError } = await supabase
         .from("article_bookmarks")
@@ -173,11 +173,11 @@ const MyBookmarksPage = () => {
                   {bookmarkedArticles.length === 1
                     ? "straipsnis"
                     : bookmarkedArticles.length < 10
-                    ? "straipsniai"
-                    : "straipsnių"}
+                      ? "straipsniai"
+                      : "straipsnių"}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {bookmarkedArticles.map((article) => (
+                  {bookmarkedArticles.map(article => (
                     <ArticleCard key={article.id} article={article} />
                   ))}
                 </div>

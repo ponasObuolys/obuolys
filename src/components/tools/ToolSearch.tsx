@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 interface ToolSearchProps {
@@ -15,7 +15,7 @@ const ToolSearch: React.FC<ToolSearchProps> = ({ searchQuery, setSearchQuery }) 
           type="text"
           placeholder="Ieškoti įrankių..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           className="pl-10 bg-card border-border text-foreground placeholder:text-foreground/50 h-10"
           aria-label="Įrankių paieškos laukelis"
         />

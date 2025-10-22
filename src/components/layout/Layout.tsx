@@ -14,9 +14,9 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   // Naudojame hooką, kad peršoktų į viršų pakeitus puslapį
   useScrollToTop();
-  
+
   const location = useLocation();
-  const isPublicationPage = location.pathname.startsWith('/publikacijos/');
+  const isPublicationPage = location.pathname.startsWith("/publikacijos/");
 
   // "Back to Top" mygtuko būsenos
   const [showButton, setShowButton] = useState(false);

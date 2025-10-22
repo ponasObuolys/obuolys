@@ -1,51 +1,56 @@
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Youtube, MessageSquare, Facebook, Mail } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { secureLogger } from "@/utils/browserLogger";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Youtube, MessageSquare, Facebook, Mail } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { secureLogger } from '@/utils/browserLogger';
-
-import SEOHead from '@/components/SEO';
-import { SITE_CONFIG } from '@/utils/seo';
+import SEOHead from "@/components/SEO";
+import { SITE_CONFIG } from "@/utils/seo";
 
 const ContactPage = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    messageType: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    messageType: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Decode phone number (obfuscated from bots)
   const getPhoneNumber = () => {
-    const parts = ['370', '671', '68860'];
-    return parts.join('');
+    const parts = ["370", "671", "68860"];
+    return parts.join("");
   };
 
   const handleWhatsApp = () => {
     // WhatsApp link works on all devices - opens app on mobile, web.whatsapp.com on desktop
     const phoneNumber = getPhoneNumber();
-    window.open(`https://wa.me/${phoneNumber}`, '_blank');
+    window.open(`https://wa.me/${phoneNumber}`, "_blank");
   };
 
   // Set message type from URL parameter
   useEffect(() => {
-    const typeParam = searchParams.get('type');
+    const typeParam = searchParams.get("type");
     if (typeParam) {
       setFormData(prev => ({ ...prev, messageType: typeParam }));
     }
   }, [searchParams]);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -54,24 +59,22 @@ const ContactPage = () => {
   const handleSelectChange = (value: string) => {
     setFormData(prev => ({ ...prev, messageType: value }));
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Save contact message to database
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            subject: `[${formData.messageType}] ${formData.subject}`,
-            message: formData.message,
-            status: 'unread'
-          }
-        ]);
+      const { error } = await supabase.from("contact_messages").insert([
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: `[${formData.messageType}] ${formData.subject}`,
+          message: formData.message,
+          status: "unread",
+        },
+      ]);
 
       if (error) {
         throw error;
@@ -82,16 +85,16 @@ const ContactPage = () => {
         description: "Dėkojame už jūsų žinutę. Susisieksime kuo greičiau.",
         variant: "default",
       });
-      
+
       setFormData({
-        name: '',
-        email: '',
-        messageType: '',
-        subject: '',
-        message: ''
+        name: "",
+        email: "",
+        messageType: "",
+        subject: "",
+        message: "",
       });
     } catch (error) {
-      secureLogger.error('Error saving contact message', { error });
+      secureLogger.error("Error saving contact message", { error });
       toast({
         title: "Klaida",
         description: "Nepavyko išsiųsti žinutės. Bandykite dar kartą arba susisiekite el. paštu.",
@@ -108,7 +111,7 @@ const ContactPage = () => {
         title="Kontaktai"
         description="Susisiekite su ponas Obuolys dėl AI konsultacijų, bendradarbiavimo ar pasiūlykite dirbtinio intelekto naujieną bendruomenei."
         canonical={`${SITE_CONFIG.domain}/kontaktai`}
-        keywords={['AI konsultacijos', 'AI bendradarbiavimas', 'susisiekti AI ekspertas']}
+        keywords={["AI konsultacijos", "AI bendradarbiavimas", "susisiekti AI ekspertas"]}
         type="website"
       />
       <section className="py-12 md:py-16">
@@ -131,15 +134,18 @@ const ContactPage = () => {
                 </p>
               </div>
             </div>
-          
+
             {/* Contact Form */}
             <div className="dark-card">
               <h2 className="text-2xl font-bold text-foreground mb-6">Susisiekite</h2>
-                
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-foreground/80 mb-2 pl-3"
+                    >
                       Vardas
                     </label>
                     <Input
@@ -154,7 +160,10 @@ const ContactPage = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-foreground/80 mb-2 pl-3"
+                    >
                       El. paštas
                     </label>
                     <Input
@@ -171,10 +180,16 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="messageType" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
+                  <label
+                    htmlFor="messageType"
+                    className="block text-sm font-medium text-foreground/80 mb-2 pl-3"
+                  >
                     Žinutės tipas
                   </label>
-                  <Select value={formData.messageType || undefined} onValueChange={handleSelectChange}>
+                  <Select
+                    value={formData.messageType || undefined}
+                    onValueChange={handleSelectChange}
+                  >
                     <SelectTrigger className="bg-background border-border text-foreground">
                       <SelectValue placeholder="Pasirinkite žinutės tipą" />
                     </SelectTrigger>
@@ -189,7 +204,10 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground/80 mb-2 pl-3">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-foreground/80 mb-2 pl-3"
+                  >
                     Žinutė
                   </label>
                   <Textarea
@@ -198,11 +216,11 @@ const ContactPage = () => {
                     value={formData.message}
                     onChange={handleChange}
                     placeholder={
-                      formData.messageType === 'AI_NAUJIENA'
+                      formData.messageType === "AI_NAUJIENA"
                         ? "Aprašykite AI naujieną, kurią norėtumėte pasiūlyti bendruomenei..."
-                        : formData.messageType === 'KONSULTACIJA'
-                        ? "Aprašykite savo poreikius AI konsultacijoms..."
-                        : "Jūsų žinutė..."
+                        : formData.messageType === "KONSULTACIJA"
+                          ? "Aprašykite savo poreikius AI konsultacijoms..."
+                          : "Jūsų žinutė..."
                     }
                     rows={6}
                     className="bg-background border-border text-foreground placeholder:text-foreground/50"
@@ -215,7 +233,7 @@ const ContactPage = () => {
                   className="button-primary w-full"
                   disabled={isSubmitting || !formData.messageType}
                 >
-                  {isSubmitting ? 'Siunčiama...' : 'Pateikti užklausą'}
+                  {isSubmitting ? "Siunčiama..." : "Pateikti užklausą"}
                 </Button>
               </form>
 

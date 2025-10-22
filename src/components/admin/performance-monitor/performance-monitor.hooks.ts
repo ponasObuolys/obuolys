@@ -52,7 +52,7 @@ export const usePerformanceData = () => {
 export const useMetricHelpers = (metrics: PerformanceMetric[]) => {
   const getLatestMetric = useCallback(
     (name: string) => {
-      return metrics.filter((m) => m.name === name).sort((a, b) => b.timestamp - a.timestamp)[0];
+      return metrics.filter(m => m.name === name).sort((a, b) => b.timestamp - a.timestamp)[0];
     },
     [metrics]
   );

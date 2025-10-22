@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import RichTextEditor from "../rich-text-editor";
+import RichTextEditor from "../RichTextEditor";
 import { CourseFormFields } from "./course-form-fields";
 import { CourseHighlights } from "./course-highlights";
 import { CourseImageUpload } from "./course-image-upload";

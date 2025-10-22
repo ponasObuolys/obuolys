@@ -27,10 +27,7 @@ interface UseDeviceStatsOptions {
 /**
  * Hook to fetch device and browser statistics
  */
-export function useDeviceStats({
-  days = 30,
-  enabled = true,
-}: UseDeviceStatsOptions = {}) {
+export function useDeviceStats({ days = 30, enabled = true }: UseDeviceStatsOptions = {}) {
   return useQuery({
     queryKey: ["device-stats", days],
     queryFn: async () => {

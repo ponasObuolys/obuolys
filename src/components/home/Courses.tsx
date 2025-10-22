@@ -58,7 +58,12 @@ const Courses = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {courses.length > 0 ? (
-              courses.map(course => <CourseCard key={course.id} course={{...course, image_url: course.image_url ?? undefined}} />)
+              courses.map(course => (
+                <CourseCard
+                  key={course.id}
+                  course={{ ...course, image_url: course.image_url ?? undefined }}
+                />
+              ))
             ) : (
               <div className="col-span-2 text-center">
                 <p>Šiuo metu nėra aktyvių kursų</p>

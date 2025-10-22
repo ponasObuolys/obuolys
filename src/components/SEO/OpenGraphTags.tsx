@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
-import type { PageSEO } from '@/utils/seo';
-import { generateImageUrl, generateCanonicalUrl, SITE_CONFIG } from '@/utils/seo';
+import { Helmet } from "react-helmet-async";
+import type { PageSEO } from "@/utils/seo";
+import { generateImageUrl, generateCanonicalUrl, SITE_CONFIG } from "@/utils/seo";
 
 type OpenGraphTagsProps = PageSEO;
 
@@ -13,7 +13,7 @@ export const OpenGraphTags = ({
   description,
   canonical,
   image,
-  type = 'website',
+  type = "website",
   publishedTime,
   modifiedTime,
   author,
@@ -21,7 +21,7 @@ export const OpenGraphTags = ({
   tags = [],
 }: OpenGraphTagsProps) => {
   const ogImage = generateImageUrl(image);
-  const ogUrl = canonical || generateCanonicalUrl('/');
+  const ogUrl = canonical || generateCanonicalUrl("/");
 
   return (
     <Helmet>
@@ -38,15 +38,15 @@ export const OpenGraphTags = ({
       <meta property="og:locale" content={SITE_CONFIG.locale} />
 
       {/* Article specific tags */}
-      {type === 'article' && publishedTime && (
+      {type === "article" && publishedTime && (
         <meta property="article:published_time" content={publishedTime} />
       )}
-      {type === 'article' && modifiedTime && (
+      {type === "article" && modifiedTime && (
         <meta property="article:modified_time" content={modifiedTime} />
       )}
-      {type === 'article' && author && <meta property="article:author" content={author} />}
-      {type === 'article' && section && <meta property="article:section" content={section} />}
-      {type === 'article' &&
+      {type === "article" && author && <meta property="article:author" content={author} />}
+      {type === "article" && section && <meta property="article:section" content={section} />}
+      {type === "article" &&
         tags.map((tag, index) => <meta key={index} property="article:tag" content={tag} />)}
 
       {/* Twitter Card Meta Tags */}

@@ -27,9 +27,7 @@ export default function PrivacyPolicyPage() {
             </div>
             <h1 className="text-4xl font-bold">Privatumo Politika</h1>
           </div>
-          <p className="text-muted-foreground">
-            Paskutinį kartą atnaujinta: 2025-10-20
-          </p>
+          <p className="text-muted-foreground">Paskutinį kartą atnaujinta: 2025-10-20</p>
         </div>
 
         {/* Content */}
@@ -41,13 +39,13 @@ export default function PrivacyPolicyPage() {
               Įvadas
             </h2>
             <p>
-              Ponas Obuolys ("mes", "mūsų") gerbia jūsų privatumą ir įsipareigoja apsaugoti 
-              jūsų asmens duomenis. Ši privatumo politika paaiškina, kaip renkame, naudojame 
-              ir saugome jūsų informaciją, kai naudojatės mūsų svetaine.
+              Ponas Obuolys ("mes", "mūsų") gerbia jūsų privatumą ir įsipareigoja apsaugoti jūsų
+              asmens duomenis. Ši privatumo politika paaiškina, kaip renkame, naudojame ir saugome
+              jūsų informaciją, kai naudojatės mūsų svetaine.
             </p>
             <p>
-              Mes laikomės Bendrojo duomenų apsaugos reglamento (BDAR/GDPR) ir Lietuvos 
-              Respublikos asmens duomenų teisinės apsaugos įstatymo reikalavimų.
+              Mes laikomės Bendrojo duomenų apsaugos reglamento (BDAR/GDPR) ir Lietuvos Respublikos
+              asmens duomenų teisinės apsaugos įstatymo reikalavimų.
             </p>
           </section>
 
@@ -57,23 +55,24 @@ export default function PrivacyPolicyPage() {
               <Database className="w-6 h-6 text-primary" />
               Kokie Duomenys Renkami
             </h2>
-            
+
             <h3 className="text-xl font-semibold mb-3">1. Automatiškai Renkami Duomenys</h3>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Sesijos ID:</strong> Unikalus identifikatorius, saugomas naršyklės 
-                sesijos metu (sessionStorage)
+                <strong>Sesijos ID:</strong> Unikalus identifikatorius, saugomas naršyklės sesijos
+                metu (sessionStorage)
               </li>
               <li>
-                <strong>Peržiūrų istorija:</strong> Neseniai skaitytų publikacijų sąrašas 
-                su laiko žymomis (localStorage, 30 min)
+                <strong>Peržiūrų istorija:</strong> Neseniai skaitytų publikacijų sąrašas su laiko
+                žymomis (localStorage, 30 min)
               </li>
               <li>
-                <strong>Naršyklės informacija:</strong> User-Agent string (naršyklės tipas ir versija)
+                <strong>Naršyklės informacija:</strong> User-Agent string (naršyklės tipas ir
+                versija)
               </li>
               <li>
-                <strong>Realaus laiko buvimas:</strong> Laikinas buvimo žymėjimas per 
-                Supabase Realtime (tik aktyvios sesijos metu)
+                <strong>Realaus laiko buvimas:</strong> Laikinas buvimo žymėjimas per Supabase
+                Realtime (tik aktyvios sesijos metu)
               </li>
             </ul>
 
@@ -99,20 +98,20 @@ export default function PrivacyPolicyPage() {
             </h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Analitika:</strong> Skaičiuojame publikacijų peržiūras ir aktyvius 
+                <strong>Analitika:</strong> Skaičiuojame publikacijų peržiūras ir aktyvius
                 skaitytojus, kad suprastume, kokios temos populiariausios
               </li>
               <li>
-                <strong>Deduplikacija:</strong> Užtikriname, kad ta pati peržiūra nebūtų 
+                <strong>Deduplikacija:</strong> Užtikriname, kad ta pati peržiūra nebūtų
                 skaičiuojama kelis kartus per 30 minučių
               </li>
               <li>
-                <strong>Funkcionalumas:</strong> Suteikiame galimybę komentuoti, išsaugoti 
+                <strong>Funkcionalumas:</strong> Suteikiame galimybę komentuoti, išsaugoti
                 publikacijas, sekti skaitymo progresą
               </li>
               <li>
-                <strong>Gerinimas:</strong> Analizuojame, kaip vartotojai naudojasi svetaine, 
-                kad galėtume ją tobulinti
+                <strong>Gerinimas:</strong> Analizuojame, kaip vartotojai naudojasi svetaine, kad
+                galėtume ją tobulinti
               </li>
             </ul>
           </section>
@@ -123,7 +122,7 @@ export default function PrivacyPolicyPage() {
               <Lock className="w-6 h-6 text-primary" />
               Duomenų Saugojimas ir Apsauga
             </h2>
-            
+
             <h3 className="text-xl font-semibold mb-3">Kur Saugomi Duomenys</h3>
             <ul className="list-disc pl-6 space-y-2">
               <li>
@@ -147,11 +146,21 @@ export default function PrivacyPolicyPage() {
 
             <h3 className="text-xl font-semibold mb-3 mt-6">Laikymo Laikas</h3>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Sesijos ID:</strong> Iki naršyklės uždarymo</li>
-              <li><strong>Peržiūrų istorija:</strong> 30 minučių</li>
-              <li><strong>Realtime buvimas:</strong> Tik aktyvios sesijos metu</li>
-              <li><strong>Peržiūrų statistika:</strong> Neribotai (anoniminė)</li>
-              <li><strong>Vartotojo paskyra:</strong> Kol neištrinsite</li>
+              <li>
+                <strong>Sesijos ID:</strong> Iki naršyklės uždarymo
+              </li>
+              <li>
+                <strong>Peržiūrų istorija:</strong> 30 minučių
+              </li>
+              <li>
+                <strong>Realtime buvimas:</strong> Tik aktyvios sesijos metu
+              </li>
+              <li>
+                <strong>Peržiūrų statistika:</strong> Neribotai (anoniminė)
+              </li>
+              <li>
+                <strong>Vartotojo paskyra:</strong> Kol neištrinsite
+              </li>
             </ul>
           </section>
 
@@ -164,7 +173,8 @@ export default function PrivacyPolicyPage() {
             <p>Pagal BDAR/GDPR turite šias teises:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Teisė žinoti:</strong> Sužinoti, kokius duomenis renkame ir kaip juos naudojame
+                <strong>Teisė žinoti:</strong> Sužinoti, kokius duomenis renkame ir kaip juos
+                naudojame
               </li>
               <li>
                 <strong>Teisė pasiekti:</strong> Gauti savo duomenų kopiją
@@ -173,7 +183,8 @@ export default function PrivacyPolicyPage() {
                 <strong>Teisė ištaisyti:</strong> Pataisyti neteisingus duomenis
               </li>
               <li>
-                <strong>Teisė ištrinti:</strong> Prašyti ištrinti savo duomenis ("teisė būti pamirštam")
+                <strong>Teisė ištrinti:</strong> Prašyti ištrinti savo duomenis ("teisė būti
+                pamirštam")
               </li>
               <li>
                 <strong>Teisė apriboti:</strong> Apriboti duomenų tvarkymą
@@ -191,11 +202,12 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">Slapukai</h2>
             <p>
-              Naudojame slapukus ir panašias technologijas (localStorage, sessionStorage). 
-              Daugiau informacijos rasite mūsų{" "}
+              Naudojame slapukus ir panašias technologijas (localStorage, sessionStorage). Daugiau
+              informacijos rasite mūsų{" "}
               <Link to="/slapukai" className="text-primary hover:underline">
                 Slapukų politikoje
-              </Link>.
+              </Link>
+              .
             </p>
           </section>
 
@@ -205,14 +217,15 @@ export default function PrivacyPolicyPage() {
             <p>Naudojame šias trečiųjų šalių paslaugas:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>Supabase:</strong> Duomenų bazė ir autentifikacija (EU serveriai, GDPR atitiktis)
+                <strong>Supabase:</strong> Duomenų bazė ir autentifikacija (EU serveriai, GDPR
+                atitiktis)
               </li>
               <li>
                 <strong>Google Sign-In:</strong> Prisijungimas per Google paskyrą (pasirinktinai)
               </li>
             </ul>
             <p className="mt-4">
-              <strong>Svarbu:</strong> Mes neparduodame ir neperduodame jūsų duomenų trečiosioms 
+              <strong>Svarbu:</strong> Mes neparduodame ir neperduodame jūsų duomenų trečiosioms
               šalims rinkodaros tikslais.
             </p>
           </section>
@@ -224,8 +237,8 @@ export default function PrivacyPolicyPage() {
               Susisiekite
             </h2>
             <p>
-              Jei turite klausimų apie šią privatumo politiką arba norite pasinaudoti savo 
-              teisėmis, susisiekite su mumis:
+              Jei turite klausimų apie šią privatumo politiką arba norite pasinaudoti savo teisėmis,
+              susisiekite su mumis:
             </p>
             <ul className="list-none space-y-2 mt-4">
               <li>
@@ -247,11 +260,12 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">Pakeitimai</h2>
             <p>
-              Galime atnaujinti šią privatumo politiką. Apie svarbius pakeitimus informuosime 
-              per svetainę arba el. paštu (jei esate prisijungę).
+              Galime atnaujinti šią privatumo politiką. Apie svarbius pakeitimus informuosime per
+              svetainę arba el. paštu (jei esate prisijungę).
             </p>
             <p className="mt-4">
-              <strong>Versija:</strong> 1.0<br />
+              <strong>Versija:</strong> 1.0
+              <br />
               <strong>Paskutinį kartą atnaujinta:</strong> 2025-10-20
             </p>
           </section>

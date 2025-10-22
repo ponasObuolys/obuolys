@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 // Hook, kuris automatiškai peršoka į viršų, kai pasikeičia location pathname
 export function useScrollToTop() {
@@ -8,7 +8,7 @@ export function useScrollToTop() {
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   }, [pathname]);
 }

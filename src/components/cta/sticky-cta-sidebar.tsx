@@ -9,78 +9,78 @@ const stickyMessages = [
   {
     title: "🚀 Greitas AI įrankis?",
     description: "Nuo idėjos iki rezultato per 2 savaites",
-    cta: "Užsakyti"
+    cta: "Užsakyti",
   },
   {
     title: "💡 Turite AI idėją?",
     description: "Nemokama konsultacija su AI ekspertu",
-    cta: "Konsultuotis"
+    cta: "Konsultuotis",
   },
   {
     title: "⚡ AI automatizacija",
     description: "Sutaupykite iki 20h per savaitę",
-    cta: "Pradėti"
+    cta: "Pradėti",
   },
   {
     title: "🎯 Individualūs sprendimai",
     description: "100% pritaikyti Jūsų verslui",
-    cta: "Sužinoti"
+    cta: "Sužinoti",
   },
   {
     title: "💰 AI nuo 500€/mėn",
     description: "Prieinamos kainos, didelis poveikis",
-    cta: "Kainos"
+    cta: "Kainos",
   },
   {
     title: "🔥 Konkurentai jau naudoja",
     description: "Nelikite nuošalyje - pradėkite dabar",
-    cta: "Pradėti"
+    cta: "Pradėti",
   },
   {
     title: "✨ Nemokamas prototipas",
     description: "Išbandykite prieš priimdami sprendimą",
-    cta: "Demo"
+    cta: "Demo",
   },
   {
     title: "🎓 AI mokymai komandai",
     description: "Jūsų darbuotojai mokės naudoti AI",
-    cta: "Mokymai"
+    cta: "Mokymai",
   },
   {
     title: "📊 ROI per 3 mėnesius",
     description: "Investicija, kuri atsipirks greitai",
-    cta: "Skaičiuoti"
+    cta: "Skaičiuoti",
   },
   {
     title: "🇱🇹 Lietuvių kalba",
     description: "AI, kuris supranta lietuviškai",
-    cta: "Išbandyti"
+    cta: "Išbandyti",
   },
   {
     title: "🔒 Jūsų duomenys saugūs",
     description: "Jūsų patalpose arba privati debesija",
-    cta: "Saugumas"
+    cta: "Saugumas",
   },
   {
     title: "📱 Mobilios aplikacijos",
     description: "AI įrankiai iOS ir Android",
-    cta: "Pamatyti"
+    cta: "Pamatyti",
   },
   {
     title: "🎤 Balso valdymas",
     description: "Kalbėkite su AI lietuviškai",
-    cta: "Išbandyti"
+    cta: "Išbandyti",
   },
   {
     title: "📈 30+ projektų",
     description: "Patirtis su įvairiausiais verslais",
-    cta: "Atvejai"
+    cta: "Atvejai",
   },
   {
     title: "⏱️ 24/7 palaikymas",
     description: "Lietuvių kalba, greitas atsakymas",
-    cta: "Susisiekti"
-  }
+    cta: "Susisiekti",
+  },
 ];
 
 export function StickyCtaSidebar() {
@@ -90,7 +90,7 @@ export function StickyCtaSidebar() {
 
   // Bandome gauti iš DB
   const { data: dbMessages } = useActiveStickyMessages();
-  
+
   // Naudojame DB arba fallback
   const messages = dbMessages && dbMessages.length > 0 ? dbMessages : stickyMessages;
 
@@ -112,7 +112,7 @@ export function StickyCtaSidebar() {
     // Keičia žinutę kas 10 sekundžių
     if (isVisible && !isDismissed) {
       const interval = setInterval(() => {
-        setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+        setCurrentMessageIndex(prev => (prev + 1) % messages.length);
       }, 10000);
       return () => clearInterval(interval);
     }
@@ -142,7 +142,7 @@ export function StickyCtaSidebar() {
           <div className="bg-gradient-to-br from-primary/95 to-primary text-primary-foreground rounded-lg shadow-2xl p-4 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -z-10" />
-            
+
             {/* Close button */}
             <button
               onClick={handleDismiss}
@@ -162,8 +162,8 @@ export function StickyCtaSidebar() {
                 {currentMessage.description}
               </p>
               <Link to="/verslo-sprendimai">
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   variant="secondary"
                   className="w-full bg-white text-primary hover:bg-white/90 font-semibold"
                 >
@@ -178,9 +178,7 @@ export function StickyCtaSidebar() {
                 <div
                   key={index}
                   className={`h-1 rounded-full transition-all ${
-                    index === currentMessageIndex
-                      ? "w-6 bg-white"
-                      : "w-1 bg-white/40"
+                    index === currentMessageIndex ? "w-6 bg-white" : "w-1 bg-white/40"
                   }`}
                 />
               ))}

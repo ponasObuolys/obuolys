@@ -1,4 +1,5 @@
 # Google Search Console Setup Guide
+
 **Projektas:** ponas Obuolys - AI Naujienos
 **Domain:** https://www.ponasobuolys.lt
 **Data:** 2025-10-01
@@ -8,6 +9,7 @@
 ## 🎯 OVERVIEW
 
 Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
+
 - Stebėti kaip Google mato jūsų svetainę
 - Pateikti sitemap.xml indeksavimui
 - Sekti search performance (traffic, clicks, rankings)
@@ -32,6 +34,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 **Du pasirinkimai:**
 
 #### **Option A: Domain Property (Rekomenduojama)** ✅
+
 - **Domain:** `ponasobuolys.lt`
 - **Privalumai:**
   - Apima visus subdomain'us (www, m, blog, etc.)
@@ -41,6 +44,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
   - Reikia DNS verification (žr. Žingsnis 3A)
 
 #### **Option B: URL Prefix Property**
+
 - **URL:** `https://www.ponasobuolys.lt`
 - **Privalumai:**
   - Lengviau patvirtinti (HTML file upload arba meta tag)
@@ -58,6 +62,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 **Jei pasirinkote Domain Property:**
 
 1. Google pateiks **TXT record** kodą, pvz.:
+
    ```
    google-site-verification=abc123xyz456...
    ```
@@ -89,6 +94,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 **Jei pasirinkote URL Prefix Property:**
 
 **Metodas 1: HTML File Upload** (Lengviausias su Vercel)
+
 1. Google pateiks HTML failą, pvz., `google1234567890abcdef.html`
 2. Atsisiųskite failą
 3. Upload į `public/` directory projekto:
@@ -100,6 +106,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 6. Verify GSC: https://www.ponasobuolys.lt/google1234567890abcdef.html
 
 **Metodas 2: HTML Meta Tag**
+
 1. Google pateiks meta tag, pvz.:
    ```html
    <meta name="google-site-verification" content="abc123..." />
@@ -109,6 +116,7 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 4. Verify GSC
 
 **Metodas 3: Google Analytics**
+
 - Jei jau naudojate Google Analytics, galite verify per GA
 
 ---
@@ -123,11 +131,13 @@ Google Search Console (GSC) yra nemokamas Google įrankis, kuris padeda:
 4. Paspauskite **"Submit"**
 
 **Jūsų sitemap URL:**
+
 ```
 https://www.ponasobuolys.lt/sitemap.xml
 ```
 
 **Ką tikėtis:**
+
 - Google pradės crawl'inti sitemap per 24-48h
 - Status pasikeis į "Success" kai indexuojama
 - Matysite "Discovered URLs" skaičių (turėtų būti ~66)
@@ -163,17 +173,20 @@ Po sitemap submission, stebėkite:
 ## 📊 KĄ STEBĖTI PO SETUP
 
 ### Pirma Savaitė:
+
 - ✅ Coverage: 66 URLs discovered
 - ✅ Coverage: Pradinis indexing (bent 50% per 7 dienas)
 - ✅ No critical errors
 
 ### Pirmas Mėnuo:
+
 - ✅ Coverage: 90%+ URLs indexed
 - ✅ Performance: Impressions didėja
 - ✅ Core Web Vitals: "Good" rating (>75% pages)
 - ✅ Mobile Usability: No errors
 
 ### Nuolatinis Monitoringas:
+
 - **Weekly:** Performance trends (clicks, impressions)
 - **Weekly:** Coverage status (errors/warnings)
 - **Monthly:** Core Web Vitals trends
@@ -185,25 +198,33 @@ Po sitemap submission, stebėkite:
 ## 🚨 COMMON ISSUES & SOLUTIONS
 
 ### Issue 1: "Sitemap couldn't be read"
+
 **Sprendimas:**
+
 - Patikrinkite ar sitemap.xml accessible: https://www.ponasobuolys.lt/sitemap.xml
 - Patikrinkite XML syntax (validator: https://www.xml-sitemaps.com/validate-xml-sitemap.html)
 - Palaukite 24h ir retry
 
 ### Issue 2: "Submitted URL not found (404)"
+
 **Sprendimas:**
+
 - Patikrinkite ar URL egzistuoja
 - Patikrinkite robots.txt (ar neblokuoja)
 - URL Inspection Tool → Request indexing
 
 ### Issue 3: "Coverage: Discovered - currently not indexed"
+
 **Sprendimas:**
+
 - Normalu pradžioje (Google crawl'ina palaipsniui)
 - URL Inspection → Request indexing priority URLs
 - Palaukite 7-14 dienų
 
 ### Issue 4: "Crawled - currently not indexed"
+
 **Sprendimas:**
+
 - Google matė, bet nenusprendė indexuoti
 - Patobulinkite content quality
 - Pridėkite internal links
@@ -214,26 +235,31 @@ Po sitemap submission, stebėkite:
 ## ✅ VERIFICATION CHECKLIST
 
 **Pre-Setup:**
+
 - [ ] Domain/URL pasirinktas
 - [ ] Prisijungta su tinkamu Google account
 - [ ] Turima prieiga prie DNS arba website files
 
 **Verification:**
+
 - [ ] Verification method pasirinktas
 - [ ] TXT record/HTML file pridėtas
 - [ ] Ownership verified ✅
 
 **Sitemap Submission:**
+
 - [ ] sitemap.xml accessible (https://www.ponasobuolys.lt/sitemap.xml)
 - [ ] Sitemap submitted į GSC
 - [ ] Status: "Success" arba "Pending"
 
 **Initial Monitoring:**
+
 - [ ] Coverage report checked (po 24-48h)
 - [ ] URL Inspection tested (2-3 key URLs)
 - [ ] No critical errors
 
 **Ongoing Setup:**
+
 - [ ] Email alerts enabled
 - [ ] Users/permissions configured (jei team)
 - [ ] Integrated su Google Analytics (optional)
@@ -243,24 +269,29 @@ Po sitemap submission, stebėkite:
 ## 🔗 USEFUL LINKS
 
 **Google Search Console:**
+
 - Main Dashboard: https://search.google.com/search-console/
 - Help Center: https://support.google.com/webmasters/
 - Learn SEO: https://developers.google.com/search/docs
 
 **Verification Help:**
+
 - Domain Verification: https://support.google.com/webmasters/answer/9008080
 - URL Prefix Verification: https://support.google.com/webmasters/answer/9008080
 
 **Sitemap Help:**
+
 - Sitemap Guide: https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview
 - Sitemap Validator: https://www.xml-sitemaps.com/validate-xml-sitemap.html
 
 **Testing Tools:**
+
 - Rich Results Test: https://search.google.com/test/rich-results
 - Mobile-Friendly Test: https://search.google.com/test/mobile-friendly
 - PageSpeed Insights: https://pagespeed.web.dev/
 
 **DNS Checking:**
+
 - DNS Checker: https://dnschecker.org/
 - What's My DNS: https://www.whatsmydns.net/
 
@@ -269,18 +300,21 @@ Po sitemap submission, stebėkite:
 ## 📈 SUCCESS METRICS
 
 **Short-term (1-2 mėnesiai):**
+
 - 90%+ pages indexed
 - 0 critical errors
 - Core Web Vitals: "Good" rating
 - Organic impressions: +50-100%
 
 **Medium-term (3-6 mėnesiai):**
+
 - Top 10 rankings: "AI naujienos Lietuvoje"
 - Organic clicks: +100-200%
 - Average position: <20 target keywords
 - CTR: >3% organic search
 
 **Long-term (6-12 mėnesių):**
+
 - Top 3 rankings: "AI naujienos Lietuvoje", "ponas Obuolys"
 - Organic traffic: +200-500%
 - Brand search queries: +300%

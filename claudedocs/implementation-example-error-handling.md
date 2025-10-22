@@ -19,6 +19,7 @@ This example demonstrates the practical application of the type safety improveme
 ```
 
 **Issues with current approach:**
+
 - Repeated error handling logic across 7 locations
 - No consistent error categorization
 - Manual error message extraction
@@ -50,8 +51,8 @@ import {
   useErrorHandler,
   handleAuthError,
   handleApiError,
-  createAsyncHandler
-} from '@/utils/errorHandling';
+  createAsyncHandler,
+} from "@/utils/errorHandling";
 ```
 
 ### Step 2: Initialize Error Handler
@@ -72,6 +73,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) =
 ### Step 3: Migrate Individual Error Handlers
 
 #### Login Function
+
 ```typescript
 // Before
 const signIn = async (email: string, password: string) => {
@@ -116,7 +118,7 @@ const signIn = async (email: string, password: string): Promise<void> => {
       description: "Sveiki sugrįžę!",
     });
   } catch (error: unknown) {
-    handleAuthErrorWithToast(error, 'Prisijungimo klaida');
+    handleAuthErrorWithToast(error, "Prisijungimo klaida");
   } finally {
     setLoading(false);
   }
@@ -124,6 +126,7 @@ const signIn = async (email: string, password: string): Promise<void> => {
 ```
 
 #### Registration Function
+
 ```typescript
 // Before
 const signUp = async (email: string, password: string) => {
@@ -168,7 +171,7 @@ const signUp = async (email: string, password: string): Promise<void> => {
       description: "Prašome patvirtinti savo el. paštą.",
     });
   } catch (error: unknown) {
-    handleAuthErrorWithToast(error, 'Registracijos klaida');
+    handleAuthErrorWithToast(error, "Registracijos klaida");
   } finally {
     setLoading(false);
   }
@@ -176,6 +179,7 @@ const signUp = async (email: string, password: string): Promise<void> => {
 ```
 
 #### Profile Update with Complex Error Handling
+
 ```typescript
 // Before
 const updateProfile = async (data: Record<string, unknown>) => {
@@ -189,17 +193,14 @@ const updateProfile = async (data: Record<string, unknown>) => {
     if (data.username) updates.username = data.username;
     if (data.avatarUrl) updates.avatar_url = data.avatarUrl;
 
-    const { error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', user.id);
+    const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
 
     if (error) throw error;
 
     // Update local state
     setUserProfile(prev => ({
       ...prev,
-      ...updates
+      ...updates,
     }));
 
     toast({
@@ -207,7 +208,8 @@ const updateProfile = async (data: Record<string, unknown>) => {
       description: "Jūsų profilis buvo sėkmingai atnaujintas.",
     });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Įvyko klaida atnaujinant profilį";
+    const errorMessage =
+      error instanceof Error ? error.message : "Įvyko klaida atnaujinant profilį";
     toast({
       title: "Profilio atnaujinimo klaida",
       description: errorMessage,
@@ -226,29 +228,30 @@ const updateProfile = async (data: ProfileUpdateData): Promise<void> => {
     setLoading(true);
 
     // Type-safe update object
-    const updates: Partial<Database['public']['Tables']['profiles']['Update']> = {};
+    const updates: Partial<Database["public"]["Tables"]["profiles"]["Update"]> = {};
     if (data.username) updates.username = data.username;
     if (data.avatar_url) updates.avatar_url = data.avatar_url;
 
-    const { error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', user.id);
+    const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
 
     if (error) throw error;
 
     // Update local state with type safety
-    setUserProfile(prev => prev ? {
-      ...prev,
-      ...updates
-    } : null);
+    setUserProfile(prev =>
+      prev
+        ? {
+            ...prev,
+            ...updates,
+          }
+        : null
+    );
 
     toast({
       title: "Profilis atnaujintas",
       description: "Jūsų profilis buvo sėkmingai atnaujintas.",
     });
   } catch (error: unknown) {
-    handleApiErrorWithToast(error, 'Profilio atnaujinimo klaida');
+    handleApiErrorWithToast(error, "Profilio atnaujinimo klaida");
   } finally {
     setLoading(false);
   }
@@ -269,24 +272,27 @@ const signOut = createAsyncHandler(
       description: "Sėkmingai atsijungėte nuo sistemos.",
     });
   },
-  (error) => handleAuthErrorWithToast(error, 'Atsijungimo klaida')
+  error => handleAuthErrorWithToast(error, "Atsijungimo klaida")
 );
 ```
 
 ## Benefits of the Migration
 
 ### Type Safety Improvements
+
 - **Strong typing**: `ProfileUpdateData` instead of `Record<string, unknown>`
 - **Database types**: Proper Supabase type usage
 - **Function signatures**: Explicit return types and parameter types
 
 ### Code Quality Improvements
+
 - **DRY principle**: No repeated error handling logic
 - **Consistency**: Standardized error messages and toast patterns
 - **Maintainability**: Centralized error handling logic
 - **Testability**: Error handlers can be tested independently
 
 ### Error Handling Improvements
+
 - **Categorization**: Authentication vs API vs validation errors
 - **Logging**: Centralized error tracking
 - **User Experience**: Consistent error message formatting
@@ -295,12 +301,14 @@ const signOut = createAsyncHandler(
 ## Metrics Impact
 
 ### Before Migration
+
 - **Code duplication**: 7 similar error handling blocks
 - **Type safety**: `unknown` types throughout
 - **Maintainability**: Changes require updating multiple locations
 - **Testing**: Each component must test error handling separately
 
 ### After Migration
+
 - **Code reduction**: ~30% fewer lines in error handling
 - **Type safety**: 100% typed error handling
 - **Maintainability**: Single source of truth for error logic
@@ -309,16 +317,19 @@ const signOut = createAsyncHandler(
 ## Implementation Timeline
 
 ### Phase 1: Setup (Day 1)
+
 1. ✅ Create error handling utilities
 2. ✅ Create form type definitions
 3. Update AuthContext.tsx (priority file)
 
 ### Phase 2: Core Components (Day 2-3)
+
 1. Update admin components with heavy error handling
 2. Migrate FileUpload.tsx
 3. Update form components
 
 ### Phase 3: Validation (Day 4)
+
 1. Test all error scenarios
 2. Verify type coverage improvements
 3. Performance validation

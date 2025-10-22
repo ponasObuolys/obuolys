@@ -30,7 +30,7 @@ export const HeroSectionList = ({
 
   return (
     <div className="space-y-3">
-      {heroSections.map((section) => (
+      {heroSections.map(section => (
         <Card key={section.id} className={!section.active ? "opacity-60" : ""}>
           <CardContent className="p-3 md:p-4">
             <div className="space-y-3">
@@ -42,8 +42,12 @@ export const HeroSectionList = ({
                   <EyeOff className="h-4 w-4 text-gray-400 flex-shrink-0 mt-1" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm md:text-base break-words">{section.title}</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2">{section.subtitle}</p>
+                  <h3 className="font-semibold text-sm md:text-base break-words">
+                    {section.title}
+                  </h3>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2">
+                    {section.subtitle}
+                  </p>
                 </div>
               </div>
 
@@ -66,10 +70,10 @@ export const HeroSectionList = ({
 
               {/* Actions */}
               <div className="flex flex-wrap gap-2 pt-2 border-t">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => onEdit(section)} 
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(section)}
                   disabled={loading}
                   className="text-xs h-8"
                 >

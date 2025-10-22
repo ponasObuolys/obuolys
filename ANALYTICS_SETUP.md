@@ -3,6 +3,7 @@
 ## ✅ Kas buvo padaryta
 
 ### 1. Duomenų Bazė (Supabase)
+
 - ✅ Sukurta `page_views` lentelė puslapių peržiūroms sekti
 - ✅ Sukurta `site_statistics` lentelė metų statistikai
 - ✅ Sukurta `increment_site_stats()` trigger funkcija automatiniam statistikos atnaujinimui
@@ -12,11 +13,13 @@
 - ✅ Migracija sėkmingai paleista per Supabase MCP
 
 ### 2. TypeScript Tipai
+
 - ✅ Atnaujinti Supabase tipai su naujomis lentelėmis ir funkcijomis
 - ✅ Pridėti `page_views` ir `site_statistics` tipai
 - ✅ Pridėtas `get_current_year_stats` funkcijos tipas
 
 ### 3. Frontend Komponentai
+
 - ✅ **Service Layer**: `src/services/analytics.service.ts`
   - `trackPageView()` - Įrašo puslapio peržiūrą
   - `getCurrentYearStats()` - Gauna metų statistiką
@@ -35,6 +38,7 @@
   - `src/hooks/use-article-views.ts` - Hook peržiūrų skaičiui gauti
 
 ### 4. Integracija
+
 - ✅ Integruota į `PublicationDetail.tsx` puslapį
 - ✅ Integruota į `ArticleCard` komponentą
 - ✅ Integruota į `RelatedArticles` komponentą
@@ -44,11 +48,13 @@
 - ✅ Peržiūrų skaičius ant susijusių publikacijų
 
 ### 5. GDPR/BDAR Compliance
+
 - ✅ `src/components/gdpr/cookie-consent.tsx` - Cookie consent banner
 - ✅ Atitinka GDPR/BDAR reikalavimus
 - ✅ Vartotojas gali pasirinkti tik būtinus arba visus slapukus
 
 ### 6. Integracija
+
 - ✅ Integruota į `PublicationDetail.tsx` puslapį
 - ✅ Integruota į `ArticleCard` komponentą
 - ✅ Integruota į `RelatedArticles` komponentą
@@ -70,16 +76,19 @@ npm run dev
 ### 2. Atidaryti Publikacijas
 
 #### A) Publikacijų sąrašas:
+
 ```
 http://localhost:5173/publikacijos
 ```
 
 Ant kiekvienos publikacijos kortelės turėtumėte matyti:
+
 - 📅 Data
 - ⏱️ Skaitymo laikas
 - 👁️ Peržiūrų skaičius (mėlyna spalva)
 
 #### B) Detalus publikacijos puslapis:
+
 ```
 http://localhost:5173/publikacijos/[slug]
 ```
@@ -87,6 +96,7 @@ http://localhost:5173/publikacijos/[slug]
 ### 3. Ką Turėtumėte Matyti
 
 **Ant kortelių** (sąraše):
+
 ```
 📅 2025-01-20  |  ⏱️ 5 min skaitymo  |  👁️ 43
 ```
@@ -98,10 +108,12 @@ http://localhost:5173/publikacijos/[slug]
 ```
 
 Kur:
+
 - **X** - realiu laiku skaitančių tą pačią publikaciją skaičius (padaugintas 2x-4x)
 - **Y** - bendras šios publikacijos peržiūrų skaičius (padaugintas 2x-4x)
 
-**Pastaba**: 
+**Pastaba**:
+
 - Daugiklis yra nuoseklus - ta pati publikacija visada turi tą patį daugiklį (2-4x)
 - **Jei tik 1 žmogus skaito** - rodoma **1 skaito dabar** (be daugiklio)
 - **Jei 2+ žmonės skaito** - taikomas daugiklis (pvz. 2 → 6-7 skaitytojų)
@@ -116,6 +128,7 @@ Kur:
 ### 5. Patikrinti Duomenų Bazėje
 
 #### Per Supabase Dashboard:
+
 ```sql
 -- Patikrinti page views
 SELECT * FROM page_views ORDER BY viewed_at DESC LIMIT 10;
@@ -128,29 +141,34 @@ SELECT * FROM get_current_year_stats();
 ```
 
 #### Per MCP (Windsurf):
+
 ```typescript
 // Galite naudoti Supabase MCP tools:
 mcp3_execute_sql({
   project_id: "jzixoslapmlqafrlbvpk",
-  query: "SELECT * FROM page_views ORDER BY viewed_at DESC LIMIT 10"
-})
+  query: "SELECT * FROM page_views ORDER BY viewed_at DESC LIMIT 10",
+});
 ```
 
 ## ✅ Pataisymai
 
 ### RLS Policy Fix (2025-10-20)
+
 **Problema**: `401 Unauthorized` klaida bandant įrašyti page views.
 
 **Sprendimas**: Pridėtas `SECURITY DEFINER` prie trigger ir RPC funkcijų, kad jos galėtų veikti nepaisant RLS policies:
+
 - `increment_site_stats()` - trigger funkcija
 - `get_current_year_stats()` - RPC funkcija
 
 Funkcijos dabar veikia su elevated privileges ir gali įrašyti/skaityti `site_statistics` lentelę.
 
 ### Deduplikacija (2025-10-20)
+
 **Problema**: Kiekvieną kartą perkraunant puslapį, peržiūrų skaičius didėjo +1, +2, +3, +4 (dėl daugiklio).
 
 **Sprendimas**: Pridėta 30 minučių deduplikacijos logika:
+
 - Naudojamas `localStorage` saugoti neseniai skaitytų publikacijų sąrašą
 - Jei publikacija skaityta per pastaruosius 30 min - tracking praleistas
 - Po 30 min - skaičiuojama kaip nauja peržiūra
