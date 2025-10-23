@@ -10,250 +10,36 @@
 - **Statusas**: ACTIVE_HEALTHY
 - **PostgreSQL versija**: 15.8.1.054
 - **Sukurta**: 2025-03-30T18:14:49.276346Z
+- **Paskutinis atnaujinimas**: 2025-10-23
+
+## Turinys
+
+1. [Lentelių schema](#lentelių-schema)
+2. [Lentelių aprašymas](#lentelių-aprašymas)
+3. [Indeksai](#indeksai)
+4. [RLS politikos](#row-level-security-rls-politikos)
+5. [Funkcijos](#funkcijos-ir-triggeriai)
+6. [Triggeriai](#triggeriai)
+7. [Peržiūros (Views)](#peržiūros-views)
+8. [Migracijos](#migracijos)
+9. [Storage konfigūracija](#storage-konfigūracija)
+10. [Saugumo funkcijos](#saugumo-funkcijos)
 
 ## Duomenų bazės schema
 
+### ER diagrama
+
 ```mermaid
 erDiagram
-    %% AUTH SCHEMA
-    auth_users {
-        uuid id PK
-        varchar email UK
-        varchar encrypted_password
-        timestamptz email_confirmed_at
-        timestamptz invited_at
-        varchar confirmation_token
-        timestamptz confirmation_sent_at
-        varchar recovery_token
-        timestamptz recovery_sent_at
-        varchar email_change
-        timestamptz email_change_sent_at
-        varchar email_change_token_new
-        varchar email_change_token_current
-        smallint email_change_confirm_status
-        timestamptz last_sign_in_at
-        jsonb raw_app_meta_data
-        jsonb raw_user_meta_data
-        boolean is_super_admin
-        timestamptz created_at
-        timestamptz updated_at
-        text phone UK
-        timestamptz phone_confirmed_at
-        varchar phone_change_token
-        text phone_change
-        timestamptz phone_change_sent_at
-        timestamptz confirmed_at
-        timestamptz banned_until
-        varchar reauthentication_token
-        timestamptz reauthentication_sent_at
-        boolean is_sso_user
-        timestamptz deleted_at
-        boolean is_anonymous
-    }
-
-    auth_identities {
-        uuid id PK
-        text provider_id
-        uuid user_id FK
-        jsonb identity_data
-        text provider
-        timestamptz last_sign_in_at
-        timestamptz created_at
-        timestamptz updated_at
-        text email
-    }
-
-    auth_sessions {
-        uuid id PK
-        uuid user_id FK
-        timestamptz created_at
-        timestamptz updated_at
-        uuid factor_id
-        aal_level aal
-        timestamptz not_after
-        timestamp refreshed_at
-        text user_agent
-        inet ip
-        text tag
-    }
-
-    auth_refresh_tokens {
-        bigint id PK
-        varchar token UK
-        varchar user_id
-        boolean revoked
-        timestamptz created_at
-        timestamptz updated_at
-        varchar parent
-        uuid session_id FK
-    }
-
-    auth_mfa_factors {
-        uuid id PK
-        uuid user_id FK
-        text friendly_name
-        factor_type factor_type
-        factor_status status
-        timestamptz created_at
-        timestamptz updated_at
-        text secret
-        text phone
-        timestamptz last_challenged_at UK
-        jsonb web_authn_credential
-        uuid web_authn_aaguid
-    }
-
-    auth_mfa_challenges {
-        uuid id PK
-        uuid factor_id FK
-        timestamptz created_at
-        timestamptz verified_at
-        inet ip_address
-        text otp_code
-        jsonb web_authn_session_data
-    }
-
-    auth_mfa_amr_claims {
-        uuid session_id FK
-        timestamptz created_at
-        timestamptz updated_at
-        text authentication_method
-        uuid id PK
-    }
-
-    auth_audit_log_entries {
-        uuid id PK
-        json payload
-        timestamptz created_at
-        varchar ip_address
-    }
-
-    auth_sso_providers {
-        uuid id PK
-        text resource_id
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    auth_sso_domains {
-        uuid id PK
-        uuid sso_provider_id FK
-        text domain
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    auth_saml_providers {
-        uuid id PK
-        uuid sso_provider_id FK
-        text entity_id UK
-        text metadata_xml
-        text metadata_url
-        jsonb attribute_mapping
-        timestamptz created_at
-        timestamptz updated_at
-        text name_id_format
-    }
-
-    auth_saml_relay_states {
-        uuid id PK
-        uuid sso_provider_id FK
-        text request_id
-        text for_email
-        text redirect_to
-        timestamptz created_at
-        timestamptz updated_at
-        uuid flow_state_id FK
-    }
-
-    auth_flow_state {
-        uuid id PK
-        uuid user_id
-        text auth_code
-        code_challenge_method code_challenge_method
-        text code_challenge
-        text provider_type
-        text provider_access_token
-        text provider_refresh_token
-        timestamptz created_at
-        timestamptz updated_at
-        text authentication_method
-        timestamptz auth_code_issued_at
-    }
-
-    auth_one_time_tokens {
-        uuid id PK
-        uuid user_id FK
-        one_time_token_type token_type
-        text token_hash
-        text relates_to
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    %% STORAGE SCHEMA
-    storage_buckets {
-        text id PK
-        text name UK
-        uuid owner
-        timestamptz created_at
-        timestamptz updated_at
-        boolean public
-        boolean avif_autodetection
-        bigint file_size_limit
-        text[] allowed_mime_types
-        text owner_id
-    }
-
-    storage_objects {
-        uuid id PK
-        text bucket_id FK
-        text name
-        uuid owner
-        timestamptz created_at
-        timestamptz updated_at
-        timestamptz last_accessed_at
-        jsonb metadata
-        text[] path_tokens
-        text version
-        text owner_id
-        jsonb user_metadata
-    }
-
-    storage_s3_multipart_uploads {
-        text id PK
-        bigint in_progress_size
-        text upload_signature
-        text bucket_id FK
-        text key
-        text version
-        text owner_id
-        timestamptz created_at
-        jsonb user_metadata
-    }
-
-    storage_s3_multipart_uploads_parts {
-        uuid id PK
-        text upload_id FK
-        bigint size
-        integer part_number
-        text bucket_id FK
-        text key
-        text etag
-        text owner_id
-        text version
-        timestamptz created_at
-    }
-
-    %% PUBLIC SCHEMA
+    %% PUBLIC SCHEMA - CORE TABLES
     profiles {
-        uuid id PK FK
+        uuid id PK,FK
         text username UK
         text avatar_url
         boolean is_admin
+        text role
         timestamptz created_at
         timestamptz updated_at
-        text pareigos
     }
 
     articles {
@@ -262,16 +48,16 @@ erDiagram
         text slug UK
         text description
         text content
-        text category
         text read_time
         text author
         date date
-        timestamptz created_at
-        timestamptz updated_at
-        boolean featured
-        boolean published
+        text[] category
         text image_url
         text content_type
+        boolean featured
+        boolean published
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     tools {
@@ -282,10 +68,10 @@ erDiagram
         text url
         text image_url
         text category
-        timestamptz created_at
-        timestamptz updated_at
         boolean featured
         boolean published
+        timestamptz created_at
+        timestamptz updated_at
     }
 
     courses {
@@ -298,41 +84,179 @@ erDiagram
         text duration
         text level
         text[] highlights
-        timestamptz created_at
-        timestamptz updated_at
+        text image_url
         boolean published
-        text image_url
-    }
-
-    contact_messages {
-        uuid id PK
-        text name
-        text email
-        text subject
-        text message
-        timestamptz created_at
-        text status
-    }
-
-    hero_sections {
-        uuid id PK
-        text title
-        text subtitle
-        text button_text
-        text button_url
-        text image_url
-        boolean active
         timestamptz created_at
         timestamptz updated_at
     }
 
+    %% USER ENGAGEMENT TABLES
+    article_comments {
+        uuid id PK
+        uuid article_id FK
+        uuid user_id FK
+        uuid parent_id FK
+        text content
+        boolean is_approved
+        boolean is_deleted
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    article_bookmarks {
+        uuid id PK
+        uuid article_id FK
+        uuid user_id FK
+        timestamptz created_at
+    }
+
+    reading_progress {
+        uuid id PK
+        uuid article_id FK
+        uuid user_id FK
+        integer progress_percentage
+        integer last_position
+        boolean completed
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    page_views {
+        uuid id PK
+        uuid article_id FK
+        uuid user_id FK
+        text session_id
+        timestamptz viewed_at
+        text user_agent
+        inet ip_address
+    }
+
+    %% ANALYTICS & MARKETING TABLES
     cta_sections {
         uuid id PK
         text title
         text description
         text button_text
         text button_url
+        varchar context
+        varchar variant
+        varchar icon
+        integer priority
+        boolean is_sticky
         boolean active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    sticky_cta_messages {
+        uuid id PK
+        text title
+        text description
+        text cta
+        varchar emoji
+        integer priority
+        boolean active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    cta_clicks {
+        uuid id PK
+        uuid cta_id
+        text cta_type
+        timestamptz clicked_at
+        text user_session_id
+        text page_url
+        text context
+        timestamptz created_at
+    }
+
+    site_statistics {
+        uuid id PK
+        integer year UK
+        integer total_visitors
+        integer total_page_views
+        timestamptz last_updated
+    }
+
+    %% CONTACT & INQUIRY TABLES
+    contact_messages {
+        uuid id PK
+        text name
+        text email
+        text subject
+        text message
+        text status
+        timestamptz created_at
+    }
+
+    custom_tool_inquiries {
+        uuid id PK
+        text full_name
+        text email
+        text phone
+        text company_name
+        text company_size
+        text project_type
+        text budget_range
+        text timeline
+        text description
+        text current_solution
+        text team_size
+        text status
+        text notes
+        text admin_notes
+        boolean gdpr_consent
+        text source
+        text ip_address
+        text user_agent
+        timestamptz created_at
+    }
+
+    email_replies {
+        uuid id PK
+        uuid inquiry_id
+        text inquiry_type
+        text recipient_email
+        text subject
+        text message
+        uuid sent_by FK
+        timestamptz sent_at
+        text delivery_status
+        text error_message
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    %% CONTENT MANAGEMENT TABLES
+    hero_sections {
+        uuid id PK
+        text title
+        text subtitle
+        text button_text
+        text button_url
+        text secondary_button_text
+        text secondary_button_url
+        text badge_text
+        text image_url
+        integer priority
+        boolean show_stats
+        boolean active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    %% SYSTEM TABLES
+    migration_documentation {
+        uuid id PK
+        varchar migration_version UK
+        varchar migration_name
+        text description
+        text sql_changes
+        boolean breaking_changes
+        text rollback_instructions
+        varchar author
+        timestamptz applied_at
         timestamptz created_at
         timestamptz updated_at
     }
@@ -350,552 +274,958 @@ erDiagram
         varchar origin_domain
     }
 
-    migration_documentation {
-        uuid id PK
-        varchar migration_version UK
-        varchar migration_name
-        text description
-        text sql_changes
-        boolean breaking_changes
-        text rollback_instructions
-        varchar author
-        timestamptz applied_at
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    %% VIEWS
-    auth_users_view {
-        uuid id
-        text email
-        timestamptz created_at
-    }
-
-    user_profiles {
-        uuid id
-        text username
-        text avatar_url
-        boolean is_admin
-        timestamptz created_at
-        timestamptz updated_at
-        text email
-        timestamptz auth_created_at
-    }
-
-    %% RYŠIAI
-    auth_users ||--o{ auth_identities : "user_id"
-    auth_users ||--o{ auth_sessions : "user_id"
-    auth_users ||--o{ auth_mfa_factors : "user_id"
-    auth_users ||--o{ auth_one_time_tokens : "user_id"
+    %% RELATIONSHIPS
     auth_users ||--|| profiles : "id"
+    auth_users ||--o{ article_comments : "user_id"
+    auth_users ||--o{ article_bookmarks : "user_id"
+    auth_users ||--o{ reading_progress : "user_id"
+    auth_users ||--o{ page_views : "user_id"
+    auth_users ||--o{ email_replies : "sent_by"
 
-    auth_sessions ||--o{ auth_refresh_tokens : "session_id"
-    auth_sessions ||--o{ auth_mfa_amr_claims : "session_id"
+    articles ||--o{ article_comments : "article_id"
+    articles ||--o{ article_bookmarks : "article_id"
+    articles ||--o{ reading_progress : "article_id"
+    articles ||--o{ page_views : "article_id"
 
-    auth_mfa_factors ||--o{ auth_mfa_challenges : "factor_id"
-
-    auth_sso_providers ||--o{ auth_sso_domains : "sso_provider_id"
-    auth_sso_providers ||--o{ auth_saml_providers : "sso_provider_id"
-    auth_sso_providers ||--o{ auth_saml_relay_states : "sso_provider_id"
-
-    auth_flow_state ||--o{ auth_saml_relay_states : "flow_state_id"
-
-    storage_buckets ||--o{ storage_objects : "bucket_id"
-    storage_buckets ||--o{ storage_s3_multipart_uploads : "bucket_id"
-    storage_buckets ||--o{ storage_s3_multipart_uploads_parts : "bucket_id"
-
-    storage_s3_multipart_uploads ||--o{ storage_s3_multipart_uploads_parts : "upload_id"
+    article_comments ||--o{ article_comments : "parent_id (nested)"
 ```
 
 ## Lentelių aprašymas
 
-### AUTH schema
-
-#### auth.users
-
-Pagrindinis autentifikavimo vartotojų saugykla.
-
-- **RLS**: Įjungta
-- **Komentaras**: Auth: Stores user login data within a secure schema
-- **Svarbus laukas**: confirmed_at - generuojamas automatiškai iš email_confirmed_at ir phone_confirmed_at
-
-#### auth.identities
-
-Vartotojų tapatybės saugykla (OAuth, SAML ir kt.).
-
-- **RLS**: Įjungta
-- **Komentaras**: Auth: Stores identities associated to a user
-- **Svarbus laukas**: email - generuojamas automatiškai iš identity_data
-
-#### auth.sessions
-
-Aktyvių sesijų valdymas.
-
-- **RLS**: Įjungta
-- **Komentaras**: Auth: Stores session data associated to a user
-- **Enum**: aal (Authentication Assurance Level) - aal1, aal2, aal3
-
-#### auth.refresh_tokens
-
-JWT refresh token'ų saugykla.
-
-- **RLS**: Įjungta
-- **Komentaras**: Auth: Store of tokens used to refresh JWT tokens once they expire
-
-#### auth.mfa_factors
-
-Daugiafaktorės autentifikacijos faktoriai.
-
-- **RLS**: Įjungta
-- **Komentaras**: auth: stores metadata about factors
-- **Enum**: factor_type (totp, webauthn, phone), factor_status (unverified, verified)
-
-#### auth.audit_log_entries
-
-Autentifikacijos audito žurnalas.
-
-- **RLS**: Įjungta
-- **Komentaras**: Auth: Audit trail for user actions
-
-### STORAGE schema
-
-#### storage.buckets
-
-Failų saugyklų konfigūracija.
-
-- **RLS**: Įjungta
-- **Aktyvus bucket**: site-images (public: true, sukurtas: 2025-04-02)
-
-#### storage.objects
-
-Failų objektų metaduomenys.
-
-- **RLS**: Įjungta
-- **Svarbus laukas**: path_tokens - generuojamas automatiškai iš name lauko
-
-#### storage.prefixes
-
-Katalogų prefiksų lentelė, naudojama hierarchinei naršymo logikai ir paieškos optimizacijoms.
-
-- **RLS**: Įjungta
-- **Ryšiai**: Susieta su storage.buckets per foreign key
-
-#### storage.s3_multipart_uploads
-
-S3 multipart įkėlimų metaduomenys.
-
-- **RLS**: Įjungta
-- **Ryšiai**: Susieta su storage.buckets per foreign key
-
-#### storage.s3_multipart_uploads_parts
-
-S3 multipart įkėlimų dalių metaduomenys.
-
-- **RLS**: Įjungta
-- **Ryšiai**: Susieta su storage.s3_multipart_uploads per foreign key (ON DELETE CASCADE)
-
-#### storage.buckets_analytics
-
-Kaupiamoji statistika apie bucket'us (vidinė analitika).
-
-- **RLS**: Įjungta
-
-#### storage.migrations
-
-Storage schemos vidinių migracijų žurnalas.
-
-- **RLS**: Įjungta
-
 ### PUBLIC schema
 
 #### profiles
+**Vartotojų profilių informacija**
 
-Vartotojų profilių informacija.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, FK → auth.users.id | Vartotojo ID |
+| username | text | UNIQUE, nullable | Vartotojo vardas |
+| avatar_url | text | nullable | Avatar nuotrauka |
+| is_admin | boolean | default: false | Admin statusas |
+| role | text | nullable | Vartotojo rolė |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Ryšiai**: Susieta su auth.users per foreign key
-- **Naujas laukas**: pareigos - pridėtas migracijoje 20250529060432
+- **Indeksai**: profiles_pkey (id), profiles_username_key (username)
+- **Ryšiai**: Susieta su auth.users (ON DELETE CASCADE)
 
 #### articles
+**Straipsnių turinys ir metaduomenys**
 
-Straipsnių turinys ir metaduomenys.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Straipsnio ID |
+| title | text | | Pavadinimas |
+| slug | text | UNIQUE | URL slug |
+| description | text | | Aprašymas |
+| content | text | | Turinys |
+| read_time | text | | Skaitymo laikas |
+| author | text | default: 'ponas Obuolys' | Autorius |
+| date | date | | Publikavimo data |
+| category | text[] | default: ARRAY[]::text[] | Kategorijos masyvas |
+| image_url | text | nullable | Viršelio nuotrauka |
+| content_type | text | nullable | Turinio tipas |
+| featured | boolean | default: false | Išskirtas |
+| published | boolean | default: false | Publikuotas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Funkcionalumas**: featured, published, image_url, content_type
-- **Numatytasis autorius**: 'ponas Obuolys'
+- **Indeksai**: articles_pkey (id), articles_slug_key (slug)
+- **Triggeriai**: update_articles_modtime (BEFORE UPDATE)
+- **Komentaras kategorija**: "Array of categories for the article. Supports multiple categories per article."
 
 #### tools
+**AI įrankių katalogas**
 
-AI įrankių katalogas.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Įrankio ID |
+| name | text | | Pavadinimas |
+| slug | text | UNIQUE | URL slug |
+| description | text | | Aprašymas |
+| url | text | | Įrankio URL |
+| image_url | text | nullable | Nuotrauka |
+| category | text | | Kategorija |
+| featured | boolean | default: false | Išskirtas |
+| published | boolean | default: false | Publikuotas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Funkcionalumas**: featured, published, image_url
+- **Indeksai**: tools_pkey (id), tools_slug_key (slug)
+- **Triggeriai**: update_tools_modtime (BEFORE UPDATE)
+- **Įrašų skaičius**: 50
 
 #### courses
+**Kursų informacija ir turinys**
 
-Kursų informacija ir turinys.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Kurso ID |
+| title | text | | Pavadinimas |
+| slug | text | UNIQUE | URL slug |
+| description | text | | Aprašymas |
+| content | text | | Turinys |
+| price | text | | Kaina |
+| duration | text | | Trukmė |
+| level | text | | Lygis |
+| highlights | text[] | | Svarbiausios savybės |
+| image_url | text | nullable | Nuotrauka |
+| published | boolean | default: false | Publikuotas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Specifiniai laukai**: highlights (array), image_url
+- **Indeksai**: courses_pkey (id), courses_slug_key (slug)
+- **Triggeriai**: update_courses_modtime (BEFORE UPDATE)
 
-#### contact_messages
+#### article_comments
+**Vartotojų komentarai straipsniams**
 
-Kontaktų formos pranešimai.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Komentaro ID |
+| article_id | uuid | FK → articles.id | Straipsnio ID |
+| user_id | uuid | FK → auth.users.id | Vartotojo ID |
+| parent_id | uuid | FK → article_comments.id, nullable | Tėvinio komentaro ID |
+| content | text | | Komentaro turinys |
+| is_approved | boolean | default: false | Patvirtintas moderatoriaus |
+| is_deleted | boolean | default: false | Ištrintas |
+| created_at | timestamptz | default: timezone('utc', now()) | Sukūrimo data |
+| updated_at | timestamptz | default: timezone('utc', now()) | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Numatytasis status**: 'unread'
+- **Komentaras**: "User comments on articles with moderation support"
+- **Indeksai**:
+  - article_comments_pkey (id)
+  - idx_comments_article_id (article_id)
+  - idx_comments_user_id (user_id)
+  - idx_comments_parent_id (parent_id)
+  - idx_comments_approved (is_approved, is_deleted)
+  - idx_comments_created_at (created_at DESC)
+- **Triggeriai**: update_comments_updated_at (BEFORE UPDATE)
+- **FK constraints**: CASCADE on article/user/parent deletion
 
-#### hero_sections
+#### article_bookmarks
+**Vartotojų išsaugoti straipsniai**
 
-Pagrindinio puslapio hero sekcijos turinys.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Bookmark ID |
+| article_id | uuid | FK → articles.id | Straipsnio ID |
+| user_id | uuid | FK → auth.users.id | Vartotojo ID |
+| created_at | timestamptz | default: timezone('utc', now()) | Sukūrimo data |
 
 - **RLS**: Įjungta
-- **Funkcionalumas**: active flag, image_url
+- **Komentaras**: "User bookmarked articles for later reading"
+- **Unique constraint**: (article_id, user_id)
+- **Indeksai**:
+  - article_bookmarks_pkey (id)
+  - article_bookmarks_article_id_user_id_key (article_id, user_id) UNIQUE
+  - idx_bookmarks_article_id (article_id)
+  - idx_bookmarks_user_id (user_id)
+  - idx_bookmarks_created_at (created_at DESC)
+- **FK constraints**: CASCADE on article/user deletion
+
+#### reading_progress
+**Straipsnių skaitymo progreso sekimas**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Progress ID |
+| article_id | uuid | FK → articles.id | Straipsnio ID |
+| user_id | uuid | FK → auth.users.id | Vartotojo ID |
+| progress_percentage | integer | default: 0, CHECK: 0-100 | Progreso procentas |
+| last_position | integer | default: 0 | Paskutinė pozicija |
+| completed | boolean | default: false | Užbaigtas |
+| created_at | timestamptz | default: timezone('utc', now()) | Sukūrimo data |
+| updated_at | timestamptz | default: timezone('utc', now()) | Atnaujinimo data |
+
+- **RLS**: Įjungta
+- **Komentaras**: "User reading progress tracking for articles"
+- **Unique constraint**: (article_id, user_id)
+- **Indeksai**:
+  - reading_progress_pkey (id)
+  - reading_progress_article_id_user_id_key (article_id, user_id) UNIQUE
+  - idx_reading_progress_article_id (article_id)
+  - idx_reading_progress_user_id (user_id)
+- **Triggeriai**: update_reading_progress_updated_at (BEFORE UPDATE)
+- **FK constraints**: CASCADE on article/user deletion
+
+#### page_views
+**Straipsnių peržiūrų statistika**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | View ID |
+| article_id | uuid | FK → articles.id, nullable | Straipsnio ID |
+| user_id | uuid | FK → auth.users.id, nullable | Vartotojo ID |
+| session_id | text | | Sesijos ID |
+| viewed_at | timestamptz | default: now() | Peržiūros laikas |
+| user_agent | text | nullable | Naršyklės info |
+| ip_address | inet | nullable | IP adresas |
+
+- **RLS**: Įjungta
+- **Indeksai**:
+  - page_views_pkey (id)
+  - idx_page_views_article_id (article_id)
+  - idx_page_views_session_id (session_id)
+  - idx_page_views_viewed_at (viewed_at)
+- **Triggeriai**: trigger_increment_site_stats (AFTER INSERT)
+- **Įrašų skaičius**: 303
+
+#### site_statistics
+**Bendros svetainės statistikos**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Stat ID |
+| year | integer | UNIQUE | Metai |
+| total_visitors | integer | default: 0 | Unikalūs lankytojai |
+| total_page_views | integer | default: 0 | Peržiūros |
+| last_updated | timestamptz | default: now() | Atnaujinta |
+
+- **RLS**: Įjungta
+- **Indeksai**: site_statistics_pkey (id), site_statistics_year_key (year) UNIQUE
 
 #### cta_sections
+**Call-to-action sekcijos turinys**
 
-Call-to-action sekcijos turinys.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | CTA ID |
+| title | text | | Pavadinimas |
+| description | text | | Aprašymas |
+| button_text | text | | Mygtuko tekstas |
+| button_url | text | | Mygtuko URL |
+| context | varchar | default: 'article' | Kontekstas: article, tools, publications |
+| variant | varchar | default: 'default' | Variantas: default, compact, inline |
+| icon | varchar | default: 'Target' | Lucide ikona |
+| priority | integer | default: 0 | Rodymo prioritetas |
+| is_sticky | boolean | default: false | Sticky sidebar |
+| active | boolean | default: false | Aktyvus |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Funkcionalumas**: active flag
+- **Indeksai**:
+  - cta_sections_pkey (id)
+  - idx_cta_sections_context_active (context, active)
+  - idx_cta_sections_priority (priority DESC)
+- **Triggeriai**: update_cta_sections_modtime (BEFORE UPDATE)
+- **Įrašų skaičius**: 59
 
-#### translation_requests
+#### sticky_cta_messages
+**Sticky sidebar CTA žinutės**
 
-DeepL API proxy serverio vertimo užklausų žurnalas.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Message ID |
+| title | text | | Pavadinimas |
+| description | text | | Aprašymas |
+| cta | text | | Call-to-action tekstas |
+| emoji | varchar | default: '🚀' | Emoji ikona |
+| priority | integer | default: 0 | Rodymo prioritetas |
+| active | boolean | default: true | Aktyvus |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Komentaras**: Vertimo užklausų žurnalas DeepL API proxy serveriui
-- **Automatinis**: chars_count apskaičiuojamas automatiškai per trigger
+- **Komentaras**: "Sticky sidebar CTA žinutės"
+- **Indeksai**:
+  - sticky_cta_messages_pkey (id)
+  - idx_sticky_cta_active_priority (active, priority DESC)
+- **Triggeriai**: update_sticky_cta_messages_modtime (BEFORE UPDATE)
+- **Įrašų skaičius**: 15
+
+#### cta_clicks
+**CTA paspaudimų analitika**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Click ID |
+| cta_id | uuid | | CTA elemento ID |
+| cta_type | text | | Tipas: cta_section, sticky_message |
+| clicked_at | timestamptz | default: now() | Paspaudimo laikas |
+| user_session_id | text | nullable | Sesijos ID |
+| page_url | text | nullable | Puslapio URL |
+| context | text | nullable | Kontekstas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+
+- **RLS**: Įjungta
+- **Indeksai**:
+  - cta_clicks_pkey (id)
+  - idx_cta_clicks_cta_id (cta_id)
+  - idx_cta_clicks_cta_type (cta_type)
+  - idx_cta_clicks_context (context)
+  - idx_cta_clicks_clicked_at (clicked_at DESC)
+- **Įrašų skaičius**: 4
+
+#### contact_messages
+**Kontaktų formos pranešimai**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Message ID |
+| name | text | | Vardas |
+| email | text | | El. paštas |
+| subject | text | | Tema |
+| message | text | | Žinutė |
+| status | text | default: 'unread' | Statusas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+
+- **RLS**: Įjungta
+- **Indeksai**: contact_messages_pkey (id)
+- **Įrašų skaičius**: 4
+
+#### custom_tool_inquiries
+**Užklausos dėl individualių įrankių kūrimo**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Inquiry ID |
+| full_name | text | | Pilnas vardas |
+| email | text | | El. paštas |
+| phone | text | nullable | Telefonas |
+| company_name | text | nullable | Įmonės pavadinimas |
+| company_size | text | nullable | CHECK: small, medium, large, enterprise |
+| project_type | text | | CHECK: crm, logistics, automation, analytics, scheduling, accounting, other |
+| budget_range | text | nullable | CHECK: under_5k, 5k_12k, 12k_25k, over_25k, not_sure |
+| timeline | text | nullable | CHECK: urgent, 1_2_months, 2_3_months, flexible |
+| description | text | | Projekto aprašymas |
+| current_solution | text | nullable | Esamas sprendimas |
+| team_size | text | nullable | Komandos dydis |
+| status | text | default: 'new' | CHECK: new, contacted, in_discussion, quoted, accepted, rejected, completed |
+| notes | text | nullable | Pastabos |
+| admin_notes | text | nullable | Admino pastabos |
+| gdpr_consent | boolean | default: false | GDPR sutikimas |
+| source | text | default: 'website' | Šaltinis |
+| ip_address | text | nullable | IP adresas |
+| user_agent | text | nullable | User agent |
+| created_at | timestamptz | default: timezone('utc', now()) | Sukūrimo data |
+
+- **RLS**: Įjungta
+- **Komentaras**: "Stores inquiries from custom tool development service page"
+- **Indeksai**:
+  - custom_tool_inquiries_pkey (id)
+  - custom_tool_inquiries_email_idx (email)
+  - custom_tool_inquiries_status_idx (status)
+  - custom_tool_inquiries_created_at_idx (created_at DESC)
+- **Įrašų skaičius**: 1
+
+#### email_replies
+**El. pašto atsakymai į užklausas**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Reply ID |
+| inquiry_id | uuid | | Užklausos ID |
+| inquiry_type | text | | CHECK: contact_message, custom_tool_inquiry |
+| recipient_email | text | | Gavėjo el. paštas |
+| subject | text | | Tema |
+| message | text | | Žinutė |
+| sent_by | uuid | FK → auth.users.id, nullable | Siuntėjo admin ID |
+| sent_at | timestamptz | default: now() | Išsiuntimo laikas |
+| delivery_status | text | default: 'sent' | CHECK: sent, delivered, failed, bounced |
+| error_message | text | nullable | Klaidos pranešimas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
+
+- **RLS**: Įjungta
+- **Komentaras**: "Stores all email replies sent from admin panel to inquiries"
+- **Indeksai**:
+  - email_replies_pkey (id)
+  - idx_email_replies_inquiry (inquiry_id, inquiry_type)
+  - idx_email_replies_sent_by (sent_by)
+  - idx_email_replies_sent_at (sent_at DESC)
+- **Triggeriai**: update_email_replies_updated_at (BEFORE UPDATE)
+
+#### hero_sections
+**Pagrindinio puslapio hero sekcijos**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Hero ID |
+| title | text | | Pavadinimas |
+| subtitle | text | | Paantraštė |
+| button_text | text | nullable | Pagrindinio mygtuko tekstas |
+| button_url | text | nullable | Pagrindinio mygtuko URL |
+| secondary_button_text | text | nullable | Antrinio mygtuko tekstas |
+| secondary_button_url | text | nullable | Antrinio mygtuko URL |
+| badge_text | text | nullable | Badge tekstas |
+| image_url | text | nullable | Nuotrauka |
+| priority | integer | default: 0 | Rodymo prioritetas |
+| show_stats | boolean | default: true | Rodyti statistiką |
+| active | boolean | default: false | Aktyvus |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
+
+- **RLS**: Įjungta
+- **Indeksai**:
+  - hero_sections_pkey (id)
+  - idx_hero_sections_active_priority (active, priority DESC)
+- **Triggeriai**: update_hero_sections_modtime (BEFORE UPDATE)
 
 #### migration_documentation
+**Migracijų dokumentacija**
 
-Duomenų bazės migracijų dokumentacija.
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | uuid | PK, default: gen_random_uuid() | Doc ID |
+| migration_version | varchar | UNIQUE | Migracijos versija |
+| migration_name | varchar | | Migracijos pavadinimas |
+| description | text | nullable | Aprašymas |
+| sql_changes | text | nullable | SQL pakeitimai |
+| breaking_changes | boolean | default: false | Lūžtantys pakeitimai |
+| rollback_instructions | text | nullable | Atšaukimo instrukcijos |
+| author | varchar | nullable | Autorius |
+| applied_at | timestamptz | default: now() | Pritaikymo laikas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Unikalus laukas**: migration_version
+- **Indeksai**:
+  - migration_documentation_pkey (id)
+  - migration_documentation_migration_version_key (migration_version) UNIQUE
+- **Triggeriai**: migration_documentation_updated_at (BEFORE UPDATE)
+- **Įrašų skaičius**: 4
+
+#### translation_requests
+**DeepL API vertimo užklausų žurnalas**
+
+| Stulpelis | Tipas | Apribojimai | Aprašymas |
+|-----------|-------|-------------|-----------|
+| id | bigint | PK, SERIAL | Request ID |
+| source_text | text | | Originalus tekstas |
+| translated_text | text | nullable | Išverstas tekstas |
+| source_lang | varchar | default: 'EN' | Šaltinio kalba |
+| target_lang | varchar | default: 'LT' | Tikslinė kalba |
+| chars_count | integer | nullable | Simbolių skaičius |
+| status | varchar | nullable | Statusas |
+| created_at | timestamptz | default: now() | Sukūrimo data |
+| request_ip | varchar | nullable | Užklausos IP |
+| origin_domain | varchar | nullable | Kilmės domenas |
+
+- **RLS**: Įjungta
+- **Komentaras**: "Vertimo užklausų žurnalas DeepL API proxy serveriui"
+- **Indeksai**:
+  - translation_requests_pkey (id)
+  - idx_translation_requests_created_at (created_at)
+  - idx_translation_requests_status (status)
+- **Triggeriai**: trigger_set_translation_chars_count (BEFORE INSERT)
+
+## Indeksai
+
+### Indeksų sąrašas pagal lenteles
+
+#### article_bookmarks
+- `article_bookmarks_pkey` - PRIMARY KEY (id)
+- `article_bookmarks_article_id_user_id_key` - UNIQUE (article_id, user_id)
+- `idx_bookmarks_article_id` - (article_id)
+- `idx_bookmarks_user_id` - (user_id)
+- `idx_bookmarks_created_at` - (created_at DESC)
+
+#### article_comments
+- `article_comments_pkey` - PRIMARY KEY (id)
+- `idx_comments_article_id` - (article_id)
+- `idx_comments_user_id` - (user_id)
+- `idx_comments_parent_id` - (parent_id)
+- `idx_comments_approved` - (is_approved, is_deleted)
+- `idx_comments_created_at` - (created_at DESC)
+
+#### articles
+- `articles_pkey` - PRIMARY KEY (id)
+- `articles_slug_key` - UNIQUE (slug)
+
+#### contact_messages
+- `contact_messages_pkey` - PRIMARY KEY (id)
+
+#### courses
+- `courses_pkey` - PRIMARY KEY (id)
+- `courses_slug_key` - UNIQUE (slug)
+
+#### cta_clicks
+- `cta_clicks_pkey` - PRIMARY KEY (id)
+- `idx_cta_clicks_cta_id` - (cta_id)
+- `idx_cta_clicks_cta_type` - (cta_type)
+- `idx_cta_clicks_context` - (context)
+- `idx_cta_clicks_clicked_at` - (clicked_at DESC)
+
+#### cta_sections
+- `cta_sections_pkey` - PRIMARY KEY (id)
+- `idx_cta_sections_context_active` - (context, active)
+- `idx_cta_sections_priority` - (priority DESC)
+
+#### custom_tool_inquiries
+- `custom_tool_inquiries_pkey` - PRIMARY KEY (id)
+- `custom_tool_inquiries_email_idx` - (email)
+- `custom_tool_inquiries_status_idx` - (status)
+- `custom_tool_inquiries_created_at_idx` - (created_at DESC)
+
+#### email_replies
+- `email_replies_pkey` - PRIMARY KEY (id)
+- `idx_email_replies_inquiry` - (inquiry_id, inquiry_type)
+- `idx_email_replies_sent_by` - (sent_by)
+- `idx_email_replies_sent_at` - (sent_at DESC)
+
+#### hero_sections
+- `hero_sections_pkey` - PRIMARY KEY (id)
+- `idx_hero_sections_active_priority` - (active, priority DESC)
+
+#### migration_documentation
+- `migration_documentation_pkey` - PRIMARY KEY (id)
+- `migration_documentation_migration_version_key` - UNIQUE (migration_version)
+
+#### page_views
+- `page_views_pkey` - PRIMARY KEY (id)
+- `idx_page_views_article_id` - (article_id)
+- `idx_page_views_session_id` - (session_id)
+- `idx_page_views_viewed_at` - (viewed_at)
+
+#### profiles
+- `profiles_pkey` - PRIMARY KEY (id)
+- `profiles_username_key` - UNIQUE (username)
+
+#### reading_progress
+- `reading_progress_pkey` - PRIMARY KEY (id)
+- `reading_progress_article_id_user_id_key` - UNIQUE (article_id, user_id)
+- `idx_reading_progress_article_id` - (article_id)
+- `idx_reading_progress_user_id` - (user_id)
+
+#### site_statistics
+- `site_statistics_pkey` - PRIMARY KEY (id)
+- `site_statistics_year_key` - UNIQUE (year)
+
+#### sticky_cta_messages
+- `sticky_cta_messages_pkey` - PRIMARY KEY (id)
+- `idx_sticky_cta_active_priority` - (active, priority DESC)
+
+#### tools
+- `tools_pkey` - PRIMARY KEY (id)
+- `tools_slug_key` - UNIQUE (slug)
+
+#### translation_requests
+- `translation_requests_pkey` - PRIMARY KEY (id)
+- `idx_translation_requests_created_at` - (created_at)
+- `idx_translation_requests_status` - (status)
 
 ## Row Level Security (RLS) politikos
 
-### PUBLIC schema politikos
+### Visos lentelės turi RLS įjungtą
 
 #### profiles
 
-- **Public profiles are viewable by everyone**: Visi gali peržiūrėti profilius
-- **Users can update their own profile**: Vartotojai gali redaguoti savo profilius
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Public profiles are viewable by everyone | SELECT | public | Visi gali peržiūrėti |
+| Users can update their own profile | UPDATE | public | `auth.uid() = id` |
+| Allow admin full access for profiles | ALL | authenticated | `is_admin(auth.uid())` |
+| Allow admin full access to profiles | ALL | public | `is_admin()` |
 
 #### articles
 
-- **Allow public read access for published articles**: Viešas skaitymas publikuotiems straipsniams
-- **Allow admin write access for articles**: Administratoriai gali redaguoti straipsnius
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for published articles | SELECT | public | `published = true` |
+| Allow admin full access to articles | ALL | public | `is_admin()` |
 
 #### tools
 
-- **Allow public read access for published tools**: Viešas skaitymas publikuotiems įrankiams
-- **Allow admin write access for tools**: Administratoriai gali redaguoti įrankius
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for published tools | SELECT | public | `published = true` |
+| Allow admin full access to tools | ALL | public | `is_admin()` |
 
 #### courses
 
-- **Allow public read access for published courses**: Viešas skaitymas publikuotiems kursams
-- **Allow admin write access for courses**: Administratoriai gali redaguoti kursus
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for published courses | SELECT | public | `published = true` |
+| Allow admin full access to courses | ALL | public | `is_admin()` |
 
 #### contact_messages
 
-- **Allow anyone to create contact messages**: Visi gali kurti kontaktų pranešimus
-- **Allow admin read/update access for contact messages**: Administratoriai gali skaityti/redaguoti pranešimus
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow anyone to create contact messages | INSERT | public | `true` |
+| Allow admin full access to contact messages | ALL | public | `is_admin()` |
 
-#### hero_sections & cta_sections
+#### article_comments
 
-- **Allow public read access for active sections**: Viešas skaitymas aktyvių sekcijų
-- **Allow admin write access**: Administratoriai gali redaguoti sekcijas
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Anyone can read approved comments | SELECT | public | `is_approved = true AND is_deleted = false` |
+| Authenticated users can create comments | INSERT | public | `auth.role() = 'authenticated' AND user_id = auth.uid()` |
+| Users can update own comments | UPDATE | public | `auth.uid() = user_id` |
+| Users can delete own comments | UPDATE | public | `auth.uid() = user_id AND is_deleted = true` |
+| Admins can see all comments | SELECT | public | Admin funkcija |
+| Admins can moderate comments | UPDATE | public | Admin funkcija |
 
-#### translation_requests
+#### article_bookmarks
 
-- **translation_requests_select_policy**: Autentifikuoti vartotojai gali skaityti
-- **translation_requests_insert_policy**: Autentifikuoti vartotojai gali kurti
-- **translation_requests_delete_policy**: Autentifikuoti vartotojai gali šalinti
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Users can read own bookmarks | SELECT | public | `auth.uid() = user_id` |
+| Users can create bookmarks | INSERT | public | `auth.uid() = user_id` |
+| Users can delete own bookmarks | DELETE | public | `auth.uid() = user_id` |
+
+#### reading_progress
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Users can read own progress | SELECT | public | `auth.uid() = user_id` |
+| Users can upsert own progress | INSERT | public | `auth.uid() = user_id` |
+| Users can update own progress | UPDATE | public | `auth.uid() = user_id` |
+
+#### page_views
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Anyone can insert page views | INSERT | public | `true` |
+| Users can view their own page views | SELECT | authenticated | `user_id = auth.uid()` |
+| Admins can view all page views | SELECT | authenticated | Admin funkcija |
+
+#### site_statistics
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Anyone can view site statistics | SELECT | public | `true` |
+| Only admins can modify site statistics | ALL | authenticated | Admin funkcija |
+
+#### cta_sections
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for active CTA sections | SELECT | public | `active = true` |
+| Allow admin write access for CTA sections | ALL | authenticated | `is_admin(auth.uid())` |
+| Allow admin full access to cta sections | ALL | public | `is_admin()` |
+
+#### sticky_cta_messages
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for active sticky messages | SELECT | public | `active = true` |
+| Allow admin full access to sticky messages | ALL | public | Admin funkcija |
+
+#### cta_clicks
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Anyone can insert clicks | INSERT | public | `true` |
+| Admin can view clicks | SELECT | authenticated | Admin funkcija |
+
+#### hero_sections
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access for active hero sections | SELECT | public | `active = true` |
+| Allow admin write access for hero sections | ALL | authenticated | `is_admin(auth.uid())` |
+| Allow admin full access to hero sections | ALL | public | `is_admin()` |
+
+#### custom_tool_inquiries
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Anyone can submit inquiry | INSERT | public | `true` |
+| Authenticated users can view all inquiries | SELECT | public | `auth.role() = 'authenticated'` |
+| Authenticated users can update inquiries | UPDATE | public | `auth.role() = 'authenticated'` |
+
+#### email_replies
+
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Admin can read all email replies | SELECT | public | Admin funkcija |
+| Admin can insert email replies | INSERT | public | Admin funkcija |
 
 #### migration_documentation
 
-- **Allow public read access to migration docs**: Visi gali skaityti migracijų dokumentaciją
-- **Allow admin full access to migration docs**: Administratoriai turi pilną prieigą
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| Allow public read access to migration docs | SELECT | public | `true` |
+| Allow admin full access to migration docs | ALL | public | `is_admin()` |
 
-### STORAGE schema politikos
+#### translation_requests
 
-#### storage.buckets
-
-- **Public buckets are viewable by everyone**: Visi gali peržiūrėti bucket'us
-- **Buckets can be created/updated/deleted by admins**: Administratoriai gali valdyti bucket'us
-
-#### storage.objects
-
-- **Anyone can view site images**: Visi gali peržiūrėti site-images bucket'o failus
-- **Any authenticated user can upload to site images**: Autentifikuoti vartotojai gali įkelti failus
-- **Admin can insert/update/delete storage**: Administratoriai turi pilną prieigą
-- **Only owner can delete own files**: Savininkai gali šalinti savo failus
+| Politika | Komanda | Rolės | Aprašymas |
+|----------|---------|-------|-----------|
+| translation_requests_select_policy | SELECT | authenticated | `true` |
+| translation_requests_insert_policy | INSERT | authenticated | `true` |
+| translation_requests_delete_policy | DELETE | authenticated | `true` |
 
 ## Funkcijos ir triggeriai
 
 ### Funkcijos
 
-#### auth schema
+#### public schema funkcijos
 
-- **auth.email()**: Gauti vartotojo el. paštą iš JWT
-- **auth.jwt()**: Gauti JWT duomenis
-- **auth.role()**: Gauti vartotojo rolę
-- **auth.uid()**: Gauti vartotojo UUID
+| Funkcija | Parametrai | Grąžinimas | Aprašymas |
+|----------|-----------|------------|-----------|
+| is_admin | user_id uuid | boolean | Patikrina ar vartotojas admin (SECURITY DEFINER) |
+| handle_new_user | - | trigger | Automatinis profilio kūrimas naujam vartotojui |
+| get_profiles_with_emails | - | record | Gauna profilius su el. paštais |
+| get_auth_users | - | record | Gauna autentifikuotus vartotojus |
+| update_modified_column | - | trigger | Atnaujina updated_at lauką |
+| update_updated_at_column | - | trigger | Atnaujina updated_at lauką |
+| set_translation_chars_count | - | trigger | Apskaičiuoja simbolių skaičių |
+| update_migration_documentation_updated_at | - | trigger | Atnaujina migracijos updated_at |
+| increment_site_stats | - | trigger | Atnaujina svetainės statistiką |
+| get_article_view_count | p_article_id uuid | record | Gauna straipsnio peržiūrų skaičių |
+| get_trending_articles | since_date timestamptz, limit_count integer | record | Gauna populiariausius straipsnius |
+| get_device_breakdown | since_date timestamptz | json | Gauna įrenginių paskirstymą |
+| get_current_year_stats | - | record | Gauna dabartinių metų statistiką |
+| get_top_ctas | days_back integer, limit_count integer | record | Gauna populiariausius CTA |
+| get_cta_recommendations | - | record | Gauna CTA rekomenįs |
 
-#### public schema
-
-- **is_admin(user_id)**: Patikrinti ar vartotojas yra administratorius
-- **handle_new_user()**: Automatiškai sukurti profilį naujiems vartotojams
-- **get_profiles_with_emails()**: Gauti profilius su el. paštais
-- **get_auth_users()**: Gauti autentifikavimo vartotojus
-- **update_modified_column()**: Atnaujinti updated_at lauką
-- **set_translation_chars_count()**: Apskaičiuoti simbolių skaičių vertimo užklausose
-- **update_migration_documentation_updated_at()**: Atnaujinti migracijų dokumentacijos laiką
-
-#### storage schema
-
-- **storage.filename(name)**: Gauti failo pavadinimą
-- **storage.extension(name)**: Gauti failo plėtinį
-- **storage.foldername(name)**: Gauti aplanko pavadinimą
-- **storage.get_level(name)**: Gauti hierarchijos lygį pagal kelią
-- **storage.get_prefix(name)**: Gauti viršutinį prefiksą pagal kelią
-- **storage.get_prefixes(name)**: Gauti visus prefiksus iki failo
-- **storage.get_size_by_bucket()**: Gauti bucket'o dydį
-- **storage.list_objects_with_delimiter(...)**: Sąrašas objektų su skirtukais
-- **storage.list_multipart_uploads_with_delimiter(...)**: Sąrašas multipart įkėlimų su skirtukais
-- **storage.search(...) / search_v1_optimised(...) / search_legacy_v1(...) / search_v2(...)**: Paieškos funkcijos su optimizacijomis
-- **storage.operation()**: Grąžina dabartinę storage operaciją
-- **storage.add_prefixes(bucket_id, name)**: Prideda trūkstamus prefiksus
-- **storage.lock_top_prefixes(bucket_ids, names)**: Užrakina viršutinius prefiksus
-- **storage.delete_leaf_prefixes(bucket_ids, names)**: Pašalina lapinius prefiksus
-- **storage.delete_prefix(bucket_id, name)**: Pašalina konkretų prefiksą, jei galima
-- **storage.objects_insert_prefix_trigger()**: Trigerio funkcija prefiksams kurti įrašo metu
-- **storage.objects_update_prefix_trigger()**: Trigerio funkcija prefiksams valyti/kurti perkelimo metu
-- **storage.objects_delete_cleanup() / storage.objects_update_cleanup()**: Valymo funkcijos po DELETE/UPDATE
-- **storage.prefixes_insert_trigger() / storage.prefixes_delete_cleanup()**: Prefiksų kūrimo/valymo trigerių funkcijos
-- **storage.update_updated_at_column()**: Atnaujina updated_at stulpelį
-- **storage.enforce_bucket_name_length()**: Apriboja bucket pavadinimo ilgį
+**Svarbi informacija apie `is_admin()`**:
+- Naudoja `SECURITY DEFINER` - vykdoma su funkcijos kūrėjo teisėmis
+- Apeina RLS policies, kad išvengtų begalinio rekursijos
+- Saugi naudoti RLS politikose
 
 ### Triggeriai
 
-#### Automatinis profilių kūrimas
-
-- **on_auth_user_created**: Automatiškai sukuria profilį auth.users lentelėje
-
-#### Automatinis updated_at atnaujinimas
-
-- **update_articles_modtime**: articles lentelei
-- **update_courses_modtime**: courses lentelei
-- **update_tools_modtime**: tools lentelei
-- **update_hero_sections_modtime**: hero_sections lentelei
-- **update_cta_sections_modtime**: cta_sections lentelei
-- **update_objects_updated_at**: storage.objects lentelei
+| Lentelė | Trigeris | Laikas | Įvykis | Funkcija |
+|---------|----------|--------|--------|----------|
+| articles | update_articles_modtime | BEFORE | UPDATE | update_modified_column() |
+| courses | update_courses_modtime | BEFORE | UPDATE | update_modified_column() |
+| tools | update_tools_modtime | BEFORE | UPDATE | update_modified_column() |
+| cta_sections | update_cta_sections_modtime | BEFORE | UPDATE | update_modified_column() |
+| hero_sections | update_hero_sections_modtime | BEFORE | UPDATE | update_modified_column() |
+| sticky_cta_messages | update_sticky_cta_messages_modtime | BEFORE | UPDATE | update_modified_column() |
+| email_replies | update_email_replies_updated_at | BEFORE | UPDATE | update_modified_column() |
+| article_comments | update_comments_updated_at | BEFORE | UPDATE | update_updated_at_column() |
+| reading_progress | update_reading_progress_updated_at | BEFORE | UPDATE | update_updated_at_column() |
+| migration_documentation | migration_documentation_updated_at | BEFORE | UPDATE | update_migration_documentation_updated_at() |
+| translation_requests | trigger_set_translation_chars_count | BEFORE | INSERT | set_translation_chars_count() |
+| page_views | trigger_increment_site_stats | AFTER | INSERT | increment_site_stats() |
 
 ## Peržiūros (Views)
 
-- **public.auth_users_view**: SELECT id, email, created_at FROM auth.users
-- **public.user_profiles**: JOIN tarp public.profiles ir auth.users (id)
+### auth_users_view
+**Paprasta autentifikuotų vartotojų peržiūra**
 
-#### Specialūs triggeriai
+```sql
+SELECT id, email, created_at FROM auth.users;
+```
 
-- **trigger_set_translation_chars_count**: Automatiškai apskaičiuoja simbolių skaičių translation_requests lentelėje
-- **migration_documentation_updated_at**: Specialus trigger migracijų dokumentacijai
-- **objects_insert_create_prefix**: storage.objects – kuria prefiksus prieš INSERT
-- **objects_update_cleanup**: storage.objects – valymas po UPDATE (old/new rows)
-- **objects_delete_cleanup**: storage.objects – valymas po DELETE
-- **prefixes_create_hierarchy**: storage.prefixes – kuria prefiksų hierarchiją
-- **prefixes_delete_cleanup**: storage.prefixes – valymas po DELETE
-- **enforce_bucket_name_length_trigger**: storage.buckets – tikrina pavadinimo ilgį
+### user_profiles
+**Vartotojų profiliai su el. paštu**
 
-## Indeksai
+```sql
+SELECT p.id, p.username, p.avatar_url, p.is_admin,
+       p.created_at, p.updated_at, u.email, u.created_at AS auth_created_at
+FROM profiles p
+JOIN auth.users u ON p.id = u.id;
+```
 
-### Pagrindiniai indeksai
+### cta_performance
+**CTA sekcijų veiklos statistika**
 
-#### auth schema
+```sql
+SELECT cs.id, cs.title, cs.description, cs.button_text, cs.context, cs.priority, cs.active,
+       count(cc.id) AS total_clicks,
+       count(DISTINCT date(cc.clicked_at)) AS days_active,
+       round((count(cc.id)::numeric / NULLIF(count(DISTINCT date(cc.clicked_at)), 0)::numeric), 2) AS avg_clicks_per_day,
+       max(cc.clicked_at) AS last_clicked,
+       cs.created_at
+FROM cta_sections cs
+LEFT JOIN cta_clicks cc ON cc.cta_id = cs.id AND cc.cta_type = 'cta_section'
+GROUP BY cs.id, cs.title, cs.description, cs.button_text, cs.context, cs.priority, cs.active, cs.created_at
+ORDER BY count(cc.id) DESC;
+```
 
-- **Unikalūs**: users_email_partial_key, users_phone_key, refresh_tokens_token_unique
-- **Performanso**: users_instance_id_email_idx, sessions_user_id_idx, identities_user_id_idx
+### sticky_performance
+**Sticky CTA žinučių veiklos statistika**
 
-#### public schema
+```sql
+SELECT sm.id, sm.title, sm.description, sm.cta, sm.emoji, sm.priority, sm.active,
+       count(cc.id) AS total_clicks,
+       count(DISTINCT date(cc.clicked_at)) AS days_active,
+       round((count(cc.id)::numeric / NULLIF(count(DISTINCT date(cc.clicked_at)), 0)::numeric), 2) AS avg_clicks_per_day,
+       max(cc.clicked_at) AS last_clicked,
+       sm.created_at
+FROM sticky_cta_messages sm
+LEFT JOIN cta_clicks cc ON cc.cta_id = sm.id AND cc.cta_type = 'sticky_message'
+GROUP BY sm.id, sm.title, sm.description, sm.cta, sm.emoji, sm.priority, sm.active, sm.created_at
+ORDER BY count(cc.id) DESC;
+```
 
-- **Unikalūs**: profiles_username_key, articles_slug_key, tools_slug_key, courses_slug_key
-- **Performanso**: idx_translation_requests_created_at, idx_translation_requests_status
+### cta_daily_stats
+**Dieninė CTA statistika**
 
-#### storage schema
+```sql
+SELECT date(cta_clicks.clicked_at) AS date,
+       cta_clicks.cta_type,
+       cta_clicks.context,
+       count(*) AS total_clicks,
+       count(DISTINCT cta_clicks.cta_id) AS unique_ctas_clicked,
+       count(DISTINCT cta_clicks.user_session_id) AS unique_sessions
+FROM cta_clicks
+GROUP BY date(cta_clicks.clicked_at), cta_clicks.cta_type, cta_clicks.context
+ORDER BY date(cta_clicks.clicked_at) DESC;
+```
 
-- **Unikalūs**: bname (bucket name), bucketid_objname (bucket_id + name)
-- **Performanso**: idx_objects_bucket_id_name, name_prefix_search
+## Foreign Key Constraints
 
-### Išsamus indeksų sąrašas
+### Ryšiai su CASCADE
 
-#### auth schema
+| Šaltinio lentelė | Stulpelis | Tikslinė lentelė | Tikslo stulpelis | DELETE | UPDATE |
+|------------------|-----------|------------------|------------------|--------|--------|
+| article_bookmarks | article_id | articles | id | CASCADE | NO ACTION |
+| article_comments | article_id | articles | id | CASCADE | NO ACTION |
+| article_comments | parent_id | article_comments | id | CASCADE | NO ACTION |
+| page_views | article_id | articles | id | CASCADE | NO ACTION |
+| reading_progress | article_id | articles | id | CASCADE | NO ACTION |
 
-- audit_log_entries: audit_log_entries_pkey, audit_logs_instance_id_idx
-- flow_state: flow_state_pkey, flow_state_created_at_idx, idx_auth_code, idx_user_id_auth_method
-- identities: identities_pkey, identities_provider_id_provider_unique, identities_user_id_idx, identities_email_idx
-- mfa_amr_claims: amr_id_pk, mfa_amr_claims_session_id_authentication_method_pkey
-- mfa_challenges: mfa_challenges_pkey, mfa_challenge_created_at_idx
-- mfa_factors: mfa_factors_pkey, factor_id_created_at_idx, mfa_factors_last_challenged_at_key, mfa_factors_user_friendly_name_unique, mfa_factors_user_id_idx, unique_phone_factor_per_user
-- oauth_clients: oauth_clients_pkey, oauth_clients_client_id_key, oauth_clients_client_id_idx, oauth_clients_deleted_at_idx
-- one_time_tokens: one_time_tokens_pkey, one_time_tokens_user_id_token_type_key, one_time_tokens_relates_to_hash_idx, one_time_tokens_token_hash_hash_idx
-- refresh_tokens: refresh_tokens_pkey, refresh_tokens_token_unique, refresh_tokens_updated_at_idx, refresh_tokens_instance_id_idx, refresh_tokens_instance_id_user_id_idx, refresh_tokens_parent_idx, refresh_tokens_session_id_revoked_idx
-- saml_providers: saml_providers_pkey, saml_providers_entity_id_key, saml_providers_sso_provider_id_idx
-- saml_relay_states: saml_relay_states_pkey, saml_relay_states_created_at_idx, saml_relay_states_for_email_idx, saml_relay_states_sso_provider_id_idx
-- schema_migrations: schema_migrations_pkey
-- sessions: sessions_pkey, sessions_user_id_idx, sessions_not_after_idx, user_id_created_at_idx
-- sso_domains: sso_domains_pkey, sso_domains_domain_idx, sso_domains_sso_provider_id_idx
-- sso_providers: sso_providers_pkey, sso_providers_resource_id_idx, sso_providers_resource_id_pattern_idx
-- users: users_pkey, users_instance_id_idx, users_instance_id_email_idx, users_is_anonymous_idx, users_email_partial_key, users_phone_key, confirmation_token_idx, email_change_token_current_idx, email_change_token_new_idx, reauthentication_token_idx, recovery_token_idx
-
-#### public schema
-
-- articles: articles_pkey, articles_slug_key
-- contact_messages: contact_messages_pkey
-- courses: courses_pkey, courses_slug_key
-- cta_sections: cta_sections_pkey
-- hero_sections: hero_sections_pkey
-- migration_documentation: migration_documentation_pkey, migration_documentation_migration_version_key
-- profiles: profiles_pkey, profiles_username_key
-- tools: tools_pkey, tools_slug_key
-- translation_requests: translation_requests_pkey, idx_translation_requests_created_at, idx_translation_requests_status
-
-#### storage schema
-
-- buckets: buckets_pkey, bname
-- buckets_analytics: buckets_analytics_pkey
-- migrations: migrations_pkey, migrations_name_key
-- objects: objects_pkey, bucketid_objname, idx_objects_bucket_id_name, idx_objects_lower_name, name_prefix_search, idx_name_bucket_level_unique, objects_bucket_id_level_idx
-- prefixes: prefixes_pkey, idx_prefixes_lower_name
-- s3_multipart_uploads: s3_multipart_uploads_pkey, idx_multipart_uploads_list
-- s3_multipart_uploads_parts: s3_multipart_uploads_parts_pkey
-
-## Apribojimai ir patikros
-
-### Check constraints
-
-- **auth.users**: email_change_confirm_status tarp 0 ir 2
-- **auth.sso_providers**: resource_id ne tuščias
-- **auth.saml_providers**: entity_id, metadata_xml ne tušti
-- **auth.one_time_tokens**: token_hash ne tuščias
-- **auth.oauth_clients**: client_name ≤ 1024, client_uri ≤ 2048, logo_uri ≤ 2048
-- **auth.sso_domains**: domain ne tuščias
-- **auth.saml_relay_states**: request_id ne tuščias
-- **auth.saml_providers**: metadata_url gali būti NULL arba > 0 simbolių
-
-### Foreign key constraints
-
-- **profiles.id** → **auth.users.id** (ON DELETE CASCADE)
-- **auth.identities.user_id** → **auth.users.id** (ON DELETE CASCADE)
-- **auth.sessions.user_id** → **auth.users.id** (ON DELETE CASCADE)
-- **storage.objects.bucket_id** → **storage.buckets.id**
-- **auth.mfa_challenges.factor_id** → **auth.mfa_factors.id** (ON DELETE CASCADE)
-- **auth.mfa_factors.user_id** → **auth.users.id** (ON DELETE CASCADE)
-- **auth.mfa_amr_claims.session_id** → **auth.sessions.id** (ON DELETE CASCADE)
-- **auth.refresh_tokens.session_id** → **auth.sessions.id** (ON DELETE CASCADE)
-- **auth.saml_relay_states.sso_provider_id** → **auth.sso_providers.id** (ON DELETE CASCADE)
-- **auth.saml_relay_states.flow_state_id** → **auth.flow_state.id** (ON DELETE CASCADE)
-- **auth.saml_providers.sso_provider_id** → **auth.sso_providers.id** (ON DELETE CASCADE)
-- **storage.prefixes.bucket_id** → **storage.buckets.id**
-- **storage.s3_multipart_uploads.bucket_id** → **storage.buckets.id**
-- **storage.s3_multipart_uploads_parts.upload_id** → **storage.s3_multipart_uploads.id** (ON DELETE CASCADE)
-- **storage.s3_multipart_uploads_parts.bucket_id** → **storage.buckets.id**
-
-## Extensionai
-
-### Įdiegti extensionai
-
-- **pgcrypto**: Kriptografinės funkcijos
-- **pgjwt**: JSON Web Token API
-- **uuid-ossp**: UUID generavimas
-- **pg_stat_statements**: SQL statistikos sekimas
-- **pg_graphql**: GraphQL palaikymas
-- **pgsodium**: Libsodium kriptografijos funkcijos
-- **supabase_vault**: Supabase Vault extensionas
-
-### Prieinami extensionai
-
-- **postgis**: Geografiniai duomenys
-- **vector**: Vektoriniai duomenys AI/ML
-- **pg_cron**: Užduočių planuoklis
-- **timescaledb**: Laiko serijos duomenys
-- **hypopg**: Hipotetiški indeksai
+### Pastaba
+Visi ryšiai su `auth.users` lentelė yra `ON DELETE CASCADE`, tai reiškia, kad ištrynus vartotoją, išsitrins visi susiję įrašai (profiliai, komentarai, bookmarks, progress, ir t.t.).
 
 ## Migracijos
 
-### Taikytos migracijos
+### Taikytos migracijos (chronologine tvarka)
 
-1. **20250529060432_add_pareigos_to_profiles**: Pridėtas pareigos laukas profiles lentelei
-2. **20250607063748_remove_foreign_tables**: Pašalintos svetimos lentelės
-3. **20250607063813_create_migration_log_system**: Sukurta migracijų žurnalo sistema
+| Versija | Pavadinimas | Aprašymas |
+|---------|-------------|-----------|
+| 20250529060432 | add_pareigos_to_profiles | Pridėtas pareigos laukas profiles lentelei |
+| 20250607063748 | remove_foreign_tables | Pašalintos svetimos lentelės |
+| 20250607063813 | create_migration_log_system | Sukurta migracijų žurnalo sistema |
+| 20250923064307 | add_admin_full_access_profiles_policy | Pridėta admin pilna prieiga profiles |
+| 20250923065259 | add_admin_full_access_news_policies | Pridėta admin pilna prieiga naujienoms |
+| 20251017162004 | update_handle_new_user_for_google_oauth | Atnaujinta handle_new_user Google OAuth |
+| 20251017162321 | backfill_google_oauth_avatars | Google OAuth avatar backfill |
+| 20251020172521 | analytics_tracking | Analitikos sekimas |
+| 20251020182250 | trending_and_device_stats | Trending ir įrenginių statistika |
+| 20251020183634 | fix_trending_articles_view_count | Pataisyta trending straipsnių skaičiavimas |
+| 20251020184940 | add_description_to_trending_articles_v2 | Pridėtas aprašymas trending straipsniams v2 |
+| 20251022182839 | update_trending_articles_function | Atnaujinta trending straipsnių funkcija |
+| 20251022182852 | enable_rls_main_tables | Įjungtas RLS pagrindinėms lentelėms |
+| 20251022182908 | articles_rls_policies | Articles RLS politikos |
+| 20251022182918 | tools_rls_policies | Tools RLS politikos |
+| 20251022182928 | courses_rls_policies | Courses RLS politikos |
+| 20251022182940 | profiles_rls_policies | Profiles RLS politikos |
+| 20251022182954 | contact_messages_rls_policies | Contact messages RLS politikos |
 
 ## Storage konfigūracija
 
 ### Buckets
 
-- **site-images**:
-  - Public: true
-  - Sukurtas: 2025-04-02
-  - Nėra failo dydžio apribojimų
-  - Nėra MIME tipų apribojimų
+#### site-images
+- **ID**: site-images
+- **Public**: true (viešai prieinami failai)
+- **Sukurtas**: 2025-04-02 10:25:26 UTC
+- **Failo dydžio limitas**: neapribotas
+- **MIME tipai**: neapriboti
+- **Objektų skaičius**: 62
 
-### RLS politikos storage
+### Storage RLS politikos
 
-- Buckets:
-  - Public buckets are viewable by everyone (SELECT)
-  - Buckets can be created/updated/deleted by admins (INSERT/UPDATE/DELETE)
-- Objects (site-images):
-  - Anyone can view site images (SELECT)
-  - Any authenticated user can upload to site images (INSERT)
-  - Admin can insert/update/delete storage (INSERT/UPDATE/DELETE)
-  - Only owner can delete own files (DELETE WHERE owner = auth.uid())
-  - Public can read storage (SELECT su papildoma sąlyga auth.role() = 'authenticated')
+**Pastaba**: Storage objektai turi savo RLS politikas, kurios kontroliuoja prieigą prie failų `site-images` bucket'e.
 
-## Duomenų tipai
+## Extensionai
 
-- **UUID**: Pirminiai raktai ir nuorodos
-- **TEXT**: Turinio laukai
-- **VARCHAR**: Trumpi tekstai ir kodai
-- **BOOLEAN**: Funkcionalumo valdymas
-- **TIMESTAMPTZ**: Laiko žymės su laiko juostomis
-- **JSONB**: Struktūrizuoti duomenys
-- **ARRAY**: Masyvai (highlights, path_tokens)
-- **ENUM**: Apriboti pasirinkimai (aal_level, factor_type, factor_status)
+### Įdiegti extensionai
+
+| Extension | Schema | Versija | Aprašymas |
+|-----------|--------|---------|-----------|
+| pgcrypto | extensions | 1.3 | Kriptografinės funkcijos |
+| pgjwt | extensions | 0.2.0 | JSON Web Token API |
+| uuid-ossp | extensions | 1.1 | UUID generavimas |
+| pg_stat_statements | extensions | 1.10 | SQL statistikos sekimas |
+| pg_graphql | graphql | 1.5.11 | GraphQL palaikymas |
+| pgsodium | pgsodium | 3.1.8 | Libsodium kriptografijos funkcijos |
+| supabase_vault | vault | 0.2.8 | Supabase Vault extensionas |
+| plpgsql | pg_catalog | 1.0 | PL/pgSQL procedūrų kalba |
+
+### Prieinami bet neįdiegti extensionai
+
+- **postgis** (3.3.7) - Geografiniai duomenys
+- **vector** (0.8.0) - Vektoriniai duomenys AI/ML
+- **pg_cron** (1.6) - Užduočių planuoklis
+- **timescaledb** (2.16.1) - Laiko serijos duomenys
+- **hypopg** (1.4.1) - Hipotetiški indeksai
+- **pg_trgm** (1.6) - Teksto panašumo ir trigram paieška
+- **plv8** (3.1.10) - PL/JavaScript procedūrų kalba
+- **pg_net** (0.14.0) - Asinchroninės HTTP užklausos
+- **wrappers** (0.4.5) - Foreign data wrappers
 
 ## Saugumo funkcijos
 
 ### Autentifikacija
 
-- JWT token'ų valdymas
-- Refresh token'ų rotacija
-- MFA palaikymas (TOTP, WebAuthn, Phone)
-- SSO/SAML integracija
+- **JWT token'ų valdymas**: Saugus token'ų valdymas per auth schema
+- **Refresh token'ų rotacija**: Automatinis token'ų atnaujinimas
+- **MFA palaikymas**: TOTP, WebAuthn, Phone
+- **SSO/SAML integracija**: Įmonių autentifikacija
+- **OAuth integracija**: Google OAuth (su avatar backfill)
 
 ### Autorizacija
 
-- Row Level Security visom lentelėm
-- Administravimo teisių tikrinimas per is_admin() funkciją
-- Objektų savininkystės kontrolė
+- **Row Level Security**: Įjungta **visoms** public schema lentelėms
+- **Admin funkcija**: `is_admin()` su SECURITY DEFINER
+- **Objektų savininkystės kontrolė**: CASCADE constraints
+- **Granular permissions**: Skirtingos politikos pagal vartotojų roles
 
-### Auditas
+### Auditas ir Monitoring
 
-- Autentifikavimo veiksmų žurnalas
-- Automatinis updated_at laukų atnaujinimas
-- Migracijų dokumentavimas
+- **Autentifikavimo žurnalas**: auth.audit_log_entries (705 įrašai)
+- **Automatinis updated_at**: Triggeriai visose content lentelėse
+- **Migracijų dokumentacija**: Pilna migracijų istorija
+- **Analytics tracking**: Page views, CTA clicks, site statistics
+
+## Duomenų tipai
+
+### Pagrindiniai tipai
+- **UUID**: Pirminiai raktai, foreign keys
+- **TEXT**: Turinio laukai (neriboto ilgio)
+- **VARCHAR**: Trumpi tekstai (riboto ilgio)
+- **BOOLEAN**: Funkcionalumo vėliavėlės
+- **TIMESTAMPTZ**: Laiko žymės su laiko juostomis
+- **INTEGER**: Skaitinės reikšmės
+- **BIGINT**: Dideli skaičiai (SERIAL primary keys)
+- **DATE**: Datos be laiko
+
+### Kompleksiniai tipai
+- **JSONB**: Struktūrizuoti duomenys (efektyvesnis nei JSON)
+- **ARRAY (text[])**: Tekstų masyvai (categories, highlights, path_tokens)
+- **INET**: IP adresai
+- **ENUM**: Apriboti pasirinkimai (faktiškai PostgreSQL sukurti tipai)
+
+### Custom ENUM tipai (auth schema)
+- **aal_level**: aal1, aal2, aal3
+- **factor_type**: totp, webauthn, phone
+- **factor_status**: unverified, verified
+- **code_challenge_method**: s256, plain
+- **one_time_token_type**: confirmation_token, reauthentication_token, recovery_token, email_change_token_new, email_change_token_current, phone_change_token
 
 ## Performanso optimizacija
 
-### Indeksai
+### Indeksų strategija
 
-- B-tree indeksai pagrindiniams laukams
-- Partial indeksai sąlyginiams duomenims
-- Composite indeksai dažniems užklausoms
+1. **Unique indeksai**: Visiems unique constraint laukams
+2. **Foreign key indeksai**: Visiems FK stulpeliams (article_id, user_id, etc.)
+3. **Timestamp indeksai**: DESC tvarka dažniems created_at/viewed_at užklausoms
+4. **Composite indeksai**: Dažniems filtrams (context + active, priority + active)
+5. **Filtering indeksai**: Status, is_approved, is_deleted laukams
 
-### Triggeriai
+### Trigger'ių optimizacija
 
-- Automatinis metaduomenų atnaujinimas
-- Duomenų validacija įrašymo metu
-- Optimizuoti update operacijos
+- **Conditional triggers**: Vykdomi tik kai reikia
+- **BEFORE triggers**: Metaduomenų update'ai prieš rašymą
+- **AFTER triggers**: Statistikos update'ai po įrašymo
+- **Automatizacija**: Nereikia aplikacijai rūpintis updated_at
 
-Šis dokumentas atspindi tikrą duomenų bazės būklę projekto **ponasObuolys** Supabase projekte (jzixoslapmlqafrlbvpk) 2025-09-23 datos būklę.
+### View'ų naudojimas
+
+- **Abstraction**: Slepia JOIN complexity
+- **Reusability**: Vienodas duomenų atvaizdavimas
+- **Performance analytics**: Optimizuoti performance view'ai su agregacijomis
+
+---
+
+**Dokumentas atnaujintas**: 2025-10-23
+**Duomenų bazės būklė**: Real-time snapshot
+**Versija**: 2.0 (comprehensive update)
+
+Šis dokumentas atspindi tikrą duomenų bazės būklę projekto **ponasObuolys** Supabase projekte (ID: jzixoslapmlqafrlbvpk).

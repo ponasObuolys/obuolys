@@ -118,13 +118,14 @@ Intelligent lazy loading with manual chunk optimization:
 
 **Manual Chunks** in [vite.config.ts](vite.config.ts#L36-L132):
 
+- **Library-only chunking**: Only third-party libraries are manually chunked to prevent React module initialization issues
 - `react-core` - React and React Router
 - `ui-*` - Radix UI split by category (overlay, form, feedback, base)
-- `admin-dashboard` - Admin components separate chunk
-- `auth-pages` - Authentication flows
-- `content-*` - Content pages split by feature
 - `supabase` - Backend integration
 - `form-lib`, `query-lib`, `charts`, `utils` - Library groupings
+- **Application code**: Handled by Vite's automatic chunking to ensure proper dependency resolution
+
+**IMPORTANT**: Never add application code (components, pages, contexts) to manual chunks. This prevents "Cannot read properties of undefined (reading 'Component'/'forwardRef')" errors by allowing Vite to handle module initialization order.
 
 This creates ~25KB initial bundle with efficient lazy loading.
 
@@ -138,11 +139,11 @@ All database operations through Supabase with auto-generated types:
 - **Row Level Security (RLS)**: Enabled on all tables
 - **Schema Documentation**: See [DB.md](DB.md) for complete schema
 
-**Tables**: profiles, articles, tools, courses, contact_messages, hero_sections, cta_sections, translation_requests
+**Tables**: profiles, articles, tools, courses, contact_messages, custom_tool_inquiries, hero_sections, cta_sections, sticky_cta_messages, cta_clicks, article_comments, article_bookmarks, reading_progress, page_views, site_statistics, email_replies, migration_documentation, translation_requests
 
 #### 4. State Management Architecture
 
-- **Global State**: AuthContext (authentication), LanguageContext (i18n)
+- **Global State**: AuthContext (authentication), LanguageContext (i18n), ThemeContext
 - **Server State**: React Query with 3 retry attempts and exponential backoff
 - **Local State**: useState/useReducer for component-specific state
 - **Image Loading**: ImageLoadingProvider for lazy image optimization
@@ -164,6 +165,8 @@ All database operations through Supabase with auto-generated types:
 - Technical terms and variable names can be English
 - Route paths are in Lithuanian (e.g., `/publikacijos`, `/irankiai`, `/kursai`)
 - Translations managed via [src/context/LanguageContext.tsx](src/context/LanguageContext.tsx)
+- Error messages shown to users must be in Lithuanian (see error handling pattern)
+- Comments for complex logic should be in Lithuanian
 
 ### 2. Database Changes Protocol
 
@@ -172,6 +175,8 @@ All database operations through Supabase with auto-generated types:
 - Complete schema documentation with RLS policies
 - Migration history and documentation
 - Foreign key constraints and relationships
+- 19 public tables with detailed column specifications
+- All tables have RLS enabled
 - Never modify database without consulting this file
 
 ### 3. Supabase-Only Integration
@@ -181,6 +186,7 @@ All database operations through Supabase with auto-generated types:
 - No direct PostgreSQL queries outside Supabase client
 - No alternative backend services
 - Follow existing Supabase patterns in [src/integrations/supabase/](src/integrations/supabase/)
+- Create dedicated service files for database operations (max 150 lines per service)
 
 ### 4. Image Loading Requirement
 
@@ -200,8 +206,8 @@ import LazyImage from '@/components/ui/lazy-image';
 
 **Follow existing editor patterns for consistency:**
 
-- ArticleEditor, NewsEditor, CourseEditor, ToolEditor patterns
-- Use RichTextEditor for content editing
+- ArticleEditor, CourseEditor, ToolEditor patterns
+- Use RichTextEditor (Slate.js) for content editing
 - FileUpload component for images
 - React Hook Form + Zod validation
 - Consistent UI/UX across all admin features
@@ -213,13 +219,78 @@ See [src/components/admin/](src/components/admin/) for examples.
 - Use shadcn/ui components from [src/components/ui/](src/components/ui/)
 - Follow Tailwind CSS for all styling (no custom CSS files)
 - Use React Hook Form + Zod for all forms
-- Display errors via toast notifications
+- Display errors via toast notifications (Sonner)
+- Maximum file length: **400 lines** (split before reaching this limit)
+- Component files should use **kebab-case.tsx** naming
 
 ### 7. Content Management
 
-- **News**: Manual entry only through admin dashboard (RSS removed)
-- **Articles/Tools/Courses**: Use RichTextEditor
+- **News**: Manual entry only through admin dashboard (RSS removed - see README.md)
+- **Articles/Tools/Courses**: Use RichTextEditor with Slate.js
 - **Status System**: published/featured flags control visibility
+- Future integration with MAKE.COM or automation platforms planned
+
+### 8. File Organization & Refactoring Rules
+
+When creating new features, automatically structure files as:
+
+```
+src/components/
+  feature-name/
+    index.tsx (main component, max 200 lines)
+    feature-name.types.ts (TypeScript interfaces)
+    feature-name.hooks.ts (custom hooks if needed)
+    feature-name.utils.ts (helper functions if needed)
+    components/ (sub-components if main > 150 lines)
+      sub-component-name.tsx
+```
+
+**Automatic Refactoring Triggers** - Split components when:
+1. File reaches 250 lines
+2. Component has 3+ useState hooks (extract to custom hook)
+3. JSX return is >100 lines (split into sub-components)
+4. 5+ props being passed (consider composition pattern)
+5. Nested ternaries (extract to separate components)
+6. map() with >30 lines of JSX (extract list item component)
+
+### 9. State Management Rules
+
+1. **1-2 useState**: Keep in component
+2. **3-5 useState**: Extract to custom hook in same file
+3. **6+ useState**: Create separate `.hooks.ts` file
+4. **Shared across 2+ components**: Use Context API
+5. **Server state**: Always use React Query/Tanstack Query
+
+### 10. Import Organization
+
+Always organize imports in this order:
+
+```typescript
+// 1. React/core imports
+import { useState, useEffect } from 'react';
+
+// 2. Third-party libraries
+import { useQuery } from '@tanstack/react-query';
+import { z } from 'zod';
+
+// 3. Absolute imports (@/ aliases)
+import { Button } from '@/components/ui/button';
+
+// 4. Relative imports - types
+import { ComponentNameProps } from './component-name.types';
+
+// 5. Relative imports - hooks
+import { useComponentLogic } from './component-name.hooks';
+
+// 6. Relative imports - components
+import { SubComponent } from './components/sub-component';
+
+// 7. Relative imports - utils/constants
+import { formatDate } from './component-name.utils';
+
+// 8. Assets/styles
+import './styles.css';
+```
 
 ## Database Guidelines
 
@@ -228,10 +299,11 @@ See [src/components/admin/](src/components/admin/) for examples.
 Refer to [DB.md](DB.md) for:
 
 - Complete table definitions with all columns
-- Row Level Security policies for each table
-- Functions and triggers
-- Indexes and constraints
-- Migration history
+- Row Level Security policies for each table (50+ policies)
+- Functions and triggers (15 functions, 12 triggers)
+- Indexes and constraints (57 indexes)
+- Migration history (17 applied migrations)
+- Foreign key relationships with CASCADE rules
 
 ### Common Patterns
 
@@ -244,8 +316,42 @@ const { data, error } = await supabase
   .order("created_at", { ascending: false });
 
 // Example: Admin-only operations (RLS enforced)
-const { error } = await supabase.from("articles").update({ published: true }).eq("id", articleId);
+const { error } = await supabase
+  .from("articles")
+  .update({ published: true })
+  .eq("id", articleId);
 // Fails if user is not admin due to RLS
+```
+
+### Service File Pattern
+
+```typescript
+// services/table-name.service.ts (max 150 lines per service file)
+import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
+
+// Define schemas for validation
+const ItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  // ... other fields
+});
+
+export const tableNameService = {
+  async getAll() {
+    const { data, error } = await supabase
+      .from('table_name')
+      .select('*');
+
+    if (error) throw error;
+    return ItemSchema.array().parse(data);
+  },
+
+  async create(item: z.infer<typeof ItemSchema>) {
+    // If this service file >150 lines, split by operation type
+    // create separate files: table-name-queries.ts, table-name-mutations.ts
+  }
+};
 ```
 
 ### Type Safety
@@ -277,6 +383,7 @@ npm run supabase:types
 
 - [src/context/AuthContext.tsx](src/context/AuthContext.tsx) - Authentication state
 - [src/context/LanguageContext.tsx](src/context/LanguageContext.tsx) - i18n translations
+- [src/context/ThemeContext.tsx](src/context/ThemeContext.tsx) - Theme management
 
 ### Supabase Integration
 
@@ -287,7 +394,8 @@ npm run supabase:types
 
 - [src/utils/lazyLoad.ts](src/utils/lazyLoad.ts) - Code splitting utilities
 - [src/components/ui/lazy-image.tsx](src/components/ui/lazy-image.tsx) - Image lazy loading
-- [src/components/admin/RichTextEditor.tsx](src/components/admin/RichTextEditor.tsx) - Content editor
+- [src/components/admin/RichTextEditor.tsx](src/components/admin/RichTextEditor.tsx) - Slate.js content editor
+- [src/utils/browserLogger.ts](src/utils/browserLogger.ts) - Browser logging utility
 
 ## Testing Strategy
 
@@ -296,6 +404,7 @@ npm run supabase:types
 - Test files: `*.test.ts`, `*.test.tsx`
 - Location: Co-located with source files or `src/test/`
 - Coverage target: Check with `npm run test:coverage:check`
+- Keep test files under 200 lines (split into multiple test files if needed)
 
 ### E2E Tests (Playwright)
 
@@ -313,7 +422,7 @@ npm run supabase:types
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
-describe('Component', () => {
+describe('ComponentName', () => {
   it('renders correctly', () => {
     render(<Component />);
     expect(screen.getByText('Text')).toBeInTheDocument();
@@ -345,8 +454,11 @@ All routes use Lithuanian paths:
 /kontaktai                 # Contact page
 /paremti                   # Support page
 /verslo-sprendimai         # Custom solutions
+/privatumo-politika        # Privacy policy
+/slapuku-politika          # Cookie policy
 
 /auth                      # Authentication
+/auth/callback             # OAuth callback
 /profilis                  # User profile
 /mano-sarasas             # User bookmarks
 
@@ -360,6 +472,40 @@ All routes use Lithuanian paths:
 ```
 
 New routes must be registered in [src/App.tsx](src/App.tsx) with appropriate error boundaries.
+
+## Error Handling Pattern
+
+```typescript
+// Always wrap async operations
+try {
+  const data = await fetchData();
+  toast.success('Duomenys gauti sėkmingai'); // Lithuanian
+} catch (error) {
+  console.error('Error details:', error);
+  toast.error('Klaida gaunant duomenis'); // User-friendly Lithuanian message
+}
+```
+
+## Documentation Requirements
+
+```typescript
+/**
+ * Komponentas vartotojo profilio redagavimui
+ * Naudoja Supabase duomenų bazę
+ */
+export function UserProfile() {
+  // Gauti vartotojo duomenis
+  const user = useUser();
+
+  /**
+   * Išsaugoti profilio pakeitimus
+   * @param data - formos duomenys
+   */
+  const handleSave = async (data: ProfileData) => {
+    // implementation
+  };
+}
+```
 
 ## Performance Considerations
 
@@ -387,3 +533,48 @@ npm run performance:analyze     # Full performance analysis
 npm run performance:quick       # Quick performance check
 npm run performance:build       # Build-time analysis only
 ```
+
+## Critical Restrictions
+
+- **NEVER make Git commits or pushes** - These are managed manually
+- **NEVER create or modify .env\* files** - These are managed manually
+- **NEVER create files longer than 300 lines** (leave buffer before 400 limit)
+- **On Windows PowerShell**: Use `;` instead of `&&` for command chaining
+- **Always check for running dev servers** before starting new ones
+- **NEVER add application code to manual chunks in vite.config.ts** - Only library code
+
+## Automatic Checks Before Saving
+
+Before saving any file, verify:
+1. ✅ File is under 300 lines (max 400)
+2. ✅ No component has more than 100 lines of JSX
+3. ✅ No function exceeds 50 lines
+4. ✅ Imports are organized correctly
+5. ✅ All async operations have error handling
+6. ✅ Lithuanian comments for complex logic
+7. ✅ No unused imports or variables
+8. ✅ Props are properly typed
+9. ✅ Files follow kebab-case naming
+10. ✅ Extracted sub-components if main component >200 lines
+
+## MCP Server Utilization
+
+### Sequential-thinking MCP
+- Use before complex refactoring to plan steps
+- Use for algorithm design to break down complex logic
+- Command: "Use sequential-thinking to plan this feature implementation"
+
+### Context7 MCP
+- Always check context before major changes
+- Update context after creating new components
+- Command: "Check Context7 for existing patterns before implementing"
+
+### Supabase MCP
+- Use for all database operations
+- Check schema before creating queries
+- Command: "Use Supabase MCP to verify table structure"
+
+### Playwright MCP
+- Create E2E tests for critical user flows
+- Test files: `tests/**/*.spec.ts`
+- Command: "Generate Playwright test for this user flow"
