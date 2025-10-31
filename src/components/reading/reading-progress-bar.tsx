@@ -56,8 +56,8 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
 
   return (
     <>
-      {/* Fixed progress bar at bottom for mobile, top for desktop */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted md:top-0 sm:bottom-0 sm:top-auto">
+      {/* Fixed progress bar at top - always visible */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted">
         <motion.div
           className="h-full bg-gradient-to-r from-primary to-primary/60"
           initial={{ width: 0 }}
@@ -66,7 +66,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
         />
       </div>
 
-      {/* Floating progress indicator with scroll to top - positioned for mobile */}
+      {/* Floating progress indicator with scroll to top - better positioning */}
       {progress > 5 && (
         <motion.button
           data-reading-progress="true"
@@ -74,14 +74,14 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 md:right-6 sm:right-4 sm:bottom-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-[60] cursor-pointer group max-w-[64px] max-h-[64px]"
+          className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-[60] cursor-pointer group"
           aria-label={progress >= 100 ? "Grįžti į viršų" : `Perskaitytas ${Math.round(progress)}%`}
         >
-          <div className="relative w-16 h-16 flex items-center justify-center">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex items-center justify-center">
             {progress >= 100 ? (
               // Show only arrow at 100%
               <svg
-                className="w-6 h-6 text-primary-foreground"
+                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-primary-foreground"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -96,11 +96,11 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
             ) : (
               <>
                 {/* Background circle */}
-                <svg className="absolute inset-0 w-16 h-16 transform -rotate-90">
+                <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                   <circle
-                    cx="32"
-                    cy="32"
-                    r="28"
+                    cx="50%"
+                    cy="50%"
+                    r="45%"
                     stroke="currentColor"
                     strokeWidth="3"
                     fill="none"
@@ -108,14 +108,14 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
                   />
                   {/* Progress circle */}
                   <circle
-                    cx="32"
-                    cy="32"
-                    r="28"
+                    cx="50%"
+                    cy="50%"
+                    r="45%"
                     stroke="currentColor"
                     strokeWidth="3"
                     fill="none"
-                    strokeDasharray={`${2 * Math.PI * 28}`}
-                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - progress / 100)}`}
+                    strokeDasharray={`${2 * Math.PI * 0.45}`}
+                    strokeDashoffset={`${2 * Math.PI * 0.45 * (1 - progress / 100)}`}
                     className="text-primary-foreground transition-all duration-300"
                     strokeLinecap="round"
                   />
@@ -127,7 +127,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
               </>
             )}
           </div>
-          {/* Tooltip on hover */}
+          {/* Tooltip on hover - better positioning */}
           <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-popover text-popover-foreground text-xs rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
             {progress >= 100 ? "Grįžti į viršų" : timeRemaining || "Skaitymo progresas"}
           </div>

@@ -144,10 +144,34 @@
     position: relative;
   }
 
-  /* Ensure all fixed elements stay within viewport */
+  /* Ensure all fixed elements stay within viewport and don't cause horizontal scroll */
   .fixed {
     max-width: 100vw;
     box-sizing: border-box;
+  }
+
+  /* Reading progress bar specific fixes */
+  [data-reading-progress="true"] {
+    left: auto !important;
+    right: 1rem !important;
+    max-width: 4rem !important;
+    max-height: 4rem !important;
+  }
+
+  @media (min-width: 640px) {
+    [data-reading-progress="true"] {
+      right: 1.5rem !important;
+      max-width: 3.5rem !important;
+      max-height: 3.5rem !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    [data-reading-progress="true"] {
+      right: 1.5rem !important;
+      max-width: 4rem !important;
+      max-height: 4rem !important;
+    }
   }
 
   /* Mobile-specific fixes */
