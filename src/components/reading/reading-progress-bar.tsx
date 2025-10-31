@@ -56,8 +56,8 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
 
   return (
     <>
-      {/* Fixed progress bar at top */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted">
+      {/* Fixed progress bar at bottom for mobile, top for desktop */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted md:top-0 sm:bottom-0 sm:top-auto">
         <motion.div
           className="h-full bg-gradient-to-r from-primary to-primary/60"
           initial={{ width: 0 }}
@@ -66,7 +66,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
         />
       </div>
 
-      {/* Floating progress indicator with scroll to top */}
+      {/* Floating progress indicator with scroll to top - positioned for mobile */}
       {progress > 5 && (
         <motion.button
           data-reading-progress="true"
@@ -74,7 +74,7 @@ export function ReadingProgressBar({ targetRef, estimatedReadTime }: ReadingProg
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-[60] cursor-pointer group"
+          className="fixed bottom-6 right-6 md:right-6 sm:right-4 sm:bottom-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-[60] cursor-pointer group max-w-[64px] max-h-[64px]"
           aria-label={progress >= 100 ? "Grįžti į viršų" : `Perskaitytas ${Math.round(progress)}%`}
         >
           <div className="relative w-16 h-16 flex items-center justify-center">

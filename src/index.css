@@ -138,6 +138,31 @@
     min-height: 100dvh; /* Dynamic viewport height for mobile */
   }
 
+  /* Prevent horizontal scroll on mobile devices */
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Ensure all fixed elements stay within viewport */
+  .fixed {
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  /* Mobile-specific fixes */
+  @media (max-width: 640px) {
+    .fixed {
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+    
+    /* Prevent overflow from fixed elements */
+    * {
+      box-sizing: border-box;
+    }
+  }
+
   #root {
     width: 100%;
     max-width: 100%;
