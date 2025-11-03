@@ -14,6 +14,11 @@ Disallow: /profilis
 Disallow: /api/
 
 # Explicitly allow important public pages (optional, but helps crawlers)
+# High-priority business pages
+Allow: /verslo-sprendimai
+Allow: /skaiciuokle
+
+# Content pages
 Allow: /publikacijos
 Allow: /publikacijos/*
 Allow: /irankiai

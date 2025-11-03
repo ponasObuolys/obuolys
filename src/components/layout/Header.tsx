@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User, LogOut, Settings, Heart } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -37,11 +37,11 @@ const Header = () => {
 
   // Navigacijos meniu punktai
   const navLinks = [
-    { to: "/publikacijos", label: "AI Naujienos" },
-    { to: "/kursai", label: "Kursai" },
+    { to: "/publikacijos", label: "Publikacijos" },
     { to: "/irankiai", label: "Įrankiai" },
-    { to: "/verslo-sprendimai", label: "Verslo Sprendimai" },
-    { to: "/skaiciuokle", label: "Projekto Skaičiuoklė", highlight: true },
+    { to: "/kursai", label: "Kursai" },
+    { to: "/verslo-sprendimai", label: "Verslo Sprendimai", primary: true },
+    { to: "/skaiciuokle", label: "Skaičiuoklė", highlight: true },
     { to: "/kontaktai", label: "Kontaktai" },
   ];
 
@@ -62,29 +62,63 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center space-x-6">
-            {navLinks.map(({ to, label, highlight }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`nav-link transition-colors duration-300 flex items-center gap-2 whitespace-nowrap text-sm ${
-                  highlight
-                    ? "text-primary font-semibold hover:text-primary/80"
-                    : isActive(to)
-                    ? "text-foreground"
-                    : "text-foreground/60 hover:text-foreground"
-                }`}
-              >
-                {label}
-                {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
-                  >
-                    {unreadCount}
-                  </Badge>
-                )}
-              </Link>
-            ))}
+            {navLinks.map(({ to, label, highlight, primary }) => {
+              // Verslo Sprendimai dropdown
+              if (primary) {
+                return (
+                  <DropdownMenu key={to}>
+                    <DropdownMenuTrigger asChild>
+                      <button className="nav-link transition-colors duration-300 flex items-center gap-1 whitespace-nowrap text-sm text-foreground font-semibold hover:text-primary">
+                        {label}
+                        <ChevronDown className="h-3 w-3" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-48">
+                      <DropdownMenuItem asChild>
+                        <Link to="/verslo-sprendimai" className="cursor-pointer">
+                          Pagrindinis
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/verslo-sprendimai#portfolio" className="cursor-pointer">
+                          Portfolio
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/verslo-sprendimai#tech-stack" className="cursor-pointer">
+                          Tech Stack
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              }
+
+              // Regular links
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`nav-link transition-colors duration-300 flex items-center gap-2 whitespace-nowrap text-sm ${
+                    highlight
+                      ? "text-primary font-semibold hover:text-primary/80"
+                      : isActive(to)
+                      ? "text-foreground"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                  {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden xl:flex items-center space-x-3">
@@ -214,30 +248,64 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="xl:hidden bg-background border-t border-border">
           <div className="container mx-auto py-4 px-4 space-y-2">
-            {navLinks.map(({ to, label, highlight }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`block px-4 py-3 rounded-lg transition-colors duration-300 ${
-                  highlight
-                    ? "bg-primary/10 text-primary font-semibold hover:bg-primary/20"
-                    : "text-foreground/80 hover:text-foreground hover:bg-card"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <div className="flex items-center justify-between">
-                  <span>{label}</span>
-                  {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+            {navLinks.map(({ to, label, highlight, primary }) => {
+              // Verslo Sprendimai with submenu
+              if (primary) {
+                return (
+                  <div key={to} className="space-y-1">
+                    <Link
+                      to={to}
+                      className="block px-4 py-3 rounded-lg transition-colors duration-300 text-foreground font-semibold hover:bg-card"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </div>
-              </Link>
-            ))}
+                      {label}
+                    </Link>
+                    <div className="pl-4 space-y-1">
+                      <Link
+                        to="/verslo-sprendimai#portfolio"
+                        className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Portfolio
+                      </Link>
+                      <Link
+                        to="/verslo-sprendimai#tech-stack"
+                        className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Tech Stack
+                      </Link>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Regular links
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`block px-4 py-3 rounded-lg transition-colors duration-300 ${
+                    highlight
+                      ? "bg-primary/10 text-primary font-semibold hover:bg-primary/20"
+                      : "text-foreground/80 hover:text-foreground hover:bg-card"
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div className="flex items-center justify-between">
+                    <span>{label}</span>
+                    {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
+                      <Badge
+                        variant="destructive"
+                        className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
 
             {/* Search mobile */}
             <div className="border-t border-border pt-4 mt-4">

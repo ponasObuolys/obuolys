@@ -3,33 +3,69 @@
 
   <url>
     <loc>https://ponasobuolys.lt/</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- High Priority Business Pages -->
+  <url>
+    <loc>https://ponasobuolys.lt/verslo-sprendimai</loc>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/skaiciuokle</loc>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Main Content Pages -->
   <url>
     <loc>https://ponasobuolys.lt/publikacijos</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kursai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kontaktai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/paremti</loc>
+    <lastmod>2025-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://ponasobuolys.lt/privatumo-politika</loc>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/slapuku-politika</loc>
+    <lastmod>2025-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/vaikai-kuria-zaidimus-su-ai-ir-keicia-programavimo-ateiti</loc>

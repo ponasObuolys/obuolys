@@ -71,7 +71,7 @@ const EnhancedProjectCard = ({ project }: EnhancedProjectCardProps) => {
       >
         <img
           src={currentImage.url}
-          alt={`${project.title} - ${currentImageIndex + 1}`}
+          alt={`${project.title} - ${currentImage.caption || `projekto vaizdas ${currentImageIndex + 1}`} - React TypeScript ${project.category} sistema`}
           className="w-full h-full object-cover transition-transform duration-300 ease-out"
           style={{ transform }}
           loading="lazy"
