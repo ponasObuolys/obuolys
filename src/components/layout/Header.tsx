@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut, Settings, Heart, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ const Header = () => {
     null
   );
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, isAdmin, signOut, getUserProfile } = useAuth();
   const unreadCount = useUnreadMessages();
 
@@ -67,27 +68,53 @@ const Header = () => {
               if (primary) {
                 return (
                   <DropdownMenu key={to}>
-                    <DropdownMenuTrigger asChild>
-                      <button className="nav-link transition-colors duration-300 flex items-center gap-1 whitespace-nowrap text-sm text-foreground font-semibold hover:text-primary">
-                        {label}
-                        <ChevronDown className="h-3 w-3" />
-                      </button>
+                    <DropdownMenuTrigger className="nav-link transition-colors duration-300 flex items-center gap-1 whitespace-nowrap text-sm text-foreground font-semibold hover:text-primary outline-none">
+                      {label}
+                      <ChevronDown className="h-3 w-3" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-48">
-                      <DropdownMenuItem asChild>
-                        <Link to="/verslo-sprendimai" className="cursor-pointer">
-                          Pagrindinis
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          navigate("/verslo-sprendimai");
+                        }}
+                      >
+                        Pagrindinis
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/verslo-sprendimai#portfolio" className="cursor-pointer">
-                          Portfolio
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          const isOnPage = location.pathname === "/verslo-sprendimai";
+                          if (isOnPage) {
+                            // Already on page, just scroll
+                            document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
+                            window.history.pushState(null, "", "/verslo-sprendimai#portfolio");
+                          } else {
+                            // Navigate to page first
+                            navigate("/verslo-sprendimai#portfolio");
+                            setTimeout(() => {
+                              document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
+                            }, 300);
+                          }
+                        }}
+                      >
+                        Portfolio
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/verslo-sprendimai#tech-stack" className="cursor-pointer">
-                          Tech Stack
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          const isOnPage = location.pathname === "/verslo-sprendimai";
+                          if (isOnPage) {
+                            // Already on page, just scroll
+                            document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
+                            window.history.pushState(null, "", "/verslo-sprendimai#tech-stack");
+                          } else {
+                            // Navigate to page first
+                            navigate("/verslo-sprendimai#tech-stack");
+                            setTimeout(() => {
+                              document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
+                            }, 300);
+                          }
+                        }}
+                      >
+                        Tech Stack
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -264,14 +291,24 @@ const Header = () => {
                       <Link
                         to="/verslo-sprendimai#portfolio"
                         className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setTimeout(() => {
+                            document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
+                          }, 100);
+                        }}
                       >
                         Portfolio
                       </Link>
                       <Link
                         to="/verslo-sprendimai#tech-stack"
                         className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setTimeout(() => {
+                            document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
+                          }, 100);
+                        }}
                       >
                         Tech Stack
                       </Link>
