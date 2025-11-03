@@ -1,15 +1,18 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Check, Users, TrendingUp, Zap, Target } from "lucide-react";
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import InquiryForm from "@/components/custom-solutions/InquiryForm";
-import ProjectCard from "@/components/custom-solutions/ProjectCard";
+import EnhancedProjectCard from "@/components/custom-solutions/EnhancedProjectCard";
 import PricingCard from "@/components/custom-solutions/PricingCard";
 import ProcessStep from "@/components/custom-solutions/ProcessStep";
 import FAQ from "@/components/custom-solutions/FAQ";
 import Testimonials from "@/components/custom-solutions/Testimonials";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { StickyCtaSidebar } from "@/components/cta/sticky-cta-sidebar";
+import { TechStackSection } from "@/components/custom-solutions/TechStackSection";
+import { CalculatorCTA } from "@/components/cta/calculator-cta";
 
 const CustomSolutionsPage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -75,7 +78,8 @@ const CustomSolutionsPage = () => {
     },
   ];
 
-  const projects = [
+  // Enhanced projects with multiple images, tech stack, timeline
+  const enhancedProjects = [
     {
       id: 1,
       title: "Krovinių Valdymo Sistema",
@@ -89,7 +93,16 @@ const CustomSolutionsPage = () => {
         "95% klientų pasitenkinimas",
         "Automatizuoti 80% rutininių procesų",
       ],
-      image: "/verslo-sprendimai/logistics.png",
+      images: [
+        { url: "/verslo-sprendimai/logistics.png", caption: "Krovinių stebėjimo dashboard" },
+        { url: "/verslo-sprendimai/logistics-map.png", caption: "Real-time tracking žemėlapis" },
+        { url: "/verslo-sprendimai/logistics-form.png", caption: "Krovinio detalių forma" },
+        { url: "/verslo-sprendimai/logistics-analytics.png", caption: "Analitikos dashboard" },
+        { url: "/verslo-sprendimai/logistics-mobile.png", caption: "Mobilioji versija vairuotojams" },
+      ],
+      techStack: ["React 18", "TypeScript", "Supabase", "Leaflet", "React Query", "Tailwind CSS"],
+      timeline: "6 savaitės • 2025 Q2",
+      clientInfo: "Transporto įmonė, 50+ darbuotojų, 400+ krovinių/dieną",
     },
     {
       id: 3,
@@ -103,7 +116,16 @@ const CustomSolutionsPage = () => {
         "3 valandos per dieną sutaupyta",
         "Atsargų matomumas realiuoju laiku",
       ],
-      image: "/verslo-sprendimai/warehouse.png",
+      images: [
+        { url: "/verslo-sprendimai/warehouse.png", caption: "Atsargų valdymo dashboard" },
+        { url: "/verslo-sprendimai/warehouse-scanner.png", caption: "Brūkšninių kodų skenavimas" },
+        { url: "/verslo-sprendimai/warehouse-inventory.png", caption: "Inventoriaus sąrašas" },
+        { url: "/verslo-sprendimai/warehouse-alerts.png", caption: "Mažų atsargų įspėjimai" },
+        { url: "/verslo-sprendimai/warehouse-reports.png", caption: "Atsargų ataskaitos" },
+      ],
+      techStack: ["React", "TypeScript", "Supabase", "QuaggaJS", "Chart.js", "React Hook Form"],
+      timeline: "4 savaitės • 2024 Q4",
+      clientInfo: "Autodetalių platintojas, 3 sandėliai, 5000+ SKU",
     },
     {
       id: 4,
@@ -117,11 +139,20 @@ const CustomSolutionsPage = () => {
         "Klientai vertina 4.8/5",
         "Prieiga prie informacijos visą parą",
       ],
-      image: "/verslo-sprendimai/clients.jpg",
+      images: [
+        { url: "/verslo-sprendimai/clients.jpg", caption: "Klientų portalo pagrindinis" },
+        { url: "/verslo-sprendimai/client-orders.png", caption: "Užsakymų sekimas" },
+        { url: "/verslo-sprendimai/client-tracking.png", caption: "Real-time užsakymo būsena" },
+        { url: "/verslo-sprendimai/client-documents.png", caption: "Dokumentų atsisiuntimas" },
+        { url: "/verslo-sprendimai/client-history.png", caption: "Užsakymų istorija" },
+      ],
+      techStack: ["React", "TypeScript", "Supabase", "Recharts", "React PDF", "Zod"],
+      timeline: "8 savaitės • 2025 Q3",
+      clientInfo: "E-commerce platforma, 1000+ aktyvių klientų",
     },
     {
       id: 5,
-      title: "Automatinė Sąskaitų Generavimo Sistema",
+      title: "Automatinė Sąskaitų Sistema",
       category: "Logistika",
       problem: "Buhalterija praleidžia dieną generuojant sąskaitas už 100+ krovinių.",
       solution:
@@ -131,7 +162,15 @@ const CustomSolutionsPage = () => {
         "0 klaidų sąskaitose",
         "Greičiau apmokamos sąskaitos",
       ],
-      image: "/verslo-sprendimai/invoice.png",
+      images: [
+        { url: "/verslo-sprendimai/invoice.png", caption: "Sąskaitų generavimo interface" },
+        { url: "/verslo-sprendimai/invoice-template.png", caption: "PDF sąskaitos šablonas" },
+        { url: "/verslo-sprendimai/invoice-automation.png", caption: "Automatizavimo taisyklės" },
+        { url: "/verslo-sprendimai/invoice-email.png", caption: "Auto-siuntimas el. paštu" },
+      ],
+      techStack: ["React", "TypeScript", "Supabase", "PDF-lib", "Nodemailer", "Zod"],
+      timeline: "3 savaitės • 2024 Q3",
+      clientInfo: "Logistikos įmonė, 100+ krovinių/dieną",
     },
   ];
 
@@ -298,19 +337,22 @@ const CustomSolutionsPage = () => {
   return (
     <>
       <SEOHead
-        title="Individualių Verslo Įrankių Kūrimas | Custom CRM, Automatizacija"
-        description="Kuriu individualius verslo įrankius ir sistemas Lietuvoje. CRM, automatizacija, logistikos sprendimai, analitika. Nuo MVP iki kompleksinių sistemų. Greitas pristatymas, konkurencingos kainos."
+        title="React/TypeScript Aplikacijų Kūrimas Verslui | CRM, Logistika, Automatizacija"
+        description="Profesionalus React ir TypeScript aplikacijų kūrimas Lietuvos verslui. Supabase backend, Vercel deployment. Specializacija logistikoje - CRM, krovinių valdymo sistemos. Nuo MVP (€2,500) iki enterprise (€25,000+). 5+ sėkmingi projektai. Portfolio + nemokama konsultacija."
         canonical={`${SITE_CONFIG.domain}/verslo-sprendimai`}
         keywords={[
-          "individualių verslo įrankių kūrimas",
-          "custom CRM Lietuvoje",
-          "verslo automatizacija Lietuvoje",
-          "logistikos programinė įranga",
-          "verslo valdymo sistema",
-          "darbuotojų grafikų planavimo sistema",
-          "buhalterijos automatizacija",
-          "verslo analitikos įrankiai",
-          "custom verslo sprendimai",
+          "React aplikacijų kūrimas Lietuvoje",
+          "TypeScript programuotojas",
+          "React kūrėjas Vilnius",
+          "Supabase kūrėjas Lietuva",
+          "custom CRM React",
+          "logistikos programinė įranga React",
+          "verslo automatizacija TypeScript",
+          "web aplikacijų kūrimas kaina",
+          "MVP kūrimas React",
+          "TypeScript aplikacijų kūrimas",
+          "Vercel deployment Lietuva",
+          "React freelancer Lietuva",
         ]}
         type="website"
         structuredData={structuredData}
@@ -331,9 +373,14 @@ const CustomSolutionsPage = () => {
                 automatizacijos iššūkių.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <Link to="/skaiciuokle">
+                  <button className="button-primary text-lg px-8 py-4 w-full sm:w-auto">
+                    Projekto skaičiuoklė
+                  </button>
+                </Link>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="button-primary text-lg px-8 py-4"
+                  className="button-outline text-lg px-8 py-4"
                 >
                   Pirminė konsultacija
                 </button>
@@ -389,7 +436,10 @@ const CustomSolutionsPage = () => {
         </div>
       </section>
 
-      {/* CTA #1 - Po problemų */}
+      {/* Tech Stack Section */}
+      <TechStackSection />
+
+      {/* CTA #1 - Po Tech Stack */}
       <div className="container mx-auto px-4 my-12">
         <BusinessSolutionsCTA variant="inline" context="publications" />
       </div>
@@ -482,18 +532,20 @@ const CustomSolutionsPage = () => {
               pritaikytas jūsų verslo poreikiams.
             </p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {projects.map(project => (
-                <ProjectCard key={project.id} project={project} />
+              {enhancedProjects.map(project => (
+                <EnhancedProjectCard key={project.id} project={project} />
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA #3 - Po portfolio */}
-      <div className="container mx-auto px-4 my-12">
-        <BusinessSolutionsCTA variant="inline" context="publications" />
-      </div>
+      {/* Calculator CTA - Po portfolio */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <CalculatorCTA />
+        </div>
+      </section>
 
       {/* Pricing Section */}
       <section className="py-16 md:py-20">

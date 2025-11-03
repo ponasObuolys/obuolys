@@ -63,6 +63,9 @@ const SupportPage = createLazyComponent(() => import("./pages/SupportPage"), {
 const CustomSolutionsPage = createLazyComponent(() => import("./pages/CustomSolutionsPage"), {
   cacheKey: "custom-solutions",
 });
+const ProjectCalculatorPage = createLazyComponent(() => import("./pages/ProjectCalculatorPage"), {
+  cacheKey: "project-calculator",
+});
 const PrivacyPolicyPage = createLazyComponent(() => import("./pages/PrivacyPolicyPage"), {
   cacheKey: "privacy-policy",
 });
@@ -105,6 +108,10 @@ const AdminCTAManagementPage = createNamedLazyComponent(
 const AdminCTAAnalyticsPage = createNamedLazyComponent(
   "admin-dashboard",
   () => import("./pages/admin/CTAAnalyticsPage")
+);
+const AdminCalculatorSubmissionsPage = createNamedLazyComponent(
+  "admin-dashboard",
+  () => import("./pages/admin/CalculatorSubmissionsPage")
 );
 
 const queryClient = new QueryClient({
@@ -402,6 +409,21 @@ const App = () => {
                             }
                           />
                           <Route
+                            path="/skaiciuokle"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/skaiciuokle"
+                                routeName="ProjectCalculatorPage"
+                              >
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama skaičiuoklė..." />}
+                                >
+                                  <ProjectCalculatorPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
                             path="/privatumas"
                             element={
                               <ContentRouteErrorBoundary
@@ -598,6 +620,21 @@ const App = () => {
                                   fallback={<LoadingSpinner text="Kraunama analytics..." />}
                                 >
                                   <AdminCTAAnalyticsPage />
+                                </SuspenseWithChunkError>
+                              </AdminRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/admin/calculator"
+                            element={
+                              <AdminRouteErrorBoundary
+                                routePath="/admin/calculator"
+                                routeName="AdminCalculatorSubmissionsPage"
+                              >
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunamos verslo užklausos..." />}
+                                >
+                                  <AdminCalculatorSubmissionsPage />
                                 </SuspenseWithChunkError>
                               </AdminRouteErrorBoundary>
                             }

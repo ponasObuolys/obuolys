@@ -14,6 +14,7 @@ import {
 } from "@/utils/seo";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { TrendingArticles } from "@/components/widgets/trending-articles";
+import { CalculatorCTA } from "@/components/cta/calculator-cta";
 
 const Index = () => {
   const structuredData = [generateOrganizationStructuredData(), generateWebSiteStructuredData()];
@@ -21,16 +22,22 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title="AI naujienos, įrankiai ir kursai Lietuvoje"
-        description="Atraskite naujausias dirbtinio intelekto naujienas, AI įrankius, kursus ir straipsnius lietuvių kalba. Nemokamos rekomendacijos ir patarimai apie AI Lietuvoje - ponas Obuolys"
+        title="React & TypeScript Aplikacijos Lietuvos Verslui | Ponas Obuolys"
+        description="Profesionalus React ir TypeScript aplikacijų kūrimas Lietuvos verslui. Specializacija logistikos sistemose - CRM, krovinių valdymas, automatizacija. Supabase + Vercel stack. 5+ sėkmingi projektai. Greitas pristatymas, patikimas kodas. Portfolio + nemokama konsultacija."
         canonical={SITE_CONFIG.domain}
         keywords={[
-          "AI naujienos Lietuva",
-          "dirbtinis intelektas",
-          "AI įrankiai",
-          "AI kursai lietuviškai",
-          "ChatGPT Lietuva",
-          "machine learning",
+          "React programuotojas Lietuva",
+          "TypeScript kūrėjas",
+          "React aplikacijų kūrimas",
+          "Supabase kūrimas",
+          "logistikos programinė įranga",
+          "CRM sistema React",
+          "web aplikacijų kūrimas Lietuvoje",
+          "React freelancer",
+          "TypeScript aplikacijos",
+          "Vercel deployment",
+          "MVP kūrimas",
+          "verslo automatizacija",
         ]}
         type="website"
         structuredData={structuredData}
@@ -49,8 +56,15 @@ const Index = () => {
       {/* <AITools /> */}
       <Courses />
 
-      {/* Business Solutions CTA */}
+      {/* Calculator CTA - Lead Magnet */}
       <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <CalculatorCTA />
+        </div>
+      </section>
+
+      {/* Business Solutions CTA */}
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <BusinessSolutionsCTA context="publications" centered />
         </div>

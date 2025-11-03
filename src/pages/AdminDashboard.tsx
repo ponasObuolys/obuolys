@@ -370,22 +370,41 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="inquiries">
-            <Card>
-              <CardHeader>
-                <CardTitle>Verslo Sprendimų Užklausos</CardTitle>
-                <CardDescription>
-                  Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={() => (window.location.href = "/admin/inquiries")}
-                  className="button-primary"
-                >
-                  Atidaryti užklausų valdymo puslapį
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Projekto Skaičiuoklės Užklausos</CardTitle>
+                  <CardDescription>
+                    Peržiūrėkite užklausas iš projekto skaičiuoklės
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    onClick={() => (window.location.href = "/admin/calculator")}
+                    className="button-primary"
+                  >
+                    Atidaryti skaičiuoklės užklausas
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Kontaktų Formos Užklausos</CardTitle>
+                  <CardDescription>
+                    Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    onClick={() => (window.location.href = "/admin/inquiries")}
+                    className="button-primary"
+                  >
+                    Atidaryti kontaktų užklausų puslapį
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="analytics">

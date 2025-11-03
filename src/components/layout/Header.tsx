@@ -41,6 +41,7 @@ const Header = () => {
     { to: "/kursai", label: "Kursai" },
     { to: "/irankiai", label: "Įrankiai" },
     { to: "/verslo-sprendimai", label: "Verslo Sprendimai" },
+    { to: "/skaiciuokle", label: "Projekto Skaičiuoklė", highlight: true },
     { to: "/kontaktai", label: "Kontaktai" },
   ];
 
@@ -61,12 +62,16 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center space-x-6">
-            {navLinks.map(({ to, label }) => (
+            {navLinks.map(({ to, label, highlight }) => (
               <Link
                 key={to}
                 to={to}
                 className={`nav-link transition-colors duration-300 flex items-center gap-2 whitespace-nowrap text-sm ${
-                  isActive(to) ? "text-foreground" : "text-foreground/60 hover:text-foreground"
+                  highlight
+                    ? "text-primary font-semibold hover:text-primary/80"
+                    : isActive(to)
+                    ? "text-foreground"
+                    : "text-foreground/60 hover:text-foreground"
                 }`}
               >
                 {label}
@@ -209,11 +214,15 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="xl:hidden bg-background border-t border-border">
           <div className="container mx-auto py-4 px-4 space-y-2">
-            {navLinks.map(({ to, label }) => (
+            {navLinks.map(({ to, label, highlight }) => (
               <Link
                 key={to}
                 to={to}
-                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
+                className={`block px-4 py-3 rounded-lg transition-colors duration-300 ${
+                  highlight
+                    ? "bg-primary/10 text-primary font-semibold hover:bg-primary/20"
+                    : "text-foreground/80 hover:text-foreground hover:bg-card"
+                }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <div className="flex items-center justify-between">
