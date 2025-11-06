@@ -7,6 +7,7 @@ interface PricingPlan {
   duration: string;
   features: string[];
   bestFor: string;
+  roi?: string;
   popular: boolean;
 }
 
@@ -46,6 +47,13 @@ const PricingCard = ({ plan, onCTAClick }: PricingCardProps) => {
           ))}
         </ul>
       </div>
+
+      {/* ROI Section */}
+      {plan.roi && (
+        <div className="mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <p className="text-xs font-bold text-primary text-left">{plan.roi}</p>
+        </div>
+      )}
 
       <div className="p-4 bg-muted/50 rounded-lg mb-4">
         <p className="text-sm text-foreground/70 text-left">

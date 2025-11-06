@@ -13,6 +13,7 @@ interface EnhancedProject {
   problem: string;
   solution: string;
   results: string[];
+  roi?: string; // e.g., "Investicija €12,000 • Atsipirko per 4 mėnesius"
   images: ProjectImage[]; // Multiple images
   techStack: string[]; // e.g., ["React", "TypeScript", "Supabase"]
   timeline: string; // e.g., "6 savaitės • 2025 Q2"
@@ -184,7 +185,7 @@ const EnhancedProjectCard = ({ project }: EnhancedProjectCardProps) => {
 
         <div className="mt-auto">
           <h4 className="text-sm font-bold text-foreground/60 mb-3 text-left">REZULTATAI:</h4>
-          <ul className="space-y-2">
+          <ul className="space-y-2 mb-4">
             {project.results.map((result, idx) => (
               <li key={idx} className="flex items-start gap-2 text-left">
                 <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -192,6 +193,13 @@ const EnhancedProjectCard = ({ project }: EnhancedProjectCardProps) => {
               </li>
             ))}
           </ul>
+
+          {/* ROI Section */}
+          {project.roi && (
+            <div className="mt-4 pt-4 border-t border-foreground/10">
+              <p className="text-sm font-bold text-primary text-left">{project.roi}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
