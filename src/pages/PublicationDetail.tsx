@@ -13,6 +13,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { secureLogger } from "@/utils/browserLogger";
 import { extractImagesFromHTML, preloadImagesWhenIdle } from "@/utils/imagePreloader";
 import { addLazyLoadingToImages } from "@/utils/lazyLoadImages";
+import { slateToHtml } from "@/utils/slateToHtml";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
@@ -293,7 +294,7 @@ const PublicationDetail = () => {
 
             <div ref={contentRef}>
               <SafeRichText
-                content={addLazyLoadingToImages(publication.content || "")}
+                content={addLazyLoadingToImages(slateToHtml(publication.content || ""))}
                 className="prose max-w-none mb-8 text-left"
               />
             </div>

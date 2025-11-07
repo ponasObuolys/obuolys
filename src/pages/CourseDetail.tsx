@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, CheckCircle } from "lucide-react";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { secureLogger } from "@/utils/browserLogger";
+import { slateToHtml } from "@/utils/slateToHtml";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -182,7 +183,7 @@ const CourseDetail = () => {
               <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-6 text-foreground text-left">Aprašymas</h2>
                 <SafeRichText
-                  content={course.content}
+                  content={slateToHtml(course.content)}
                   className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left"
                 />
               </div>
