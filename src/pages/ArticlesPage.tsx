@@ -9,12 +9,26 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Article = Database["public"]["Tables"]["articles"]["Row"];
+type PublicationListArticle = Pick<
+  Article,
+  | "id"
+  | "title"
+  | "slug"
+  | "description"
+  | "date"
+  | "category"
+  | "image_url"
+  | "content_type"
+  | "featured"
+  | "author"
+  | "read_time"
+>;
 
 import { useSupabaseErrorHandler } from "@/hooks/useErrorHandler";
 import { Helmet } from "react-helmet-async";
 
 const PublicationsPage = () => {
-  const [publications, setPublications] = useState<Article[]>([]);
+  const [publications, setPublications] = useState<PublicationListArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
@@ -34,9 +48,12 @@ const PublicationsPage = () => {
     const fetchPublications = async () => {
       try {
         setLoading(true);
+        // ⚡ OPTIMIZUOTA: Nenaudojame 'content' lauko (gali būti >100KB)
         const { data, error } = await supabase
           .from("articles")
-          .select("*")
+          .select(
+            "id, title, slug, description, date, category, image_url, content_type, featured, author, read_time"
+          )
           .eq("published", true)
           .order("date", { ascending: false });
 
@@ -67,7 +84,7 @@ const PublicationsPage = () => {
   const filteredPublications = publications.filter(item => {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.description || "").toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory =
       selectedCategory === "Visos kategorijos" ||
       (item.category && item.category.includes(selectedCategory));

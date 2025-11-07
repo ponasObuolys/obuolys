@@ -7,9 +7,23 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 type Article = Database["public"]["Tables"]["articles"]["Row"];
+type FeaturedArticle = Pick<
+  Article,
+  | "id"
+  | "title"
+  | "slug"
+  | "description"
+  | "date"
+  | "category"
+  | "image_url"
+  | "content_type"
+  | "featured"
+  | "author"
+  | "read_time"
+>;
 
 const FeaturedArticles = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<FeaturedArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const { handleError } = useSupabaseErrorHandler({
     componentName: "FeaturedArticles",
@@ -22,7 +36,9 @@ const FeaturedArticles = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from("articles")
-          .select("*")
+          .select(
+            "id, title, slug, description, date, category, image_url, content_type, featured, author, read_time"
+          )
           .eq("published", true)
           .order("date", { ascending: false })
           .limit(3);
