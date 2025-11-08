@@ -45,7 +45,16 @@ module.exports = async (req, res) => {
       });
     }
 
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    let stripe;
+    try {
+      stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    } catch (stripeError) {
+      console.error('Failed to initialize Stripe SDK:', stripeError);
+      return res.status(500).json({
+        error: 'Stripe SDK initialization failed',
+        details: stripeError instanceof Error ? stripeError.message : 'Unknown error loading Stripe',
+      });
+    }
 
     let body = req.body;
 
