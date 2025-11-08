@@ -3,12 +3,16 @@
  * Endpoint: POST /api/create-checkout-session
  */
 
-// Patikrinti ar Stripe secret key egzistuoja
-if (!process.env.STRIPE_SECRET_KEY) {
-  console.error('CRITICAL: STRIPE_SECRET_KEY is not set in environment variables');
+let stripe;
+try {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('CRITICAL: STRIPE_SECRET_KEY is not set in environment variables');
+    throw new Error('STRIPE_SECRET_KEY not configured');
+  }
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+} catch (error) {
+  console.error('Failed to initialize Stripe:', error.message);
 }
-
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // CORS headers
 const corsHeaders = {
@@ -18,26 +22,29 @@ const corsHeaders = {
 };
 
 module.exports = async (req, res) => {
+  // SVARBU: Nustatyti CORS headers PIRMIAUSIAI
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({ ...corsHeaders });
+    return res.status(200).end();
   }
 
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({
       error: 'Method not allowed',
-      ...corsHeaders
     });
   }
 
-  // Patikrinti ar Stripe konfigūracija yra
-  if (!process.env.STRIPE_SECRET_KEY) {
-    console.error('STRIPE_SECRET_KEY not configured');
+  // Patikrinti ar Stripe SDK inicializuotas
+  if (!stripe) {
+    console.error('Stripe SDK not initialized');
     return res.status(500).json({
       error: 'Stripe konfigūracija neįkelta',
-      details: 'STRIPE_SECRET_KEY environment variable is not set in Vercel',
-      ...corsHeaders,
+      details: 'Stripe SDK failed to initialize - check STRIPE_SECRET_KEY',
     });
   }
 
@@ -48,7 +55,6 @@ module.exports = async (req, res) => {
     if (!priceId || !courseId) {
       return res.status(400).json({
         error: 'Trūksta privalomų laukų: priceId, courseId',
-        ...corsHeaders,
       });
     }
 
@@ -85,7 +91,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({
       sessionId: session.id,
       url: session.url,
-      ...corsHeaders,
     });
   } catch (error) {
     console.error('Stripe Checkout error:', error);
@@ -93,7 +98,6 @@ module.exports = async (req, res) => {
     return res.status(500).json({
       error: 'Nepavyko sukurti mokėjimo sesijos',
       details: error.message,
-      ...corsHeaders,
     });
   }
 };
