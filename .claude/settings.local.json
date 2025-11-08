@@ -43,7 +43,8 @@
       "Bash(exit 0)",
       "Bash(npx prettier --write \"src/pages/admin/CTAAnalyticsPage.tsx\")",
       "Read(//private/tmp/**)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []

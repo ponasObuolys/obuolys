@@ -91,22 +91,29 @@ export function ProjectCalculator() {
 
           {/* Progress Bar */}
           <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-2 relative">
               {STEPS.map((step, index) => (
                 <div
                   key={step.id}
                   className={`flex items-center ${index < STEPS.length - 1 ? 'flex-1' : ''}`}
                 >
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                      currentStep > step.id
-                        ? 'bg-primary border-primary text-white'
-                        : currentStep === step.id
-                        ? 'border-primary text-primary bg-primary/10'
-                        : 'border-muted text-muted-foreground'
-                    }`}
-                  >
-                    {currentStep > step.id ? '✓' : step.id}
+                  <div className="relative">
+                    <div
+                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                        currentStep > step.id
+                          ? 'bg-primary border-primary text-white'
+                          : currentStep === step.id
+                          ? 'border-primary text-primary bg-primary/10'
+                          : 'border-muted text-muted-foreground'
+                      }`}
+                    >
+                      {currentStep > step.id ? '✓' : step.id}
+                    </div>
+                    <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-max max-w-[80px] sm:max-w-none">
+                      <p className="text-[10px] sm:text-xs text-foreground/60 text-center leading-tight">
+                        {step.title}
+                      </p>
+                    </div>
                   </div>
                   {index < STEPS.length - 1 && (
                     <div
@@ -118,13 +125,7 @@ export function ProjectCalculator() {
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-xs text-foreground/60">
-              {STEPS.map((step) => (
-                <span key={step.id} className="w-20 text-center">
-                  {step.title}
-                </span>
-              ))}
-            </div>
+            <div className="h-8 sm:h-6"></div>
           </div>
 
           {/* Step Content */}
