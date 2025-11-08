@@ -21,56 +21,86 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
+async function readRequestBody(req) {
+  const chunks = [];
+
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+
+  if (!chunks.length) {
+    return '';
+  }
+
+  return Buffer.concat(chunks).toString('utf-8');
+}
+
 module.exports = async (req, res) => {
-  // SVARBU: Nustatyti CORS headers PIRMIAUSIAI
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  try {
+    // SVARBU: Nustatyti CORS headers PIRMIAUSIAI
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
 
-  // Only allow POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      error: 'Method not allowed',
-    });
-  }
-
-  // Patikrinti ar Stripe SDK inicializuotas
-  if (!stripe) {
-    console.error('Stripe SDK not initialized');
-    return res.status(500).json({
-      error: 'Stripe konfigūracija neįkelta',
-      details: 'Stripe SDK failed to initialize - check STRIPE_SECRET_KEY',
-    });
-  }
-
-  let body = req.body;
-
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body);
-    } catch (parseError) {
-      console.error('Invalid JSON payload received:', parseError.message);
-      return res.status(400).json({
-        error: 'Neteisingas JSON formatas',
-        details: 'Pateikti duomenys nėra tinkamai suformuotas JSON',
+    // Only allow POST
+    if (req.method !== 'POST') {
+      return res.status(405).json({
+        error: 'Method not allowed',
       });
     }
-  }
 
-  if (!body || typeof body !== 'object') {
-    return res.status(400).json({
-      error: 'Neteisingas užklausos formatas',
-      details: 'Tikimasi JSON objekto su laukais priceId ir courseId',
-    });
-  }
+    // Patikrinti ar Stripe SDK inicializuotas
+    if (!stripe) {
+      console.error('Stripe SDK not initialized');
+      return res.status(500).json({
+        error: 'Stripe konfigūracija neįkelta',
+        details: 'Stripe SDK failed to initialize - check STRIPE_SECRET_KEY',
+      });
+    }
 
-  try {
+    let body = req.body;
+
+    if (body === undefined || body === null || body === '') {
+      const rawBody = await readRequestBody(req);
+      body = rawBody;
+    }
+
+    if (typeof body === 'string') {
+      if (!body.trim()) {
+        body = null;
+      } else {
+        try {
+          body = JSON.parse(body);
+        } catch (parseError) {
+          console.error('Invalid JSON payload received:', parseError.message);
+          return res.status(400).json({
+            error: 'Neteisingas JSON formatas',
+            details: 'Pateikti duomenys nėra tinkamai suformuotas JSON',
+          });
+        }
+      }
+    }
+
+    if (!body || typeof body !== 'object') {
+      return res.status(400).json({
+        error: 'Neteisingas užklausos formatas',
+        details: 'Tikimasi JSON objekto su laukais priceId ir courseId',
+      });
+    }
+
     const { priceId, courseId, userId, customerEmail, customerName } = body;
+
+    console.info('Creating Stripe checkout session', {
+      courseId,
+      priceId,
+      hasUserId: Boolean(userId),
+      hasCustomerEmail: Boolean(customerEmail),
+    });
 
     // Validacija
     if (!priceId || !courseId) {
@@ -89,7 +119,7 @@ module.exports = async (req, res) => {
           quantity: 1,
         },
       ],
-      customer_email: customerEmail,
+      customer_email: customerEmail || undefined,
       metadata: {
         courseId,
         userId: userId || 'guest',
@@ -116,9 +146,16 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('Stripe Checkout error:', error);
 
-    return res.status(500).json({
-      error: 'Nepavyko sukurti mokėjimo sesijos',
-      details: error.message,
-    });
+    if (!res.headersSent) {
+      const statusCode = typeof error === 'object' && error && 'statusCode' in error ? error.statusCode : 500;
+
+      return res.status(statusCode || 500).json({
+        error: 'Nepavyko sukurti mokėjimo sesijos',
+        details: error instanceof Error ? error.message : 'Nežinoma klaida',
+        code: typeof error === 'object' && error && 'code' in error ? error.code : undefined,
+      });
+    }
+
+    return res.end();
   }
 };
