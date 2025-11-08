@@ -48,8 +48,29 @@ module.exports = async (req, res) => {
     });
   }
 
+  let body = req.body;
+
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (parseError) {
+      console.error('Invalid JSON payload received:', parseError.message);
+      return res.status(400).json({
+        error: 'Neteisingas JSON formatas',
+        details: 'Pateikti duomenys nėra tinkamai suformuotas JSON',
+      });
+    }
+  }
+
+  if (!body || typeof body !== 'object') {
+    return res.status(400).json({
+      error: 'Neteisingas užklausos formatas',
+      details: 'Tikimasi JSON objekto su laukais priceId ir courseId',
+    });
+  }
+
   try {
-    const { priceId, courseId, userId, customerEmail, customerName } = req.body;
+    const { priceId, courseId, userId, customerEmail, customerName } = body;
 
     // Validacija
     if (!priceId || !courseId) {
