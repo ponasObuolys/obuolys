@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from '@/components/ui/use-toast';
 import { getCurrentPrice } from '@/config/stripe';
+import { secureLogger } from '@/utils/browserLogger';
 
 interface UseCoursePurchaseProps {
   courseId: string;
@@ -40,7 +41,9 @@ export function useCoursePurchase({ courseId, courseTitle: _courseTitle }: UseCo
       });
 
       if (!response.ok) {
-        throw new Error('Nepavyko sukurti mokėjimo sesijos');
+        const errorData = await response.json();
+        secureLogger.error('API Error:', errorData);
+        throw new Error(errorData.details || 'Nepavyko sukurti mokėjimo sesijos');
       }
 
       const { url } = await response.json();
@@ -52,10 +55,7 @@ export function useCoursePurchase({ courseId, courseTitle: _courseTitle }: UseCo
       // Nukreipti į Stripe Checkout
       window.location.href = url;
     } catch (error) {
-      // Log error for debugging (development only)
-      if (import.meta.env.DEV) {
-        console.error('Purchase error:', error);
-      }
+      secureLogger.error('Purchase error:', error);
       toast({
         title: 'Klaida',
         description:

@@ -3,6 +3,11 @@
  * Endpoint: POST /api/create-checkout-session
  */
 
+// Patikrinti ar Stripe secret key egzistuoja
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('CRITICAL: STRIPE_SECRET_KEY is not set in environment variables');
+}
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // CORS headers
@@ -23,6 +28,16 @@ module.exports = async (req, res) => {
     return res.status(405).json({
       error: 'Method not allowed',
       ...corsHeaders
+    });
+  }
+
+  // Patikrinti ar Stripe konfigūracija yra
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error('STRIPE_SECRET_KEY not configured');
+    return res.status(500).json({
+      error: 'Stripe konfigūracija neįkelta',
+      details: 'STRIPE_SECRET_KEY environment variable is not set in Vercel',
+      ...corsHeaders,
     });
   }
 
