@@ -41,6 +41,38 @@ const getPatreonLink = (slug: string): string => {
   return patreonLinks[slug] || "#";
 };
 
+// Funkcija lietuviškam valandų formatavimui
+const formatDuration = (duration: string): string => {
+  // Ištraukiame skaičių iš duration string (pvz., "14" iš "14")
+  const hours = parseInt(duration);
+
+  if (isNaN(hours)) {
+    return duration; // Jei nepavyko parse'inti, grąžiname originalą
+  }
+
+  // Lietuviška daugiskaita:
+  // 1, 21, 31... -> valanda
+  // 2-4, 22-24, 32-34... (bet ne 12-14) -> valandos
+  // 5-20, 25-30... -> valandų
+
+  const lastDigit = hours % 10;
+  const lastTwoDigits = hours % 100;
+
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+    return `${hours} valandų`;
+  }
+
+  if (lastDigit === 1) {
+    return `${hours} valanda`;
+  }
+
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `${hours} valandos`;
+  }
+
+  return `${hours} valandų`;
+};
+
 const CourseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -176,7 +208,7 @@ const CourseDetail = () => {
               <div className="flex flex-wrap gap-4 mb-6 text-foreground/70">
                 <div className="flex items-center">
                   <Clock className="mr-2 h-5 w-5 text-primary" />
-                  <span>{course.duration}</span>
+                  <span>{formatDuration(course.duration)}</span>
                 </div>
               </div>
 
@@ -193,7 +225,7 @@ const CourseDetail = () => {
           <div className="lg:col-span-1">
             <div className="dark-card sticky top-24">
               <div className="text-center mb-6">
-                <p className="text-3xl font-bold text-primary mb-2">{course.price}</p>
+                <p className="text-3xl font-bold text-primary mb-2">{course.price}€</p>
                 <div className="text-sm mb-4 text-foreground/60">
                   Vienkartinis mokėjimas, prieiga neribotam laikui
                 </div>
@@ -205,23 +237,19 @@ const CourseDetail = () => {
                 </Button>
               </div>
 
-              <div className="border-t border-border pt-6">
-                <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
-                <ul className="space-y-3 text-left text-foreground/80">
-                  <li className="flex items-start">
-                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Neribota prieiga prie kurso medžiagos</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Praktiniai užsiėmimai ir užduotys</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Tiesioginis ryšys su dėstytoju</span>
-                  </li>
-                </ul>
-              </div>
+              {course.highlights && course.highlights.length > 0 && (
+                <div className="border-t border-border pt-6">
+                  <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+                  <ul className="space-y-3 text-left text-foreground/80">
+                    {course.highlights.map((highlight, index) => (
+                      <li key={index} className="flex items-start">
+                        <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

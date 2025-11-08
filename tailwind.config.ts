@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -108,7 +109,20 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-quotes": "#4CAF50",
+            "--tw-prose-quote-borders": "#4CAF50",
+            blockquote: {
+              borderLeftColor: "#4CAF50",
+              color: "#4CAF50",
+              fontWeight: "500",
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindcssAnimate, typography],
 } satisfies Config;
