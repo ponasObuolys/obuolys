@@ -5,6 +5,7 @@ import { SafeRichText } from "@/components/ui/SafeHtml";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { secureLogger } from "@/utils/browserLogger";
 import { slateToHtml } from "@/utils/slateToHtml";
+import { formatDuration } from "@/utils/formatDuration";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -39,38 +40,6 @@ const getPatreonLink = (slug: string): string => {
     "vibe-coding-masterclass": "https://www.patreon.com/posts/vibe-coding-su-125505176",
   };
   return patreonLinks[slug] || "#";
-};
-
-// Funkcija lietuviškam valandų formatavimui
-const formatDuration = (duration: string): string => {
-  // Ištraukiame skaičių iš duration string (pvz., "14" iš "14")
-  const hours = parseInt(duration);
-
-  if (isNaN(hours)) {
-    return duration; // Jei nepavyko parse'inti, grąžiname originalą
-  }
-
-  // Lietuviška daugiskaita:
-  // 1, 21, 31... -> valanda
-  // 2-4, 22-24, 32-34... (bet ne 12-14) -> valandos
-  // 5-20, 25-30... -> valandų
-
-  const lastDigit = hours % 10;
-  const lastTwoDigits = hours % 100;
-
-  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-    return `${hours} valandų`;
-  }
-
-  if (lastDigit === 1) {
-    return `${hours} valanda`;
-  }
-
-  if (lastDigit >= 2 && lastDigit <= 4) {
-    return `${hours} valandos`;
-  }
-
-  return `${hours} valandų`;
 };
 
 const CourseDetail = () => {

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Clock, BarChart } from "lucide-react";
 import LazyImage from "@/components/ui/lazy-image";
+import { formatDuration } from "@/utils/formatDuration";
 
 interface CourseCardProps {
   course: {
@@ -75,7 +76,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <div className="flex items-center gap-4 text-xs text-foreground/90">
             <div className="flex items-center gap-1">
               <Clock size={14} />
-              <span>{course.duration || "Nenurodyta"}</span>
+              <span>{course.duration ? formatDuration(course.duration) : "Nenurodyta"}</span>
             </div>
             <div className="flex items-center gap-1">
               <BarChart size={14} />
