@@ -15,6 +15,7 @@
       "Bash(rm:*)",
       "Bash(del \"vercel.json\")",
       "mcp__ide__getDiagnostics",
+      "mcp__supabase__get_project",
       "mcp__supabase__execute_sql",
       "mcp__supabase__list_tables",
       "mcp__sequential-thinking__sequentialthinking",

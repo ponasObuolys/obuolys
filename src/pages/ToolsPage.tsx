@@ -4,85 +4,56 @@ import ToolCard from "@/components/ui/tool-card";
 import { ToolCardSkeleton } from "@/components/ui/tool-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 import { Plus } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 
-type Tool = Database["public"]["Tables"]["tools"]["Row"];
 // Importuojame naujus komponentus
 import ToolCategories from "@/components/tools/ToolCategories";
 import ToolSearch from "@/components/tools/ToolSearch";
 
-import { createErrorReport, reportError } from "@/utils/errorReporting";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
+import { useTools } from "@/hooks/useSupabaseData";
 
 const ToolsPage = () => {
-  const [tools, setTools] = useState<Tool[]>([]);
-  const [filteredTools, setFilteredTools] = useState<Tool[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Naudojame React Query hook vietoj useState + useEffect
+  const { data: tools = [], isLoading: loading, error } = useTools();
+
+  // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
-    const fetchTools = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase.from("tools").select("*").eq("published", true);
+    if (error) {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti įrankių. Bandykite vėliau.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setTools(data);
-          setFilteredTools(data); // Iš pradžių rodomi visi įrankiai
-        }
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti įrankių";
-        toast({
-          title: "Klaida",
-          description: "Nepavyko gauti įrankių. Bandykite vėliau.",
-          variant: "destructive",
-        });
-        const normalizedError = error instanceof Error ? error : new Error(errorMessage);
-        const errorReport = createErrorReport(normalizedError, {
-          errorBoundary: "ToolsPage",
-          additionalData: { operation: "fetchTools" },
-        });
-        reportError(errorReport);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTools();
-  }, [toast]);
-
-  useEffect(() => {
-    let result = tools;
-
+  // Filtruojame įrankius pagal paiešką ir kategoriją (computed value)
+  const filteredTools = tools.filter((tool) => {
     // Filter by search query
     if (searchQuery) {
-      result = result.filter(
-        tool =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (tool.description &&
-            tool.description.toLowerCase().includes(searchQuery.toLowerCase())) || // Pridėtas description tikrinimas
-          tool.category.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const matchesSearch =
+        tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (tool.description && tool.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        tool.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+      if (!matchesSearch) return false;
     }
 
     // Filter by category
-    if (selectedCategory) {
-      result = result.filter(tool => tool.category === selectedCategory);
+    if (selectedCategory && tool.category !== selectedCategory) {
+      return false;
     }
 
-    setFilteredTools(result);
-  }, [searchQuery, selectedCategory, tools]);
+    return true;
+  });
 
   // Get unique categories
   const categories = [...new Set(tools.map(tool => tool.category))];

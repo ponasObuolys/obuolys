@@ -126,6 +126,12 @@ const queryClient = new QueryClient({
         return failureCount < 3;
       },
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      // Duomenys laikomi "šviežiais" 5 minutes
+      staleTime: 5 * 60 * 1000,
+      // Visada refetch'inti kai komponentas mount'inasi (išsprendžia navigacijos problemą)
+      refetchOnMount: true,
+      // Nerefetch'inti kai sugrįžtama į langą (išvengti nereikalingų refetch)
+      refetchOnWindowFocus: false,
     },
   },
 });

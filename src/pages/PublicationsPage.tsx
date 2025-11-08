@@ -4,62 +4,38 @@ import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
 import { Search, Plus } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { ListSkeleton } from "@/components/ui/content-skeleton";
-
-type Publication = Tables<"articles">;
+import { useArticles } from "@/hooks/useSupabaseData";
 
 const PublicationsPage = () => {
-  const [publications, setPublications] = useState<Publication[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visos kategorijos");
   const { toast } = useToast();
+
+  // Naudojame React Query hook vietoj useState + useEffect
+  const { data: publications = [], isLoading: loading, error } = useArticles();
+
+  // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Klaida",
+        description: `Nepavyko gauti publikacijų. Bandykite vėliau. (klaida: ${error.message})`,
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   // Get unique categories from publications (flatten arrays)
   const categories = [
     "Visos kategorijos",
     ...Array.from(new Set(publications.flatMap(item => item.category || []))),
   ];
-
-  useEffect(() => {
-    const fetchPublications = async () => {
-      try {
-        setLoading(true);
-
-        const { data, error } = await supabase
-          .from("articles")
-          .select("*")
-          .eq("published", true)
-          .order("date", { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setPublications(data);
-        }
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti publikacijų";
-        toast({
-          title: "Klaida",
-          description: `Nepavyko gauti publikacijų. Bandykite vėliau. (klaida: ${errorMessage})`,
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPublications();
-  }, [toast]);
 
   const filteredPublications = publications.filter(item => {
     const matchesSearch =

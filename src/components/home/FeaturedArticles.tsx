@@ -1,64 +1,26 @@
 import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
-import { useSupabaseErrorHandler } from "@/hooks/useErrorHandler";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
-import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
-
-type Article = Database["public"]["Tables"]["articles"]["Row"];
-type FeaturedArticle = Pick<
-  Article,
-  | "id"
-  | "title"
-  | "slug"
-  | "description"
-  | "date"
-  | "category"
-  | "image_url"
-  | "content_type"
-  | "featured"
-  | "author"
-  | "read_time"
->;
+import { useFeaturedArticles } from "@/hooks/useSupabaseData";
+import { useEffect } from "react";
 
 const FeaturedArticles = () => {
-  const [articles, setArticles] = useState<FeaturedArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { handleError } = useSupabaseErrorHandler({
-    componentName: "FeaturedArticles",
-    showToast: true,
-  });
+  const { toast } = useToast();
 
+  // Naudojame React Query hook vietoj useState + useEffect
+  const { data: articles = [], isLoading: loading, error } = useFeaturedArticles();
+
+  // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
-    const fetchLatestArticles = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("articles")
-          .select(
-            "id, title, slug, description, date, category, image_url, content_type, featured, author, read_time"
-          )
-          .eq("published", true)
-          .order("date", { ascending: false })
-          .limit(3);
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setArticles(data);
-        }
-      } catch (error) {
-        handleError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLatestArticles();
-  }, [handleError]);
+    if (error) {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti naujausių publikacijų. Bandykite vėliau.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   return (
     <section className="py-12 md:py-16 bg-muted/30">

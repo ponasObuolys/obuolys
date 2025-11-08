@@ -1,44 +1,26 @@
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/ui/course-card";
-import { useSupabaseErrorHandler } from "@/hooks/useErrorHandler";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
-import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
-
-type Course = Database["public"]["Tables"]["courses"]["Row"];
+import { useCourses } from "@/hooks/useSupabaseData";
+import { useEffect } from "react";
 
 const Courses = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { handleError } = useSupabaseErrorHandler({ componentName: "Courses" });
+  const { toast } = useToast();
 
+  // Naudojame React Query hook vietoj useState + useEffect (limituojame 2 kursus)
+  const { data: courses = [], isLoading: loading, error } = useCourses(2);
+
+  // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("courses")
-          .select("*")
-          .eq("published", true)
-          .limit(2);
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setCourses(data);
-        }
-      } catch (error) {
-        handleError(error as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, [handleError]);
+    if (error) {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti kursų. Bandykite vėliau.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   return (
     <section className="py-12 md:py-16">

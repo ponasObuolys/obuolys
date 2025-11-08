@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
 import CourseCard from "@/components/ui/course-card";
 import { CourseCardSkeleton } from "@/components/ui/course-card-skeleton";
-import { useSupabaseErrorHandler } from "@/hooks/useErrorHandler";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Users, Star, MessageCircle, Check } from "lucide-react";
 import {
@@ -19,22 +16,29 @@ import {
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
-
-type Course = Database["public"]["Tables"]["courses"]["Row"];
+import { useCourses } from "@/hooks/useSupabaseData";
 
 type ServiceType = "individual" | "group" | "workshop" | null;
 
 const CoursesPage = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<ServiceType>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [showTooltip, setShowTooltip] = useState(false);
   const { toast } = useToast();
-  const { handleError } = useSupabaseErrorHandler({
-    componentName: "CoursesPage",
-    showToast: false,
-  });
+
+  // Naudojame React Query hook vietoj useState + useEffect
+  const { data: courses = [], isLoading: loading, error } = useCourses();
+
+  // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Klaida",
+        description: "Nepavyko gauti kursų. Bandykite vėliau.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setTooltipPosition({ x: e.clientX, y: e.clientY });
@@ -47,40 +51,6 @@ const CoursesPage = () => {
   const handleMouseLeave = () => {
     setShowTooltip(false);
   };
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("courses")
-          .select("*")
-          .eq("published", true)
-          .order("title", { ascending: true });
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setCourses(data);
-        }
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Nepavyko gauti kursų";
-        const err = error instanceof Error ? error : new Error(errorMessage);
-        handleError(err);
-        toast({
-          title: "Klaida",
-          description: "Nepavyko gauti kursų. Bandykite vėliau.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, [handleError, toast]);
 
   const getServiceContent = (service: ServiceType) => {
     switch (service) {
