@@ -9,6 +9,7 @@ import { formatDuration } from "@/utils/formatDuration";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { CoursePurchaseCard } from "@/components/course/CoursePurchaseCard";
 
 import SEOHead from "@/components/SEO";
 import {
@@ -192,34 +193,54 @@ const CourseDetail = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="dark-card sticky top-24">
-              <div className="text-center mb-6">
-                <p className="text-3xl font-bold text-primary mb-2">{course.price}€</p>
-                <div className="text-sm mb-4 text-foreground/60">
-                  Vienkartinis mokėjimas, prieiga neribotam laikui
+            {/* Tikrinti ar tai yra kursas su Stripe mokėjimu (kaip-pradeti-programuoti-su-di) */}
+            {course.id === '3a107f1a-9c87-4291-bf90-6adf854b2116' ? (
+              <CoursePurchaseCard courseId={course.id} courseTitle={course.title} />
+            ) : (
+              <div className="dark-card sticky top-24">
+                <div className="text-center mb-6">
+                  <p className="text-3xl font-bold text-primary mb-2">{course.price}€</p>
+                  <div className="text-sm mb-4 text-foreground/60">
+                    Vienkartinis mokėjimas, prieiga neribotam laikui
+                  </div>
+                  <Button
+                    className="w-full button-primary text-lg py-6"
+                    onClick={() => (window.location.href = getPatreonLink(course.slug))}
+                  >
+                    Įsigyti kursą
+                  </Button>
                 </div>
-                <Button
-                  className="w-full button-primary text-lg py-6"
-                  onClick={() => (window.location.href = getPatreonLink(course.slug))}
-                >
-                  Įsigyti kursą
-                </Button>
-              </div>
 
-              {course.highlights && course.highlights.length > 0 && (
-                <div className="border-t border-border pt-6">
-                  <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
-                  <ul className="space-y-3 text-left text-foreground/80">
-                    {course.highlights.map((highlight, index) => (
-                      <li key={index} className="flex items-start">
-                        <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+                {course.highlights && course.highlights.length > 0 && (
+                  <div className="border-t border-border pt-6">
+                    <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+                    <ul className="space-y-3 text-left text-foreground/80">
+                      {course.highlights.map((highlight, index) => (
+                        <li key={index} className="flex items-start">
+                          <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Highlights rodomi už kortelės */}
+            {course.id === '3a107f1a-9c87-4291-bf90-6adf854b2116' && course.highlights && course.highlights.length > 0 && (
+              <div className="dark-card mt-6">
+                <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+                <ul className="space-y-3 text-left text-foreground/80">
+                  {course.highlights.map((highlight, index) => (
+                    <li key={index} className="flex items-start">
+                      <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>

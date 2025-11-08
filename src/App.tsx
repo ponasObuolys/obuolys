@@ -54,6 +54,9 @@ const CoursesPage = createLazyComponent(() => import("./pages/CoursesPage"), {
 const CourseDetail = createLazyComponent(() => import("./pages/CourseDetail"), {
   cacheKey: "course-detail",
 });
+const CoursePaymentSuccess = createLazyComponent(() => import("./pages/CoursePaymentSuccess"), {
+  cacheKey: "course-payment-success",
+});
 const ContactPage = createLazyComponent(() => import("./pages/ContactPage"), {
   cacheKey: "contact",
 });
@@ -350,6 +353,21 @@ const App = () => {
                                   fallback={<LoadingSpinner text="Kraunami kursai..." />}
                                 >
                                   <CoursesPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          <Route
+                            path="/kursai/mokejimas-sekmingas"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/kursai/mokejimas-sekmingas"
+                                routeName="CoursePaymentSuccess"
+                              >
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama..." />}
+                                >
+                                  <CoursePaymentSuccess />
                                 </SuspenseWithChunkError>
                               </ContentRouteErrorBoundary>
                             }
