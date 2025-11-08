@@ -3,24 +3,6 @@
  * Endpoint: POST /api/create-checkout-session
  */
 
-let stripe;
-try {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    console.error('CRITICAL: STRIPE_SECRET_KEY is not set in environment variables');
-    throw new Error('STRIPE_SECRET_KEY not configured');
-  }
-  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-} catch (error) {
-  console.error('Failed to initialize Stripe:', error.message);
-}
-
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
-
 async function readRequestBody(req) {
   const chunks = [];
 
@@ -54,14 +36,16 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Patikrinti ar Stripe SDK inicializuotas
-    if (!stripe) {
-      console.error('Stripe SDK not initialized');
+    // Inicializuoti Stripe FUNKCIJOS VIDUJE (ne module scope)
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('CRITICAL: STRIPE_SECRET_KEY is not set in environment variables');
       return res.status(500).json({
         error: 'Stripe konfigūracija neįkelta',
-        details: 'Stripe SDK failed to initialize - check STRIPE_SECRET_KEY',
+        details: 'STRIPE_SECRET_KEY environment variable not found',
       });
     }
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
     let body = req.body;
 

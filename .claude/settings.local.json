@@ -49,7 +49,11 @@
       "Bash(npx prettier --write \"src/pages/admin/CTAAnalyticsPage.tsx\")",
       "Read(//private/tmp/**)",
       "Bash(nul)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(for price_id in \"price_1SRC2uLP0H1tP3DjZYEK5R7z\" \"price_1SRC2uLP0H1tP3Djb7k6VkSv\" \"price_1SRC2uLP0H1tP3DjybonjssY\")",
+      "Bash(do echo \"=== Checking $price_id ===\" curl -s \"https://api.stripe.com/v1/prices/$price_id\" -u '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:')",
+      "Bash(jq -r '{id, active, unit_amount, nickname}' echo \"\" done)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
