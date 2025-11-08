@@ -3,6 +3,8 @@
  * Endpoint: POST /api/create-checkout-session
  */
 
+import Stripe from 'stripe';
+
 async function readRequestBody(req) {
   const chunks = [];
 
@@ -17,7 +19,7 @@ async function readRequestBody(req) {
   return Buffer.concat(chunks).toString('utf-8');
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   try {
     // SVARBU: Nustatyti CORS headers PIRMIAUSIAI
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -47,7 +49,7 @@ module.exports = async (req, res) => {
 
     let stripe;
     try {
-      stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     } catch (stripeError) {
       console.error('Failed to initialize Stripe SDK:', stripeError);
       return res.status(500).json({
@@ -151,4 +153,4 @@ module.exports = async (req, res) => {
 
     return res.end();
   }
-};
+}
