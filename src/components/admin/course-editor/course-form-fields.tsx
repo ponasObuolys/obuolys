@@ -113,21 +113,44 @@ export const CourseFormFields = ({ form, onTitleChange }: CourseFormFieldsProps)
         />
       </div>
 
-      <FormField
-        control={form.control}
-        name="published"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
-            <FormControl>
-              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel className="text-sm font-medium">Publikuotas</FormLabel>
-              <FormDescription className="text-xs">Matomas viešai</FormDescription>
-            </div>
-          </FormItem>
-        )}
-      />
+      <div className="space-y-4">
+        <FormField
+          control={form.control}
+          name="published"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel className="text-sm font-medium">Publikuotas</FormLabel>
+                <FormDescription className="text-xs">Matomas viešai</FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="promote_in_popup"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 bg-primary/5">
+              <FormControl>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel className="text-sm font-medium">
+                  🎯 Rodyti popup reklamoje
+                </FormLabel>
+                <FormDescription className="text-xs">
+                  Rodyti šį kursą reklaminiame popup lange pagrindiniame puslapyje. Tik vienas
+                  kursas gali būti promoted vienu metu.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+      </div>
     </>
   );
 };

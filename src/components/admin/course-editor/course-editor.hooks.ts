@@ -19,6 +19,7 @@ export const useCourseForm = () => {
       duration: "",
       level: "",
       published: false,
+      promote_in_popup: false,
       image_url: "",
     },
     mode: "onChange",
@@ -53,6 +54,7 @@ export const useCourseData = (id: string | null, form: UseFormReturn<CourseFormV
             duration: data.duration,
             level: data.level,
             published: data.published,
+            promote_in_popup: data.promote_in_popup || false,
             image_url: data.image_url || "",
           });
           setContent(data.content);
@@ -127,6 +129,7 @@ export const useCourseSubmit = (
         duration: values.duration,
         level: values.level,
         published: values.published || false,
+        promote_in_popup: values.promote_in_popup || false,
         image_url: values.image_url || null,
         content: content,
         highlights: highlights,
@@ -145,6 +148,7 @@ export const useCourseSubmit = (
           duration: courseDataForSupabase.duration,
           level: courseDataForSupabase.level,
           published: courseDataForSupabase.published,
+          promote_in_popup: courseDataForSupabase.promote_in_popup,
           image_url: values.image_url || null,
           content: courseDataForSupabase.content,
           highlights: courseDataForSupabase.highlights,

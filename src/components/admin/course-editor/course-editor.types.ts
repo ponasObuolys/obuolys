@@ -13,6 +13,7 @@ export const courseSchema = z.object({
   duration: z.string().min(1, { message: "Trukmė yra privaloma" }),
   level: z.string().min(1, { message: "Lygis yra privalomas" }),
   published: z.boolean().optional(),
+  promote_in_popup: z.boolean().optional(),
   image_url: z
     .string()
     .url({ message: "Netinkamas paveikslėlio URL formatas" })

@@ -375,12 +375,14 @@ erDiagram
 | highlights | text[] | | Svarbiausios savybės |
 | image_url | text | nullable | Nuotrauka |
 | published | boolean | default: false | Publikuotas |
+| promote_in_popup | boolean | default: false | Ar kursas rodomas reklaminiame popup lange |
 | created_at | timestamptz | default: now() | Sukūrimo data |
 | updated_at | timestamptz | default: now() | Atnaujinimo data |
 
 - **RLS**: Įjungta
-- **Indeksai**: courses_pkey (id), courses_slug_key (slug)
-- **Triggeriai**: update_courses_modtime (BEFORE UPDATE)
+- **Indeksai**: courses_pkey (id), courses_slug_key (slug), courses_promote_in_popup_unique (promote_in_popup WHERE promote_in_popup = true)
+- **Triggeriai**: update_courses_modtime (BEFORE UPDATE), courses_promote_in_popup_trigger (BEFORE INSERT OR UPDATE WHEN promote_in_popup = true)
+- **Funkcijos**: ensure_single_promoted_course() - užtikrina, kad tik vienas kursas gali turėti promote_in_popup = true
 
 #### article_comments
 **Vartotojų komentarai straipsniams**

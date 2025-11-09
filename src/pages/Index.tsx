@@ -15,6 +15,7 @@ import {
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { TrendingArticles } from "@/components/widgets/trending-articles";
 import { CalculatorCTA } from "@/components/cta/calculator-cta";
+import { CoursePromoPopup } from "@/components/home/CoursePromoPopup";
 
 const Index = () => {
   const structuredData = [generateOrganizationStructuredData(), generateWebSiteStructuredData()];
@@ -42,6 +43,10 @@ const Index = () => {
         type="website"
         structuredData={structuredData}
       />
+
+      {/* Kurso reklaminis popup - automatiškai rodo kursą su promote_in_popup = true */}
+      <CoursePromoPopup delaySeconds={5} />
+
       <Hero />
       <FeaturedArticles />
       {/* <AINews /> */}

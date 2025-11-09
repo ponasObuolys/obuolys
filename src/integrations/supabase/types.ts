@@ -278,6 +278,7 @@ export type Database = {
           image_url: string | null;
           level: string;
           price: string;
+          promote_in_popup: boolean;
           published: boolean;
           slug: string;
           title: string;
@@ -293,6 +294,7 @@ export type Database = {
           image_url?: string | null;
           level: string;
           price: string;
+          promote_in_popup?: boolean;
           published?: boolean;
           slug: string;
           title: string;
@@ -308,6 +310,7 @@ export type Database = {
           image_url?: string | null;
           level?: string;
           price?: string;
+          promote_in_popup?: boolean;
           published?: boolean;
           slug?: string;
           title?: string;
