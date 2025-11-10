@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { secureLogger } from "@/utils/browserLogger";
@@ -10,6 +10,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { CoursePurchaseCard } from "@/components/course/CoursePurchaseCard";
+import { CourseHero } from "@/components/course/CourseHero";
+import { CoursePurchasePopup } from "@/components/course/CoursePurchasePopup";
+import { ContentWithPurchaseHints } from "@/components/course/ContentWithPurchaseHints";
+import { useCoursePurchase } from "@/hooks/useCoursePurchase";
+import { useCoursePurchasePopup } from "@/hooks/useCoursePurchasePopup";
 
 import SEOHead from "@/components/SEO";
 import {
@@ -17,7 +22,6 @@ import {
   generateCourseStructuredData,
   generateBreadcrumbStructuredData,
 } from "@/utils/seo";
-import { ShareButton } from "@/components/ui/share-button";
 
 interface Course {
   id: string;
@@ -47,6 +51,33 @@ const CourseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Purchase functionality - only for Stripe course
+  const isStripeCourse = course?.id === '3a107f1a-9c87-4291-bf90-6adf854b2116';
+
+  const { purchaseCourse, isLoading: isPurchaseLoading, currentPrice } = useCoursePurchase({
+    courseId: course?.id || '',
+    courseTitle: course?.title || '',
+  });
+
+  // Fallback pricing for non-Stripe courses
+  const fallbackPrice = {
+    amount: course ? parseFloat(course.price) * 100 : 0,
+    label: 'Vienkartinis mokėjimas',
+    savings: 0
+  };
+
+  const displayPrice = isStripeCourse ? currentPrice : fallbackPrice;
+
+  // Smart popup for mobile
+  const {
+    isVisible: isPopupVisible,
+    hidePopup
+  } = useCoursePurchasePopup({
+    delaySeconds: 45,
+    scrollThreshold: 0.6,
+    sessionKey: `course-popup-${slug}`
+  });
 
   useEffect(() => {
     const fetchCourse = async (courseSlug: string) => {
@@ -159,73 +190,74 @@ const CourseDetail = () => {
           <span>Grįžti į kursų sąrašą</span>
         </Link>
 
+        {/* Clean Hero Section - with mobile purchase button */}
+        <CourseHero
+          course={course}
+          currentPrice={isStripeCourse ? currentPrice : undefined}
+          onPurchase={isStripeCourse ? purchaseCourse : () => (window.location.href = getPatreonLink(course.slug))}
+          isLoading={isPurchaseLoading}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="dark-card mb-8 text-left">
-              <div className="flex items-start justify-between mb-4">
-                <h1 className="text-3xl font-bold text-foreground flex-1">{course.title}</h1>
-                <ShareButton
-                  title={course.title}
-                  description={course.description}
-                  url={`https://ponasobuolys.lt/kursai/${slug}`}
-                  imageUrl={course.image_url || undefined}
-                  variant="outline"
-                  size="default"
-                />
-              </div>
-              <p className="text-lg mb-6 text-foreground/80">{course.description}</p>
-
-              <div className="flex flex-wrap gap-4 mb-6 text-foreground/70">
-                <div className="flex items-center">
-                  <Clock className="mr-2 h-5 w-5 text-primary" />
-                  <span>{formatDuration(course.duration)}</span>
-                </div>
-              </div>
-
               <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-6 text-foreground text-left">Aprašymas</h2>
-                <SafeRichText
-                  content={slateToHtml(course.content)}
-                  className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left"
-                />
+
+                {/* Course content with strategic purchase hints */}
+                {isStripeCourse ? (
+                  <ContentWithPurchaseHints
+                    content={slateToHtml(course.content)}
+                    currentPrice={displayPrice}
+                    onPurchase={purchaseCourse}
+                    className=""
+                  />
+                ) : (
+                  <SafeRichText
+                    content={slateToHtml(course.content)}
+                    className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left"
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div className="lg:col-span-1">
-            {/* Tikrinti ar tai yra kursas su Stripe mokėjimu (kaip-pradeti-programuoti-su-di) */}
-            {course.id === '3a107f1a-9c87-4291-bf90-6adf854b2116' ? (
-              <CoursePurchaseCard courseId={course.id} courseTitle={course.title} />
-            ) : (
-              <div className="dark-card sticky top-24">
-                <div className="text-center mb-6">
-                  <p className="text-3xl font-bold text-primary mb-2">{course.price}€</p>
-                  <div className="text-sm mb-4 text-foreground/60">
-                    Vienkartinis mokėjimas, prieiga neribotam laikui
+            {/* Sidebar Purchase Card - visible on all screens */}
+            <div>
+              {isStripeCourse ? (
+                <CoursePurchaseCard courseId={course.id} courseTitle={course.title} />
+              ) : (
+                <div className="dark-card sticky top-24">
+                  <div className="text-center mb-6">
+                    <p className="text-3xl font-bold text-primary mb-2">{course.price}€</p>
+                    <div className="text-sm mb-4 text-foreground/60">
+                      Vienkartinis mokėjimas, prieiga neribotam laikui
+                    </div>
+                    <Button
+                      className="w-full button-primary text-lg py-6"
+                      onClick={() => (window.location.href = getPatreonLink(course.slug))}
+                    >
+                      Įsigyti kursą
+                    </Button>
                   </div>
-                  <Button
-                    className="w-full button-primary text-lg py-6"
-                    onClick={() => (window.location.href = getPatreonLink(course.slug))}
-                  >
-                    Įsigyti kursą
-                  </Button>
-                </div>
 
-                {course.highlights && course.highlights.length > 0 && (
-                  <div className="border-t border-border pt-6">
-                    <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
-                    <ul className="space-y-3 text-left text-foreground/80">
-                      {course.highlights.map((highlight, index) => (
-                        <li key={index} className="flex items-start">
-                          <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
+                  {course.highlights && course.highlights.length > 0 && (
+                    <div className="border-t border-border pt-6">
+                      <h4 className="font-bold mb-4 text-left text-foreground">Kursas apima:</h4>
+                      <ul className="space-y-3 text-left text-foreground/80">
+                        {course.highlights.map((highlight, index) => (
+                          <li key={index} className="flex items-start">
+                            <CheckCircle className="mr-2 h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Highlights rodomi už kortelės */}
             {course.id === '3a107f1a-9c87-4291-bf90-6adf854b2116' && course.highlights && course.highlights.length > 0 && (
@@ -243,6 +275,26 @@ const CourseDetail = () => {
             )}
           </div>
         </div>
+
+        {/* Smart Purchase Popup for Mobile - only for Stripe course */}
+        {isStripeCourse && (
+          <CoursePurchasePopup
+            course={{
+              title: course.title,
+              highlights: course.highlights,
+              duration: formatDuration(course.duration)
+            }}
+            currentPrice={displayPrice}
+            onPurchase={purchaseCourse}
+            onClose={hidePopup}
+            isVisible={isPopupVisible}
+            isLoading={isPurchaseLoading}
+            nextPrice={{
+              amount: 14700, // 147 EUR final price
+              label: 'Nuo lapkričio 22 d.'
+            }}
+          />
+        )}
       </div>
     </>
   );
