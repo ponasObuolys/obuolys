@@ -7,7 +7,7 @@ interface ContentWithPurchaseHintsProps {
   currentPrice: {
     amount: number;
     label: string;
-    savings: number;
+    description: string;
   };
   onPurchase: () => void;
   className?: string;
@@ -46,10 +46,10 @@ export function ContentWithPurchaseHints({
       thirdPart: contentParts.slice(secondHintPosition).join('</p>') + '</p>',
       hints: {
         first: 'reading' as const,
-        second: currentPrice.savings > 0 ? 'value' as const : 'engagement' as const
+        second: 'engagement' as const
       }
     };
-  }, [content, currentPrice.savings]);
+  }, [content]);
 
   // For short content
   if ('beforeContent' in contentWithHints) {

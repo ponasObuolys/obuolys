@@ -1,15 +1,15 @@
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowRight, Timer } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/config/stripe';
 
 interface ProgressivePurchaseHintProps {
   currentPrice: {
     amount: number;
     label: string;
-    savings: number;
+    description: string;
   };
   onPurchase: () => void;
-  variant?: 'reading' | 'engagement' | 'value';
+  variant?: 'reading' | 'engagement';
   className?: string;
 }
 
@@ -37,13 +37,6 @@ export function ProgressivePurchaseHint({
       description: 'Praktiniai pavyzdžiai ir užduotys laukia tavęs',
       buttonText: 'Pradėti mokytis',
       bgClass: 'bg-secondary/5 border-secondary/20'
-    },
-    value: {
-      icon: <Timer className="w-4 h-4 text-green-600" />,
-      title: 'Kodėl laukti?',
-      description: `Sutaupyk ${currentPrice.savings}€ įsigydamas šiandien`,
-      buttonText: `${formatPrice(currentPrice.amount)} vietoj ${formatPrice(14700)}`, // 147€ final price
-      bgClass: 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
     }
   };
 
@@ -68,27 +61,15 @@ export function ProgressivePurchaseHint({
 
         <div className="w-full sm:w-auto">
           <Button
-            variant={variant === 'value' ? 'default' : 'outline'}
+            variant="outline"
             size="sm"
             onClick={onPurchase}
-            className={`w-full sm:w-auto ${
-              variant === 'value'
-                ? 'bg-green-600 hover:bg-green-700 text-white'
-                : ''
-            }`}
+            className="w-full sm:w-auto"
           >
             {config.buttonText}
           </Button>
         </div>
       </div>
-
-      {variant === 'value' && currentPrice.savings > 0 && (
-        <div className="mt-3 pt-3 border-t border-green-200/50 dark:border-green-800/50">
-          <p className="text-xs text-green-700 dark:text-green-300 text-center">
-            🎯 Akcija baigiasi netrukus! {currentPrice.label}
-          </p>
-        </div>
-      )}
     </div>
   );
 }

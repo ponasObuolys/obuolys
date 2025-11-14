@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, X, Clock, TrendingUp, Loader2 } from 'lucide-react';
+import { CheckCircle, X, Clock, Loader2 } from 'lucide-react';
 import { formatPrice } from '@/config/stripe';
 
 interface CoursePurchasePopupProps {
@@ -12,11 +11,7 @@ interface CoursePurchasePopupProps {
   currentPrice: {
     amount: number;
     label: string;
-    savings: number;
-  };
-  nextPrice?: {
-    amount: number;
-    label: string;
+    description: string;
   };
   onPurchase: () => void;
   onClose: () => void;
@@ -31,7 +26,6 @@ interface CoursePurchasePopupProps {
 export function CoursePurchasePopup({
   course,
   currentPrice,
-  nextPrice,
   onPurchase,
   onClose,
   isVisible,
@@ -66,39 +60,15 @@ export function CoursePurchasePopup({
             </div>
           </div>
 
-          {/* Price with savings */}
+          {/* Price */}
           <div className="text-center mb-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <p className="text-3xl font-bold text-primary">
-                {formatPrice(currentPrice.amount)}
-              </p>
-              {currentPrice.savings > 0 && (
-                <Badge variant="default" className="bg-green-600 text-white">
-                  Sutaupai {currentPrice.savings}€
-                </Badge>
-              )}
-            </div>
-
-            <p className="text-sm text-muted-foreground mb-1">{currentPrice.label}</p>
+            <p className="text-3xl font-bold text-primary mb-2">
+              {formatPrice(currentPrice.amount)}
+            </p>
             <p className="text-xs text-muted-foreground/70">
-              Vienkartinis mokėjimas, prieiga neribotam laikui
+              {currentPrice.description}
             </p>
           </div>
-
-          {/* Next price warning */}
-          {nextPrice && (
-            <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 rounded-lg p-3 mb-4">
-              <div className="flex items-center justify-center gap-2 text-sm text-orange-800 dark:text-orange-200">
-                <TrendingUp className="w-4 h-4" />
-                <span className="font-semibold">
-                  {nextPrice.label}: {formatPrice(nextPrice.amount)}
-                </span>
-              </div>
-              <p className="text-xs text-orange-700 dark:text-orange-300 mt-1 text-center">
-                Kaina pakils! Įsigyk dabar ir sutaupyk.
-              </p>
-            </div>
-          )}
 
           {/* Quick highlights */}
           {course.highlights && course.highlights.length > 0 && (
@@ -137,35 +107,6 @@ export function CoursePurchasePopup({
               'Įsigyti kursą'
             )}
           </Button>
-
-          <p className="text-xs text-muted-foreground text-center mb-4">
-            Vienkartinis mokėjimas, prieiga neribotam laikui
-          </p>
-
-          {/* Full Pricing Schedule like desktop */}
-          <div className="border-t border-border pt-4 mb-4">
-            <h4 className="font-semibold mb-3 text-sm text-muted-foreground text-center">
-              Kainų grafikas:
-            </h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center py-2 px-3 rounded bg-primary/10 font-semibold">
-                <span className="text-xs">Iki lapkričio 10 d.</span>
-                <span className="text-primary">97.00€</span>
-              </div>
-              <div className="flex justify-between items-center py-2 px-3 rounded text-muted-foreground">
-                <span className="text-xs">Lapkričio 11-17 d.</span>
-                <span>117.00€</span>
-              </div>
-              <div className="flex justify-between items-center py-2 px-3 rounded text-muted-foreground">
-                <span className="text-xs">Lapkričio 18-21 d.</span>
-                <span>137.00€</span>
-              </div>
-              <div className="flex justify-between items-center py-2 px-3 rounded text-muted-foreground">
-                <span className="text-xs">Kurso dieną (lapkričio 22 d.)</span>
-                <span>147.00€</span>
-              </div>
-            </div>
-          </div>
 
           {/* Security note */}
           <div className="text-center text-xs text-muted-foreground border-t border-border pt-4">

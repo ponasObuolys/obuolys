@@ -66,7 +66,7 @@ const CourseDetail = () => {
   const fallbackPrice = {
     amount: course ? parseFloat(course.price) * 100 : 0,
     label: 'Vienkartinis mokėjimas',
-    savings: 0
+    description: 'Vienkartinis mokėjimas, prieiga neribotam laikui'
   };
 
   const displayPrice = isStripeCourse ? currentPrice : fallbackPrice;
@@ -292,10 +292,6 @@ const CourseDetail = () => {
             onClose={hidePopup}
             isVisible={isPopupVisible}
             isLoading={isPurchaseLoading}
-            nextPrice={{
-              amount: 14700, // 147 EUR final price
-              label: 'Nuo lapkričio 22 d.'
-            }}
           />
         )}
       </div>

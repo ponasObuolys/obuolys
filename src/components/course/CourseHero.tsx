@@ -20,7 +20,7 @@ interface CourseHeroProps {
   currentPrice?: {
     amount: number;
     label: string;
-    savings: number;
+    description: string;
   };
   onPurchase?: () => void;
   isLoading?: boolean;
@@ -79,16 +79,9 @@ export function CourseHero({
         <div className="lg:hidden mt-6 mb-6">
           <div className="bg-background/50 backdrop-blur-sm p-4 rounded-xl border border-border">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <p className="text-2xl font-bold text-primary">
-                  {displayPrice}
-                </p>
-                {isStripeCourse && currentPrice && currentPrice.savings > 0 && (
-                  <Badge variant="default" className="bg-green-600 text-white text-xs">
-                    Sutaupai {currentPrice.savings}€
-                  </Badge>
-                )}
-              </div>
+              <p className="text-2xl font-bold text-primary mb-3">
+                {displayPrice}
+              </p>
               <Button
                 className="w-full button-primary text-lg py-3"
                 onClick={onPurchase}
