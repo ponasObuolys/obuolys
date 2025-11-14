@@ -43,6 +43,8 @@ interface Course {
 const getPatreonLink = (slug: string): string => {
   const patreonLinks: { [key: string]: string } = {
     "vibe-coding-masterclass": "https://www.patreon.com/posts/vibe-coding-su-125505176",
+    "vibe-coding-class": "https://www.patreon.com/posts/vibe-coding-su-125505176",
+    "lovable-workshop": "https://www.patreon.com/posts/lovable-workshop-120266952",
   };
   return patreonLinks[slug] || "#";
 };
