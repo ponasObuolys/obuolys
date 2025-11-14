@@ -74,8 +74,9 @@ const CourseDetail = () => {
     isVisible: isPopupVisible,
     hidePopup
   } = useCoursePurchasePopup({
-    delaySeconds: 45,
-    scrollThreshold: 0.6,
+    delaySeconds: 120,
+    // Set scrollThreshold above 1 so scroll will never trigger it, only time-based delay
+    scrollThreshold: 2,
     sessionKey: `course-popup-${slug}`
   });
 

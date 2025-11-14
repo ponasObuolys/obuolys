@@ -41,7 +41,7 @@ export function CoursePurchasePopup({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end lg:hidden">
-      <div className="w-full bg-background rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-300">
+      <div className="w-full bg-background rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[60vh] flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-border">
           <h3 className="text-lg font-bold">🚀 Pasiruošęs pradėti?</h3>
@@ -56,7 +56,7 @@ export function CoursePurchasePopup({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto">
           {/* Course Title & Duration */}
           <div className="text-center mb-4">
             <h4 className="font-semibold text-foreground mb-2">{course.title}</h4>
