@@ -31,9 +31,19 @@ const isText = (node: SlateNode): node is SlateText => {
 /**
  * Konvertuoja teksto node su formatavimo stiliais
  */
-const serializeText = (node: SlateText): string => {
+const serializeText = (node: SlateText, options?: { autoLink?: boolean }): string => {
+  const autoLink = options?.autoLink ?? true;
+
   // Pakeičiame newline simbolius į <br> tagus
   let text = escapeHtml(node.text).replace(/\n/g, '<br>');
+
+  // Paprastas auto-linking: paverčia pliką URL į <a> nuorodą
+  if (autoLink) {
+    const urlRegex = /\bhttps?:\/\/[^\s<]+/g;
+    text = text.replace(urlRegex, (url) => {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+  }
 
   if (node.bold) {
     text = `<strong>${text}</strong>`;
@@ -68,11 +78,16 @@ const escapeHtml = (text: string): string => {
 /**
  * Konvertuoja elemento children į HTML
  */
-const serializeChildren = (children: (SlateElement | SlateText)[]): string => {
+const serializeChildren = (
+  children: (SlateElement | SlateText)[],
+  options?: { autoLink?: boolean }
+): string => {
+  const autoLink = options?.autoLink ?? true;
+
   return children
     .map(child => {
       if (isText(child)) {
-        return serializeText(child);
+        return serializeText(child, { autoLink });
       }
       return serializeElement(child);
     })
@@ -118,7 +133,8 @@ const serializeElement = (node: SlateElement): string => {
     case 'link': {
       // Paimame URL iš node (jei egzistuoja)
       const linkNode = node as SlateElement & { url?: string };
-      return `<a href="${escapeHtml(linkNode.url || '')}"${alignStyle}>${children}</a>`;
+      const linkChildren = serializeChildren(node.children, { autoLink: false });
+      return `<a href="${escapeHtml(linkNode.url || '')}"${alignStyle}>${linkChildren}</a>`;
     }
 
     default:
