@@ -248,7 +248,7 @@ const PublicationDetail = () => {
 
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-left">{publication.title}</h1>
 
-            <div className="flex flex-wrap items-center gap-3 mb-8 text-sm text-gray-200">
+            <div className="flex flex-wrap items-center gap-3 mb-8 text-sm text-muted-foreground">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-4 w-4" />
                 <span>{new Date(publication.date).toLocaleDateString("lt-LT")}</span>
@@ -295,7 +295,7 @@ const PublicationDetail = () => {
             <div ref={contentRef}>
               <SafeRichText
                 content={addLazyLoadingToImages(slateToHtml(publication.content || ""))}
-                className="prose max-w-none mb-8 text-left"
+                className="prose max-w-none mb-8 text-left prose-p:my-2 prose-p:leading-relaxed"
               />
             </div>
           </div>

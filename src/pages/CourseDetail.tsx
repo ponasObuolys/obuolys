@@ -213,12 +213,12 @@ const CourseDetail = () => {
                     content={slateToHtml(course.content)}
                     currentPrice={displayPrice}
                     onPurchase={purchaseCourse}
-                    className=""
+                    className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left prose-p:my-2 prose-p:leading-relaxed"
                   />
                 ) : (
                   <SafeRichText
                     content={slateToHtml(course.content)}
-                    className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left"
+                    className="prose prose-slate dark:prose-invert max-w-none text-left [&>*]:text-left prose-p:my-2 prose-p:leading-relaxed"
                   />
                 )}
               </div>

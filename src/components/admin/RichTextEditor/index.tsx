@@ -127,6 +127,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             autoFocus
             className="min-h-[200px] p-4 focus:outline-none text-left"
             onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
+              if (isHotkey("shift+enter", event)) {
+                event.preventDefault();
+                Editor.insertText(editor, "\n");
+                return;
+              }
+
               for (const hotkey in HOTKEYS) {
                 if (isHotkey(hotkey, event)) {
                   event.preventDefault();

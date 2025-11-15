@@ -158,13 +158,10 @@ export function GlobalSearch() {
       {/* Search trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-foreground/60 hover:text-foreground bg-muted/50 hover:bg-muted rounded-lg transition-colors border border-border"
+        className="flex items-center justify-center w-9 h-9 rounded-full text-foreground/70 hover:text-foreground bg-muted/60 hover:bg-muted transition-colors border border-border"
+        aria-label="Atidaryti paiešką"
       >
         <Search className="h-4 w-4" />
-        <span className="hidden md:inline">Paieška...</span>
-        <kbd className="hidden md:inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-card px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-          <span className="text-xs">⌘</span>K
-        </kbd>
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
