@@ -295,7 +295,7 @@ const PublicationDetail = () => {
             <div ref={contentRef}>
               <SafeRichText
                 content={addLazyLoadingToImages(slateToHtml(publication.content || ""))}
-                className="prose max-w-none mb-8 text-left prose-p:my-2 prose-p:leading-relaxed"
+                className="prose prose-slate dark:prose-invert max-w-none mb-8 text-left [&>*]:text-left prose-p:my-2 prose-p:leading-relaxed"
               />
             </div>
           </div>
