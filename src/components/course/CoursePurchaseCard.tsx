@@ -103,12 +103,12 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
                 <span className="font-medium">50€</span>
               </li>
               <li className="flex items-center justify-between">
-                <span>1 mėn. support bendruomenėje</span>
-                <span className="font-medium">150€</span>
+                <span>1 mėn. asmeninis palaikymas el. paštu</span>
+                <span className="font-medium">250€</span>
               </li>
               <li className="flex items-center justify-between">
                 <span>Įrašai visam laikui</span>
-                <span className="font-medium">200€</span>
+                <span className="font-medium">100€</span>
               </li>
             </ul>
             <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
