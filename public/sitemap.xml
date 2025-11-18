@@ -2,428 +2,500 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://ponasobuolys.lt/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <loc>https://ponasobuolys.lt</loc>
+    <lastmod>2025-11-18</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <priority>1</priority>
   </url>
-
-  <!-- High Priority Business Pages -->
-  <url>
-    <loc>https://ponasobuolys.lt/verslo-sprendimai</loc>
-    <lastmod>2025-11-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://ponasobuolys.lt/skaiciuokle</loc>
-    <lastmod>2025-11-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-
-  <!-- Main Content Pages -->
   <url>
     <loc>https://ponasobuolys.lt/publikacijos</loc>
-    <lastmod>2025-11-03</lastmod>
+    
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai</loc>
-    <lastmod>2025-11-03</lastmod>
+    
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kursai</loc>
-    <lastmod>2025-11-03</lastmod>
+    
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kontaktai</loc>
-    <lastmod>2025-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://ponasobuolys.lt/paremti</loc>
-    <lastmod>2025-11-03</lastmod>
+    
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!-- Legal Pages -->
   <url>
-    <loc>https://ponasobuolys.lt/privatumo-politika</loc>
-    <lastmod>2025-11-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://ponasobuolys.lt/paremti</loc>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://ponasobuolys.lt/slapuku-politika</loc>
-    <lastmod>2025-11-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://ponasobuolys.lt/publikacijos/vibe-coding-paslaptys-atskleistos</loc>
+    <lastmod>2025-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/menininkai-kovoja-su-di</loc>
+    <lastmod>2025-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/zmogaus-lygio-intelektas-jau-cia</loc>
+    <lastmod>2025-11-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/cursor-paleido-nuosava-di-composer</loc>
+    <lastmod>2025-10-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/elonas-muskas-paleidzia-meta-issuki-wikipedia</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/openai-kuria-nauja-di-iranki-generuosianti-muzika</loc>
+    <lastmod>2025-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/kaip-atrodo-gyvenimas-protingiausiuose-2025-uju-pasaulio-miestuose</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/14-meti-sunu-suviliojo-ai-botas-jam-kainavo-gyvybe</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/mrbeast-perspeja-di-vercia-youtube-kurejus-gyventi-baisiais-laikais</loc>
+    <lastmod>2025-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/chatgpt-zada-daugiau-erotikos</loc>
+    <lastmod>2025-10-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/sios-44-profesijos-atstovus-pakeis-di</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/dirbtinio-intelekto-pavojus-nebera-teorija</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/tiesos-terminalas-pirmasis-pasaulyje-oficialiu-ai-milijonierius</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/dirbtinio-intelekto-dalgis-pjauna-darbo-vietas</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/openai-paleido-sora-monstra-internetas-skesta-melagienu-ir-deepfake-liune</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/publikacijos/di-pries-di-kai-kibernetinis-saugumas-virsta-algoritmine-ginklavimosi-varzybomis</loc>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/vaikai-kuria-zaidimus-su-ai-ir-keicia-programavimo-ateiti</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/google-padalinys-deepmind-teigia-kad-dirbtinis-intelektas-pranoko-zmogaus-zinias</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/chatgpt-isleidzia-desimtis-milijonu-doleriu-uz-tai-kad-zmones-sako-prasau-ir-aciu-taciau-samas-altmanas-sako-kad-tai-verta</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/anthropic-claude-pristato-max-plana</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/paplitusi-chatgpt-tendencija-leidzia-paversti-save-veiksmo-figurele-stai-kaip-tai-padaryti</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/ar-chatgpt-plus-verta-jusu-20-doleriu-stai-kaip-jis-lyginamas-su-nemokamais-ir-pro-planais</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/kod-l-programuotojai-at-aukia-cursor-prenumeratas</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/publikacijos/darbo-pokalbis-2025-aisiais-kaip-prisitaikyti-prie-nauj-atrankos-metod</loc>
-    <lastmod>2025-10-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-10-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/letsenhance</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/photomixer-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/imagelr</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/d-id</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/leonardo-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/promptomania</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/stability-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/cleanup</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/stableaudio</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/runway-research</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/attentioninsight</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/viral-post-generator</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/artbreeder-mixer</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/deepseek</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/photojoiner</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ai-image-mixer</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/generated-photos</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/scribehow</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/digitalfirst</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/daydrm</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/dall-e-2</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/synthesia</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/heybooster</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/microsoft-azure-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ibm-watson</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/h2o-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/tensorflow</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/mxnet</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/edgeverve</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ai-text-humanizer</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ai-bio-generator</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ai-outline-generator</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/ai-paragraph-generator</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/midjourney</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/gpt-4</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/bard</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/perplexity-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/deepl</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/google-cloud-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/claude</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/fireflies</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/otter</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/descript</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/canva-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/remove-bg</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/topaz-labs</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/copy-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/notion-ai</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/elevenlabs</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/irankiai/murf</loc>
-    <lastmod>2025-10-06</lastmod>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ponasobuolys.lt/kursai/kaip-pradeti-programuoti-su-di</loc>
+    <lastmod>2025-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kursai/vibe-coding-class</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ponasobuolys.lt/kursai/lovable-workshop</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
