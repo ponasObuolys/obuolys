@@ -15,10 +15,10 @@ export function Breadcrumbs({ items, showHome = true }: BreadcrumbsProps) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center space-x-2 text-sm text-muted-foreground mb-6"
+      className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6"
     >
       {showHome && (
-        <>
+        <div className="flex items-center gap-2">
           <Link
             to="/"
             className="flex items-center hover:text-foreground transition-colors"
@@ -27,7 +27,7 @@ export function Breadcrumbs({ items, showHome = true }: BreadcrumbsProps) {
             <Home className="h-4 w-4" />
           </Link>
           <ChevronRight className="h-4 w-4" />
-        </>
+        </div>
       )}
 
       {items.map((item, index) => {

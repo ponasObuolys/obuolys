@@ -33,7 +33,7 @@ import { ReaderStats } from "@/components/analytics/reader-stats";
 import { analyticsService } from "@/services/analytics.service";
 
 const BusinessSolutionsCTA = lazy(() =>
-  import("@/components/cta/business-solutions-cta").then((module) => ({
+  import("@/components/cta/business-solutions-cta").then(module => ({
     default: module.BusinessSolutionsCTA,
   }))
 );
@@ -212,7 +212,6 @@ const PublicationDetail = () => {
         <div className="max-w-3xl mx-auto">
           <Breadcrumbs
             items={[
-              { label: "Straipsniai", href: "/publikacijos" },
               {
                 label: publication?.content_type === "Naujiena" ? "AI Naujienos" : "Straipsniai",
                 href: "/publikacijos",
