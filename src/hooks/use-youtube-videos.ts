@@ -10,7 +10,7 @@ export const useYoutubeVideos = ({ limit = 10 }: UseYoutubeVideosOptions = {}) =
   return useQuery<YoutubeVideoItem[], Error>({
     queryKey: ["youtube-videos", limit],
     queryFn: () => youtubeService.getLatestVideos(limit),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
     refetchOnMount: true,
   });
 };

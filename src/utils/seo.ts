@@ -32,7 +32,6 @@ const SITE_CONFIG = {
     "Dirbtinio intelekto naujienos, įrankiai, kursai ir straipsniai lietuvių kalba. AI ekspertas Lietuvoje - ponas Obuolys",
   defaultImage: "https://ponasobuolys.lt/opengraph-image.png",
   twitterHandle: "@ponasobuolys",
-  facebookAppId: "your-app-id",
   locale: "lt_LT",
   type: "website",
   author: "ponas Obuolys",

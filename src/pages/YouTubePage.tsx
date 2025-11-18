@@ -14,23 +14,23 @@ import type { YoutubeVideoItem } from "@/services/youtube.service";
 import { useYoutubeVideos } from "@/hooks/use-youtube-videos";
 
 const BusinessSolutionsCTA = lazy(() =>
-  import("@/components/cta/business-solutions-cta").then((module) => ({
+  import("@/components/cta/business-solutions-cta").then(module => ({
     default: module.BusinessSolutionsCTA,
   }))
 );
 
-const ToolsPage = () => {
+const YouTubePage = () => {
   const [limit] = useState(24);
   const { toast } = useToast();
   const [selectedVideo, setSelectedVideo] = useState<YoutubeVideoItem | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
   // Naudojame React Query hook vietoj useState + useEffect
-  const {
-    data: videos = [],
-    isLoading: loading,
-    error,
-  } = useYoutubeVideos({ limit });
+  const { data: videos = [], isLoading: loading, error } = useYoutubeVideos({ limit });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
@@ -81,7 +81,7 @@ const ToolsPage = () => {
         ]}
         type="website"
       />
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
@@ -190,9 +190,7 @@ const ToolsPage = () => {
             {/* Apie rekomendacijas sekcija */}
             <div className="mt-12">
               <div className="dark-card">
-                <h2 className="text-3xl font-bold text-foreground mb-4">
-                  Apie YouTube turinį
-                </h2>
+                <h2 className="text-3xl font-bold text-foreground mb-4">Apie YouTube turinį</h2>
                 <p className="text-foreground/80 mb-6 leading-relaxed">
                   Visi kuriami video yra paremti asmenine patirtimi dirbtinio intelekto projektuose
                   ir realiais pavyzdžiais iš Lietuvos verslo. Kai kurios nuorodos po video gali būti
@@ -236,4 +234,4 @@ const ToolsPage = () => {
   );
 };
 
-export default ToolsPage;
+export default YouTubePage;

@@ -12,7 +12,7 @@ import { ListSkeleton } from "@/components/ui/content-skeleton";
 import { useArticles } from "@/hooks/useSupabaseData";
 
 const BusinessSolutionsCTA = lazy(() =>
-  import("@/components/cta/business-solutions-cta").then((module) => ({
+  import("@/components/cta/business-solutions-cta").then(module => ({
     default: module.BusinessSolutionsCTA,
   }))
 );
@@ -24,6 +24,10 @@ const PublicationsPage = () => {
 
   // Naudojame React Query hook vietoj useState + useEffect
   const { data: publications = [], isLoading: loading, error } = useArticles();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
@@ -68,7 +72,7 @@ const PublicationsPage = () => {
         ]}
         type="website"
       />
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
@@ -146,7 +150,9 @@ const PublicationsPage = () => {
                     {/* CTA kas 6 straipsniai */}
                     {(index + 1) % 6 === 0 && index !== filteredPublications.length - 1 && (
                       <div className="md:col-span-2 lg:col-span-3">
-                        <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
+                        <Suspense
+                          fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}
+                        >
                           <BusinessSolutionsCTA variant="inline" context="publications" />
                         </Suspense>
                       </div>

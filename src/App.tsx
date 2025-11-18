@@ -41,8 +41,8 @@ const PublicationsPage = createLazyComponent(() => import("./pages/PublicationsP
 const PublicationDetail = createLazyComponent(() => import("./pages/PublicationDetail"), {
   cacheKey: "publication-detail",
 });
-const ToolsPage = createLazyComponent(() => import("./pages/ToolsPage"), {
-  cacheKey: "tools",
+const YouTubePage = createLazyComponent(() => import("./pages/YouTubePage"), {
+  cacheKey: "youtube",
   preload: true,
 });
 const ToolDetailPage = createLazyComponent(() => import("./pages/ToolDetailPage"), {
@@ -182,8 +182,8 @@ const App = () => {
         priority: "high",
       },
       {
-        path: "tools",
-        importFn: () => import("./pages/ToolsPage"),
+        path: "youtube",
+        importFn: () => import("./pages/YouTubePage"),
         priority: "high",
       },
       {
@@ -317,12 +317,12 @@ const App = () => {
                             element={
                               <ContentRouteErrorBoundary
                                 routePath="/youtube"
-                                routeName="ToolsPage"
+                                routeName="YouTubePage"
                               >
                                 <SuspenseWithChunkError
-                                  fallback={<LoadingSpinner text="Kraunami įrankiai..." />}
+                                  fallback={<LoadingSpinner text="Kraunami video..." />}
                                 >
-                                  <ToolsPage />
+                                  <YouTubePage />
                                 </SuspenseWithChunkError>
                               </ContentRouteErrorBoundary>
                             }
@@ -335,7 +335,9 @@ const App = () => {
                                 routePath="/irankiai"
                                 routeName="ToolsLegacyRedirect"
                               >
-                                <SuspenseWithChunkError fallback={<LoadingSpinner text="Kraunama..." />}>
+                                <SuspenseWithChunkError
+                                  fallback={<LoadingSpinner text="Kraunama..." />}
+                                >
                                   <Navigate to="/youtube" replace />
                                 </SuspenseWithChunkError>
                               </ContentRouteErrorBoundary>

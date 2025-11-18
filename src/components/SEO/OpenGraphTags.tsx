@@ -57,9 +57,6 @@ export const OpenGraphTags = ({
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
       <meta name="twitter:image:alt" content={title} />
-
-      {/* Facebook App ID */}
-      <meta property="fb:app_id" content={SITE_CONFIG.facebookAppId} />
     </Helmet>
   );
 };

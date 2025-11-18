@@ -37,8 +37,8 @@ export const useArticles = (options?: { featured?: boolean; limit?: number }) =>
 
       return data as Article[];
     },
-    // Duomenys laikomi "šviežiais" 5 minutes
-    staleTime: 5 * 60 * 1000,
+    // Duomenys laikomi "šviežiais" 1 minutę (sumažinta nuo 5)
+    staleTime: 60 * 1000,
     // Visada refetch'inti kai komponentas mount'inasi
     refetchOnMount: true,
   });
@@ -52,9 +52,15 @@ export const useTools = () => {
   return useQuery({
     queryKey: ["tools"],
     queryFn: async () => {
-      return [] as Tool[];
+      const { data, error } = await supabase
+        .from("tools")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (error) throw error;
+      return data as Tool[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
     refetchOnMount: true,
   });
 };
@@ -86,7 +92,7 @@ export const useCourses = (limit?: number) => {
 
       return data as Course[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
     refetchOnMount: true,
   });
 };

@@ -19,7 +19,7 @@ import { useCourses } from "@/hooks/useSupabaseData";
 import { getServiceContent } from "@/data/coursesData";
 
 const BusinessSolutionsCTA = lazy(() =>
-  import("@/components/cta/business-solutions-cta").then((module) => ({
+  import("@/components/cta/business-solutions-cta").then(module => ({
     default: module.BusinessSolutionsCTA,
   }))
 );
@@ -35,6 +35,10 @@ const CoursesPage = () => {
 
   // Naudojame React Query hook vietoj useState + useEffect
   const { data: courses = [], isLoading: loading, error } = useCourses();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
@@ -58,8 +62,6 @@ const CoursesPage = () => {
   const handleMouseLeave = () => {
     setShowTooltip(false);
   };
-
-
 
   const serviceContent = selectedService ? getServiceContent(selectedService) : null;
 
@@ -143,7 +145,7 @@ const CoursesPage = () => {
         ]}
         type="website"
       />
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
@@ -351,9 +353,7 @@ const CoursesPage = () => {
                             />
                           </svg>
                         </div>
-                        <h3 className="font-semibold text-foreground mb-2">
-                          Netrukus bus daugiau
-                        </h3>
+                        <h3 className="font-semibold text-foreground mb-2">Netrukus bus daugiau</h3>
                         <p className="text-sm text-foreground/60">Ruošiami nauji kursai</p>
                       </div>
                     </div>
@@ -361,9 +361,7 @@ const CoursesPage = () => {
                 ) : (
                   <div className="project-card flex flex-col items-center justify-center min-h-[200px] opacity-80">
                     <div className="text-center">
-                      <h3 className="font-semibold text-foreground mb-2">
-                        Šiuo metu kursų nėra
-                      </h3>
+                      <h3 className="font-semibold text-foreground mb-2">Šiuo metu kursų nėra</h3>
                       <p className="text-sm text-foreground/60">
                         Sekite naujienas – netrukus atsiras naujų AI mokymų.
                       </p>
