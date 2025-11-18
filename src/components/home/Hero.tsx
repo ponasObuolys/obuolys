@@ -112,15 +112,15 @@ const Hero = () => {
                 </div>
               </Link>
 
-              {/* Įrankiai */}
-              <Link to="/irankiai" className="project-card">
+              {/* YouTube */}
+              <Link to="/youtube" className="project-card">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
-                    <span className="text-white font-bold">Į</span>
+                    <span className="text-white font-bold">YT</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-left">Įrankiai</h3>
-                    <p className="text-sm text-foreground/90 text-left">AI sprendimai</p>
+                    <h3 className="font-semibold text-left">YouTube</h3>
+                    <p className="text-sm text-foreground/90 text-left">Naujausi AI video</p>
                   </div>
                   <svg
                     className="w-5 h-5 text-foreground/40 group-hover:text-foreground transition-colors flex-shrink-0"

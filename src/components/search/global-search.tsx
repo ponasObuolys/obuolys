@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, FileText, Wrench, GraduationCap, ArrowRight, Loader2 } from "lucide-react";
+import { Search, FileText, GraduationCap, ArrowRight, Loader2 } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -17,7 +17,7 @@ interface SearchResult {
   id: string;
   title: string;
   description: string;
-  type: "article" | "tool" | "course";
+  type: "article" | "course";
   slug: string;
   category?: string;
 }
@@ -64,13 +64,6 @@ export function GlobalSearch() {
         .limit(5);
 
       // Search tools
-      const { data: tools } = await supabase
-        .from("tools")
-        .select("id, name, slug, description, category")
-        .eq("published", true)
-        .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
-        .limit(5);
-
       // Search courses
       const { data: courses } = await supabase
         .from("courses")
@@ -87,14 +80,6 @@ export function GlobalSearch() {
           type: "article" as const,
           slug: a.slug,
           category: Array.isArray(a.category) ? a.category[0] : a.category,
-        })),
-        ...(tools || []).map(t => ({
-          id: t.id,
-          title: t.name,
-          description: t.description || "",
-          type: "tool" as const,
-          slug: t.slug,
-          category: t.category || undefined,
         })),
         ...(courses || []).map(c => ({
           id: c.id,
@@ -134,7 +119,6 @@ export function GlobalSearch() {
   const getIcon = (type: SearchResult["type"]) => {
     const icons = {
       article: FileText,
-      tool: Wrench,
       course: GraduationCap,
     };
     const Icon = icons[type];
@@ -167,7 +151,7 @@ export function GlobalSearch() {
       <CommandDialog open={open} onOpenChange={setOpen}>
         <DialogTitle className="sr-only">Globali Paieška</DialogTitle>
         <CommandInput
-          placeholder="Ieškoti straipsnių, įrankių, kursų..."
+          placeholder="Ieškoti straipsnių ir kursų..."
           value={query}
           onValueChange={setQuery}
         />
@@ -187,30 +171,6 @@ export function GlobalSearch() {
               {groupedResults.article && groupedResults.article.length > 0 && (
                 <CommandGroup heading="Straipsniai">
                   {groupedResults.article.map(result => (
-                    <CommandItem
-                      key={result.id}
-                      value={`${result.title} ${result.description}`}
-                      onSelect={() => handleSelect(result)}
-                      className="cursor-pointer"
-                    >
-                      {getIcon(result.type)}
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{result.title}</div>
-                        {result.description && (
-                          <div className="text-xs text-muted-foreground truncate">
-                            {result.description}
-                          </div>
-                        )}
-                      </div>
-                      <ArrowRight className="h-4 w-4 ml-2 text-muted-foreground" />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-
-              {groupedResults.tool && groupedResults.tool.length > 0 && (
-                <CommandGroup heading="Įrankiai">
-                  {groupedResults.tool.map(result => (
                     <CommandItem
                       key={result.id}
                       value={`${result.title} ${result.description}`}
@@ -260,7 +220,7 @@ export function GlobalSearch() {
 
           {!query && (
             <div className="px-4 py-6 text-center text-sm text-muted-foreground">
-              Pradėkite rašyti, kad rastumėte straipsnius, įrankius ir kursus...
+              Pradėkite rašyti, kad rastumėte straipsnius ir kursus...
             </div>
           )}
         </CommandList>

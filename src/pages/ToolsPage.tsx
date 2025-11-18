@@ -1,74 +1,77 @@
-import { useState, useEffect, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ToolCard from "@/components/ui/tool-card";
-import { ToolCardSkeleton } from "@/components/ui/tool-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Plus } from "lucide-react";
+import { Plus, ExternalLink } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 
 // Importuojame naujus komponentus
-import ToolCategories from "@/components/tools/ToolCategories";
-import ToolSearch from "@/components/tools/ToolSearch";
 
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
-import { useTools } from "@/hooks/useSupabaseData";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import type { YoutubeVideoItem } from "@/services/youtube.service";
+import { useYoutubeVideos } from "@/hooks/use-youtube-videos";
 
 const ToolsPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [limit] = useState(24);
   const { toast } = useToast();
+  const [selectedVideo, setSelectedVideo] = useState<YoutubeVideoItem | null>(null);
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
   // Naudojame React Query hook vietoj useState + useEffect
-  const { data: tools = [], isLoading: loading, error } = useTools();
+  const {
+    data: videos = [],
+    isLoading: loading,
+    error,
+  } = useYoutubeVideos({ limit });
 
   // Rodome klaidos pranešimą jei įvyko klaida (useEffect išvengia infinite loop)
   useEffect(() => {
     if (error) {
       toast({
         title: "Klaida",
-        description: "Nepavyko gauti įrankių. Bandykite vėliau.",
+        description: "Nepavyko gauti YouTube video. Bandykite vėliau.",
         variant: "destructive",
       });
     }
   }, [error, toast]);
 
-  // Filtruojame įrankius pagal paiešką ir kategoriją (computed value)
-  const filteredTools = tools.filter((tool) => {
-    // Filter by search query
-    if (searchQuery) {
-      const matchesSearch =
-        tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (tool.description && tool.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        tool.category.toLowerCase().includes(searchQuery.toLowerCase());
+  const openPlayer = (video: YoutubeVideoItem) => {
+    setSelectedVideo(video);
+    setIsPlayerOpen(true);
+  };
 
-      if (!matchesSearch) return false;
+  const closePlayer = () => {
+    setIsPlayerOpen(false);
+    setSelectedVideo(null);
+  };
+
+  const getEmbedUrl = (video: YoutubeVideoItem): string => {
+    if (!video) return "";
+
+    try {
+      const url = new URL(video.url);
+      const v = url.searchParams.get("v");
+      const id = v || video.id;
+      return id ? `https://www.youtube.com/embed/${id}?autoplay=1` : video.url;
+    } catch {
+      return video.id ? `https://www.youtube.com/embed/${video.id}?autoplay=1` : video.url;
     }
-
-    // Filter by category
-    if (selectedCategory && tool.category !== selectedCategory) {
-      return false;
-    }
-
-    return true;
-  });
-
-  // Get unique categories
-  const categories = [...new Set(tools.map(tool => tool.category))];
+  };
 
   return (
     <>
       <SEOHead
-        title="AI Įrankiai"
-        description="Atrinkti ir išbandyti dirbtinio intelekto įrankiai produktyvumui, kūrybai ir verslui. Praktinės rekomendacijos ir apžvalgos - ponas Obuolys"
-        canonical={`${SITE_CONFIG.domain}/irankiai`}
+        title="YouTube vaizdo įrašai"
+        description="Naujausi ponas Obuolys YouTube kanalo vaizdo įrašai apie dirbtinį intelektą, AI įrankius ir jų pritaikymą versle."
+        canonical={`${SITE_CONFIG.domain}/youtube`}
         keywords={[
-          "AI įrankiai",
-          "dirbtinio intelekto įrankiai",
-          "ChatGPT įrankiai",
-          "AI produktyvumui",
+          "YouTube",
+          "AI video",
+          "ponas Obuolys YouTube",
+          "dirbtinis intelektas",
           "AI verslui",
         ]}
         type="website"
@@ -82,77 +85,91 @@ const ToolsPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="w-2 h-2 rounded-full bg-foreground/40"></span>
-                    <span className="text-sm text-foreground/60">AI Įrankiai</span>
+                    <span className="text-sm text-foreground/60">YouTube</span>
                   </div>
 
                   <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-left">
-                    Atrinkti AI sprendimai
+                    Naujausi YouTube video
                   </h1>
 
                   <p className="text-xl text-foreground/80 max-w-2xl text-left">
-                    Asmeniškai išbandyti ir atrinkti dirbtinio intelekto įrankiai, kurie padės
-                    padidinti produktyvumą ir efektyvumą jūsų veikloje.
+                    Ponas Obuolys YouTube kanalo turinys apie dirbtinį intelektą, praktinius AI
+                    sprendimus ir realius verslo pavyzdžius.
                   </p>
                 </div>
-                <Link to="/kontaktai?type=AI_IRANKIS" className="w-full sm:w-auto">
+                <Link to="/kontaktai?type=YOUTUBE" className="w-full sm:w-auto">
                   <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
                     <Plus className="w-4 h-4" />
-                    Pasiūlyti įrankį
+                    Pasiūlyti video temą
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* Paieškos ir kategorijų sekcija */}
-            <div className="mb-12">
-              {/* Paieška ir kategorijos */}
-              <div className="mb-8">
-                <ToolSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
-                {/* Inline CTA viršuje */}
-                <div className="mt-4">
-                  <BusinessSolutionsCTA variant="inline" context="tools" />
-                </div>
-
-                <div className="mt-4">
-                  <ToolCategories
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Įrankių sąrašas */}
+            {/* Video sąrašas */}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <ToolCardSkeleton key={index} />
+                  <div
+                    key={index}
+                    className="h-64 rounded-xl bg-muted animate-pulse border border-border/40"
+                  />
                 ))}
               </div>
-            ) : filteredTools.length > 0 ? (
+            ) : videos.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredTools.map((tool, index) => (
-                  <Fragment key={tool.id}>
-                    <ToolCard tool={tool} />
-                    {/* CTA kas 6 įrankiai */}
-                    {(index + 1) % 6 === 0 && index !== filteredTools.length - 1 && (
-                      <div className="md:col-span-2 lg:col-span-3">
-                        <BusinessSolutionsCTA variant="inline" context="tools" />
+                {videos.map(video => (
+                  <div
+                    key={video.id}
+                    className="rounded-xl border border-border bg-card overflow-hidden hover:border-primary/60 hover:shadow-lg transition-all group flex flex-col"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => openPlayer(video)}
+                      className="w-full text-left"
+                    >
+                      <div className="aspect-video w-full overflow-hidden bg-muted">
+                        <img
+                          src={video.thumbnailUrl}
+                          alt={video.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
                       </div>
-                    )}
-                  </Fragment>
+                      <div className="p-4 text-left">
+                        <h3 className="font-semibold mb-1 line-clamp-2">{video.title}</h3>
+                        <p className="text-xs text-foreground/60">
+                          {new Date(video.publishedAt).toLocaleDateString("lt-LT", {
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                    </button>
+                    <div className="px-4 pb-4 mt-auto flex justify-between items-center gap-2">
+                      <span className="text-xs text-foreground/50">Peržiūrėti svetainėje</span>
+                      <a
+                        href={video.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Žiūrėti YouTube
+                      </a>
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (
               <div className="text-center py-12">
                 <div className="dark-card">
                   <p className="text-xl text-foreground/60 mb-4">
-                    Pagal paieškos kriterijus įrankių nerasta
+                    Šiuo metu nepavyko gauti YouTube video.
                   </p>
                   <p className="text-foreground/50">
-                    Pabandykite pakeisti paieškos žodžius arba kategoriją
+                    Patikrinkite vėliau arba apsilankykite kanale tiesiogiai.
                   </p>
                 </div>
               </div>
@@ -167,16 +184,15 @@ const ToolsPage = () => {
             <div className="mt-12">
               <div className="dark-card">
                 <h2 className="text-3xl font-bold text-foreground mb-4">
-                  Apie įrankių rekomendacijas
+                  Apie YouTube turinį
                 </h2>
                 <p className="text-foreground/80 mb-6 leading-relaxed">
-                  Visi rekomenduojami įrankiai yra asmeniškai išbandyti ir atrinkti pagal jų
-                  naudingumą, kokybę ir vartotojo patirtį. Kai kurios nuorodos gali būti
-                  partnerinės, už kurias gaunamas komisinis mokestis, jei nuspręsite įsigyti įrankį
-                  ar paslaugą.
+                  Visi kuriami video yra paremti asmenine patirtimi dirbtinio intelekto projektuose
+                  ir realiais pavyzdžiais iš Lietuvos verslo. Kai kurios nuorodos po video gali būti
+                  partnerinės, už kurias gaunamas komisinis mokestis.
                 </p>
                 <p className="text-foreground/70">
-                  Tačiau tai neturi įtakos mūsų rekomendacijoms ir nuomonei apie įrankius. Visada
+                  Tačiau tai neturi įtakos mano nuomonei apie pristatomus sprendimus. Visada
                   stengiuosi pateikti objektyvią ir naudingą informaciją apie AI sprendimus.
                 </p>
               </div>
@@ -184,6 +200,31 @@ const ToolsPage = () => {
           </div>
         </div>
       </section>
+
+      <Dialog
+        open={isPlayerOpen && !!selectedVideo}
+        onOpenChange={open => {
+          if (!open) {
+            closePlayer();
+          }
+        }}
+      >
+        <DialogContent className="max-w-5xl w-full p-0 overflow-hidden bg-black aspect-video">
+          {selectedVideo && (
+            <>
+              <DialogTitle className="sr-only">{selectedVideo.title}</DialogTitle>
+              <iframe
+                className="w-full h-full"
+                src={getEmbedUrl(selectedVideo)}
+                title={selectedVideo.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

@@ -39,7 +39,7 @@ const Header = () => {
   // Navigacijos meniu punktai
   const navLinks = [
     { to: "/publikacijos", label: "Publikacijos" },
-    { to: "/irankiai", label: "Įrankiai" },
+    { to: "/youtube", label: "YouTube" },
     { to: "/kursai", label: "Kursai" },
     { to: "/verslo-sprendimai", label: "Verslo Sprendimai", primary: true },
     { to: "/skaiciuokle", label: "Skaičiuoklė", highlight: true },

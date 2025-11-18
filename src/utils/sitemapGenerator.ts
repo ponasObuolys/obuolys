@@ -65,7 +65,7 @@ export const generateSitemap = async (): Promise<string> => {
   });
 
   urls.push({
-    loc: `${SITE_CONFIG.domain}/irankiai`,
+    loc: `${SITE_CONFIG.domain}/youtube`,
     changefreq: "weekly",
     priority: 0.8,
   });
@@ -108,28 +108,6 @@ export const generateSitemap = async (): Promise<string> => {
     }
   } catch (error) {
     secureLogger.error("Error fetching articles for sitemap", { error });
-  }
-
-  // Fetch and add tools
-  try {
-    const { data: tools, error: toolsError } = await supabase
-      .from("tools")
-      .select("slug, updated_at, created_at")
-      .eq("published", true)
-      .order("created_at", { ascending: false });
-
-    if (!toolsError && tools) {
-      tools.forEach(tool => {
-        urls.push({
-          loc: `${SITE_CONFIG.domain}/irankiai/${tool.slug}`,
-          lastmod: formatDate(tool.updated_at || tool.created_at),
-          changefreq: "monthly",
-          priority: 0.6,
-        });
-      });
-    }
-  } catch (error) {
-    secureLogger.error("Error fetching tools for sitemap", { error });
   }
 
   // Fetch and add courses

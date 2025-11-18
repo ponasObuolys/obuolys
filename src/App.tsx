@@ -27,7 +27,7 @@ import { reportWebVitals } from "@/utils/webVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Suspense, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes, Navigate } from "react-router-dom";
 
 // Keep critical/frequently accessed pages as regular imports
 import HomePage from "./pages/Index";
@@ -313,16 +313,30 @@ const App = () => {
                             }
                           />
                           <Route
-                            path="/irankiai"
+                            path="/youtube"
                             element={
                               <ContentRouteErrorBoundary
-                                routePath="/irankiai"
+                                routePath="/youtube"
                                 routeName="ToolsPage"
                               >
                                 <SuspenseWithChunkError
                                   fallback={<LoadingSpinner text="Kraunami įrankiai..." />}
                                 >
                                   <ToolsPage />
+                                </SuspenseWithChunkError>
+                              </ContentRouteErrorBoundary>
+                            }
+                          />
+                          {/* Legacy /irankiai route redirect to /youtube */}
+                          <Route
+                            path="/irankiai"
+                            element={
+                              <ContentRouteErrorBoundary
+                                routePath="/irankiai"
+                                routeName="ToolsLegacyRedirect"
+                              >
+                                <SuspenseWithChunkError fallback={<LoadingSpinner text="Kraunama..." />}>
+                                  <Navigate to="/youtube" replace />
                                 </SuspenseWithChunkError>
                               </ContentRouteErrorBoundary>
                             }

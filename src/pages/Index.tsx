@@ -1,7 +1,7 @@
 import Hero from "@/components/home/Hero";
 import FeaturedArticles from "@/components/home/FeaturedArticles";
 // import AINews from '@/components/home/AINews'; // Removed
-// import AITools from "@/components/home/AITools"; // Removed - recommended tools
+import AITools from "@/components/home/AITools"; // YouTube video feed sekcija
 import Courses from "@/components/home/Courses";
 import CallToAction from "@/components/home/CallToAction";
 // Removed CoursesPreview, CtaSection, ToolsSection, FeaturesSection imports
@@ -13,7 +13,6 @@ import {
   SITE_CONFIG,
 } from "@/utils/seo";
 import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
-import { TrendingArticles } from "@/components/widgets/trending-articles";
 import { CalculatorCTA } from "@/components/cta/calculator-cta";
 import { CoursePromoPopup } from "@/components/home/CoursePromoPopup";
 
@@ -50,15 +49,7 @@ const Index = () => {
       <Hero />
       <FeaturedArticles />
       {/* <AINews /> */}
-
-      {/* Trending Articles Widget */}
-      <section className="py-12 md:py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <TrendingArticles days={7} limit={3} />
-        </div>
-      </section>
-
-      {/* <AITools /> */}
+      <AITools />
       <Courses />
 
       {/* Calculator CTA - Lead Magnet */}

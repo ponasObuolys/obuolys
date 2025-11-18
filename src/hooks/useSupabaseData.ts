@@ -52,16 +52,7 @@ export const useTools = () => {
   return useQuery({
     queryKey: ["tools"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tools")
-        .select("*")
-        .eq("published", true);
-
-      if (error) {
-        throw error;
-      }
-
-      return data as Tool[];
+      return [] as Tool[];
     },
     staleTime: 5 * 60 * 1000,
     refetchOnMount: true,
