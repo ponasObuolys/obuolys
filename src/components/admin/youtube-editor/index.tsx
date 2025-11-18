@@ -1,21 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { ToolFormFields } from "./tool-form-fields";
-import { useNameSlugSync, useToolData, useToolForm, useToolSubmit } from "./tool-editor.hooks";
-import type { ToolEditorProps } from "./tool-editor.types";
+import { YouTubeFormFields } from "./youtube-form-fields";
+import {
+  useNameSlugSync,
+  useYouTubeData,
+  useYouTubeForm,
+  useYouTubeSubmit,
+} from "./youtube-editor.hooks";
+import type { YouTubeEditorProps } from "./youtube-editor.types";
 
-const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
-  const form = useToolForm();
-  const { initialLoading, imageUrl, setImageUrl } = useToolData(id, form);
-  const { loading, onSubmit } = useToolSubmit(id, onSave);
+const YouTubeEditor = ({ id, onCancel, onSave }: YouTubeEditorProps) => {
+  const form = useYouTubeForm();
+  const { initialLoading, imageUrl, setImageUrl } = useYouTubeData(id, form);
+  const { loading, onSubmit } = useYouTubeSubmit(id, onSave);
   const { onNameChange } = useNameSlugSync(form, id);
 
   if (initialLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Įrankio redagavimas</CardTitle>
+          <CardTitle>Video įrašo redagavimas</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center py-4">Kraunami duomenys...</p>
@@ -27,12 +32,12 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{id ? "Redaguoti įrankį" : "Naujas įrankis"}</CardTitle>
+        <CardTitle>{id ? "Redaguoti video įrašą" : "Naujas video įrašas"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <ToolFormFields
+            <YouTubeFormFields
               form={form}
               onNameChange={onNameChange}
               imageUrl={imageUrl}
@@ -54,4 +59,4 @@ const ToolEditor = ({ id, onCancel, onSave }: ToolEditorProps) => {
   );
 };
 
-export default ToolEditor;
+export default YouTubeEditor;

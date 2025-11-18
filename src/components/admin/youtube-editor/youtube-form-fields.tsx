@@ -12,21 +12,21 @@ import { Input } from "@/components/ui/input";
 import LazyImage from "@/components/ui/lazy-image";
 import { Textarea } from "@/components/ui/textarea";
 import FileUpload from "../FileUpload";
-import type { ToolFormData } from "./tool-editor.types";
+import type { YouTubeFormData } from "./youtube-editor.types";
 
-interface ToolFormFieldsProps {
-  form: ReturnType<typeof import("react-hook-form").useForm<ToolFormData>>;
+interface YouTubeFormFieldsProps {
+  form: ReturnType<typeof import("react-hook-form").useForm<YouTubeFormData>>;
   onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   imageUrl: string | null;
   setImageUrl: (url: string | null) => void;
 }
 
-export const ToolFormFields = ({
+export const YouTubeFormFields = ({
   form,
   onNameChange,
   imageUrl,
   setImageUrl,
-}: ToolFormFieldsProps) => {
+}: YouTubeFormFieldsProps) => {
   const handleImageUpload = (url: string) => {
     setImageUrl(url);
     if (url) {
@@ -48,7 +48,7 @@ export const ToolFormFields = ({
             <FormItem>
               <FormLabel>Pavadinimas</FormLabel>
               <FormControl>
-                <Input placeholder="Įrankio pavadinimas" {...field} onChange={onNameChange} />
+                <Input placeholder="Video pavadinimas" {...field} onChange={onNameChange} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,7 +62,7 @@ export const ToolFormFields = ({
             <FormItem>
               <FormLabel>URL identifikatorius (slug)</FormLabel>
               <FormControl>
-                <Input placeholder="irankio-pavadinimas" {...field} />
+                <Input placeholder="video-pavadinimas" {...field} />
               </FormControl>
               <FormDescription>Unikalus identifikatorius naudojamas URL adrese</FormDescription>
               <FormMessage />
@@ -78,7 +78,7 @@ export const ToolFormFields = ({
           <FormItem>
             <FormLabel>Aprašymas</FormLabel>
             <FormControl>
-              <Textarea placeholder="Įrankio aprašymas" className="min-h-[100px]" {...field} />
+              <Textarea placeholder="Video aprašymas" className="min-h-[100px]" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -91,11 +91,11 @@ export const ToolFormFields = ({
           name="url"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Įrankio URL</FormLabel>
+              <FormLabel>Video URL</FormLabel>
               <FormControl>
                 <Input placeholder="https://..." {...field} />
               </FormControl>
-              <FormDescription>Nuoroda į įrankį (gali būti affiliate nuoroda)</FormDescription>
+              <FormDescription>Nuoroda į YouTube video</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -106,7 +106,7 @@ export const ToolFormFields = ({
           name="image_url"
           render={({ field: _field }) => (
             <FormItem>
-              <FormLabel>Įrankio nuotrauka</FormLabel>
+              <FormLabel>Video nuotrauka</FormLabel>
               <FormControl>
                 <div className="space-y-4">
                   <FileUpload
@@ -121,7 +121,7 @@ export const ToolFormFields = ({
                       <div className="border rounded-md overflow-hidden aspect-video w-full max-w-md">
                         <LazyImage
                           src={imageUrl}
-                          alt="Įrankio nuotrauka"
+                          alt="Video nuotrauka"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -139,7 +139,7 @@ export const ToolFormFields = ({
                   )}
                 </div>
               </FormControl>
-              <FormDescription>Įrankio nuotrauka (rekomenduojama)</FormDescription>
+              <FormDescription>Video nuotrauka (rekomenduojama)</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -153,7 +153,7 @@ export const ToolFormFields = ({
           <FormItem>
             <FormLabel>Kategorija</FormLabel>
             <FormControl>
-              <Input placeholder="Įrankio kategorija" {...field} />
+              <Input placeholder="Video kategorija" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

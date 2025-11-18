@@ -3,10 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { generateSlug } from "@/utils/stringUtils";
 import { useEffect, useState } from "react";
 import { useForm, type UseFormReturn } from "react-hook-form";
-import type { ToolFormData } from "./tool-editor.types";
+import type { YouTubeFormData } from "./youtube-editor.types";
 
-export const useToolForm = () => {
-  return useForm<ToolFormData>({
+export const useYouTubeForm = () => {
+  return useForm<YouTubeFormData>({
     defaultValues: {
       name: "",
       slug: "",
@@ -20,7 +20,7 @@ export const useToolForm = () => {
   });
 };
 
-export const useToolData = (id: string | null, form: UseFormReturn<ToolFormData>) => {
+export const useYouTubeData = (id: string | null, form: UseFormReturn<YouTubeFormData>) => {
   const [initialLoading, setInitialLoading] = useState(id !== null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { toast } = useToast();
@@ -53,7 +53,7 @@ export const useToolData = (id: string | null, form: UseFormReturn<ToolFormData>
       } catch {
         toast({
           title: "Klaida",
-          description: "Nepavyko gauti įrankio duomenų.",
+          description: "Nepavyko gauti video įrašo duomenų.",
           variant: "destructive",
         });
       } finally {
@@ -67,11 +67,11 @@ export const useToolData = (id: string | null, form: UseFormReturn<ToolFormData>
   return { initialLoading, imageUrl, setImageUrl };
 };
 
-export const useToolSubmit = (id: string | null, onSave: () => void) => {
+export const useYouTubeSubmit = (id: string | null, onSave: () => void) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const onSubmit = async (values: ToolFormData) => {
+  const onSubmit = async (values: YouTubeFormData) => {
     try {
       setLoading(true);
 
@@ -92,14 +92,14 @@ export const useToolSubmit = (id: string | null, onSave: () => void) => {
 
       toast({
         title: "Sėkmingai išsaugota",
-        description: id ? "Įrankis atnaujintas." : "Naujas įrankis sukurtas.",
+        description: id ? "Video įrašas atnaujintas." : "Naujas video įrašas sukurtas.",
       });
 
       onSave();
     } catch {
       toast({
         title: "Klaida",
-        description: "Nepavyko išsaugoti įrankio.",
+        description: "Nepavyko išsaugoti video įrašo.",
         variant: "destructive",
       });
     } finally {
@@ -110,7 +110,7 @@ export const useToolSubmit = (id: string | null, onSave: () => void) => {
   return { loading, onSubmit };
 };
 
-export const useNameSlugSync = (form: UseFormReturn<ToolFormData>, id: string | null) => {
+export const useNameSlugSync = (form: UseFormReturn<YouTubeFormData>, id: string | null) => {
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
     form.setValue("name", name);

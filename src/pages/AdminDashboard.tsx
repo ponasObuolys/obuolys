@@ -28,8 +28,8 @@ const PerformanceMonitor = lazy(() =>
 );
 const PublicationEditor = lazy(() => import("@/components/admin/publication-editor"));
 const PublicationsList = lazy(() => import("@/components/admin/PublicationsList"));
-const ToolEditor = lazy(() => import("@/components/admin/tool-editor"));
-const ToolsList = lazy(() => import("@/components/admin/ToolsList"));
+const YouTubeEditor = lazy(() => import("@/components/admin/youtube-editor"));
+const YouTubeList = lazy(() => import("@/components/admin/YouTubeList"));
 const UserManager = lazy(() => import("@/components/admin/UserManager"));
 const CTAAnalyticsPage = lazy(() => import("@/pages/admin/CTAAnalyticsPage"));
 const DeviceStats = lazy(() =>
@@ -93,8 +93,8 @@ const AdminDashboard = () => {
             <TabsTrigger value="publications" className="text-xs md:text-sm">
               Publikacijos
             </TabsTrigger>
-            <TabsTrigger value="tools" className="text-xs md:text-sm">
-              Įrankiai
+            <TabsTrigger value="youtube" className="text-xs md:text-sm">
+              YouTube
             </TabsTrigger>
             <TabsTrigger value="courses" className="text-xs md:text-sm">
               Kursai
@@ -169,9 +169,9 @@ const AdminDashboard = () => {
                   <Button
                     variant="outline"
                     className="w-full justify-start"
-                    onClick={() => handleCreateNew("tools")}
+                    onClick={() => handleCreateNew("youtube")}
                   >
-                    <Plus className="mr-2 h-4 w-4" /> Naujas įrankis
+                    <Plus className="mr-2 h-4 w-4" /> Naujas video
                   </Button>
                   <Button
                     variant="outline"
@@ -223,10 +223,10 @@ const AdminDashboard = () => {
             </Suspense>
           </TabsContent>
 
-          <TabsContent value="tools">
-            <Suspense fallback={<LoadingSpinner text="Kraunamas įrankių redaktorius..." />}>
+          <TabsContent value="youtube">
+            <Suspense fallback={<LoadingSpinner text="Kraunamas video redaktorius..." />}>
               {editingItem ? (
-                <ToolEditor
+                <YouTubeEditor
                   id={editingItem === "new" ? null : editingItem}
                   onCancel={() => setEditingItem(null)}
                   onSave={() => {
@@ -237,16 +237,18 @@ const AdminDashboard = () => {
               ) : (
                 <Card>
                   <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                      <CardTitle>Įrankių valdymas</CardTitle>
-                      <CardDescription>Tvarkykite AI įrankius</CardDescription>
+                    <div className="text-left">
+                      <CardTitle className="text-left">YouTube valdymas</CardTitle>
+                      <CardDescription className="text-left">
+                        Tvarkykite YouTube video įrašus
+                      </CardDescription>
                     </div>
-                    <Button onClick={() => handleCreateNew("tools")} className="w-full sm:w-auto">
-                      <Plus className="mr-2 h-4 w-4" /> Naujas įrankis
+                    <Button onClick={() => handleCreateNew("youtube")} className="w-full sm:w-auto">
+                      <Plus className="mr-2 h-4 w-4" /> Naujas video
                     </Button>
                   </CardHeader>
                   <CardContent>
-                    <ToolsList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
+                    <YouTubeList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
                   </CardContent>
                 </Card>
               )}
@@ -267,9 +269,11 @@ const AdminDashboard = () => {
               ) : (
                 <Card>
                   <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                      <CardTitle>Kursų valdymas</CardTitle>
-                      <CardDescription>Tvarkykite mokymų kursus</CardDescription>
+                    <div className="text-left">
+                      <CardTitle className="text-left">Kursų valdymas</CardTitle>
+                      <CardDescription className="text-left">
+                        Tvarkykite mokymų kursus
+                      </CardDescription>
                     </div>
                     <Button onClick={() => handleCreateNew("courses")} className="w-full sm:w-auto">
                       <Plus className="mr-2 h-4 w-4" /> Naujas kursas
@@ -310,9 +314,11 @@ const AdminDashboard = () => {
           <TabsContent value="users">
             <Suspense fallback={<LoadingSpinner text="Kraunami vartotojai..." />}>
               <Card>
-                <CardHeader>
-                  <CardTitle>Vartotojų valdymas</CardTitle>
-                  <CardDescription>Tvarkykite svetainės vartotojus</CardDescription>
+                <CardHeader className="text-left">
+                  <CardTitle className="text-left">Vartotojų valdymas</CardTitle>
+                  <CardDescription className="text-left">
+                    Tvarkykite svetainės vartotojus
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <UserManager onUpdate={fetchDashboardStats} />
@@ -324,9 +330,11 @@ const AdminDashboard = () => {
           <TabsContent value="inquiries">
             <div className="space-y-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Projekto Skaičiuoklės Užklausos</CardTitle>
-                  <CardDescription>Peržiūrėkite užklausas iš projekto skaičiuoklės</CardDescription>
+                <CardHeader className="text-left">
+                  <CardTitle className="text-left">Projekto Skaičiuoklės Užklausos</CardTitle>
+                  <CardDescription className="text-left">
+                    Peržiūrėkite užklausas iš projekto skaičiuoklės
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button
@@ -339,9 +347,9 @@ const AdminDashboard = () => {
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Kontaktų Formos Užklausos</CardTitle>
-                  <CardDescription>
+                <CardHeader className="text-left">
+                  <CardTitle className="text-left">Kontaktų Formos Užklausos</CardTitle>
+                  <CardDescription className="text-left">
                     Peržiūrėkite ir tvarkykite gautą užklausą custom įrankių kūrimui
                   </CardDescription>
                 </CardHeader>

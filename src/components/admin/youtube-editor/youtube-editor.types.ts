@@ -1,8 +1,8 @@
 import type { Database } from "@/integrations/supabase/types";
 
-export type ToolFormData = Database["public"]["Tables"]["tools"]["Insert"];
+export type YouTubeFormData = Database["public"]["Tables"]["tools"]["Insert"];
 
-export interface ToolEditorProps {
+export interface YouTubeEditorProps {
   id: string | null;
   onCancel: () => void;
   onSave: () => void;

@@ -52,11 +52,11 @@ const CoursesList = ({ onEdit, onDelete }: CoursesListProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Pavadinimas</TableHead>
-              <TableHead>Kaina</TableHead>
-              <TableHead>Lygis</TableHead>
-              <TableHead>Publikuota</TableHead>
-              <TableHead>Veiksmai</TableHead>
+              <TableHead className="text-left">Pavadinimas</TableHead>
+              <TableHead className="text-left">Kaina</TableHead>
+              <TableHead className="text-left">Lygis</TableHead>
+              <TableHead className="text-left">Publikuota</TableHead>
+              <TableHead className="text-left">Veiksmai</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

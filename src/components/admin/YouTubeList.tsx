@@ -12,7 +12,7 @@ interface ToolsListProps {
 /**
  * Tools list component for the admin dashboard
  */
-const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
+const YouTubeList = ({ onEdit, onDelete }: ToolsListProps) => {
   const {
     items: tools,
     loading,
@@ -26,7 +26,7 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
   });
 
   const handleDelete = (id: string) => {
-    deleteItem(id, "Ar tikrai norite ištrinti šį įrankį?");
+    deleteItem(id, "Ar tikrai norite ištrinti šį video įrašą?");
   };
 
   if (loading) {
@@ -34,7 +34,7 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
   }
 
   if (tools.length === 0) {
-    return <p>Įrankių nerasta. Sukurkite naują įrankį.</p>;
+    return <p>Video įrašų nerasta. Sukurkite naują įrašą.</p>;
   }
 
   return (
@@ -46,9 +46,11 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
               {/* Title ir badges */}
               <div className="flex items-start gap-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm md:text-base break-words">{tool.name}</h3>
+                  <h3 className="font-semibold text-sm md:text-base break-words text-left">
+                    {tool.name}
+                  </h3>
                   {tool.description && (
-                    <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2">
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1 line-clamp-2 text-left">
                       {tool.description}
                     </p>
                   )}
@@ -62,7 +64,7 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
               </div>
 
               {/* Info */}
-              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground text-left">
                 <div>
                   Kategorija: <span className="font-medium">{tool.category || "Nenurodyta"}</span>
                 </div>
@@ -75,7 +77,7 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
 
               {/* URL */}
               {tool.url && (
-                <div className="text-xs">
+                <div className="text-xs text-left">
                   <a
                     href={tool.url}
                     target="_blank"
@@ -115,4 +117,4 @@ const ToolsList = ({ onEdit, onDelete }: ToolsListProps) => {
   );
 };
 
-export default ToolsList;
+export default YouTubeList;
