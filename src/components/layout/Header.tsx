@@ -1,6 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, User, LogOut, Settings, Heart, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  User,
+  LogOut,
+  Settings,
+  Heart,
+  ChevronDown,
+  Youtube,
+  Briefcase,
+  Calculator,
+  BookOpen,
+  Phone,
+  LayoutGrid,
+  Search,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,12 +29,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileData, setProfileData] = useState<{ username?: string; avatarUrl?: string } | null>(
     null
   );
+  const [isBusinessOpen, setIsBusinessOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAdmin, signOut, getUserProfile } = useAuth();
@@ -38,122 +56,313 @@ const Header = () => {
 
   // Navigacijos meniu punktai
   const navLinks = [
-    { to: "/publikacijos", label: "Publikacijos" },
-    { to: "/youtube", label: "YouTube" },
-    { to: "/kursai", label: "Kursai" },
-    { to: "/verslo-sprendimai", label: "Verslo Sprendimai", primary: true },
-    { to: "/skaiciuokle", label: "Skaičiuoklė", highlight: true },
-    { to: "/kontaktai", label: "Kontaktai" },
+    { to: "/publikacijos", label: "Publikacijos", icon: BookOpen },
+    { to: "/youtube", label: "YouTube", icon: Youtube },
+    { to: "/kursai", label: "Kursai", icon: LayoutGrid },
+    { to: "/verslo-sprendimai", label: "Verslo Sprendimai", primary: true, icon: Briefcase },
+    { to: "/skaiciuokle", label: "Skaičiuoklė", highlight: true, icon: Calculator },
+    { to: "/kontaktai", label: "Kontaktai", icon: Phone },
   ];
 
   const isActive = (to: string) => location.pathname === to;
 
   return (
     <header className="border-b border-border sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80">
-      <div className="container mx-auto py-4 px-4">
+      <div className="container mx-auto py-3 px-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-3">
-            <img
-              src="/obuolys-logo.png"
-              alt="ponas Obuolys logo"
-              className="w-10 h-10 object-contain"
-            />
-            <span className="text-foreground font-bold text-xl">ponas Obuolys</span>
-          </Link>
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu Trigger */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="xl:hidden">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Atidaryti meniu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0 flex flex-col h-full">
+                <SheetHeader className="p-4 border-b text-left">
+                  <SheetTitle className="flex items-center gap-2">
+                    <img
+                      src="/obuolys-logo.png"
+                      alt="ponas Obuolys logo"
+                      className="w-8 h-8 object-contain"
+                    />
+                    <span>ponas Obuolys</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <ScrollArea className="flex-1">
+                  <div className="flex flex-col gap-2 p-4">
+                    <div className="pb-2">
+                      <GlobalSearch
+                        trigger={
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start text-muted-foreground hover:text-foreground"
+                          >
+                            <Search className="mr-2 h-4 w-4" />
+                            Ieškoti...
+                          </Button>
+                        }
+                      />
+                    </div>
+                    {navLinks.map(({ to, label, highlight, primary, icon: Icon }) => {
+                      if (primary) {
+                        return (
+                          <Collapsible
+                            key={to}
+                            open={isBusinessOpen}
+                            onOpenChange={setIsBusinessOpen}
+                            className="w-full"
+                          >
+                            <CollapsibleTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-between font-semibold"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Icon className="h-4 w-4" />
+                                  {label}
+                                </span>
+                                <ChevronDown
+                                  className={`h-4 w-4 transition-transform duration-200 ${
+                                    isBusinessOpen ? "rotate-180" : ""
+                                  }`}
+                                />
+                              </Button>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent className="space-y-1 pt-1 pl-4">
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-muted-foreground hover:text-foreground"
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  navigate("/verslo-sprendimai");
+                                }}
+                              >
+                                Pagrindinis
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-muted-foreground hover:text-foreground"
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  navigate("/verslo-sprendimai#portfolio");
+                                  setTimeout(() => {
+                                    document
+                                      .getElementById("portfolio")
+                                      ?.scrollIntoView({ behavior: "smooth" });
+                                  }, 300);
+                                }}
+                              >
+                                Portfolio
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-muted-foreground hover:text-foreground"
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  navigate("/verslo-sprendimai#tech-stack");
+                                  setTimeout(() => {
+                                    document
+                                      .getElementById("tech-stack")
+                                      ?.scrollIntoView({ behavior: "smooth" });
+                                  }, 300);
+                                }}
+                              >
+                                Tech Stack
+                              </Button>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        );
+                      }
+
+                      return (
+                        <Button
+                          key={to}
+                          variant={isActive(to) ? "secondary" : "ghost"}
+                          className={`w-full justify-start ${
+                            highlight ? "text-primary font-semibold" : ""
+                          }`}
+                          asChild
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Link to={to} className="flex items-center gap-2">
+                            <Icon className="h-4 w-4" />
+                            <span>{label}</span>
+                            {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
+                              <Badge
+                                variant="destructive"
+                                className="ml-auto h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Link>
+                        </Button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="px-4 py-2">
+                    <div className="h-px bg-border my-2" />
+                    <div className="space-y-4 pt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Tema</span>
+                        <ThemeToggle />
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-muted-foreground px-2">
+                          Paremti projektą
+                        </p>
+                        <Button variant="outline" className="w-full justify-start gap-2" asChild>
+                          <a
+                            href="https://www.youtube.com/@ponasObuolys/join"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Youtube className="h-4 w-4 text-red-600" />
+                            YouTube Members
+                          </a>
+                        </Button>
+                        <Button variant="outline" className="w-full justify-start gap-2" asChild>
+                          <a
+                            href="https://www.patreon.com/ponasObuolys"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Heart className="h-4 w-4 text-pink-600" />
+                            Patreon
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </ScrollArea>
+
+                <div className="border-t p-4 bg-muted/40">
+                  {user ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="w-full justify-start gap-2 px-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage
+                              src={profileData?.avatarUrl || ""}
+                              alt={profileData?.username || "User"}
+                            />
+                            <AvatarFallback>
+                              {profileData?.username?.charAt(0).toUpperCase() || (
+                                <User className="h-4 w-4" />
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col items-start text-sm">
+                            <span className="font-medium">
+                              {profileData?.username || "Vartotojas"}
+                            </span>
+                            <span className="text-xs text-muted-foreground">Tvarkyti profilį</span>
+                          </div>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuItem asChild>
+                          <Link to="/profilis" className="flex items-center space-x-2">
+                            <Settings className="h-4 w-4" />
+                            <span>Nustatymai</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        {isAdmin && (
+                          <DropdownMenuItem asChild>
+                            <Link to="/admin" className="flex items-center justify-between w-full">
+                              <div className="flex items-center space-x-2">
+                                <Settings className="h-4 w-4" />
+                                <span>Administravimas</span>
+                              </div>
+                              {unreadCount > 0 && (
+                                <Badge
+                                  variant="destructive"
+                                  className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5"
+                                >
+                                  {unreadCount}
+                                </Badge>
+                              )}
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={signOut} className="flex items-center space-x-2">
+                          <LogOut className="h-4 w-4" />
+                          <span>Atsijungti</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button variant="outline" asChild>
+                        <Link to="/auth">Prisijungti</Link>
+                      </Button>
+                      <Button className="button-primary" asChild>
+                        <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            <Link to="/" className="flex items-center space-x-3">
+              <img
+                src="/obuolys-logo.png"
+                alt="ponas Obuolys logo"
+                className="w-9 h-9 object-contain"
+              />
+              <span className="text-foreground font-bold text-lg xl:text-xl hidden sm:inline-block">
+                ponas Obuolys
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center space-x-6">
-            {navLinks.map(({ to, label, highlight, primary }) => {
-              // Verslo Sprendimai dropdown
-              if (primary) {
-                return (
-                  <DropdownMenu key={to}>
-                    <DropdownMenuTrigger className="nav-link transition-colors duration-300 flex items-center gap-1 whitespace-nowrap text-sm text-foreground font-semibold hover:text-primary outline-none">
-                      {label}
-                      <ChevronDown className="h-3 w-3" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-48">
-                      <DropdownMenuItem
-                        onClick={() => {
-                          navigate("/verslo-sprendimai");
-                        }}
-                      >
-                        Pagrindinis
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          const isOnPage = location.pathname === "/verslo-sprendimai";
-                          if (isOnPage) {
-                            // Already on page, just scroll
-                            document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
-                            window.history.pushState(null, "", "/verslo-sprendimai#portfolio");
-                          } else {
-                            // Navigate to page first
-                            navigate("/verslo-sprendimai#portfolio");
-                            setTimeout(() => {
-                              document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
-                            }, 300);
-                          }
-                        }}
-                      >
-                        Portfolio
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          const isOnPage = location.pathname === "/verslo-sprendimai";
-                          if (isOnPage) {
-                            // Already on page, just scroll
-                            document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
-                            window.history.pushState(null, "", "/verslo-sprendimai#tech-stack");
-                          } else {
-                            // Navigate to page first
-                            navigate("/verslo-sprendimai#tech-stack");
-                            setTimeout(() => {
-                              document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
-                            }, 300);
-                          }
-                        }}
-                      >
-                        Tech Stack
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              }
-
-              // Regular links
+          <nav className="hidden xl:flex items-center space-x-1">
+            {navLinks.map(({ to, label, highlight }) => {
+              // Regular links (including Verslo Sprendimai on desktop)
               return (
-                <Link
+                <Button
                   key={to}
-                  to={to}
-                  className={`nav-link transition-colors duration-300 flex items-center gap-2 whitespace-nowrap text-sm ${
+                  variant="ghost"
+                  asChild
+                  className={
                     highlight
-                      ? "text-primary font-semibold hover:text-primary/80"
+                      ? "text-primary font-semibold hover:text-primary/80 hover:bg-primary/10"
                       : isActive(to)
-                      ? "text-foreground"
-                      : "text-foreground/60 hover:text-foreground"
-                  }`}
+                        ? "bg-accent text-accent-foreground"
+                        : "text-foreground/60 hover:text-foreground"
+                  }
                 >
-                  {label}
-                  {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
-                    >
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </Link>
+                  <Link to={to}>
+                    {label}
+                    {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
+                      <Badge
+                        variant="destructive"
+                        className="ml-2 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
               );
             })}
           </nav>
 
-          <div className="hidden xl:flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Global search */}
             <GlobalSearch />
 
             {/* Theme toggle */}
-            <ThemeToggle />
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
 
             {/* Paremti mygtukas */}
             <DropdownMenu>
@@ -161,7 +370,7 @@ const Header = () => {
                 <Button
                   variant="default"
                   size="sm"
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+                  className="hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
                 >
                   <Heart className="h-3.5 w-3.5" />
                   <span className="text-sm">Paremti</span>
@@ -175,9 +384,7 @@ const Header = () => {
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2 cursor-pointer"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                    </svg>
+                    <Youtube className="h-4 w-4 text-red-600" />
                     <span>YouTube Members</span>
                   </a>
                 </DropdownMenuItem>
@@ -188,9 +395,7 @@ const Header = () => {
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2 cursor-pointer"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M15.386.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524M.003 23.537h4.22V.524H.003" />
-                    </svg>
+                    <Heart className="h-4 w-4 text-pink-600" />
                     <span>Patreon</span>
                   </a>
                 </DropdownMenuItem>
@@ -200,8 +405,8 @@ const Header = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
+                  <Button variant="ghost" size="icon" className="hidden sm:flex rounded-full">
+                    <Avatar className="h-8 w-8">
                       <AvatarImage
                         src={profileData?.avatarUrl || ""}
                         alt={profileData?.username || "User"}
@@ -212,7 +417,6 @@ const Header = () => {
                         )}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm">Profilis</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
@@ -248,7 +452,7 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
+              <div className="hidden sm:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/auth" className="text-sm">
                     Prisijungti
@@ -257,215 +461,11 @@ const Header = () => {
                 <Button asChild size="sm" className="button-primary text-sm">
                   <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
                 </Button>
-              </>
+              </div>
             )}
           </div>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden text-foreground/60 hover:text-foreground transition-colors duration-300"
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="xl:hidden bg-background border-t border-border">
-          <div className="container mx-auto py-4 px-4 space-y-2">
-            {navLinks.map(({ to, label, highlight, primary }) => {
-              // Verslo Sprendimai with submenu
-              if (primary) {
-                return (
-                  <div key={to} className="space-y-1">
-                    <Link
-                      to={to}
-                      className="block px-4 py-3 rounded-lg transition-colors duration-300 text-foreground font-semibold hover:bg-card"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {label}
-                    </Link>
-                    <div className="pl-4 space-y-1">
-                      <Link
-                        to="/verslo-sprendimai#portfolio"
-                        className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setTimeout(() => {
-                            document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" });
-                          }, 100);
-                        }}
-                      >
-                        Portfolio
-                      </Link>
-                      <Link
-                        to="/verslo-sprendimai#tech-stack"
-                        className="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-card rounded-lg transition-colors"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setTimeout(() => {
-                            document.getElementById("tech-stack")?.scrollIntoView({ behavior: "smooth" });
-                          }, 100);
-                        }}
-                      >
-                        Tech Stack
-                      </Link>
-                    </div>
-                  </div>
-                );
-              }
-
-              // Regular links
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  className={`block px-4 py-3 rounded-lg transition-colors duration-300 ${
-                    highlight
-                      ? "bg-primary/10 text-primary font-semibold hover:bg-primary/20"
-                      : "text-foreground/80 hover:text-foreground hover:bg-card"
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{label}</span>
-                    {to === "/kontaktai" && isAdmin && unreadCount > 0 && (
-                      <Badge
-                        variant="destructive"
-                        className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-
-            {/* Search mobile */}
-            <div className="border-t border-border pt-4 mt-4">
-              <div className="px-4 py-3">
-                <GlobalSearch />
-              </div>
-            </div>
-
-            {/* Theme toggle mobile */}
-            <div className="border-t border-border pt-4 mt-4">
-              <div className="px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground/80">Tema</span>
-                  <ThemeToggle />
-                </div>
-              </div>
-            </div>
-
-            {/* Paremti mygtukas mobile */}
-            <div className="border-t border-border pt-4 mt-4 space-y-2">
-              <a
-                href="https://www.youtube.com/@ponasObuolys/join"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4" />
-                  <span>Paremti per YouTube</span>
-                </div>
-              </a>
-              <a
-                href="https://www.patreon.com/ponasObuolys"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4" />
-                  <span>Paremti per Patreon</span>
-                </div>
-              </a>
-
-              {user ? (
-                <>
-                  <Link
-                    to="/profilis"
-                    className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage
-                          src={profileData?.avatarUrl || ""}
-                          alt={profileData?.username || "User"}
-                        />
-                        <AvatarFallback>
-                          {profileData?.username?.charAt(0).toUpperCase() || (
-                            <User className="h-4 w-4" />
-                          )}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>Profilio nustatymai</span>
-                    </div>
-                  </Link>
-                  {isAdmin && (
-                    <Link
-                      to="/admin"
-                      className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <Settings className="h-4 w-4" />
-                          <span>Administravimas</span>
-                        </div>
-                        {unreadCount > 0 && (
-                          <Badge
-                            variant="destructive"
-                            className="h-5 min-w-5 flex items-center justify-center px-1.5"
-                          >
-                            {unreadCount}
-                          </Badge>
-                        )}
-                      </div>
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => {
-                      signOut();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <LogOut className="h-4 w-4" />
-                      <span>Atsijungti</span>
-                    </div>
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/auth"
-                  className="block px-4 py-3 text-foreground/80 hover:text-foreground hover:bg-card rounded-lg transition-colors duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
-                    <span>Prisijungti</span>
-                  </div>
-                </Link>
-              )}
-              <Button asChild className="w-full button-primary">
-                <Link to="/kontaktai?type=KONSULTACIJA" onClick={() => setMobileMenuOpen(false)}>
-                  Konsultuotis
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 };

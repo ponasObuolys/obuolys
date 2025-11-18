@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import LazyImage from "@/components/ui/lazy-image";
-import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
+
+const BusinessSolutionsCTA = lazy(() =>
+  import("@/components/cta/business-solutions-cta").then((module) => ({
+    default: module.BusinessSolutionsCTA,
+  }))
+);
 
 const NotFound = () => {
+  // 404 Page Component
   return (
     <>
       <Helmet>
@@ -122,7 +129,9 @@ const NotFound = () => {
 
             {/* CTA - Puslapis nerastas, bet AI sprendimai - taip! */}
             <div className="mt-12">
-              <BusinessSolutionsCTA variant="compact" context="article" />
+              <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
+                <BusinessSolutionsCTA variant="compact" context="article" />
+              </Suspense>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -9,10 +9,15 @@ import { SITE_CONFIG } from "@/utils/seo";
 
 // Importuojame naujus komponentus
 
-import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import type { YoutubeVideoItem } from "@/services/youtube.service";
 import { useYoutubeVideos } from "@/hooks/use-youtube-videos";
+
+const BusinessSolutionsCTA = lazy(() =>
+  import("@/components/cta/business-solutions-cta").then((module) => ({
+    default: module.BusinessSolutionsCTA,
+  }))
+);
 
 const ToolsPage = () => {
   const [limit] = useState(24);
@@ -177,7 +182,9 @@ const ToolsPage = () => {
 
             {/* Business Solutions CTA */}
             <div className="mt-16">
-              <BusinessSolutionsCTA context="tools" centered />
+              <Suspense fallback={<div className="h-64 bg-muted/20 rounded-lg animate-pulse" />}>
+                <BusinessSolutionsCTA context="tools" centered />
+              </Suspense>
             </div>
 
             {/* Apie rekomendacijas sekcija */}

@@ -1,0 +1,2196 @@
+{
+  "timestamp": "2025-11-18T22:34:47.457Z",
+  "metrics": {
+    "build": {
+      "time": 2875
+    },
+    "bundle": {
+      "totalSize": 4289792,
+      "files": [
+        {
+          "name": "verslo-sprendimai/warehouse.png",
+          "size": 1048646,
+          "ext": ".png"
+        },
+        {
+          "name": "opengraph-image.png",
+          "size": 485326,
+          "ext": ".png"
+        },
+        {
+          "name": "verslo-sprendimai/invoice.png",
+          "size": 408085,
+          "ext": ".png"
+        },
+        {
+          "name": "js/index-Dt8iJHRG.js",
+          "size": 307945,
+          "ext": ".js"
+        },
+        {
+          "name": "verslo-sprendimai/logistics.png",
+          "size": 304916,
+          "ext": ".png"
+        },
+        {
+          "name": "js/index-DD1GX3g6.js",
+          "size": 208922,
+          "ext": ".js"
+        },
+        {
+          "name": "js/react-dom-l6TJCzVs.js",
+          "size": 134149,
+          "ext": ".js"
+        },
+        {
+          "name": "js/supabase-BCsQPbEy.js",
+          "size": 124824,
+          "ext": ".js"
+        },
+        {
+          "name": "css/index-WhY8qdOK.css",
+          "size": 116844,
+          "ext": ".css"
+        },
+        {
+          "name": "obuolys-logo.png",
+          "size": 108780,
+          "ext": ".png"
+        },
+        {
+          "name": "js/ui-base-CT459N_W.js",
+          "size": 103476,
+          "ext": ".js"
+        },
+        {
+          "name": "verslo-sprendimai/clients.jpg",
+          "size": 96895,
+          "ext": ".jpg"
+        },
+        {
+          "name": "js/form-lib-qqE3QEHK.js",
+          "size": 91310,
+          "ext": ".js"
+        },
+        {
+          "name": "js/utils-CfM4ys6B.js",
+          "size": 54252,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CustomSolutionsPage-Cy7vODhP.js",
+          "size": 47591,
+          "ext": ".js"
+        },
+        {
+          "name": "js/query-lib-Fb5jRZ5E.js",
+          "size": 40624,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ProjectCalculatorPage-CQ2u481d.js",
+          "size": 28949,
+          "ext": ".js"
+        },
+        {
+          "name": "js/PublicationDetail-Dfjsh3EY.js",
+          "size": 28313,
+          "ext": ".js"
+        },
+        {
+          "name": "js/theme-BxXKATFk.js",
+          "size": 21365,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CTAManagementPage-CibXz66A.js",
+          "size": 20740,
+          "ext": ".js"
+        },
+        {
+          "name": "js/lucide-react-CsBridwR.js",
+          "size": 20732,
+          "ext": ".js"
+        },
+        {
+          "name": "js/react-router-Ct9Sl22m.js",
+          "size": 19980,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CoursesPage-DsLrSITM.js",
+          "size": 19681,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CourseDetail-DmeJ-cpp.js",
+          "size": 19665,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ui-form-CSBVupg1.js",
+          "size": 18369,
+          "ext": ".js"
+        },
+        {
+          "name": "js/GlobalSearchModal-BZdR2jhH.js",
+          "size": 17612,
+          "ext": ".js"
+        },
+        {
+          "name": "js/business-solutions-cta-BhzXF5SJ.js",
+          "size": 17142,
+          "ext": ".js"
+        },
+        {
+          "name": "sitemap.xml",
+          "size": 15741,
+          "ext": ".xml"
+        },
+        {
+          "name": "js/image-crop-BUGLXP1N.js",
+          "size": 14542,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AdminDashboard-BGxMkh6v.js",
+          "size": 14530,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ui-overlay-DHkxqF-x.js",
+          "size": 14461,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ProfilePage-CQjs4LpC.js",
+          "size": 14405,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-yM0LxOLy.js",
+          "size": 14390,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CookiePolicyPage-C3s74OZs.js",
+          "size": 11182,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-DSwpKlj0.js",
+          "size": 10905,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ui-feedback-XKOpTZgo.js",
+          "size": 10631,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-ByVStMnT.js",
+          "size": 10113,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-WU0Hvzvm.js",
+          "size": 10071,
+          "ext": ".js"
+        },
+        {
+          "name": "js/InquiriesPage-DPS45ayd.js",
+          "size": 9982,
+          "ext": ".js"
+        },
+        {
+          "name": "js/PrivacyPolicyPage-DPbMTRzT.js",
+          "size": 9915,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CTAAnalyticsPage--0L2XJun.js",
+          "size": 9780,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-CCHXwV-v.js",
+          "size": 9077,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CalculatorSubmissionsPage-BVnHX364.js",
+          "size": 8984,
+          "ext": ".js"
+        },
+        {
+          "name": "js/InquiryForm-BUObaNPx.js",
+          "size": 8961,
+          "ext": ".js"
+        },
+        {
+          "name": "js/react-CoTbwkCl.js",
+          "size": 8456,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-BYPmwVSY.js",
+          "size": 7931,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AdminCommentsModeration-DF8wjcAX.js",
+          "size": 7689,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ContactPage-doRi3Kv2.js",
+          "size": 6884,
+          "ext": ".js"
+        },
+        {
+          "name": "js/PublicationsPage-DVUZ4o35.js",
+          "size": 6746,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AdminUserCleanup-C0avBg-X.js",
+          "size": 6621,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ToolsPage-Be85f4cR.js",
+          "size": 6487,
+          "ext": ".js"
+        },
+        {
+          "name": "js/index-DrZVsexo.js",
+          "size": 6336,
+          "ext": ".js"
+        },
+        {
+          "name": "css/image-crop-D8Md-CES.css",
+          "size": 6226,
+          "ext": ".css"
+        },
+        {
+          "name": ".DS_Store",
+          "size": 6148,
+          "ext": ""
+        },
+        {
+          "name": "js/ToolDetailPage-kXw-_rFB.js",
+          "size": 6017,
+          "ext": ".js"
+        },
+        {
+          "name": "js/Auth-BzpwPWUl.js",
+          "size": 5889,
+          "ext": ".js"
+        },
+        {
+          "name": "js/UserManager-D4i26fnn.js",
+          "size": 5604,
+          "ext": ".js"
+        },
+        {
+          "name": "js/calculator.service-CWTSu5MW.js",
+          "size": 5575,
+          "ext": ".js"
+        },
+        {
+          "name": "js/trending-articles-Du5LXkUJ.js",
+          "size": 4859,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AdminInfo-BiTCm2Du.js",
+          "size": 4669,
+          "ext": ".js"
+        },
+        {
+          "name": "index.html",
+          "size": 4364,
+          "ext": ".html"
+        },
+        {
+          "name": "js/MyBookmarksPage-i-8Qz1yd.js",
+          "size": 4094,
+          "ext": ".js"
+        },
+        {
+          "name": "js/share-button-5GOaxt5f.js",
+          "size": 4000,
+          "ext": ".js"
+        },
+        {
+          "name": "js/device-stats-D5cZsBn1.js",
+          "size": 3932,
+          "ext": ".js"
+        },
+        {
+          "name": "js/SupportPage-BKmc2sWc.js",
+          "size": 3698,
+          "ext": ".js"
+        },
+        {
+          "name": "js/calculator-cta-CKo-cZue.js",
+          "size": 3654,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CoursePaymentSuccess-BfRMTBfH.js",
+          "size": 3619,
+          "ext": ".js"
+        },
+        {
+          "name": "js/PublicationsList-Dri6T4US.js",
+          "size": 3604,
+          "ext": ".js"
+        },
+        {
+          "name": "js/FAQ-Bg40PPje.js",
+          "size": 3586,
+          "ext": ".js"
+        },
+        {
+          "name": "placeholder.svg",
+          "size": 3253,
+          "ext": ".svg"
+        },
+        {
+          "name": "js/FileUpload-m1HtCWJO.js",
+          "size": 3211,
+          "ext": ".js"
+        },
+        {
+          "name": "js/CoursesList-Df-csEFh.js",
+          "size": 3123,
+          "ext": ".js"
+        },
+        {
+          "name": "js/select-BnJ2RJOW.js",
+          "size": 3017,
+          "ext": ".js"
+        },
+        {
+          "name": "js/Testimonials-SRPaGYzF.js",
+          "size": 2906,
+          "ext": ".js"
+        },
+        {
+          "name": "404.html",
+          "size": 2770,
+          "ext": ".html"
+        },
+        {
+          "name": "js/slateToHtml-ClAGh2kj.js",
+          "size": 2630,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AdminSetup-BYU_cNME.js",
+          "size": 2613,
+          "ext": ".js"
+        },
+        {
+          "name": "js/ToolsList-1V6qE1Rc.js",
+          "size": 2561,
+          "ext": ".js"
+        },
+        {
+          "name": "js/useAdminList-CsHjfEp3.js",
+          "size": 1806,
+          "ext": ".js"
+        },
+        {
+          "name": "js/form-D3iS8Iqq.js",
+          "size": 1800,
+          "ext": ".js"
+        },
+        {
+          "name": "js/table-CDUuWMKT.js",
+          "size": 1519,
+          "ext": ".js"
+        },
+        {
+          "name": "js/AuthCallback-DGH43ptI.js",
+          "size": 1330,
+          "ext": ".js"
+        },
+        {
+          "name": "favicon.svg",
+          "size": 1316,
+          "ext": ".svg"
+        },
+        {
+          "name": "js/tabs-BPVytQKm.js",
+          "size": 1141,
+          "ext": ".js"
+        },
+        {
+          "name": "js/switch-CGHisOGo.js",
+          "size": 844,
+          "ext": ".js"
+        },
+        {
+          "name": "js/checkbox-BsoIvaCA.js",
+          "size": 738,
+          "ext": ".js"
+        },
+        {
+          "name": "robots.txt",
+          "size": 717,
+          "ext": ".txt"
+        },
+        {
+          "name": "js/input-CQUgnJQZ.js",
+          "size": 613,
+          "ext": ".js"
+        },
+        {
+          "name": "js/textarea-DV9Rax3h.js",
+          "size": 515,
+          "ext": ".js"
+        },
+        {
+          "name": "js/charts-vLKKSF5_.js",
+          "size": 469,
+          "ext": ".js"
+        },
+        {
+          "name": "js/progress-CYUyHRXA.js",
+          "size": 464,
+          "ext": ".js"
+        },
+        {
+          "name": "js/label-kQbPisHV.js",
+          "size": 394,
+          "ext": ".js"
+        },
+        {
+          "name": "js/stringUtils-CposZgk_.js",
+          "size": 310,
+          "ext": ".js"
+        },
+        {
+          "name": "js/skeleton-FQxMP_2L.js",
+          "size": 205,
+          "ext": ".js"
+        },
+        {
+          "name": "images/placeholder.png",
+          "size": 36,
+          "ext": ".png"
+        }
+      ],
+      "directories": [
+        {
+          "name": "css",
+          "size": 123070
+        },
+        {
+          "name": "images",
+          "size": 36
+        },
+        {
+          "name": "js",
+          "size": 1679729
+        },
+        {
+          "name": "verslo-sprendimai",
+          "size": 1858542
+        }
+      ]
+    },
+    "dependencies": {
+      "total": 96,
+      "heavy": 32
+    },
+    "code": {
+      "totalSize": 1418808,
+      "fileCount": 321,
+      "files": [
+        {
+          "path": "App.css",
+          "size": 4059,
+          "ext": ".css"
+        },
+        {
+          "path": "App.tsx",
+          "size": 29940,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/SEO/MetaTags.tsx",
+          "size": 1714,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/SEO/OpenGraphTags.tsx",
+          "size": 2442,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/SEO/SEOHead.tsx",
+          "size": 824,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/SEO/StructuredData.tsx",
+          "size": 539,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/SEO/index.ts",
+          "size": 296,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/__tests__/LazyImage.test.tsx",
+          "size": 3683,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/__tests__/SafeHtml.test.tsx",
+          "size": 8509,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/AdminDashboardStats.tsx",
+          "size": 2558,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/AdminInfo.tsx",
+          "size": 5880,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/AdminSetup.tsx",
+          "size": 3533,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/CoursesList.tsx",
+          "size": 4516,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/FileUpload.tsx",
+          "size": 6824,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/PublicationsList.tsx",
+          "size": 6032,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/RichTextEditor/EditorComponents.tsx",
+          "size": 1558,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/RichTextEditor/custom-types.d.ts",
+          "size": 1879,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/RichTextEditor/index.tsx",
+          "size": 10951,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/ToolsList.tsx",
+          "size": 3776,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/UserManager.tsx",
+          "size": 10582,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/contact-message-manager/contact-message-manager.hooks.ts",
+          "size": 3852,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/contact-message-manager/contact-message-manager.types.ts",
+          "size": 228,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/contact-message-manager/index.tsx",
+          "size": 1706,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/contact-message-manager/message-dialog.tsx",
+          "size": 2484,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/contact-message-manager/message-header.tsx",
+          "size": 1656,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/contact-message-manager/message-table.tsx",
+          "size": 9420,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/course-editor/course-editor.hooks.ts",
+          "size": 5849,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/course-editor/course-editor.types.ts",
+          "size": 1025,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/course-editor/course-form-fields.tsx",
+          "size": 4904,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/course-editor/course-highlights.tsx",
+          "size": 1538,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/course-editor/course-image-upload.tsx",
+          "size": 2686,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/course-editor/index.tsx",
+          "size": 2827,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/cta-management.tsx",
+          "size": 14854,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/cta-section-editor/cta-section-editor.hooks.ts",
+          "size": 4738,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/cta-section-editor/cta-section-editor.types.ts",
+          "size": 553,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/cta-section-editor/cta-section-form.tsx",
+          "size": 4609,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/cta-section-editor/cta-section-list.tsx",
+          "size": 3238,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/cta-section-editor/index.tsx",
+          "size": 2577,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/hero-management.tsx",
+          "size": 10854,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/hero-section-editor/hero-section-editor.hooks.ts",
+          "size": 5050,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/hero-section-editor/hero-section-editor.types.ts",
+          "size": 592,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/hero-section-editor/hero-section-form.tsx",
+          "size": 6252,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/hero-section-editor/hero-section-list.tsx",
+          "size": 3600,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/hero-section-editor/index.tsx",
+          "size": 2661,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/bundle-tab.tsx",
+          "size": 2766,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/components-tab.tsx",
+          "size": 2463,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/index.tsx",
+          "size": 2447,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/performance-header.tsx",
+          "size": 1425,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/performance-monitor.hooks.ts",
+          "size": 2132,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/performance-monitor/performance-monitor.types.ts",
+          "size": 375,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/performance-monitor/performance-score-card.tsx",
+          "size": 1288,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/recommendations-card.tsx",
+          "size": 1765,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/performance-monitor/web-vitals-tab.tsx",
+          "size": 3186,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/form-fields/author-date-fields.tsx",
+          "size": 1373,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/form-fields/basic-fields.tsx",
+          "size": 1937,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/form-fields/content-image-fields.tsx",
+          "size": 1929,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/form-fields/metadata-fields.tsx",
+          "size": 3089,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/form-fields/publication-checkboxes.tsx",
+          "size": 1856,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/index.tsx",
+          "size": 1854,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/publication-editor-form.tsx",
+          "size": 2343,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/publication-editor/publication-editor.hooks.ts",
+          "size": 7108,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/publication-editor/publication-editor.types.ts",
+          "size": 1302,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/sticky-messages-management.tsx",
+          "size": 10672,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/tool-editor/index.tsx",
+          "size": 1845,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/admin/tool-editor/tool-editor.hooks.ts",
+          "size": 3255,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/tool-editor/tool-editor.types.ts",
+          "size": 245,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/admin/tool-editor/tool-form-fields.tsx",
+          "size": 6499,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/analytics/reader-stats.tsx",
+          "size": 4250,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/auth/google-sign-in-button.tsx",
+          "size": 1340,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/comments/comments-section.tsx",
+          "size": 12587,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/course/ContentWithPurchaseHints.tsx",
+          "size": 3420,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/course/CourseHero.tsx",
+          "size": 4574,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/course/CoursePurchaseCard.tsx",
+          "size": 5859,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/course/CoursePurchasePopup.tsx",
+          "size": 3928,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/course/ProgressivePurchaseHint.tsx",
+          "size": 2174,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/cta/business-solutions-cta.tsx",
+          "size": 7391,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/cta/calculator-cta.tsx",
+          "size": 4399,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/cta/sticky-cta-sidebar.tsx",
+          "size": 4162,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/CodeSnippet.tsx",
+          "size": 4078,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/EnhancedProjectCard.tsx",
+          "size": 7423,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/FAQ.tsx",
+          "size": 4423,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/InquiryForm.tsx",
+          "size": 13820,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/PricingCard.tsx",
+          "size": 2359,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/ProcessStep.tsx",
+          "size": 1292,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/ProjectCard.tsx",
+          "size": 3074,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/TechBadge.tsx",
+          "size": 2205,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/TechStackSection.tsx",
+          "size": 10171,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/custom-solutions/Testimonials.tsx",
+          "size": 3641,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/ComponentErrorBoundary.tsx",
+          "size": 7568,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/ErrorFallback.tsx",
+          "size": 10401,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/GlobalErrorBoundary.tsx",
+          "size": 12799,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/RouteErrorBoundary.tsx",
+          "size": 10046,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/index.ts",
+          "size": 2069,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/error-boundaries/useComponentErrorBoundary.tsx",
+          "size": 1432,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/error-boundaries/withRouteErrorBoundary.tsx",
+          "size": 925,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/gdpr/cookie-consent.tsx",
+          "size": 6897,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/gdpr/cookie-consent.utils.ts",
+          "size": 814,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/home/AITools.tsx",
+          "size": 5038,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/home/CallToAction.tsx",
+          "size": 1567,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/home/CoursePromoPopup.tsx",
+          "size": 6731,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/home/Courses.tsx",
+          "size": 2178,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/home/FeaturedArticles.tsx",
+          "size": 2026,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/home/Hero.tsx",
+          "size": 6304,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/layout/Footer.tsx",
+          "size": 6287,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/layout/Header.tsx",
+          "size": 20680,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/layout/Layout.tsx",
+          "size": 2024,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/ActivityTab.tsx",
+          "size": 3717,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/ImageCropDialog.tsx",
+          "size": 1699,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/NotificationsTab.tsx",
+          "size": 1979,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/ProfileInformationTab.tsx",
+          "size": 5279,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/SecurityTab.tsx",
+          "size": 2971,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/profile/index.ts",
+          "size": 263,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/project-calculator/ProjectCalculator.tsx",
+          "size": 6514,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/project-calculator/calculatorLogic.ts",
+          "size": 5073,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/project-calculator/steps/StepFeatures.tsx",
+          "size": 6203,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/project-calculator/steps/StepProjectType.tsx",
+          "size": 4814,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/project-calculator/steps/StepResults.tsx",
+          "size": 13518,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/project-calculator/steps/StepTechStack.tsx",
+          "size": 9397,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/publications/bookmark-button.tsx",
+          "size": 1058,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/publications/related-articles.tsx",
+          "size": 4658,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/reading/reading-progress-bar.tsx",
+          "size": 5194,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/search/GlobalSearchModal.tsx",
+          "size": 6606,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/search/global-search.tsx",
+          "size": 1190,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/tools/ToolCategories.tsx",
+          "size": 1292,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/tools/ToolSearch.tsx",
+          "size": 889,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/SafeHtml.tsx",
+          "size": 4019,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/SocialLinks.tsx",
+          "size": 1999,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/__tests__/file-upload.test.ts",
+          "size": 9170,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/accordion.tsx",
+          "size": 1975,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/alert-dialog.tsx",
+          "size": 4359,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/alert.tsx",
+          "size": 1573,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/article-card-skeleton.tsx",
+          "size": 1400,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/article-card.tsx",
+          "size": 3211,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/aspect-ratio.tsx",
+          "size": 143,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/avatar.tsx",
+          "size": 1397,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/badge.tsx",
+          "size": 466,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/badge.variants.ts",
+          "size": 733,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/breadcrumb.tsx",
+          "size": 2734,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/breadcrumbs.tsx",
+          "size": 1626,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/button.tsx",
+          "size": 733,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/button.variants.ts",
+          "size": 1205,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/calendar.tsx",
+          "size": 2575,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/card.tsx",
+          "size": 1840,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/carousel.tsx",
+          "size": 6190,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/chart.tsx",
+          "size": 10353,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/checkbox.tsx",
+          "size": 1052,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/collapsible.tsx",
+          "size": 320,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/command.tsx",
+          "size": 4894,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/content-skeleton.tsx",
+          "size": 3985,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/context-menu.tsx",
+          "size": 7225,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/course-card-skeleton.tsx",
+          "size": 1627,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/course-card.tsx",
+          "size": 3655,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/dialog.tsx",
+          "size": 3784,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/drawer.tsx",
+          "size": 2972,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/dropdown-menu.tsx",
+          "size": 7278,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/file-upload.ts",
+          "size": 2434,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/form.tsx",
+          "size": 4101,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/hover-card.tsx",
+          "size": 1192,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/input-otp.tsx",
+          "size": 2170,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/input.tsx",
+          "size": 797,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/label.tsx",
+          "size": 700,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/lazy-image.tsx",
+          "size": 5663,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/loading-spinner.tsx",
+          "size": 710,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/menubar.tsx",
+          "size": 7914,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/multi-select.tsx",
+          "size": 4884,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/navigation-menu.tsx",
+          "size": 4628,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/navigation-menu.variants.ts",
+          "size": 449,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/pagination.tsx",
+          "size": 2791,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/popover.tsx",
+          "size": 1238,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/progress.tsx",
+          "size": 765,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/radio-group.tsx",
+          "size": 1446,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/resizable.tsx",
+          "size": 1699,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/scroll-area.tsx",
+          "size": 1634,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/select.tsx",
+          "size": 5599,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/separator.tsx",
+          "size": 722,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/share-button.tsx",
+          "size": 5637,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sheet.tsx",
+          "size": 4213,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarContent.tsx",
+          "size": 3829,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarContext.ts",
+          "size": 649,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarCore.tsx",
+          "size": 6406,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarMenu.tsx",
+          "size": 9593,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarMenu.variants.ts",
+          "size": 1486,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/sidebar/SidebarProvider.tsx",
+          "size": 3645,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sidebar/constants.ts",
+          "size": 279,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/sidebar/index.ts",
+          "size": 852,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/sidebar.tsx",
+          "size": 715,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/skeleton.tsx",
+          "size": 234,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/slider.tsx",
+          "size": 1065,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/social-share.tsx",
+          "size": 4130,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/sonner.tsx",
+          "size": 863,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/switch.tsx",
+          "size": 1145,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/table.tsx",
+          "size": 2721,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/tabs.tsx",
+          "size": 1894,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/textarea.tsx",
+          "size": 763,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/theme-toggle.tsx",
+          "size": 1598,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/toast.tsx",
+          "size": 4850,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/toaster.tsx",
+          "size": 743,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/toggle-group.tsx",
+          "size": 1745,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/toggle.tsx",
+          "size": 679,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/toggle.variants.ts",
+          "size": 836,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/tool-card-skeleton.tsx",
+          "size": 1483,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/tool-card.tsx",
+          "size": 4081,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/tool-detail-card.tsx",
+          "size": 4328,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/tooltip.tsx",
+          "size": 1154,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/ui/use-toast.ts",
+          "size": 82,
+          "ext": ".ts"
+        },
+        {
+          "path": "components/ui/user-dropdown.tsx",
+          "size": 2500,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/widgets/device-stats.tsx",
+          "size": 4853,
+          "ext": ".tsx"
+        },
+        {
+          "path": "components/widgets/trending-articles.tsx",
+          "size": 5899,
+          "ext": ".tsx"
+        },
+        {
+          "path": "config/stripe.ts",
+          "size": 910,
+          "ext": ".ts"
+        },
+        {
+          "path": "context/AuthContext.tsx",
+          "size": 3206,
+          "ext": ".tsx"
+        },
+        {
+          "path": "context/LanguageContext.tsx",
+          "size": 2858,
+          "ext": ".tsx"
+        },
+        {
+          "path": "context/ThemeContext.tsx",
+          "size": 2430,
+          "ext": ".tsx"
+        },
+        {
+          "path": "context/__tests__/AuthContext.test.tsx",
+          "size": 11321,
+          "ext": ".tsx"
+        },
+        {
+          "path": "context/auth-context.hooks.ts",
+          "size": 7021,
+          "ext": ".ts"
+        },
+        {
+          "path": "context/auth-context.types.ts",
+          "size": 824,
+          "ext": ".ts"
+        },
+        {
+          "path": "context/language-context.ts",
+          "size": 1838,
+          "ext": ".ts"
+        },
+        {
+          "path": "context/theme-context.ts",
+          "size": 359,
+          "ext": ".ts"
+        },
+        {
+          "path": "data/coursesData.ts",
+          "size": 7227,
+          "ext": ".ts"
+        },
+        {
+          "path": "data/ctaContent.ts",
+          "size": 14932,
+          "ext": ".ts"
+        },
+        {
+          "path": "data/customSolutionsData.ts",
+          "size": 17138,
+          "ext": ".ts"
+        },
+        {
+          "path": "data/stickyMessages.ts",
+          "size": 1905,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/__tests__/useLazyImages.test.ts",
+          "size": 5760,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-article-views.ts",
+          "size": 992,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-bookmark.ts",
+          "size": 2649,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-cta-analytics.ts",
+          "size": 1214,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-cta.ts",
+          "size": 7223,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-device-stats.ts",
+          "size": 1200,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-live-readers.ts",
+          "size": 3159,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-mobile.tsx",
+          "size": 576,
+          "ext": ".tsx"
+        },
+        {
+          "path": "hooks/use-pending-comments-count.ts",
+          "size": 1308,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-reading-progress.ts",
+          "size": 1746,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-related-articles.ts",
+          "size": 2554,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-toast.ts",
+          "size": 4157,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-trending-articles.ts",
+          "size": 1211,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-unread-messages.ts",
+          "size": 1293,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/use-youtube-videos.ts",
+          "size": 532,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useAdminList.ts",
+          "size": 4613,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useCoursePurchase.ts",
+          "size": 2163,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useCoursePurchasePopup.ts",
+          "size": 2598,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useDebounce.ts",
+          "size": 613,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useErrorHandler.ts",
+          "size": 9654,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useLazyImages.ts",
+          "size": 2624,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useProfileManagement.ts",
+          "size": 10680,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useScrollToTop.tsx",
+          "size": 352,
+          "ext": ".tsx"
+        },
+        {
+          "path": "hooks/useShare.ts",
+          "size": 4107,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useSidebar.ts",
+          "size": 70,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useSupabaseData.ts",
+          "size": 2981,
+          "ext": ".ts"
+        },
+        {
+          "path": "hooks/useTheme.ts",
+          "size": 294,
+          "ext": ".ts"
+        },
+        {
+          "path": "index.css",
+          "size": 6810,
+          "ext": ".css"
+        },
+        {
+          "path": "integrations/supabase/client.ts",
+          "size": 683,
+          "ext": ".ts"
+        },
+        {
+          "path": "integrations/supabase/types.ts",
+          "size": 30580,
+          "ext": ".ts"
+        },
+        {
+          "path": "lib/utils.ts",
+          "size": 169,
+          "ext": ".ts"
+        },
+        {
+          "path": "main.tsx",
+          "size": 562,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/AdminCommentsModeration.tsx",
+          "size": 14435,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/AdminDashboard.tsx",
+          "size": 17927,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/AdminUserCleanup.tsx",
+          "size": 10375,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ArticlesPage.tsx",
+          "size": 6428,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/Auth.tsx",
+          "size": 10038,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/AuthCallback.tsx",
+          "size": 1776,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ContactPage.tsx",
+          "size": 11416,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/CookiePolicyPage.tsx",
+          "size": 13770,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/CourseDetail.tsx",
+          "size": 12220,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/CoursePaymentSuccess.tsx",
+          "size": 5110,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/CoursesPage.tsx",
+          "size": 19569,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/CustomSolutionsPage.tsx",
+          "size": 21148,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/Index.tsx",
+          "size": 3169,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/MyBookmarksPage.tsx",
+          "size": 6443,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/NotFound.tsx",
+          "size": 7723,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/PrivacyPolicyPage.tsx",
+          "size": 11431,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ProfilePage.tsx",
+          "size": 3521,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ProjectCalculatorPage.tsx",
+          "size": 1165,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/PublicationDetail.tsx",
+          "size": 11474,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/PublicationsPage.tsx",
+          "size": 9009,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/SupportPage.tsx",
+          "size": 4344,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ToolDetailPage.tsx",
+          "size": 6055,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/ToolsPage.tsx",
+          "size": 9313,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/__tests__/Index.test.tsx",
+          "size": 5601,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/admin/CTAAnalyticsPage.tsx",
+          "size": 15834,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/admin/CTAManagementPage.tsx",
+          "size": 1298,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/admin/CalculatorSubmissionsPage.tsx",
+          "size": 17265,
+          "ext": ".tsx"
+        },
+        {
+          "path": "pages/admin/InquiriesPage.tsx",
+          "size": 17293,
+          "ext": ".tsx"
+        },
+        {
+          "path": "providers/ImageLoadingProvider.tsx",
+          "size": 3390,
+          "ext": ".tsx"
+        },
+        {
+          "path": "providers/image-loading-context.ts",
+          "size": 431,
+          "ext": ".ts"
+        },
+        {
+          "path": "providers/useImageLoading.ts",
+          "size": 385,
+          "ext": ".ts"
+        },
+        {
+          "path": "services/analytics.service.ts",
+          "size": 4404,
+          "ext": ".ts"
+        },
+        {
+          "path": "services/calculator.service.ts",
+          "size": 8232,
+          "ext": ".ts"
+        },
+        {
+          "path": "services/cta.service.ts",
+          "size": 8043,
+          "ext": ".ts"
+        },
+        {
+          "path": "services/youtube.service.ts",
+          "size": 567,
+          "ext": ".ts"
+        },
+        {
+          "path": "test/__mocks__/fileMock.js",
+          "size": 33,
+          "ext": ".js"
+        },
+        {
+          "path": "test/__mocks__/supabase.ts",
+          "size": 2371,
+          "ext": ".ts"
+        },
+        {
+          "path": "test/integration/supabase-integration.test.ts",
+          "size": 4138,
+          "ext": ".ts"
+        },
+        {
+          "path": "test/setup.ts",
+          "size": 7410,
+          "ext": ".ts"
+        },
+        {
+          "path": "test/utils/supabase-test-utils.ts",
+          "size": 9372,
+          "ext": ".ts"
+        },
+        {
+          "path": "test/utils/test-utils.tsx",
+          "size": 4967,
+          "ext": ".tsx"
+        },
+        {
+          "path": "types/cta.ts",
+          "size": 2016,
+          "ext": ".ts"
+        },
+        {
+          "path": "types/form.types.ts",
+          "size": 6399,
+          "ext": ".ts"
+        },
+        {
+          "path": "types/global.d.ts",
+          "size": 146,
+          "ext": ".ts"
+        },
+        {
+          "path": "types/is-hotkey.d.ts",
+          "size": 434,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/__tests__/featureFlags.test.ts",
+          "size": 2508,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/__tests__/pluralize.test.ts",
+          "size": 3060,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/__tests__/sentry.test.ts",
+          "size": 3402,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/browserLogger.ts",
+          "size": 6479,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/errorHandling.ts",
+          "size": 6712,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/errorReporting.ts",
+          "size": 13463,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/facebookShare.ts",
+          "size": 3569,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/featureFlags.ts",
+          "size": 1724,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/formatDuration.ts",
+          "size": 1123,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/imageOptimization.ts",
+          "size": 2956,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/imagePreloader.ts",
+          "size": 1985,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/lazyLoad.ts",
+          "size": 8833,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/lazyLoadImages.ts",
+          "size": 785,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/logger.ts",
+          "size": 6284,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/pluralize.ts",
+          "size": 2551,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/sentry.ts",
+          "size": 4041,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/seo.ts",
+          "size": 9054,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/share-utils.ts",
+          "size": 4023,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/sitemapGenerator.ts",
+          "size": 3797,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/slateToHtml.ts",
+          "size": 5611,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/stringUtils.ts",
+          "size": 1336,
+          "ext": ".ts"
+        },
+        {
+          "path": "utils/webVitals.ts",
+          "size": 3673,
+          "ext": ".ts"
+        },
+        {
+          "path": "vite-env.d.ts",
+          "size": 204,
+          "ext": ".ts"
+        }
+      ],
+      "directories": [
+        {
+          "name": "components",
+          "size": 762652,
+          "files": 206
+        },
+        {
+          "name": "pages",
+          "size": 275150,
+          "files": 28
+        },
+        {
+          "name": "utils",
+          "size": 96969,
+          "files": 22
+        },
+        {
+          "name": "hooks",
+          "size": 76323,
+          "files": 27
+        },
+        {
+          "name": "data",
+          "size": 41202,
+          "files": 4
+        },
+        {
+          "name": "integrations",
+          "size": 31263,
+          "files": 2
+        },
+        {
+          "name": "context",
+          "size": 29857,
+          "files": 8
+        },
+        {
+          "name": "test",
+          "size": 28291,
+          "files": 6
+        },
+        {
+          "name": "services",
+          "size": 21246,
+          "files": 4
+        },
+        {
+          "name": "types",
+          "size": 8995,
+          "files": 4
+        },
+        {
+          "name": "providers",
+          "size": 4206,
+          "files": 3
+        },
+        {
+          "name": "config",
+          "size": 910,
+          "files": 1
+        },
+        {
+          "name": "lib",
+          "size": 169,
+          "files": 1
+        }
+      ]
+    },
+    "recommendations": [
+      "Many heavy dependencies - consider lazy loading"
+    ]
+  },
+  "summary": {
+    "buildTime": 2875,
+    "bundleSize": 4289792,
+    "recommendationCount": 1
+  }
+}

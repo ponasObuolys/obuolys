@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import Hero from "@/components/home/Hero";
 import FeaturedArticles from "@/components/home/FeaturedArticles";
 // import AINews from '@/components/home/AINews'; // Removed
@@ -12,9 +13,16 @@ import {
   generateWebSiteStructuredData,
   SITE_CONFIG,
 } from "@/utils/seo";
-import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
-import { CalculatorCTA } from "@/components/cta/calculator-cta";
 import { CoursePromoPopup } from "@/components/home/CoursePromoPopup";
+
+const BusinessSolutionsCTA = lazy(() =>
+  import("@/components/cta/business-solutions-cta").then((module) => ({
+    default: module.BusinessSolutionsCTA,
+  }))
+);
+const CalculatorCTA = lazy(() =>
+  import("@/components/cta/calculator-cta").then((module) => ({ default: module.CalculatorCTA }))
+);
 
 const Index = () => {
   const structuredData = [generateOrganizationStructuredData(), generateWebSiteStructuredData()];
@@ -55,14 +63,18 @@ const Index = () => {
       {/* Calculator CTA - Lead Magnet */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <CalculatorCTA />
+          <Suspense fallback={<div className="h-64 bg-muted/20 rounded-lg animate-pulse" />}>
+            <CalculatorCTA />
+          </Suspense>
         </div>
       </section>
 
       {/* Business Solutions CTA */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <BusinessSolutionsCTA context="publications" centered />
+          <Suspense fallback={<div className="h-64 bg-muted/20 rounded-lg animate-pulse" />}>
+            <BusinessSolutionsCTA context="publications" centered />
+          </Suspense>
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
@@ -29,9 +29,14 @@ import { BookmarkButton } from "@/components/publications/bookmark-button";
 import { ReadingProgressBar } from "@/components/reading/reading-progress-bar";
 import { useReadingProgress } from "@/hooks/use-reading-progress";
 import { CommentsSection } from "@/components/comments/comments-section";
-import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { ReaderStats } from "@/components/analytics/reader-stats";
 import { analyticsService } from "@/services/analytics.service";
+
+const BusinessSolutionsCTA = lazy(() =>
+  import("@/components/cta/business-solutions-cta").then((module) => ({
+    default: module.BusinessSolutionsCTA,
+  }))
+);
 
 type Publication = Tables<"articles">;
 
@@ -303,7 +308,9 @@ const PublicationDetail = () => {
 
         {/* Business Solutions CTA */}
         <div className="mt-16">
-          <BusinessSolutionsCTA variant="compact" context="article" />
+          <Suspense fallback={<div className="h-48 bg-muted/20 rounded-lg animate-pulse" />}>
+            <BusinessSolutionsCTA variant="compact" context="article" />
+          </Suspense>
         </div>
 
         {/* Comments Section */}

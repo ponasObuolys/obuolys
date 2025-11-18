@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,14 @@ import { Search, Plus } from "lucide-react";
 
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
-import { BusinessSolutionsCTA } from "@/components/cta/business-solutions-cta";
 import { ListSkeleton } from "@/components/ui/content-skeleton";
 import { useArticles } from "@/hooks/useSupabaseData";
+
+const BusinessSolutionsCTA = lazy(() =>
+  import("@/components/cta/business-solutions-cta").then((module) => ({
+    default: module.BusinessSolutionsCTA,
+  }))
+);
 
 const PublicationsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -106,7 +111,9 @@ const PublicationsPage = () => {
 
               {/* Inline CTA viršuje */}
               <div className="mb-4">
-                <BusinessSolutionsCTA variant="inline" context="publications" />
+                <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
+                  <BusinessSolutionsCTA variant="inline" context="publications" />
+                </Suspense>
               </div>
 
               {/* Kategorijų filtrai */}
@@ -139,7 +146,9 @@ const PublicationsPage = () => {
                     {/* CTA kas 6 straipsniai */}
                     {(index + 1) % 6 === 0 && index !== filteredPublications.length - 1 && (
                       <div className="md:col-span-2 lg:col-span-3">
-                        <BusinessSolutionsCTA variant="inline" context="publications" />
+                        <Suspense fallback={<div className="h-32 bg-muted/20 rounded-lg animate-pulse" />}>
+                          <BusinessSolutionsCTA variant="inline" context="publications" />
+                        </Suspense>
                       </div>
                     )}
                   </Fragment>
@@ -174,7 +183,9 @@ const PublicationsPage = () => {
 
             {/* Business Solutions CTA */}
             <div className="mt-16">
-              <BusinessSolutionsCTA context="publications" centered />
+              <Suspense fallback={<div className="h-64 bg-muted/20 rounded-lg animate-pulse" />}>
+                <BusinessSolutionsCTA context="publications" centered />
+              </Suspense>
             </div>
 
             {/* Call to action section */}

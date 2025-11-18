@@ -39,8 +39,14 @@ export default defineConfig(({ mode, command }) => ({
           // This prevents module initialization order issues where React.Component/forwardRef is undefined
 
           // React core and essential dependencies
-          if (id.includes("react") || id.includes("react-dom") || id.includes("react-router-dom")) {
-            return "react-core";
+          if (id.includes("node_modules/react-dom")) {
+            return "react-dom";
+          }
+          if (id.includes("node_modules/react/")) {
+            return "react";
+          }
+          if (id.includes("react-router")) {
+            return "react-router";
           }
 
           // Radix UI components - split into smaller chunks
@@ -93,8 +99,11 @@ export default defineConfig(({ mode, command }) => ({
           }
 
           // Icons and images
-          if (id.includes("lucide-react") || id.includes("react-image-crop")) {
-            return "icons-media";
+          if (id.includes("lucide-react")) {
+            return "lucide-react";
+          }
+          if (id.includes("react-image-crop")) {
+            return "image-crop";
           }
 
           // NOTE: Removed all application code chunks (admin-dashboard, auth-pages, shared-components, content-*)

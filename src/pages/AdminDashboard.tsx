@@ -1,21 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, lazy, Suspense } from "react";
 import { Navigate } from "react-router-dom";
 
 import AdminDashboardStats from "@/components/admin/AdminDashboardStats";
-import CTASectionEditor from "@/components/admin/cta-section-editor";
-import ContactMessageManager from "@/components/admin/contact-message-manager";
-import AdminCommentsModeration from "@/pages/AdminCommentsModeration";
-import CourseEditor from "@/components/admin/course-editor";
-import CoursesList from "@/components/admin/CoursesList";
-import HeroSectionEditor from "@/components/admin/hero-section-editor";
-import { PerformanceMonitor } from "@/components/admin/performance-monitor";
-import PublicationEditor from "@/components/admin/publication-editor";
-import PublicationsList from "@/components/admin/PublicationsList";
-import ToolEditor from "@/components/admin/tool-editor";
-import ToolsList from "@/components/admin/ToolsList";
-import UserManager from "@/components/admin/UserManager";
-import CTAAnalyticsPage from "@/pages/admin/CTAAnalyticsPage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,8 +12,30 @@ import { useUnreadMessages } from "@/hooks/use-unread-messages";
 import { usePendingCommentsCount } from "@/hooks/use-pending-comments-count";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus } from "lucide-react";
-import { DeviceStats } from "@/components/widgets/device-stats";
-import { TrendingArticles } from "@/components/widgets/trending-articles";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+
+// Lazy load administrative components
+const CTASectionEditor = lazy(() => import("@/components/admin/cta-section-editor"));
+const ContactMessageManager = lazy(() => import("@/components/admin/contact-message-manager"));
+const AdminCommentsModeration = lazy(() => import("@/pages/AdminCommentsModeration"));
+const CourseEditor = lazy(() => import("@/components/admin/course-editor"));
+const CoursesList = lazy(() => import("@/components/admin/CoursesList"));
+const HeroSectionEditor = lazy(() => import("@/components/admin/hero-section-editor"));
+const PerformanceMonitor = lazy(() =>
+  import("@/components/admin/performance-monitor").then(m => ({ default: m.PerformanceMonitor }))
+);
+const PublicationEditor = lazy(() => import("@/components/admin/publication-editor"));
+const PublicationsList = lazy(() => import("@/components/admin/PublicationsList"));
+const ToolEditor = lazy(() => import("@/components/admin/tool-editor"));
+const ToolsList = lazy(() => import("@/components/admin/ToolsList"));
+const UserManager = lazy(() => import("@/components/admin/UserManager"));
+const CTAAnalyticsPage = lazy(() => import("@/pages/admin/CTAAnalyticsPage"));
+const DeviceStats = lazy(() =>
+  import("@/components/widgets/device-stats").then(m => ({ default: m.DeviceStats }))
+);
+const TrendingArticles = lazy(() =>
+  import("@/components/widgets/trending-articles").then(m => ({ default: m.TrendingArticles }))
+);
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -213,8 +222,10 @@ const AdminDashboard = () => {
 
             {/* Analytics Widgets */}
             <div className="mt-8 space-y-6">
-              <TrendingArticles days={7} limit={10} />
-              <DeviceStats days={30} />
+              <Suspense fallback={<LoadingSpinner text="Kraunama statistika..." />}>
+                <TrendingArticles days={7} limit={10} />
+                <DeviceStats days={30} />
+              </Suspense>
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -250,123 +261,139 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="publications">
-            {editingItem ? (
-              <PublicationEditor
-                id={editingItem === "new" ? null : editingItem}
-                onCancel={() => setEditingItem(null)}
-                onSave={() => {
-                  setEditingItem(null);
-                  fetchDashboardStats();
-                }}
-              />
-            ) : (
-              <Card>
-                <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="text-left">
-                    <CardTitle className="text-left">Publikacijų valdymas</CardTitle>
-                    <CardDescription className="text-left">
-                      Tvarkykite svetainės straipsnius ir naujienas
-                    </CardDescription>
-                  </div>
-                  <Button
-                    onClick={() => handleCreateNew("publications")}
-                    className="w-full sm:w-auto"
-                  >
-                    <Plus className="mr-2 h-4 w-4" /> Nauja publikacija
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <PublicationsList
-                    onEdit={id => setEditingItem(id)}
-                    onDelete={fetchDashboardStats}
-                  />
-                </CardContent>
-              </Card>
-            )}
+            <Suspense fallback={<LoadingSpinner text="Kraunamas publikacijų redaktorius..." />}>
+              {editingItem ? (
+                <PublicationEditor
+                  id={editingItem === "new" ? null : editingItem}
+                  onCancel={() => setEditingItem(null)}
+                  onSave={() => {
+                    setEditingItem(null);
+                    fetchDashboardStats();
+                  }}
+                />
+              ) : (
+                <Card>
+                  <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="text-left">
+                      <CardTitle className="text-left">Publikacijų valdymas</CardTitle>
+                      <CardDescription className="text-left">
+                        Tvarkykite svetainės straipsnius ir naujienas
+                      </CardDescription>
+                    </div>
+                    <Button
+                      onClick={() => handleCreateNew("publications")}
+                      className="w-full sm:w-auto"
+                    >
+                      <Plus className="mr-2 h-4 w-4" /> Nauja publikacija
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <PublicationsList
+                      onEdit={id => setEditingItem(id)}
+                      onDelete={fetchDashboardStats}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="tools">
-            {editingItem ? (
-              <ToolEditor
-                id={editingItem === "new" ? null : editingItem}
-                onCancel={() => setEditingItem(null)}
-                onSave={() => {
-                  setEditingItem(null);
-                  fetchDashboardStats();
-                }}
-              />
-            ) : (
-              <Card>
-                <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
-                    <CardTitle>Įrankių valdymas</CardTitle>
-                    <CardDescription>Tvarkykite AI įrankius</CardDescription>
-                  </div>
-                  <Button onClick={() => handleCreateNew("tools")} className="w-full sm:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Naujas įrankis
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <ToolsList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
-                </CardContent>
-              </Card>
-            )}
+            <Suspense fallback={<LoadingSpinner text="Kraunamas įrankių redaktorius..." />}>
+              {editingItem ? (
+                <ToolEditor
+                  id={editingItem === "new" ? null : editingItem}
+                  onCancel={() => setEditingItem(null)}
+                  onSave={() => {
+                    setEditingItem(null);
+                    fetchDashboardStats();
+                  }}
+                />
+              ) : (
+                <Card>
+                  <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <CardTitle>Įrankių valdymas</CardTitle>
+                      <CardDescription>Tvarkykite AI įrankius</CardDescription>
+                    </div>
+                    <Button onClick={() => handleCreateNew("tools")} className="w-full sm:w-auto">
+                      <Plus className="mr-2 h-4 w-4" /> Naujas įrankis
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <ToolsList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
+                  </CardContent>
+                </Card>
+              )}
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="courses">
-            {editingItem ? (
-              <CourseEditor
-                id={editingItem === "new" ? null : editingItem}
-                onCancel={() => setEditingItem(null)}
-                onSave={() => {
-                  setEditingItem(null);
-                  fetchDashboardStats();
-                }}
-              />
-            ) : (
-              <Card>
-                <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
-                    <CardTitle>Kursų valdymas</CardTitle>
-                    <CardDescription>Tvarkykite mokymų kursus</CardDescription>
-                  </div>
-                  <Button onClick={() => handleCreateNew("courses")} className="w-full sm:w-auto">
-                    <Plus className="mr-2 h-4 w-4" /> Naujas kursas
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <CoursesList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
-                </CardContent>
-              </Card>
-            )}
+            <Suspense fallback={<LoadingSpinner text="Kraunamas kursų redaktorius..." />}>
+              {editingItem ? (
+                <CourseEditor
+                  id={editingItem === "new" ? null : editingItem}
+                  onCancel={() => setEditingItem(null)}
+                  onSave={() => {
+                    setEditingItem(null);
+                    fetchDashboardStats();
+                  }}
+                />
+              ) : (
+                <Card>
+                  <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <CardTitle>Kursų valdymas</CardTitle>
+                      <CardDescription>Tvarkykite mokymų kursus</CardDescription>
+                    </div>
+                    <Button onClick={() => handleCreateNew("courses")} className="w-full sm:w-auto">
+                      <Plus className="mr-2 h-4 w-4" /> Naujas kursas
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <CoursesList onEdit={id => setEditingItem(id)} onDelete={fetchDashboardStats} />
+                  </CardContent>
+                </Card>
+              )}
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="hero-sections">
-            <HeroSectionEditor />
+            <Suspense fallback={<LoadingSpinner text="Kraunamas hero redaktorius..." />}>
+              <HeroSectionEditor />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="cta-sections">
-            <CTASectionEditor />
+            <Suspense fallback={<LoadingSpinner text="Kraunamas CTA redaktorius..." />}>
+              <CTASectionEditor />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="contact-messages">
-            <ContactMessageManager />
+            <Suspense fallback={<LoadingSpinner text="Kraunamos žinutės..." />}>
+              <ContactMessageManager />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="comments">
-            <AdminCommentsModeration />
+            <Suspense fallback={<LoadingSpinner text="Kraunami komentarai..." />}>
+              <AdminCommentsModeration />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="users">
-            <Card>
-              <CardHeader>
-                <CardTitle>Vartotojų valdymas</CardTitle>
-                <CardDescription>Tvarkykite svetainės vartotojus</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <UserManager onUpdate={fetchDashboardStats} />
-              </CardContent>
-            </Card>
+            <Suspense fallback={<LoadingSpinner text="Kraunami vartotojai..." />}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Vartotojų valdymas</CardTitle>
+                  <CardDescription>Tvarkykite svetainės vartotojus</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <UserManager onUpdate={fetchDashboardStats} />
+                </CardContent>
+              </Card>
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="inquiries">
@@ -374,9 +401,7 @@ const AdminDashboard = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Projekto Skaičiuoklės Užklausos</CardTitle>
-                  <CardDescription>
-                    Peržiūrėkite užklausas iš projekto skaičiuoklės
-                  </CardDescription>
+                  <CardDescription>Peržiūrėkite užklausas iš projekto skaičiuoklės</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button
@@ -408,11 +433,15 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <CTAAnalyticsPage />
+            <Suspense fallback={<LoadingSpinner text="Kraunama analizė..." />}>
+              <CTAAnalyticsPage />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="performance">
-            <PerformanceMonitor />
+            <Suspense fallback={<LoadingSpinner text="Kraunama našumo stebėsena..." />}>
+              <PerformanceMonitor />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>
