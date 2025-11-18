@@ -201,6 +201,28 @@ const CourseDetail = () => {
           isLoading={isPurchaseLoading}
         />
 
+        {/* Promo video section - only for this specific course */}
+        {course.slug === "kaip-pradeti-programuoti-su-di" && (
+          <div className="mt-10 mb-12">
+            <h2 className="text-2xl font-bold mb-3 text-foreground text-left">
+              Kas yra Vibe Coding?
+            </h2>
+            <p className="mb-6 text-foreground/80 text-left">
+              Šiame video pristatau „Vibe Coding“ koncepciją – kai tu veiki kaip architektas, o dirbtinis intelektas generuoja patį kodą. Parodau, kaip efektyvi užklausų inžinerija (persona, instrukcijos, kontekstas, pavyzdžiai ir formato nurodymas) leidžia kurti realias sistemas greičiau ir lengviau.
+            </p>
+            <div className="relative w-full overflow-hidden rounded-xl border border-border bg-background aspect-video">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/zSod_gwVXaI"
+                title={course.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="dark-card mb-8 text-left">
