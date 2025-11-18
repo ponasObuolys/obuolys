@@ -93,7 +93,9 @@ export function CourseHero({
                     Kraunama...
                   </>
                 ) : (
-                  'Įsigyti kursą'
+                  isStripeCourse
+                    ? 'Pradėti mokytis dabar'
+                    : 'Įsigyti kursą'
                 )}
               </Button>
               <p className="text-xs text-muted-foreground mt-2">

@@ -104,7 +104,7 @@ export function CoursePurchasePopup({
                 Kraunama...
               </>
             ) : (
-              'Įsigyti kursą'
+              'Pradėti mokytis dabar'
             )}
           </Button>
 
