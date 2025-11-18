@@ -4,7 +4,7 @@ import { CourseCardSkeleton } from "@/components/ui/course-card-skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Users, Star, MessageCircle, Check } from "lucide-react";
+import { Users, Star, MessageCircle, Check } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import { useCourses } from "@/hooks/useSupabaseData";
 import { getServiceContent } from "@/data/coursesData";
+import { ServiceCard } from "@/components/courses/ServiceCard";
 
 const BusinessSolutionsCTA = lazy(() =>
   import("@/components/cta/business-solutions-cta").then(module => ({
@@ -177,139 +178,49 @@ const CoursesPage = () => {
             {/* Services Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {/* Individual Consultation */}
-              <div
-                className="project-card flex flex-col h-full"
+              <ServiceCard
+                title="Individuali konsultacija"
+                subtitle="1-1 pokalbis, pritaikyti sprendimai"
+                description="60 minučių asmeninis pokalbis apie jūsų verslo poreikius ir AI galimybes. Gausite konkrečius rekomendacijas ir veiksmų planą."
+                duration="60 min"
+                format="Online/Offline"
+                icon={<MessageCircle className="w-6 h-6 text-white" />}
+                colorClass="bg-blue-600"
                 onClick={() => setSelectedService("individual")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === "Enter" && setSelectedService("individual")}
-              >
-                {/* Header section - fixed */}
-                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
-                  <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1 text-left">
-                      Individuali konsultacija
-                    </h3>
-                    <p className="text-sm text-foreground/90 text-left">
-                      1-1 pokalbis, pritaikyti sprendimai
-                    </p>
-                  </div>
-                </div>
-
-                {/* Description section - flexible */}
-                <div className="flex-1 mb-4">
-                  <p className="text-sm text-foreground/70 text-left">
-                    60 minučių asmeninis pokalbis apie jūsų verslo poreikius ir AI galimybes.
-                    Gausite konkrečius rekomendacijas ir veiksmų planą.
-                  </p>
-                </div>
-
-                {/* Metadata section - fixed at bottom */}
-                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1">
-                    <Clock size={12} />
-                    <span>60 min</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    <span>Online/Offline</span>
-                  </div>
-                </div>
-              </div>
+              />
 
               {/* Group Training */}
-              <div
-                className="project-card flex flex-col h-full"
+              <ServiceCard
+                title="Grupės mokymai"
+                subtitle="Komandos, darbuotojai"
+                description="Specializuoti mokymai jūsų komandai arba organizacijai. Praktiniai užsiėmimai su realiais pavyzdžiais ir įrankiais."
+                duration="2-4 val"
+                format="5-20 žmonių"
+                icon={<Users className="w-6 h-6 text-white" />}
+                colorClass="bg-green-600"
                 onClick={() => setSelectedService("group")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === "Enter" && setSelectedService("group")}
-              >
-                {/* Header section - fixed */}
-                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
-                  <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1 text-left">Grupės mokymai</h3>
-                    <p className="text-sm text-foreground/60 text-left">Komandos, darbuotojai</p>
-                  </div>
-                </div>
-
-                {/* Description section - flexible */}
-                <div className="flex-1 mb-4">
-                  <p className="text-sm text-foreground/70 text-left">
-                    Specializuoti mokymai jūsų komandai arba organizacijai. Praktiniai užsiėmimai su
-                    realiais pavyzdžiais ir įrankiais.
-                  </p>
-                </div>
-
-                {/* Metadata section - fixed at bottom */}
-                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1">
-                    <Clock size={12} />
-                    <span>2-4 val</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users size={12} />
-                    <span>5-20 žmonių</span>
-                  </div>
-                </div>
-              </div>
+              />
 
               {/* Workshop */}
-              <div
-                className="project-card flex flex-col h-full"
+              <ServiceCard
+                title="AI dirbtuvės"
+                subtitle="Intensyvūs praktiniai užsiėmimai"
+                description="Intensyvios praktinės dirbtuvės su konkrečiais projektais. Nuo AI įrankių iki sprendimų integracijos jūsų veikloje."
+                duration="1-2 dienos"
+                format="Savaitgaliais"
+                icon={<Star className="w-6 h-6 text-white" />}
+                colorClass="bg-purple-600"
                 onClick={() => setSelectedService("workshop")}
                 onMouseMove={handleMouseMove}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === "Enter" && setSelectedService("workshop")}
-              >
-                {/* Header section - fixed */}
-                <div className="flex items-start gap-3 mb-4 min-h-[80px]">
-                  <div className="w-12 h-12 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0">
-                    <Star className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1 text-left">AI dirbtuvės</h3>
-                    <p className="text-sm text-foreground/60 text-left">
-                      Intensyvūs praktiniai užsiėmimai
-                    </p>
-                  </div>
-                </div>
-
-                {/* Description section - flexible */}
-                <div className="flex-1 mb-4">
-                  <p className="text-sm text-foreground/70 text-left">
-                    Intensyvios praktinės dirbtuvės su konkrečiais projektais. Nuo AI įrankių iki
-                    sprendimų integracijos jūsų veikloje.
-                  </p>
-                </div>
-
-                {/* Metadata section - fixed at bottom */}
-                <div className="flex items-center gap-4 text-xs text-foreground/50 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1">
-                    <Clock size={12} />
-                    <span>1-2 dienos</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    <span>Savaitgaliais</span>
-                  </div>
-                </div>
-              </div>
+              />
             </div>
 
             {/* Available Courses */}
