@@ -1,10 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+
 import type { Database } from "@/integrations/supabase/types";
 
 type Article = Database["public"]["Tables"]["articles"]["Row"];
 type Tool = Database["public"]["Tables"]["tools"]["Row"];
 type Course = Database["public"]["Tables"]["courses"]["Row"];
+
+const FETCH_TIMEOUT = 15000; // 15 seconds timeout
+
+/**
+ * Helper function to perform fetch with timeout and signal
+ */
+const fetchWithTimeout = async (url: string, options: RequestInit, signal?: AbortSignal) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+
+  // If a parent signal is provided, listen to it
+  if (signal) {
+    signal.addEventListener("abort", () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    });
+  }
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+};
 
 /**
  * Custom hook artikeliams gauti iš Supabase
@@ -14,7 +44,7 @@ type Course = Database["public"]["Tables"]["courses"]["Row"];
 export const useArticles = (options?: { featured?: boolean; limit?: number }) => {
   return useQuery({
     queryKey: ["articles", options],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       // Workaround: Use direct fetch instead of Supabase client
       // Supabase client .select() sometimes never starts the fetch request (bug)
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -34,14 +64,18 @@ export const useArticles = (options?: { featured?: boolean; limit?: number }) =>
         params.append("limit", options.limit.toString());
       }
 
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/articles?${params}`, {
-        method: "GET",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
+      const response = await fetchWithTimeout(
+        `${SUPABASE_URL}/rest/v1/articles?${params}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+        signal
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -65,7 +99,7 @@ export const useArticles = (options?: { featured?: boolean; limit?: number }) =>
 export const useTools = () => {
   return useQuery({
     queryKey: ["tools"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       // Workaround: Use direct fetch instead of Supabase client
       // Supabase client .select() sometimes never starts the fetch request (bug)
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -76,14 +110,18 @@ export const useTools = () => {
         order: "name.asc",
       });
 
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/tools?${params}`, {
-        method: "GET",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
+      const response = await fetchWithTimeout(
+        `${SUPABASE_URL}/rest/v1/tools?${params}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+        signal
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -106,23 +144,41 @@ export const useTools = () => {
 export const useCourses = (limit?: number) => {
   return useQuery({
     queryKey: ["courses", limit],
-    queryFn: async () => {
-      let query = supabase
-        .from("courses")
-        .select("*")
-        .eq("published", true)
-        .order("title", { ascending: true });
+    queryFn: async ({ signal }) => {
+      // Workaround: Use direct fetch instead of Supabase client
+      // Supabase client .select() sometimes never starts the fetch request (bug)
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const params = new URLSearchParams({
+        select: "*",
+        published: "eq.true",
+        order: "title.asc",
+      });
 
       if (limit) {
-        query = query.limit(limit);
+        params.append("limit", limit.toString());
       }
 
-      const { data, error } = await query;
+      const response = await fetchWithTimeout(
+        `${SUPABASE_URL}/rest/v1/courses?${params}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+        },
+        signal
+      );
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to fetch courses");
       }
 
+      const data = await response.json();
       return data as Course[];
     },
     staleTime: 60 * 1000,
@@ -137,7 +193,7 @@ export const useCourses = (limit?: number) => {
 export const useFeaturedArticles = () => {
   return useQuery({
     queryKey: ["articles", "featured"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       // Workaround: Use direct fetch instead of Supabase client
       // Supabase client .select() sometimes never starts the fetch request (bug)
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -151,14 +207,18 @@ export const useFeaturedArticles = () => {
         limit: "3",
       });
 
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/articles?${params}`, {
-        method: "GET",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
+      const response = await fetchWithTimeout(
+        `${SUPABASE_URL}/rest/v1/articles?${params}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+        signal
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
