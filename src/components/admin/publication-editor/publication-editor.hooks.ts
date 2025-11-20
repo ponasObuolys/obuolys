@@ -156,6 +156,19 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
       return;
     }
 
+    // Check content size (approximate)
+    const contentSize = new Blob([content]).size;
+    if (contentSize > 500 * 1024) {
+      // 500KB limit
+      toast({
+        title: "Klaida",
+        description:
+          "Publikacijos turinis per didelis. Venkite kelti didelius paveikslėlius tiesiai į tekstą (naudokite 'Pagrindinis paveikslėlis' arba išorinius nuorodas).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const publicationDataForSupabase: TablesInsert<"articles"> = {
