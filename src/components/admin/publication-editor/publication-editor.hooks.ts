@@ -1,6 +1,6 @@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { createErrorReport, reportError } from "@/utils/errorReporting";
 import { generateSlug } from "@/utils/stringUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -147,7 +147,14 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
   const { toast } = useToast();
 
   const onSubmit = async (values: PublicationFormData) => {
+    // eslint-disable-next-line no-console
+    console.log("[DEBUG] onSubmit called", {
+      values_summary: { ...values, content: content?.substring(0, 50) + "..." },
+    });
+
     if (!content.trim()) {
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Content is empty");
       toast({
         title: "Klaida",
         description: "Įveskite publikacijos turinį.",
@@ -158,8 +165,13 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
 
     // Check content size (approximate)
     const contentSize = new Blob([content]).size;
+    // eslint-disable-next-line no-console
+    console.log(`[DEBUG] Content size: ${contentSize} bytes`);
+
     if (contentSize > 500 * 1024) {
       // 500KB limit
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Content too large");
       toast({
         title: "Klaida",
         description:
@@ -186,36 +198,98 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
         image_url: values.image_url || null,
       };
 
-      // Timeout promise to prevent infinite loading
-      const timeoutPromise = new Promise((_, reject) =>
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Preparing Supabase request", { id, isNew: !id || id === "new" });
+
+      const operationPromise = async () => {
+        let response;
+
+        if (id && id !== "new") {
+          // eslint-disable-next-line no-console
+          console.log("[DEBUG] Updating existing article via Supabase client", id);
+          const {
+            id: _omitId,
+            created_at: _omitCreatedAt,
+            updated_at: _omitUpdatedAt,
+            ...updateData
+          } = publicationDataForSupabase;
+
+          const { data, error } = await supabase
+            .from("articles")
+            .update(updateData)
+            .eq("id", id)
+            .select()
+            .single();
+
+          response = { data, error };
+        } else {
+          // Workaround: Use direct fetch instead of Supabase client
+          // Supabase client .insert() never starts the fetch request (bug)
+          const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+          const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+          try {
+            const fetchResponse = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
+              method: 'POST',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation',
+              },
+              body: JSON.stringify(publicationDataForSupabase),
+            });
+
+            if (!fetchResponse.ok) {
+              const errorData = await fetchResponse.json();
+              response = { data: null, error: errorData };
+            } else {
+              const data = await fetchResponse.json();
+              // PostgREST returns an array, get first item
+              response = { data: Array.isArray(data) ? data[0] : data, error: null };
+            }
+          } catch (fetchError) {
+            response = {
+              data: null,
+              error: {
+                message: fetchError instanceof Error ? fetchError.message : 'Network error',
+                details: fetchError
+              }
+            };
+          }
+        }
+
+        return response;
+      };
+
+      const timeoutMs = 20000;
+      const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
-          () => reject(new Error("Užklausos laikas baigėsi. Patikrinkite interneto ryšį.")),
-          15000
-        )
-      );
+          () =>
+            reject(
+              new Error("Operacija užtruko per ilgai (20s). Patikrinkite interneto ryšį arba bandykite dar kartą.")
+            ),
+          timeoutMs
+        );
+      });
 
-      let responsePromise;
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Awaiting Supabase operation with timeout...", { timeoutMs });
 
-      if (id && id !== "new") {
-        const {
-          id: _omitId,
-          created_at: _omitCreatedAt,
-          ...updateData
-        } = publicationDataForSupabase;
-        responsePromise = supabase
-          .from("articles")
-          .update(updateData as TablesUpdate<"articles">)
-          .eq("id", id);
-      } else {
-        responsePromise = supabase.from("articles").insert([publicationDataForSupabase]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = (await Promise.race([operationPromise(), timeoutPromise])) as any;
+
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Response received", response);
+
+      if (response.error) {
+        // eslint-disable-next-line no-console
+        console.error("[DEBUG] Supabase error:", response.error);
+        throw response.error;
       }
 
-      // Race between Supabase request and timeout
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = (await Promise.race([responsePromise, timeoutPromise])) as any;
-
-      if (response.error) throw response.error;
-
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Success!");
       toast({
         title: "Sėkmingai išsaugota",
         description: id ? "Publikacija atnaujinta." : "Nauja publikacija sukurta.",
@@ -223,6 +297,8 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
 
       onSave();
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[DEBUG] Caught error in onSubmit:", error);
       reportError(
         createErrorReport(error as Error, {
           additionalData: { source: "PublicationEditor.onSubmit", id },
@@ -234,6 +310,8 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
         variant: "destructive",
       });
     } finally {
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG] Finally block - stopping loading");
       setLoading(false);
     }
   };

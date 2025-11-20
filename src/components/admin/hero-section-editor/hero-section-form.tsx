@@ -75,6 +75,21 @@ export const HeroSectionForm = ({
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Aprašymas</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Įveskite detalų aprašymą" {...field} />
+                  </FormControl>
+                  <FormDescription>Išsamus hero sekcijos aprašymas</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}

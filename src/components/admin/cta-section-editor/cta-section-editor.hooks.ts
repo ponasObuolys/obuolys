@@ -91,9 +91,26 @@ export const useCTASectionSubmit = (
           active: data.active,
         };
 
-        const { error } = await supabase.from("cta_sections").insert(payload);
+        // Workaround: Use direct fetch instead of Supabase client
+        // Supabase client .insert() never starts the fetch request (bug)
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        if (error) throw error;
+        const fetchResponse = await fetch(`${SUPABASE_URL}/rest/v1/cta_sections`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!fetchResponse.ok) {
+          const errorData = await fetchResponse.json();
+          throw errorData;
+        }
 
         toast({
           title: "Sėkmė",

@@ -85,7 +85,29 @@ export const useYouTubeSubmit = (id: string | null, onSave: () => void) => {
       if (id && id !== "new") {
         response = await supabase.from("tools").update(toolData).eq("id", id);
       } else {
-        response = await supabase.from("tools").insert([toolData]);
+        // Workaround: Use direct fetch instead of Supabase client
+        // Supabase client .insert() never starts the fetch request (bug)
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        const fetchResponse = await fetch(`${SUPABASE_URL}/rest/v1/tools`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+          },
+          body: JSON.stringify(toolData),
+        });
+
+        if (!fetchResponse.ok) {
+          const errorData = await fetchResponse.json();
+          response = { error: errorData };
+        } else {
+          const data = await fetchResponse.json();
+          response = { data: Array.isArray(data) ? data[0] : data, error: null };
+        }
       }
 
       if (response.error) throw response.error;

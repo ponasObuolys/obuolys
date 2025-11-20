@@ -15,4 +15,19 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
+  global: {
+    fetch: (url, options = {}) => {
+      // Add timeout to all Supabase requests to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 30000); // 30s timeout
+
+      return fetch(url, {
+        ...options,
+        signal: controller.signal,
+      })
+        .finally(() => clearTimeout(timeoutId));
+    },
+  },
 });

@@ -20,6 +20,9 @@ export const ContentImageFields = ({
   imageUrl,
   setImageUrl,
 }: ContentImageFieldsProps) => {
+  const currentSlug = form.watch("slug");
+  const hasValidSlug = currentSlug && currentSlug.trim() !== "";
+
   const handleImageUpload = (url: string) => {
     setImageUrl(url);
     if (url) {
@@ -42,14 +45,27 @@ export const ContentImageFields = ({
 
       <FormItem>
         <FormLabel>Pagrindinis paveikslėlis</FormLabel>
+        {!hasValidSlug && (
+          <p className="text-sm text-muted-foreground mb-2">
+            ℹ️ Pirmiausia įveskite publikacijos pavadinimą, kad galėtumėte įkelti paveikslėlį
+          </p>
+        )}
         <FormControl>
-          <FileUpload
-            bucket="site-images"
-            folder={`articles/covers/${form.getValues("slug") || "new-publication"}`}
-            acceptedFileTypes="image/jpeg,image/png,image/webp"
-            maxFileSizeMB={2}
-            onUploadComplete={handleImageUpload}
-          />
+          {hasValidSlug ? (
+            <FileUpload
+              bucket="site-images"
+              folder={`articles/covers/${currentSlug}`}
+              acceptedFileTypes="image/jpeg,image/png,image/webp"
+              maxFileSizeMB={2}
+              onUploadComplete={handleImageUpload}
+            />
+          ) : (
+            <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center">
+              <p className="text-muted-foreground">
+                Įveskite publikacijos pavadinimą, kad aktyvuotumėte paveikslėlio įkėlimą
+              </p>
+            </div>
+          )}
         </FormControl>
         {imageUrl && (
           <div className="mt-4">

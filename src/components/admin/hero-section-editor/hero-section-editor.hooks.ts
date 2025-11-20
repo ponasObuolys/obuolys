@@ -17,6 +17,7 @@ export const useHeroSectionForm = () => {
     defaultValues: {
       title: "",
       subtitle: "",
+      description: "",
       button_text: "",
       button_url: "",
       active: false,
@@ -41,6 +42,8 @@ export const useHeroSections = () => {
       setHeroSections(
         (data || []).map(section => ({
           ...section,
+          subtitle: section.subtitle || "",
+          description: section.description || "",
           button_text: section.button_text || "",
           button_url: section.button_url || "",
           image_url: section.image_url || undefined,
@@ -92,16 +95,34 @@ export const useHeroSectionSubmit = (
       } else {
         const insertPayload: TablesInsert<"hero_sections"> = {
           title: data.title,
-          subtitle: data.subtitle,
+          subtitle: data.subtitle || "",
+          description: data.description,
           button_text: data.button_text,
           button_url: data.button_url,
           image_url: data.image_url || null,
           active: data.active,
         };
 
-        const { error } = await supabase.from("hero_sections").insert([insertPayload]);
+        // Workaround: Use direct fetch instead of Supabase client
+        // Supabase client .insert() never starts the fetch request (bug)
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        if (error) throw error;
+        const fetchResponse = await fetch(`${SUPABASE_URL}/rest/v1/hero_sections`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+          },
+          body: JSON.stringify(insertPayload),
+        });
+
+        if (!fetchResponse.ok) {
+          const errorData = await fetchResponse.json();
+          throw errorData;
+        }
 
         toast({
           title: "Sėkmė",
