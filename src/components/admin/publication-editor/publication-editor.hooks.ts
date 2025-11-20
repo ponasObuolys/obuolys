@@ -173,7 +173,15 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
         image_url: values.image_url || null,
       };
 
-      let response;
+      // Timeout promise to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error("Užklausos laikas baigėsi. Patikrinkite interneto ryšį.")),
+          15000
+        )
+      );
+
+      let responsePromise;
 
       if (id && id !== "new") {
         const {
@@ -181,13 +189,17 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
           created_at: _omitCreatedAt,
           ...updateData
         } = publicationDataForSupabase;
-        response = await supabase
+        responsePromise = supabase
           .from("articles")
           .update(updateData as TablesUpdate<"articles">)
           .eq("id", id);
       } else {
-        response = await supabase.from("articles").insert([publicationDataForSupabase]);
+        responsePromise = supabase.from("articles").insert([publicationDataForSupabase]);
       }
+
+      // Race between Supabase request and timeout
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = (await Promise.race([responsePromise, timeoutPromise])) as any;
 
       if (response.error) throw response.error;
 
@@ -205,7 +217,7 @@ export const usePublicationSubmit = (id: string | null, content: string, onSave:
       );
       toast({
         title: "Klaida",
-        description: "Nepavyko išsaugoti publikacijos.",
+        description: error instanceof Error ? error.message : "Nepavyko išsaugoti publikacijos.",
         variant: "destructive",
       });
     } finally {
