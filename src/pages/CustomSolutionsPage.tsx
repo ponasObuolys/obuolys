@@ -6,7 +6,6 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import EnhancedProjectCard from "@/components/custom-solutions/EnhancedProjectCard";
 import PricingCard from "@/components/custom-solutions/PricingCard";
 import ProcessStep from "@/components/custom-solutions/ProcessStep";
-import { StickyCtaSidebar } from "@/components/cta/sticky-cta-sidebar";
 import { TechStackSection } from "@/components/custom-solutions/TechStackSection";
 
 // Lazy load heavy components
@@ -449,7 +448,6 @@ const CustomSolutionsPage = () => {
       )}
 
       {/* Sticky CTA Sidebar - visada matomas */}
-      <StickyCtaSidebar />
     </>
   );
 };

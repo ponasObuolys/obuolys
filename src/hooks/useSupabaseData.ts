@@ -153,7 +153,7 @@ export const useCourses = (limit?: number) => {
       const params = new URLSearchParams({
         select: "*",
         published: "eq.true",
-        order: "title.asc",
+        order: "created_at.desc",
       });
 
       if (limit) {
@@ -203,7 +203,7 @@ export const useFeaturedArticles = () => {
         select:
           "id,title,slug,description,date,category,image_url,content_type,featured,author,read_time",
         published: "eq.true",
-        order: "date.desc",
+        order: "created_at.desc",
         limit: "3",
       });
 

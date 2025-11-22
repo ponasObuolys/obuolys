@@ -10,10 +10,10 @@ interface CoursePurchaseCardProps {
 }
 
 const STRIPE_MAIN_COURSE_ID = '3a107f1a-9c87-4291-bf90-6adf854b2116';
-const SEATS_TOTAL = 30;
-const SEATS_LEFT = 7;
-const COURSE_DEADLINE = new Date('2025-11-22T10:00:00+02:00');
-const COURSE_ANNOUNCE_DATE = new Date('2025-11-09T00:00:00+02:00');
+// Kursai vyksta 2025-12-13, timeris rodo laiką iki pirmos dienos
+const COURSE_DEADLINE = new Date('2025-12-13T10:00:00+02:00');
+// Pardavimų langas skaičiuojamas nuo 2025-11-14 (pirmos viešos informacijos)
+const COURSE_ANNOUNCE_DATE = new Date('2025-11-14T00:00:00+02:00');
 
 interface TimeLeft {
   totalMs: number;
@@ -89,26 +89,32 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
         </div>
 
         {isMainStripeCourse && (
+          <p className="text-xs font-semibold text-primary mb-4">
+            Dabartinė kaina galioja iki 2025 m. gruodžio 7 d. Nuo tos dienos kaina kils.
+          </p>
+        )}
+
+        {isMainStripeCourse && (
           <div className="border border-primary/20 rounded-lg p-4 mb-4 bg-background/40 text-left">
             <p className="text-sm font-semibold text-foreground mb-3">
               Ką gaunate šiame kurse:
             </p>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center justify-between">
-                <span>14 val. praktinių mokymų</span>
-                <span className="font-medium">500€</span>
+                <span>14 val. praktinių mokymų (live + įrašai)</span>
+                <span className="font-medium whitespace-nowrap">500€</span>
               </li>
               <li className="flex items-center justify-between">
-                <span>AI terminų žodynas</span>
-                <span className="font-medium">50€</span>
+                <span>AI terminų žodynas ir šablonai</span>
+                <span className="font-medium whitespace-nowrap">50€</span>
               </li>
               <li className="flex items-center justify-between">
                 <span>1 mėn. asmeninis palaikymas el. paštu</span>
-                <span className="font-medium">250€</span>
+                <span className="font-medium whitespace-nowrap">250€</span>
               </li>
               <li className="flex items-center justify-between">
-                <span>Įrašai visam laikui</span>
-                <span className="font-medium">100€</span>
+                <span>3 mėn. prieiga prie visų įrašų ir medžiagos</span>
+                <span className="font-medium whitespace-nowrap">100€</span>
               </li>
             </ul>
             <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
@@ -122,6 +128,11 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
               <p className="text-2xl font-extrabold text-primary">
                 TIK {formatPrice(currentPrice.amount)}
               </p>
+              {currentPrice.amount < 11700 && (
+                <p className="mt-1 text-[10px] uppercase tracking-wide text-muted-foreground/80">
+                  Kursas brangs iki <span className="font-semibold text-primary">{formatPrice(11700)}</span>
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -139,7 +150,7 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
             </>
           ) : (
             isMainStripeCourse
-              ? 'Rezervuoti vietą dabar - liko 7/30'
+              ? 'Pradėk mokytis dabar'
               : 'Įsigyti kursą'
           )}
         </Button>
@@ -161,8 +172,7 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
 
         {isMainStripeCourse && (
           <div className="mt-2 text-xs text-muted-foreground">
-            Liko <span className="font-semibold text-primary">{SEATS_LEFT}</span> iš{' '}
-            <span className="font-semibold">{SEATS_TOTAL}</span> vietų.
+            Vietų kiekis ribotas
           </div>
         )}
       </div>

@@ -99,7 +99,9 @@ export function CourseHero({
                 )}
               </Button>
               <p className="text-xs text-muted-foreground mt-2">
-                Vienkartinis mokėjimas, prieiga neribotam laikui
+                {isStripeCourse
+                  ? "Kursų prieiga 3 mėn. + visų įrašų archyvas šiuo laikotarpiu"
+                  : "Vienkartinis mokėjimas, prieiga neribotam laikui"}
               </p>
             </div>
           </div>

@@ -4,7 +4,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ChevronUp } from "lucide-react";
-import { StickyCtaSidebar } from "@/components/cta/sticky-cta-sidebar";
 import { useLocation } from "react-router-dom";
 
 interface LayoutProps {
@@ -52,7 +51,6 @@ const Layout = ({ children }: LayoutProps) => {
       <Footer />
 
       {/* Sticky CTA Sidebar */}
-      <StickyCtaSidebar />
 
       {/* Back to Top mygtukas - nerodyti publikacijų puslapiuose */}
       {showButton && !isPublicationPage && (
