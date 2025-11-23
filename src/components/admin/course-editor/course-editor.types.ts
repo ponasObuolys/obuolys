@@ -19,6 +19,28 @@ export const courseSchema = z.object({
     .url({ message: "Netinkamas paveikslėlio URL formatas" })
     .nullable()
     .or(z.literal("")),
+
+  // Kainų informacija
+  regular_price: z.string().optional(),
+  discount_price: z.string().optional(),
+  next_price: z.string().optional(),
+  next_price_date: z.string().optional(),
+
+  // Vertės skaičiavimas
+  value_items: z.array(z.object({
+    title: z.string().min(1, { message: "Pavadinimas yra privalomas" }),
+    value: z.string().min(1, { message: "Vertė yra privaloma" })
+  })).optional(),
+  total_value: z.string().optional(),
+
+  // Stripe integracija
+  stripe_product_id: z.string().optional(),
+  stripe_price_id: z.string().optional(),
+
+  // Countdown
+  countdown_enabled: z.boolean().optional(),
+  countdown_end_date: z.string().optional(),
+  countdown_text: z.string().optional(),
 });
 
 export type CourseFormValues = z.infer<typeof courseSchema>;
