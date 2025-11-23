@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database, Tables } from "@/integrations/supabase/types";
 import { createErrorReport, reportError } from "@/utils/errorReporting";
+import { SupabaseSessionManager } from "@/utils/supabaseSession";
 
-type PublicTableName = keyof Database["public"]["Tables"];
+type PublicTableName = "articles" | "tools" | "courses" | "profiles" | "contact_messages" | "custom_tool_inquiries" | "hero_sections" | "cta_sections" | "sticky_cta_messages" | "cta_clicks" | "article_comments" | "article_bookmarks" | "reading_progress" | "page_views" | "site_statistics" | "email_replies" | "migration_documentation" | "translation_requests";
 
 interface UseAdminListOptions<TName extends PublicTableName> {
   tableName: TName;
@@ -28,7 +28,7 @@ interface UseAdminListResult<T> {
  */
 export function useAdminList<
   TName extends PublicTableName,
-  TRow extends { id: string } = Tables<TName> & { id: string },
+  TRow extends { id: string } = Record<string, unknown> & { id: string },
 >({
   tableName,
   selectFields = "*",
@@ -43,15 +43,24 @@ export function useAdminList<
   const fetchItems = useCallback(async () => {
     try {
       setLoading(true);
-      const query = supabase
-        .from(tableName)
-        .select(selectFields)
-        .order(orderByField, { ascending: orderDirection === "asc" });
 
-      const { data, error } = await query;
+      const result = await SupabaseSessionManager.executeAdminOperation(async () => {
+        const query = supabase
+          .from(tableName as string)
+          .select(selectFields)
+          .order(orderByField, { ascending: orderDirection === "asc" });
 
-      if (error) throw error;
-      setItems((data as unknown as TRow[]) || []);
+        const { data, error } = await query;
+        if (error) throw error;
+        return (data as unknown as TRow[]) || [];
+      }, `fetch ${String(tableName)} items`);
+
+      if (result.success) {
+        setItems(result.data || []);
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+
     } catch (error) {
       const err = error instanceof Error ? error : new Error("Unknown error");
       const report = createErrorReport(err, {
@@ -61,7 +70,7 @@ export function useAdminList<
       reportError(report);
       toast({
         title: "Klaida",
-        description: `Nepavyko gauti ${getTableDisplayName(tableName)} sąrašo.`,
+        description: `Nepavyko gauti ${getTableDisplayName(String(tableName))} sąrašo: ${err.message}`,
         variant: "destructive",
       });
     } finally {
@@ -71,22 +80,29 @@ export function useAdminList<
 
   const deleteItem = useCallback(
     async (id: string, confirmMessage?: string) => {
-      const defaultConfirmMessage = `Ar tikrai norite ištrinti šį ${getTableDisplayName(tableName, "singular")}?`;
+      const defaultConfirmMessage = `Ar tikrai norite ištrinti šį ${getTableDisplayName(String(tableName), "singular")}?`;
 
       if (!window.confirm(confirmMessage || defaultConfirmMessage)) return;
 
       try {
-        const { error } = await supabase.from(tableName).delete().match({ id });
+        const result = await SupabaseSessionManager.executeAdminOperation(async () => {
+          const { error } = await supabase.from(tableName as string).delete().match({ id });
+          if (error) throw error;
+          return true;
+        }, `delete ${String(tableName)} item`);
 
-        if (error) throw error;
+        if (result.success) {
+          toast({
+            title: "Sėkmingai ištrinta",
+            description: `${getTableDisplayName(String(tableName), "singular")} buvo sėkmingai ${getDeletedForm(String(tableName))}.`,
+          });
 
-        toast({
-          title: "Sėkmingai ištrinta",
-          description: `${getTableDisplayName(tableName, "singular")} buvo sėkmingai ${getDeletedForm(tableName)}.`,
-        });
+          await fetchItems();
+          onDelete?.();
+        } else {
+          throw new Error(result.error || 'Unknown error');
+        }
 
-        await fetchItems();
-        onDelete?.();
       } catch (error) {
         const err = error instanceof Error ? error : new Error("Unknown error");
         const report = createErrorReport(err, {
@@ -96,13 +112,7 @@ export function useAdminList<
         reportError(report);
         toast({
           title: "Klaida",
-          description: `Nepavyko ištrinti ${getTableDisplayName(tableName, "singular")}: ${
-            error instanceof Error
-              ? error.message
-              : typeof error === "string"
-                ? error
-                : "nežinoma klaida"
-          }`,
+          description: `Nepavyko ištrinti ${getTableDisplayName(String(tableName), "singular")}: ${err.message}`,
           variant: "destructive",
         });
       }
