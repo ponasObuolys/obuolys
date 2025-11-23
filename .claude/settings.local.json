@@ -63,7 +63,9 @@
       "Bash(git push:*)",
       "Bash(git log:*)",
       "Bash(xargs kill:*)",
-      "Bash(src/integrations/supabase/types.ts)"
+      "Bash(src/integrations/supabase/types.ts)",
+      "mcp__supabase__list_projects",
+      "mcp__stripe__search_stripe_documentation"
     ],
     "deny": [],
     "ask": []

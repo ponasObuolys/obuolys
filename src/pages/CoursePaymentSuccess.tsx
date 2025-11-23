@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-const GOOGLE_FORM_URL = 'https://forms.gle/WVZfhQbikxDcSxtS6';
+const GOOGLE_FORM_URL = 'https://forms.gle/tFZ8SgTohy1sEMN29';
 
 /**
  * Sėkmingo kurso mokėjimo puslapis
