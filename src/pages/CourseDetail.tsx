@@ -1,20 +1,19 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, RefreshCw, AlertCircle } from "lucide-react";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import { secureLogger } from "@/utils/browserLogger";
 import { slateToHtml } from "@/utils/slateToHtml";
 import { formatDuration } from "@/utils/formatDuration";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
 import { CoursePurchaseCard } from "@/components/course/CoursePurchaseCard";
 import { CourseHero } from "@/components/course/CourseHero";
 import { CoursePurchasePopup } from "@/components/course/CoursePurchasePopup";
 import { ContentWithPurchaseHints } from "@/components/course/ContentWithPurchaseHints";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 import { useCoursePurchasePopup } from "@/hooks/useCoursePurchasePopup";
+import { useCourse } from "@/hooks/use-course";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 import SEOHead from "@/components/SEO";
 import {
@@ -22,22 +21,6 @@ import {
   generateCourseStructuredData,
   generateBreadcrumbStructuredData,
 } from "@/utils/seo";
-
-interface Course {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  content: string;
-  price: string;
-  duration: string;
-  level: string;
-  highlights: string[];
-  published: boolean;
-  image_url: string | null;
-  created_at: string;
-  updated_at: string;
-}
 
 // Funkcija Patreon nuorodai gauti pagal kurso slug
 const getPatreonLink = (slug: string): string => {
@@ -51,8 +34,16 @@ const getPatreonLink = (slug: string): string => {
 
 const CourseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [course, setCourse] = useState<Course | null>(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Use the reliable useCourse hook with timeout, retry, and error handling
+  const { 
+    data: course, 
+    isLoading, 
+    isError, 
+    error, 
+    refetch,
+    isFetching 
+  } = useCourse(slug);
 
   // Purchase functionality - only for Stripe course
   const isStripeCourse = course?.id === '3a107f1a-9c87-4291-bf90-6adf854b2116';
@@ -82,59 +73,63 @@ const CourseDetail = () => {
     sessionKey: `course-popup-${slug}`
   });
 
+  // Scroll to top when component mounts
   useEffect(() => {
-    const fetchCourse = async (courseSlug: string) => {
-      try {
-        secureLogger.info("Fetching course with slug", { slug: courseSlug });
-        // Fetch as an array, limit to 1 result
-        const { data, error } = await supabase
-          .from("courses")
-          .select("*")
-          .eq("slug", courseSlug)
-          .eq("published", true)
-          .limit(1);
-
-        if (error) {
-          secureLogger.error("Supabase error", { error });
-          throw error;
-        }
-
-        secureLogger.info("Course data array received", { dataLength: data?.length });
-        // Check if the array has data
-        if (data && data.length > 0) {
-          setCourse(data[0]); // Set the first element
-        } else {
-          secureLogger.warn("No course data found", { slug: courseSlug });
-          setCourse(null); // Explicitly set to null if no data
-        }
-      } catch (error) {
-        secureLogger.error("Error fetching course", { error, slug: courseSlug });
-        toast({
-          title: "Klaida",
-          description: "Nepavyko gauti kurso informacijos. Bandykite vėliau.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (slug) {
-      fetchCourse(slug);
-    }
-
-    // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, [slug]);
 
-  if (loading) {
+  // Loading state with spinner
+  if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <p>Kraunama...</p>
+      <div className="container mx-auto px-4 py-16">
+        <LoadingSpinner 
+          size="lg" 
+          text="Kraunama kurso informacija..." 
+        />
       </div>
     );
   }
 
+  // Error state with retry button
+  if (isError) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-md mx-auto">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h1 className="text-2xl font-bold mb-4">Nepavyko užkrauti kurso</h1>
+          <p className="mb-6 text-muted-foreground">
+            {error instanceof Error 
+              ? error.message 
+              : "Įvyko klaida kraunant kurso informaciją. Patikrinkite interneto ryšį ir bandykite dar kartą."}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button 
+              onClick={() => refetch()} 
+              disabled={isFetching}
+              className="button-primary"
+            >
+              {isFetching ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  Kraunama...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Bandyti dar kartą
+                </>
+              )}
+            </Button>
+            <Link to="/kursai">
+              <Button variant="outline">Grįžti į kursų sąrašą</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Course not found state
   if (!course) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">

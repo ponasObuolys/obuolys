@@ -10,16 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import LazyImage from '@/components/ui/lazy-image';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-
-interface CourseData {
-  id: string;
-  title: string;
-  description: string;
-  image_url: string | null;
-  slug: string;
-}
+import { usePromotedCourse } from '@/hooks/use-course';
 
 interface CoursePromoPopupProps {
   courseId?: string;
@@ -44,48 +35,11 @@ export function CoursePromoPopup({
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [canClose, setCanClose] = useState(false);
-  const [courseData, setCourseData] = useState<CourseData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+
+  // Use reliable hook with timeout and retry
+  const { data: courseData, isLoading } = usePromotedCourse(courseId);
 
   const finalStorageKey = storageKey || `course-promo-${courseId || courseData?.id || 'default'}`;
-
-  // Gauti kurso duomenis
-  useEffect(() => {
-    async function fetchCourse() {
-      try {
-        let query = supabase
-          .from('courses')
-          .select('id, title, description, image_url, slug')
-          .eq('published', true);
-
-        // Jei courseId pateiktas, gauti tą konkretų kursą
-        // Jei ne - gauti kursą su promote_in_popup = true
-        if (courseId) {
-          query = query.eq('id', courseId);
-        } else {
-          query = query.eq('promote_in_popup', true);
-        }
-
-        const { data, error } = await query.single();
-
-        if (error) throw error;
-
-        setCourseData(data);
-      } catch (error) {
-        const fallbackMessage =
-          error instanceof Error ? error.message : 'Nežinoma klaida';
-        const toastMessage = import.meta.env.DEV
-          ? `Nepavyko gauti kurso informacijos: ${fallbackMessage}`
-          : 'Nepavyko gauti kurso informacijos';
-
-        toast.error(toastMessage);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchCourse();
-  }, [courseId]);
 
   // Tikrinti ar vartotojas jau matė popup'ą
   useEffect(() => {
