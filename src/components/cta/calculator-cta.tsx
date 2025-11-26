@@ -6,6 +6,7 @@
 import { Link } from 'react-router-dom';
 import { Calculator, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Card } from '@/components/ui/card';
 
 interface CalculatorCTAProps {
@@ -84,16 +85,12 @@ export function CalculatorCTA({ variant = 'default' }: CalculatorCTAProps) {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90 font-semibold"
-            >
-              <Link to="/skaiciuokle">
+            <Link to="/skaiciuokle">
+              <ShinyButton size="lg">
                 Pradėti Skaičiuoti
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Link>
-            </Button>
+                <ArrowRight className="w-5 h-5" />
+              </ShinyButton>
+            </Link>
             <Button
               asChild
               size="lg"

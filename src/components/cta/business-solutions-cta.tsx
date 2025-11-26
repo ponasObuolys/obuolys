@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { ArrowRight, Sparkles, Zap, Target, Rocket, TrendingUp, Brain } from "lucide-react";
 import { useMemo } from "react";
 import type { CTAContext, CTAVariant } from "@/types/cta";
@@ -138,10 +139,10 @@ export function BusinessSolutionsCTA({
 
         <div className={`flex flex-col sm:flex-row gap-3 ${justifyContent} mb-8`}>
           <Link to="/verslo-sprendimai" className="w-full sm:w-auto">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
+            <ShinyButton size="lg" className="w-full sm:w-auto">
               {content.cta}
               <ArrowRight className="h-4 w-4" />
-            </Button>
+            </ShinyButton>
           </Link>
           <Link to="/kontaktai?type=CUSTOM_TOOL" className="w-full sm:w-auto">
             <Button size="lg" variant="outline" className="gap-2 w-full sm:w-auto">

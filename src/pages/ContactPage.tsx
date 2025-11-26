@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -228,13 +229,13 @@ const ContactPage = () => {
                   />
                 </div>
 
-                <Button
+                <ShinyButton
                   type="submit"
-                  className="button-primary w-full"
+                  className="w-full"
                   disabled={isSubmitting || !formData.messageType}
                 >
                   {isSubmitting ? "Siunčiama..." : "Pateikti užklausą"}
-                </Button>
+                </ShinyButton>
               </form>
 
               {/* Alternative contact method */}

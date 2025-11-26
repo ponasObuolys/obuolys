@@ -5,6 +5,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { LucideIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -279,9 +280,9 @@ export function MobileMenu({
               <Button variant="outline" asChild>
                 <Link to="/auth">Prisijungti</Link>
               </Button>
-              <Button className="button-primary" asChild>
+              <ShinyButton size="sm" asChild>
                 <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
-              </Button>
+              </ShinyButton>
             </div>
           )}
         </div>

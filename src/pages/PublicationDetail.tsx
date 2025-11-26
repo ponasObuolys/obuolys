@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import LazyImage from "@/components/ui/lazy-image";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { useToast } from "@/components/ui/use-toast";
@@ -159,7 +159,7 @@ const PublicationDetail = () => {
           <h1 className="text-2xl font-bold mb-4">Publikacija nerasta</h1>
           <p className="mb-6">Atsiprašome, bet ieškoma publikacija neegzistuoja.</p>
           <Link to="/publikacijos">
-            <Button className="button-primary">Grįžti į publikacijų sąrašą</Button>
+            <ShinyButton>Grįžti į publikacijų sąrašą</ShinyButton>
           </Link>
         </div>
       </>
@@ -241,7 +241,7 @@ const PublicationDetail = () => {
               )}
               {publication.category && publication.category.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {publication.category.map(cat => (
+                  {publication.category.map((cat: string) => (
                     <Badge key={cat} variant="outline">
                       {cat}
                     </Badge>

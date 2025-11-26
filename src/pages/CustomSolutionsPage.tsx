@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense } from "react";
 import { Check, Users, TrendingUp, Zap, Target } from "lucide-react";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import SEOHead from "@/components/SEO";
 import { SITE_CONFIG } from "@/utils/seo";
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -100,13 +101,13 @@ const CustomSolutionsPage = () => {
                 Kuriu sistemas, kurios sutaupo 10+ valandų per savaitę ir leidžia augti be papildomų darbuotojų.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <button
+                <ShinyButton
                   onClick={() => setShowForm(true)}
-                  className="button-primary text-lg px-8 py-4 inline-flex items-center justify-center gap-2"
+                  size="lg"
                 >
                   <Users className="w-5 h-5" />
                   Nemokama 30min konsultacija
-                </button>
+                </ShinyButton>
                 <button
                   onClick={() =>
                     document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })
@@ -426,13 +427,13 @@ const CustomSolutionsPage = () => {
               konsultacija nemokama. Aptarsime jūsų iššūkius, įvertinsiu automatizacijos galimybes
               ir sudarysiu preliminarų planą su tikslia kaina. Jokių įsipareigojimų.
             </p>
-            <button
+            <ShinyButton
               onClick={() => setShowForm(true)}
-              className="button-primary text-lg px-10 py-5 inline-flex items-center gap-2"
+              size="lg"
             >
               <Users className="w-5 h-5" />
               Gauti nemokamą konsultaciją
-            </button>
+            </ShinyButton>
             <p className="text-sm text-foreground/60 mt-6">
               ✅ Jūsų duomenys saugūs | ✅ Atsakau per 24 val darbo dienomis | ✅ Jokio spam – tik vienas pokalbis
             </p>

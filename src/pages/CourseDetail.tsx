@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { ArrowLeft, CheckCircle, RefreshCw, AlertCircle } from "lucide-react";
 import { SafeRichText } from "@/components/ui/SafeHtml";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
@@ -136,7 +137,7 @@ const CourseDetail = () => {
         <h1 className="text-2xl font-bold mb-4">Kursas nerastas</h1>
         <p className="mb-6">Atsiprašome, bet ieškomas kursas neegzistuoja.</p>
         <Link to="/kursai">
-          <Button className="button-primary">Grįžti į kursų sąrašą</Button>
+          <ShinyButton>Grįžti į kursų sąrašą</ShinyButton>
         </Link>
       </div>
     );
@@ -254,12 +255,12 @@ const CourseDetail = () => {
                     <div className="text-sm mb-4 text-foreground/60">
                       Vienkartinis mokėjimas, prieiga neribotam laikui
                     </div>
-                    <Button
-                      className="w-full button-primary text-lg py-6"
+                    <ShinyButton
+                      className="w-full text-lg py-6"
                       onClick={() => (window.location.href = getPatreonLink(course.slug))}
                     >
                       Įsigyti kursą
-                    </Button>
+                    </ShinyButton>
                   </div>
 
                   {course.highlights && course.highlights.length > 0 && (

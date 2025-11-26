@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Link } from "react-router-dom";
 import LazyImage from "@/components/ui/lazy-image";
 
@@ -23,7 +23,7 @@ const Hero = () => {
                 {/* Action button */}
                 <div className="flex justify-center lg:justify-start pt-4">
                   <Link to="/kontaktai?type=KONSULTACIJA">
-                    <Button className="button-primary">Konsultuotis</Button>
+                    <ShinyButton>Konsultuotis</ShinyButton>
                   </Link>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Clock, TrendingUp } from 'lucide-react';
@@ -203,8 +203,8 @@ export function CoursePurchaseCardEnhanced({ course }: CoursePurchaseCardEnhance
           )}
 
           {/* Pirkimo mygtukas */}
-          <Button
-            className="w-full button-primary text-lg py-6"
+          <ShinyButton
+            className="w-full text-lg py-6"
             onClick={purchaseCourse}
             disabled={isLoading}
           >
@@ -216,7 +216,7 @@ export function CoursePurchaseCardEnhanced({ course }: CoursePurchaseCardEnhance
             ) : (
               'Pradėk mokytis dabar'
             )}
-          </Button>
+          </ShinyButton>
 
           {/* Papildoma informacija */}
           {course.promote_in_popup && (

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import CourseCard from "@/components/ui/course-card";
 import { CourseCardSkeleton } from "@/components/ui/course-card-skeleton";
 import { useToast } from "@/components/ui/use-toast";
@@ -117,7 +118,7 @@ const CoursesPage = () => {
 
                 <div className="flex gap-3 mt-6">
                   <Link to="/kontaktai?type=KONSULTACIJA" className="flex-1">
-                    <Button className="button-primary w-full">Registruotis dabar</Button>
+                    <ShinyButton className="w-full">Registruotis dabar</ShinyButton>
                   </Link>
                   <Button
                     variant="outline"
@@ -168,9 +169,9 @@ const CoursesPage = () => {
                   </p>
                 </div>
                 <Link to="/kontaktai?type=KONSULTACIJA" className="w-full sm:w-auto">
-                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <ShinyButton className="w-full sm:w-auto">
                     Registruotis konsultacijai
-                  </Button>
+                  </ShinyButton>
                 </Link>
               </div>
             </div>
@@ -342,9 +343,9 @@ const CoursesPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/kontaktai">
-                  <Button className="button-primary">Registruotis konsultacijai</Button>
+                  <ShinyButton>Registruotis konsultacijai</ShinyButton>
                 </Link>
-                <Button className="button-outline">Sužinoti daugiau</Button>
+                <Button variant="outline">Sužinoti daugiau</Button>
               </div>
             </div>
           </div>

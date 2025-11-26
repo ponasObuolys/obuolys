@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Clock, CheckCircle, Loader2 } from 'lucide-react';
 import { formatDuration } from '@/utils/formatDuration';
 import { formatPrice } from '@/config/stripe';
@@ -82,8 +82,8 @@ export function CourseHero({
               <p className="text-2xl font-bold text-primary mb-3">
                 {displayPrice}
               </p>
-              <Button
-                className="w-full button-primary text-lg py-3"
+              <ShinyButton
+                className="w-full text-lg py-3"
                 onClick={onPurchase}
                 disabled={isLoading}
               >
@@ -97,7 +97,7 @@ export function CourseHero({
                     ? 'Pradėti mokytis dabar'
                     : 'Įsigyti kursą'
                 )}
-              </Button>
+              </ShinyButton>
               <p className="text-xs text-muted-foreground mt-2">
                 {isStripeCourse
                   ? "Kursų prieiga 3 mėn. + visų įrašų archyvas šiuo laikotarpiu"

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { CheckCircle, X, Clock, Loader2 } from 'lucide-react';
 import { formatPrice } from '@/config/stripe';
 
@@ -93,8 +94,8 @@ export function CoursePurchasePopup({
           )}
 
           {/* Purchase Button */}
-          <Button
-            className="w-full button-primary text-lg py-6 mb-4"
+          <ShinyButton
+            className="w-full text-lg py-6 mb-4"
             onClick={onPurchase}
             disabled={isLoading}
           >
@@ -106,7 +107,7 @@ export function CoursePurchasePopup({
             ) : (
               'Pradėti mokytis dabar'
             )}
-          </Button>
+          </ShinyButton>
 
           {/* Security note */}
           <div className="text-center text-xs text-muted-foreground border-t border-border pt-4">

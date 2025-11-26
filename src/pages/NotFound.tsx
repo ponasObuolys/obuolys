@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Helmet } from "react-helmet-async";
 import LazyImage from "@/components/ui/lazy-image";
 
@@ -58,7 +59,7 @@ const NotFound = () => {
               {/* Action buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Link to="/">
-                  <Button className="button-primary w-full sm:w-auto">Grįžti į pradžią</Button>
+                  <ShinyButton className="w-full sm:w-auto">Grįžti į pradžią</ShinyButton>
                 </Link>
                 <Link to="/publikacijos">
                   <Button className="button-outline w-full sm:w-auto">

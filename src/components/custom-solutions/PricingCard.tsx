@@ -1,5 +1,6 @@
 import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 
 interface PricingPlan {
   name: string;
@@ -62,13 +63,17 @@ const PricingCard = ({ plan, onCTAClick }: PricingCardProps) => {
         </p>
       </div>
 
-      <Button
-        onClick={onCTAClick}
-        className={`w-full ${plan.popular ? "button-primary" : "button-outline"}`}
-      >
-        {plan.popular ? "Gauti kainų pasiūlymą" : "Aptarti projektą"}
-        <ArrowRight className="w-4 h-4 ml-2" />
-      </Button>
+      {plan.popular ? (
+        <ShinyButton onClick={onCTAClick} className="w-full">
+          Gauti kainų pasiūlymą
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </ShinyButton>
+      ) : (
+        <Button onClick={onCTAClick} className="w-full button-outline">
+          Aptarti projektą
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      )}
     </div>
   );
 };

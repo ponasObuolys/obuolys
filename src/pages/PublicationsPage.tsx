@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import ArticleCard from "@/components/ui/article-card";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Search, Plus } from "lucide-react";
@@ -92,10 +93,10 @@ const PublicationsPage = () => {
                   </p>
                 </div>
                 <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
-                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <ShinyButton className="w-full sm:w-auto">
                     <Plus className="w-4 h-4" />
                     Pasiūlyti naujieną
-                  </Button>
+                  </ShinyButton>
                 </Link>
               </div>
             </div>
@@ -177,10 +178,10 @@ const PublicationsPage = () => {
                       Išvalyti paiešką
                     </Button>
                     <Link to="/kontaktai">
-                      <Button className="button-primary flex items-center gap-2">
+                      <ShinyButton className="flex items-center gap-2">
                         <Plus className="w-4 h-4" />
                         Pasiūlyti naujieną
-                      </Button>
+                      </ShinyButton>
                     </Link>
                   </div>
                 </div>
@@ -205,10 +206,10 @@ const PublicationsPage = () => {
                   formuoti AI diskursą Lietuvoje.
                 </p>
                 <Link to="/kontaktai?type=AI_NAUJIENA" className="w-full sm:w-auto">
-                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto mx-auto">
+                  <ShinyButton className="w-full sm:w-auto mx-auto">
                     <Plus className="w-5 h-5" />
                     Pasiūlyti AI naujieną
-                  </Button>
+                  </ShinyButton>
                 </Link>
               </div>
             </div>

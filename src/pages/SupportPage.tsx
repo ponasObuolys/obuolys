@@ -1,6 +1,7 @@
 import LazyImage from "@/components/ui/lazy-image";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Heart } from "lucide-react";
 
 import { Helmet } from "react-helmet-async";
@@ -56,7 +57,7 @@ const SupportPage = () => {
               rel="noopener noreferrer"
               className="mt-auto"
             >
-              <Button className="button-primary w-full">Rodyti Patreon</Button>
+              <ShinyButton className="w-full">Rodyti Patreon</ShinyButton>
             </a>
           </div>
 
@@ -84,9 +85,9 @@ const SupportPage = () => {
               rel="noopener noreferrer"
               className="mt-auto"
             >
-              <Button className="bg-red-600 hover:bg-red-700 text-white w-full">
+              <ShinyButton className="w-full">
                 Prisijungti YouTube
-              </Button>
+              </ShinyButton>
             </a>
           </div>
         </div>

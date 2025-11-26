@@ -1,6 +1,6 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { useToast } from "@/components/ui/use-toast";
 import { Plus, ExternalLink } from "lucide-react";
 
@@ -103,10 +103,10 @@ const YouTubePage = () => {
                   </p>
                 </div>
                 <Link to="/kontaktai?type=YOUTUBE" className="w-full sm:w-auto">
-                  <Button className="button-primary flex items-center justify-center gap-2 w-full sm:w-auto">
+                  <ShinyButton className="w-full sm:w-auto">
                     <Plus className="w-4 h-4" />
                     Pasiūlyti video temą
-                  </Button>
+                  </ShinyButton>
                 </Link>
               </div>
             </div>

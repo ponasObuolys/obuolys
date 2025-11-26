@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Link } from "react-router-dom";
 
 const CallToAction = () => {
@@ -17,9 +18,9 @@ const CallToAction = () => {
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/kursai" className="w-full sm:w-auto">
-                  <Button className="w-full bg-white text-primary hover:bg-white/90">
+                  <ShinyButton className="w-full">
                     Pradėti mokytis
-                  </Button>
+                  </ShinyButton>
                 </Link>
                 <Link to="/kontaktai" className="w-full sm:w-auto">
                   <Button className="w-full border border-white bg-transparent hover:bg-white/10 text-white">

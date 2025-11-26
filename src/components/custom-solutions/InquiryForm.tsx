@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { X, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -111,9 +112,9 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
               Ačiū už jūsų užklausą. Susisieksiu su jumis per 24 valandas darbo dienomis.
               Pasitikrinkite savo el. paštą - išsiuntęs patvirtinimo laišką.
             </p>
-            <Button onClick={onClose} className="button-primary w-full">
+            <ShinyButton onClick={onClose} className="w-full">
               Uždaryti
-            </Button>
+            </ShinyButton>
           </div>
         </div>
       </div>
@@ -339,7 +340,7 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
 
           {/* Submit Button */}
           <div className="flex gap-3">
-            <Button type="submit" disabled={isSubmitting} className="button-primary flex-1">
+            <ShinyButton type="submit" disabled={isSubmitting} className="flex-1">
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -348,7 +349,7 @@ const InquiryForm = ({ onClose }: InquiryFormProps) => {
               ) : (
                 "Siųsti užklausą"
               )}
-            </Button>
+            </ShinyButton>
             <Button type="button" onClick={onClose} variant="outline" className="button-outline">
               Atšaukti
             </Button>

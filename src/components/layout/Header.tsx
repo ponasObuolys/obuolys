@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -228,9 +229,9 @@ const Header = () => {
                     Prisijungti
                   </Link>
                 </Button>
-                <Button asChild size="sm" className="button-primary text-sm">
+                <ShinyButton size="sm" asChild>
                   <Link to="/kontaktai?type=KONSULTACIJA">Konsultuotis</Link>
-                </Button>
+                </ShinyButton>
               </div>
             )}
           </div>

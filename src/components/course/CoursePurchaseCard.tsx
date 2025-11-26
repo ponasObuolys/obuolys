@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { ShinyButton } from '@/components/ui/shiny-button';
 import { Loader2 } from 'lucide-react';
 import { useCoursePurchase } from '@/hooks/useCoursePurchase';
 import { formatPrice } from '@/config/stripe';
@@ -138,8 +138,8 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
         )}
 
         {/* Pirkimo mygtukas */}
-        <Button
-          className="w-full button-primary text-lg py-6"
+        <ShinyButton
+          className="w-full text-lg py-6"
           onClick={purchaseCourse}
           disabled={isLoading}
         >
@@ -153,7 +153,7 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
               ? 'Pradėk mokytis dabar'
               : 'Įsigyti kursą'
           )}
-        </Button>
+        </ShinyButton>
 
         {isMainStripeCourse && timeLeft.totalMs > 0 && (
           <div className="mt-3 text-xs text-primary font-semibold">
