@@ -140,7 +140,7 @@ const ContactPage = () => {
             <div className="dark-card">
               <h2 className="text-2xl font-bold text-foreground mb-6">Susisiekite</h2>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6" style={{ isolation: 'isolate' }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label
@@ -229,13 +229,14 @@ const ContactPage = () => {
                   />
                 </div>
 
-                <ShinyButton
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitting || !formData.messageType}
-                >
-                  {isSubmitting ? "Siunčiama..." : "Pateikti užklausą"}
-                </ShinyButton>
+                <div className="flex justify-center relative z-10">
+                  <ShinyButton
+                    type="submit"
+                    disabled={isSubmitting || !formData.messageType}
+                  >
+                    {isSubmitting ? "Siunčiama..." : "Pateikti užklausą"}
+                  </ShinyButton>
+                </div>
               </form>
 
               {/* Alternative contact method */}
@@ -243,13 +244,15 @@ const ContactPage = () => {
                 <p className="text-sm text-foreground/60 text-center mb-4">
                   Arba susisiekite tiesiogiai per WhatsApp
                 </p>
-                <Button
-                  onClick={handleWhatsApp}
-                  className="button-outline w-full flex items-center justify-center gap-2"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                  Rašyti WhatsApp
-                </Button>
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handleWhatsApp}
+                    className="button-outline flex items-center justify-center gap-2"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Rašyti WhatsApp
+                  </Button>
+                </div>
               </div>
             </div>
 

@@ -41,7 +41,7 @@
   border-radius: 9999px;
   font-weight: 500;
   color: hsl(210, 40%, 98%);
-  background: linear-gradient(hsl(220, 13%, 12%), hsl(220, 13%, 12%)) padding-box,
+  background: linear-gradient(hsl(220, 13%, 8%), hsl(220, 13%, 8%)) padding-box,
     conic-gradient(
         from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
         transparent 0%,
@@ -65,12 +65,16 @@
   isolation: isolate;
   outline-offset: 4px;
   font-family: "Inter", sans-serif;
-  z-index: 0;
+  z-index: 10;
   animation: border-spin 2.5s linear infinite;
+  animation-play-state: running !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  will-change: --gradient-angle;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 @keyframes border-spin {
