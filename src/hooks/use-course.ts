@@ -20,13 +20,18 @@ export interface Course {
   discount_price?: string | null;
   next_price?: string | null;
   next_price_date?: string | null;
-  value_items?: unknown;
+  value_items?: { title: string; value: string }[] | null;
   total_value?: string | null;
   stripe_product_id?: string | null;
   stripe_price_id?: string | null;
   countdown_enabled?: boolean | null;
   countdown_end_date?: string | null;
   countdown_text?: string | null;
+  // Nauji laukai vietų skaičiavimui
+  max_spots?: number | null;
+  course_start_date?: string | null;
+  pdf_guides?: { title: string; description?: string }[] | null;
+  cta_button_text?: string | null;
 }
 
 const FETCH_TIMEOUT = 15000; // 15 seconds timeout

@@ -11,6 +11,9 @@ import { CoursePurchaseCard } from "@/components/course/CoursePurchaseCard";
 import { CourseHero } from "@/components/course/CourseHero";
 import { CoursePurchasePopup } from "@/components/course/CoursePurchasePopup";
 import { ContentWithPurchaseHints } from "@/components/course/ContentWithPurchaseHints";
+import { CourseTestimonials } from "@/components/course/course-testimonials";
+import { CourseFaq } from "@/components/course/course-faq";
+import { CoursePdfGuides } from "@/components/course/course-pdf-guides";
 import { useCoursePurchase } from "@/hooks/useCoursePurchase";
 import { useCoursePurchasePopup } from "@/hooks/useCoursePurchasePopup";
 import { useCourse } from "@/hooks/use-course";
@@ -197,28 +200,6 @@ const CourseDetail = () => {
           isLoading={isPurchaseLoading}
         />
 
-        {/* Promo video section - only for this specific course */}
-        {course.slug === "kaip-pradeti-programuoti-su-di" && (
-          <div className="mt-10 mb-12">
-            <h2 className="text-2xl font-bold mb-3 text-foreground text-left">
-              Kas yra Vibe Coding?
-            </h2>
-            <p className="mb-6 text-foreground/80 text-left">
-              Šiame video pristatau „Vibe Coding“ koncepciją – kai tu veiki kaip architektas, o dirbtinis intelektas generuoja patį kodą. Parodau, kaip efektyvi užklausų inžinerija (persona, instrukcijos, kontekstas, pavyzdžiai ir formato nurodymas) leidžia kurti realias sistemas greičiau ir lengviau.
-            </p>
-            <div className="relative w-full overflow-hidden rounded-xl border border-border bg-background aspect-video">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/zSod_gwVXaI"
-                title={course.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="dark-card mb-8 text-left">
@@ -241,13 +222,39 @@ const CourseDetail = () => {
                 )}
               </div>
             </div>
+
+            {/* Testimonials Section - aukščiau, nes svarbu konversijai */}
+            <CourseTestimonials 
+              courseId={course.id} 
+              className="mb-8"
+            />
+
+            {/* PDF Guides Section */}
+            {course.pdf_guides && course.pdf_guides.length > 0 && (
+              <CoursePdfGuides 
+                guides={course.pdf_guides} 
+                className="dark-card mb-8"
+              />
+            )}
+
+            {/* FAQ Section */}
+            <CourseFaq 
+              courseId={course.id} 
+              className="mb-8"
+            />
           </div>
 
           <div className="lg:col-span-1">
             {/* Sidebar Purchase Card - visible on all screens */}
             <div>
               {isStripeCourse ? (
-                <CoursePurchaseCard courseId={course.id} courseTitle={course.title} />
+                <CoursePurchaseCard 
+                  courseId={course.id} 
+                  courseTitle={course.title}
+                  maxSpots={course.max_spots}
+                  courseStartDate={course.course_start_date}
+                  ctaButtonText={course.cta_button_text}
+                />
               ) : (
                 <div className="dark-card sticky top-24">
                   <div className="text-center mb-6">

@@ -41,6 +41,19 @@ export const courseSchema = z.object({
   countdown_enabled: z.boolean().optional(),
   countdown_end_date: z.string().optional(),
   countdown_text: z.string().optional(),
+
+  // Vietų skaičiavimas
+  max_spots: z.coerce.number().min(0).optional().nullable(),
+  course_start_date: z.string().optional().nullable(),
+
+  // PDF gidai
+  pdf_guides: z.array(z.object({
+    title: z.string().min(1, { message: "Pavadinimas yra privalomas" }),
+    description: z.string().optional()
+  })).optional(),
+
+  // CTA mygtukas
+  cta_button_text: z.string().optional().nullable(),
 });
 
 export type CourseFormValues = z.infer<typeof courseSchema>;

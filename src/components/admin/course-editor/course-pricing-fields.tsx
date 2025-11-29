@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X, Euro, Calendar, TrendingUp } from "lucide-react";
+import { Plus, X, Euro, Calendar, TrendingUp, Users, FileText, MousePointer } from "lucide-react";
 import type { UseFormReturn } from "react-hook-form";
 import type { CourseFormValues } from "./course-editor.types";
 
@@ -23,6 +23,7 @@ interface CoursePricingFieldsProps {
 
 export const CoursePricingFields = ({ form }: CoursePricingFieldsProps) => {
   const valueItems = form.watch("value_items") || [];
+  const pdfGuides = form.watch("pdf_guides") || [];
 
   const addValueItem = () => {
     const currentItems = form.getValues("value_items") || [];
@@ -41,6 +42,16 @@ export const CoursePricingFields = ({ form }: CoursePricingFieldsProps) => {
       return sum + value;
     }, 0);
     form.setValue("total_value", `${total}€`);
+  };
+
+  const addPdfGuide = () => {
+    const currentGuides = form.getValues("pdf_guides") || [];
+    form.setValue("pdf_guides", [...currentGuides, { title: "", description: "" }]);
+  };
+
+  const removePdfGuide = (index: number) => {
+    const currentGuides = form.getValues("pdf_guides") || [];
+    form.setValue("pdf_guides", currentGuides.filter((_, i) => i !== index));
   };
 
   return (
@@ -263,6 +274,69 @@ export const CoursePricingFields = ({ form }: CoursePricingFieldsProps) => {
         </CardContent>
       </Card>
 
+      {/* Vietų skaičiavimas */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Vietų skaičiavimas
+            <Badge variant="secondary" className="ml-2">
+              Urgency
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="max_spots"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Maksimalus vietų skaičius</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="30" 
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Naudojama vietų skaičiavimui (kosmetinė funkcija)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="course_start_date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kurso pradžios data</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="datetime-local" 
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Kada prasideda kursas (vietų skaičiavimui)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            💡 Vietų skaičius automatiškai mažėja artėjant kurso pradžiai. Tai kosmetinė funkcija, nesusijusi su tikru Stripe inventoriumi.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Countdown nustatymai */}
       <Card>
         <CardHeader>
@@ -329,6 +403,108 @@ export const CoursePricingFields = ({ form }: CoursePricingFieldsProps) => {
               />
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* PDF gidai */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            PDF gidai
+            <Badge variant="secondary" className="ml-2">
+              "Ką gausite" sekcija
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            {pdfGuides.map((_guide, index) => (
+              <div key={index} className="flex gap-4 p-4 border rounded-lg bg-muted/30">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name={`pdf_guides.${index}.title`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pavadinimas</FormLabel>
+                        <FormControl>
+                          <Input placeholder="AI terminų žodynas" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`pdf_guides.${index}.description`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Aprašymas (neprivaloma)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="50+ terminų su paaiškinimais" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removePdfGuide(index)}
+                  className="mt-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addPdfGuide}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Pridėti PDF gidą
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* CTA mygtukas */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MousePointer className="h-5 w-5" />
+            CTA mygtuko tekstas
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FormField
+            control={form.control}
+            name="cta_button_text"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mygtuko tekstas</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Pradėti mokytis dabar" 
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Pasirinktinis pirkimo mygtuko tekstas. Jei tuščia, bus naudojamas numatytasis.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </CardContent>
       </Card>
     </div>

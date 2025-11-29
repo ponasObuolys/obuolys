@@ -11,20 +11,24 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CoursePricingFields } from "./course-pricing-fields";
+import { TestimonialsManager } from "../testimonials-manager";
+import { FaqManager } from "../faq-manager";
 import type { UseFormReturn } from "react-hook-form";
 import type { CourseFormValues } from "./course-editor.types";
 
 interface CourseFormFieldsProps {
   form: UseFormReturn<CourseFormValues>;
   onTitleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  courseId?: string | null;
 }
 
-export const CourseFormFields = ({ form, onTitleChange }: CourseFormFieldsProps) => {
+export const CourseFormFields = ({ form, onTitleChange, courseId }: CourseFormFieldsProps) => {
   return (
     <Tabs defaultValue="basic" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="basic">Pagrindinė informacija</TabsTrigger>
         <TabsTrigger value="pricing">Kainų nustatymai</TabsTrigger>
+        <TabsTrigger value="extra">Papildomi</TabsTrigger>
       </TabsList>
 
       <TabsContent value="basic" className="space-y-6 mt-6">
@@ -164,6 +168,21 @@ export const CourseFormFields = ({ form, onTitleChange }: CourseFormFieldsProps)
 
       <TabsContent value="pricing" className="space-y-6 mt-6">
         <CoursePricingFields form={form} />
+      </TabsContent>
+
+      <TabsContent value="extra" className="space-y-6 mt-6">
+        {courseId ? (
+          <>
+            <TestimonialsManager courseId={courseId} />
+            <div className="border-t pt-6">
+              <FaqManager courseId={courseId} />
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>Pirmiausia išsaugokite kursą, kad galėtumėte valdyti atsiliepimus ir FAQ.</p>
+          </div>
+        )}
       </TabsContent>
     </Tabs>
   );

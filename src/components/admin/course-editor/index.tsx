@@ -46,7 +46,7 @@ const CourseEditor = ({ id, onCancel, onSave }: CourseEditorProps) => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <CourseFormFields form={form} onTitleChange={onTitleChange} />
+            <CourseFormFields form={form} onTitleChange={onTitleChange} courseId={id} />
 
             <CourseHighlights
               highlights={highlights}

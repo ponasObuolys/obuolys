@@ -56,8 +56,12 @@ export const useCourseData = (id: string | null, form: UseFormReturn<CourseFormV
             published: data.published,
             promote_in_popup: data.promote_in_popup || false,
             image_url: data.image_url || "",
+            max_spots: data.max_spots || null,
+            course_start_date: data.course_start_date || null,
+            pdf_guides: (data.pdf_guides as { title: string; description?: string }[]) || [],
+            cta_button_text: data.cta_button_text || null,
           });
-          setContent(data.content);
+          setContent(data.content || "");
           setHighlights(data.highlights || []);
           setImageUrl(data.image_url || null);
         }
@@ -133,6 +137,10 @@ export const useCourseSubmit = (
         image_url: values.image_url || null,
         content: content,
         highlights: highlights,
+        max_spots: values.max_spots || null,
+        course_start_date: values.course_start_date || null,
+        pdf_guides: values.pdf_guides || null,
+        cta_button_text: values.cta_button_text || null,
       };
 
       log.info("Siunčiami kurso duomenys", { course: courseDataForSupabase });
@@ -152,6 +160,10 @@ export const useCourseSubmit = (
           image_url: values.image_url || null,
           content: courseDataForSupabase.content,
           highlights: courseDataForSupabase.highlights,
+          max_spots: courseDataForSupabase.max_spots,
+          course_start_date: courseDataForSupabase.course_start_date,
+          pdf_guides: courseDataForSupabase.pdf_guides,
+          cta_button_text: courseDataForSupabase.cta_button_text,
         };
         response = await supabase.from("courses").update(updateData).eq("id", id);
       } else {

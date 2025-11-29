@@ -4,6 +4,8 @@ import { Clock, CheckCircle, Loader2 } from 'lucide-react';
 import { formatDuration } from '@/utils/formatDuration';
 import { formatPrice } from '@/config/stripe';
 import { ShareButton } from '@/components/ui/share-button';
+import { CourseSpotsBadge } from './course-spots-badge';
+import { CourseValueBreakdownCompact } from './course-value-breakdown';
 
 interface CourseHeroProps {
   course: {
@@ -16,6 +18,11 @@ interface CourseHeroProps {
     highlights?: string[];
     image_url: string | null;
     price: string;
+    max_spots?: number | null;
+    course_start_date?: string | null;
+    cta_button_text?: string | null;
+    value_items?: { title: string; value: string }[] | null;
+    total_value?: string | null;
   };
   currentPrice?: {
     amount: number;
@@ -93,9 +100,7 @@ export function CourseHero({
                     Kraunama...
                   </>
                 ) : (
-                  isStripeCourse
-                    ? 'Pradėti mokytis dabar'
-                    : 'Įsigyti kursą'
+                  course.cta_button_text || (isStripeCourse ? 'Pradėti mokytis dabar' : 'Įsigyti kursą')
                 )}
               </ShinyButton>
               <p className="text-xs text-muted-foreground mt-2">
@@ -103,6 +108,23 @@ export function CourseHero({
                   ? "Kursų prieiga 3 mėn. + visų įrašų archyvas šiuo laikotarpiu"
                   : "Vienkartinis mokėjimas, prieiga neribotam laikui"}
               </p>
+              {course.max_spots && course.course_start_date && (
+                <div className="mt-3 flex justify-center">
+                  <CourseSpotsBadge 
+                    maxSpots={course.max_spots} 
+                    courseStartDate={course.course_start_date}
+                    size="sm"
+                  />
+                </div>
+              )}
+              {/* Mobile value breakdown */}
+              {course.value_items && course.value_items.length > 0 && (
+                <CourseValueBreakdownCompact 
+                  items={course.value_items}
+                  totalValue={course.total_value}
+                  className="mt-4"
+                />
+              )}
             </div>
           </div>
         </div>

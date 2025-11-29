@@ -3,10 +3,14 @@ import { ShinyButton } from '@/components/ui/shiny-button';
 import { Loader2 } from 'lucide-react';
 import { useCoursePurchase } from '@/hooks/useCoursePurchase';
 import { formatPrice } from '@/config/stripe';
+import { CourseSpotsBadge } from './course-spots-badge';
 
 interface CoursePurchaseCardProps {
   courseId: string;
   courseTitle: string;
+  maxSpots?: number | null;
+  courseStartDate?: string | null;
+  ctaButtonText?: string | null;
 }
 
 const STRIPE_MAIN_COURSE_ID = '3a107f1a-9c87-4291-bf90-6adf854b2116';
@@ -51,7 +55,13 @@ const getTimeLeft = (targetDate: Date): TimeLeft => {
  * Kurso pirkimo kortelė su viena fiksuota kaina
  * Rodoma kurso detalių puslapyje
  */
-export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCardProps) {
+export function CoursePurchaseCard({ 
+  courseId, 
+  courseTitle,
+  maxSpots,
+  courseStartDate,
+  ctaButtonText
+}: CoursePurchaseCardProps) {
   const { purchaseCourse, isLoading, currentPrice } = useCoursePurchase({
     courseId,
     courseTitle,
@@ -149,9 +159,7 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
               Kraunama...
             </>
           ) : (
-            isMainStripeCourse
-              ? 'Pradėk mokytis dabar'
-              : 'Įsigyti kursą'
+            ctaButtonText || (isMainStripeCourse ? 'Pradėk mokytis dabar' : 'Įsigyti kursą')
           )}
         </ShinyButton>
 
@@ -170,7 +178,16 @@ export function CoursePurchaseCard({ courseId, courseTitle }: CoursePurchaseCard
           </div>
         )}
 
-        {isMainStripeCourse && (
+        {isMainStripeCourse && maxSpots && courseStartDate && (
+          <div className="mt-3 flex justify-center">
+            <CourseSpotsBadge 
+              maxSpots={maxSpots} 
+              courseStartDate={courseStartDate}
+              size="md"
+            />
+          </div>
+        )}
+        {isMainStripeCourse && !maxSpots && (
           <div className="mt-2 text-xs text-muted-foreground">
             Vietų kiekis ribotas
           </div>
