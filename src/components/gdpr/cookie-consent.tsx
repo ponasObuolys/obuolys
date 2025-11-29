@@ -18,20 +18,11 @@ export function CookieConsent() {
     } else {
       try {
         const consent: ConsentPreferences = JSON.parse(savedConsent);
-        // Check if consent version matches
+        // Check if consent version matches - show banner if outdated
         if (consent.version !== CONSENT_VERSION) {
           setIsVisible(true);
-        } else {
-          // Restore saved consent to Google Consent Mode
-          if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-            window.gtag('consent', 'update', {
-              'ad_storage': consent.analytics ? 'granted' : 'denied',
-              'ad_user_data': consent.analytics ? 'granted' : 'denied',
-              'ad_personalization': consent.analytics ? 'granted' : 'denied',
-              'analytics_storage': consent.analytics ? 'granted' : 'denied',
-            });
-          }
         }
+        // Note: Consent restore to Google happens in index.html before React loads
       } catch {
         setIsVisible(true);
       }

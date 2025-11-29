@@ -10,15 +10,34 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
 
-      // Set default consent to 'denied' for EEA users
-      // This runs before Google tag loads
-      gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
-        'wait_for_update': 500
-      });
+      // Check if user has already given consent
+      var savedConsent = null;
+      try {
+        var consentStr = localStorage.getItem('obuolys_cookie_consent');
+        if (consentStr) {
+          savedConsent = JSON.parse(consentStr);
+        }
+      } catch (e) {}
+
+      // Set consent based on saved preferences or default to denied
+      if (savedConsent && savedConsent.version === '1.0') {
+        // User has already given consent - use their choice
+        gtag('consent', 'default', {
+          'ad_storage': savedConsent.analytics ? 'granted' : 'denied',
+          'ad_user_data': savedConsent.analytics ? 'granted' : 'denied',
+          'ad_personalization': savedConsent.analytics ? 'granted' : 'denied',
+          'analytics_storage': savedConsent.analytics ? 'granted' : 'denied'
+        });
+      } else {
+        // No consent yet - default to denied and wait for user choice
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied',
+          'analytics_storage': 'denied',
+          'wait_for_update': 500
+        });
+      }
     </script>
 
     <!-- Google tag (gtag.js) -->
