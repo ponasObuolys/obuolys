@@ -5,7 +5,6 @@ import { formatDuration } from '@/utils/formatDuration';
 import { formatPrice } from '@/config/stripe';
 import { ShareButton } from '@/components/ui/share-button';
 import { CourseSpotsBadge } from './course-spots-badge';
-import { CourseValueBreakdownCompact } from './course-value-breakdown';
 
 interface CourseHeroProps {
   course: {
@@ -82,50 +81,74 @@ export function CourseHero({
           </Badge>
         </div>
 
-        {/* Mobile-only Purchase Section - above highlights */}
+        {/* Mobile-only Purchase Section - toks pat stilius kaip CoursePurchaseCard */}
         <div className="lg:hidden mt-6 mb-6">
           <div className="bg-background/50 backdrop-blur-sm p-4 rounded-xl border border-border">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-primary mb-3">
+            {/* Kaina viršuje */}
+            <div className="text-center mb-4">
+              <p className="text-2xl font-bold text-primary">
                 {displayPrice}
               </p>
-              <ShinyButton
-                className="w-full text-lg py-3"
-                onClick={onPurchase}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Kraunama...
-                  </>
-                ) : (
-                  course.cta_button_text || (isStripeCourse ? 'Pradėti mokytis dabar' : 'Įsigyti kursą')
-                )}
-              </ShinyButton>
-              <p className="text-xs text-muted-foreground mt-2">
-                {isStripeCourse
-                  ? "Kursų prieiga 3 mėn. + visų įrašų archyvas šiuo laikotarpiu"
-                  : "Vienkartinis mokėjimas, prieiga neribotam laikui"}
-              </p>
-              {course.max_spots && course.course_start_date && (
-                <div className="mt-3 flex justify-center">
-                  <CourseSpotsBadge 
-                    maxSpots={course.max_spots} 
-                    courseStartDate={course.course_start_date}
-                    size="sm"
-                  />
-                </div>
-              )}
-              {/* Mobile value breakdown */}
-              {course.value_items && course.value_items.length > 0 && (
-                <CourseValueBreakdownCompact 
-                  items={course.value_items}
-                  totalValue={course.total_value}
-                  className="mt-4"
-                />
-              )}
             </div>
+
+            {/* Pirkimo mygtukas */}
+            <ShinyButton
+              className="w-full text-lg py-3"
+              onClick={onPurchase}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Kraunama...
+                </>
+              ) : (
+                course.cta_button_text || (isStripeCourse ? 'Registruokis į kursą' : 'Įsigyti kursą')
+              )}
+            </ShinyButton>
+
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              {isStripeCourse
+                ? "Kursų prieiga 3 mėn. + visų įrašų archyvas šiuo laikotarpiu"
+                : "Vienkartinis mokėjimas, prieiga neribotam laikui"}
+            </p>
+
+            {/* Vietų badge */}
+            {course.max_spots && course.course_start_date && (
+              <div className="mt-3 flex justify-center">
+                <CourseSpotsBadge 
+                  maxSpots={course.max_spots} 
+                  courseStartDate={course.course_start_date}
+                  size="sm"
+                />
+              </div>
+            )}
+
+            {/* Vertės breakdown - toks pat stilius kaip CoursePurchaseCard */}
+            {course.value_items && course.value_items.length > 0 && (
+              <div className="border border-primary/20 rounded-lg p-4 mt-4 bg-background/40 text-left">
+                <p className="text-sm font-semibold text-foreground mb-3">
+                  Ką gaunate:
+                </p>
+                <ul className="space-y-2 text-sm">
+                  {course.value_items.map((item, index) => (
+                    <li key={index} className="flex items-start justify-between gap-2">
+                      <span className="flex items-center gap-2 min-w-0">
+                        <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                        <span className="text-foreground/80">{item.title}</span>
+                      </span>
+                      <span className="font-medium whitespace-nowrap text-primary">{item.value}</span>
+                    </li>
+                  ))}
+                </ul>
+                {course.total_value && (
+                  <div className="mt-3 pt-3 border-t border-border flex items-baseline justify-between">
+                    <span className="text-xs text-muted-foreground">Bendra vertė:</span>
+                    <span className="text-sm font-semibold text-muted-foreground line-through">{course.total_value}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
