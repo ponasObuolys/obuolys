@@ -21,6 +21,16 @@ export function CookieConsent() {
         // Check if consent version matches
         if (consent.version !== CONSENT_VERSION) {
           setIsVisible(true);
+        } else {
+          // Restore saved consent to Google Consent Mode
+          if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              'ad_storage': consent.analytics ? 'granted' : 'denied',
+              'ad_user_data': consent.analytics ? 'granted' : 'denied',
+              'ad_personalization': consent.analytics ? 'granted' : 'denied',
+              'analytics_storage': consent.analytics ? 'granted' : 'denied',
+            });
+          }
         }
       } catch {
         setIsVisible(true);
@@ -37,6 +47,17 @@ export function CookieConsent() {
     };
 
     localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
+
+    // Update Google Consent Mode v2
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', {
+        'ad_storage': analytics ? 'granted' : 'denied',
+        'ad_user_data': analytics ? 'granted' : 'denied',
+        'ad_personalization': analytics ? 'granted' : 'denied',
+        'analytics_storage': analytics ? 'granted' : 'denied',
+      });
+    }
+
     setIsVisible(false);
 
     // If user declined analytics, clear existing analytics data
