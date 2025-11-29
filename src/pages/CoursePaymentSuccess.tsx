@@ -31,6 +31,16 @@ export default function CoursePaymentSuccess() {
       return;
     }
 
+    // Google Ads Conversion Tracking
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-687624353/5futCNi9vuoBEKGh8ccC',
+        'value': 97.0,
+        'currency': 'EUR',
+        'transaction_id': sessionId
+      });
+    }
+
     // Countdown timer
     const timer = setInterval(() => {
       setCountdown((prev) => {
