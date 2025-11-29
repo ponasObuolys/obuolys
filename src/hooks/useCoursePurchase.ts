@@ -52,8 +52,25 @@ export function useCoursePurchase({ courseId, courseTitle: _courseTitle }: UseCo
         throw new Error('Negautas mokėjimo URL');
       }
 
-      // Nukreipti į Stripe Checkout
-      window.location.href = url;
+      // Google Ads Click Conversion Tracking
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-687624353/EgdqCPauxZMaEKGh8ccC',
+          'value': priceInfo.amount / 100, // Convert cents to EUR
+          'currency': 'EUR',
+          'event_callback': () => {
+            // Nukreipti į Stripe Checkout po conversion tracking
+            window.location.href = url;
+          }
+        });
+        // Fallback jei callback neįvyksta per 1s
+        setTimeout(() => {
+          window.location.href = url;
+        }, 1000);
+      } else {
+        // Nukreipti į Stripe Checkout jei gtag nepasiekiamas
+        window.location.href = url;
+      }
     } catch (error) {
       secureLogger.error('Purchase error:', error);
       toast({
